@@ -235,12 +235,25 @@ async function doSearch(q,autopick){
     } else { f('ac').style.display='none';
       f('hint').innerHTML='⚠️ No match in the static index — the full live lookup needs <b>scanX.bat</b> (provides <code>/api/search</code>).'; } } }
 let STATIC_IDX=null;
+async function buildIndex(){
+  // Merge every static universe the site ships so search covers the whole
+  // market, not just Magic Formula: TechnoFunda (~5k names) + Magic Formula
+  // (~4k) + every pre-baked fundamental code. Deduped by code.
+  const seen=new Set(), idx=[];
+  const add=(name,code)=>{ code=String(code==null?'':code).trim();
+    if(!code||seen.has(code)) return; seen.add(code);
+    idx.push({name:String(name==null||name===''?code:name).trim(),code}); };
+  try{ const t=await (await fetch('data/technofunda.json')).json();
+    (Array.isArray(t)?t:(t.rows||[])).forEach(r=>add(r.name,r.code)); }catch(e){}
+  try{ const m=await (await fetch('data/magicformula.json')).json();
+    (m.rows||[]).forEach(r=>add(r.name,r.code)); }catch(e){}
+  try{ const b=await (await fetch('data/fundamental/index.json')).json();
+    (b||[]).forEach(c=>add(c,c)); }catch(e){}
+  return idx;
+}
 async function staticSearch(q){
   try{
-    if(!STATIC_IDX){
-      const d=await (await fetch('data/magicformula.json')).json();
-      STATIC_IDX=(d.rows||[]).map(r=>({name:String(r.name),code:String(r.code)}));
-    }
+    if(!STATIC_IDX) STATIC_IDX=await buildIndex();
     const s=q.toLowerCase();
     const pre=STATIC_IDX.filter(it=>it.name.toLowerCase().startsWith(s)||it.code.toLowerCase().startsWith(s));
     const inc=STATIC_IDX.filter(it=>!pre.includes(it)&&(it.name.toLowerCase().includes(s)||it.code.toLowerCase().includes(s)));
@@ -268,9 +281,12 @@ async function load(code){
     if(bundle && bundle.fundamental) d=bundle.fundamental;
   }
   if(!d){
+    const sn=screenerUrl(code);
     f('out').innerHTML='<div class="empty">'+(slow
-      ? '⏱️ Screener is slow / unreachable right now — the live lookup timed out. The boards still show the last good crawl; try this stock again in a moment.'
-      : 'ℹ️ <b>'+esc(code)+'</b> isn’t in the offline set yet. Launch the terminal with <b>scanX.bat</b> to view it live in scanX — or it appears here automatically once the full bake completes.')+'</div>';
+      ? '⏱️ Screener is slow / unreachable right now — the live lookup timed out. Try again in a moment, or '
+      : 'ℹ️ <b>'+esc(code)+'</b> isn’t in the offline (pre-baked) set yet — only the top ~900 board stocks are baked for the static GitHub Pages site. ')
+      +'<a href="'+sn+'" target="_blank" rel="noopener">Open '+esc(code)+' on Screener.in ↗</a>'
+      +'<div class="hint" style="margin-top:10px">Tip: launch the desktop terminal (<b>scanX.bat</b>) for live lookup of any listed stock, or widen the nightly bake with <code>refresh_fundamentals.py --top 5000</code>.</div></div>';
     return;
   }
   render(d);
@@ -389,6 +405,7 @@ function drawCharts(d){
 
 
 function render(d){
+  if(d&&d.name){ try{ f('q').value=d.name; }catch(e){} }
   const ov=d.overview||{}, gr=d.growth||{}, q=d.quarters||{};
   const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
   const keys=order.filter(k=>ov[k]!=null).concat(Object.keys(ov).filter(k=>!order.includes(k)));
@@ -515,4 +532,29 @@ async function loadSignal(code, preV){
       ${vbar('Fundamental quality / value (35%)',b.fundamental)}
     </div>
     <div class="vreasons">
-      <div><b style="col
+      <div><b style="color:var(--green)">Supporting</b><ul>${pros}</ul></div>
+      <div><b style="color:var(--red)">Watch-outs</b><ul>${cons}</ul></div>
+    </div>
+    ${v.disclaimer?`<div class="vdis">${esc(v.disclaimer)}</div>`:''}
+    ${biasHtml(v.bias_check||v.bias||v.biascheck)}
+  </div>`;
+}
+
+/* ---------------- init: deep-link (?code= / ?name=) + boot ----------------
+   Every board (PEAD, TechnoFunda, Magic Formula, Buybacks, Orders, Special,
+   Deals, Corp Actions, Announcements, Intraday, Fair Value, IV Ranking, Sector)
+   links a company as  fundamental.html?code=XXXX  - read it here and auto-load. */
+(function boot(){
+  try{
+    const p=new URLSearchParams(location.search);
+    const code=(p.get('code')||p.get('symbol')||'').trim();
+    const name=(p.get('name')||p.get('q')||'').trim();
+    if(name) f('q').value=name;
+    if(code){ if(!name) f('q').value=code; load(code); }
+    else if(name){ doSearch(name,true); }
+    try{ f('q').focus(); }catch(e){}
+  }catch(e){ console.error('init failed',e); }
+})();
+</script>
+</body>
+</html>

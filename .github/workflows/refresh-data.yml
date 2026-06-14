@@ -75,7 +75,11 @@ jobs:
           python scripts/refresh_sectors.py
           python scripts/refresh_technofunda.py --mcap-floor 5 --screen-pages 250
           python scripts/refresh_magicformula.py --screen-pages 250
-          python scripts/refresh_fundamentals.py --top 150 --skip-existing --max-minutes 130
+          # 1) keep the top names fresh (re-bake today's data)
+          python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 50
+          # 2) EXTEND coverage toward the whole universe (skip anything already baked);
+          #    each daily run bakes more new stocks until every listed name is covered
+          python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 100
           python scripts/refresh_iv.py --per-sector 30
           exit 0
 

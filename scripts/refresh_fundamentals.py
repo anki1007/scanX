@@ -70,6 +70,8 @@ def main():
     ap.add_argument("--top", type=int, default=120, help="how many top board stocks to bake")
     ap.add_argument("--limit", type=int, default=0, help="cap (testing)")
     ap.add_argument("--skip-existing", action="store_true", help="skip codes already baked today (resumable)")
+    ap.add_argument("--skip-any", action="store_true",
+                    help="skip codes already baked at all (resume a full-universe bake across runs/days)")
     ap.add_argument("--board", default=str(ROOT / "docs" / "data" / "technofunda.json"))
     ap.add_argument("--out", default=str(ROOT / "docs" / "data" / "fundamental"))
     ap.add_argument("--max-minutes", type=float, default=0,
@@ -155,6 +157,8 @@ def main():
         if args.max_minutes and (time.time() - _bake_start) > args.max_minutes * 60:
             print(f'[fund] time budget {args.max_minutes:.0f}min reached at {i}/{len(codes)} - committing what is baked'); break
         bf = out / f"{code}.json"
+        if args.skip_any and bf.exists():
+            avail.append(code); continue
         if args.skip_existing and bf.exists() and _t.strftime("%Y-%m-%d", _t.localtime(bf.stat().st_mtime)) == today:
             avail.append(code); continue
         try:

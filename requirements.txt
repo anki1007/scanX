@@ -25,7 +25,9 @@ pyotp>=2.9             # Dhan TOTP login (scripts/dhan_login.py)
 
 # Powerful scraping engine (webscrap / Scrapling) - bypasses BSE/NSE anti-bot
 curl_cffi>=0.7         # Chrome-TLS impersonation (light; unblocks the BSE JSON API)
-scrapling>=0.2         # adaptive scraper + StealthyFetcher (Camoufox); run: python -m scrapling install
+# Scrapling = anki1007 fork (adaptive scraper + StealthyFetcher/Camoufox)
+#   after install run:  python -m scrapling install   (downloads Camoufox)
+scrapling @ git+https://github.com/anki1007/Scrapling.git
 playwright>=1.40       # required by scrapling fetchers
 yfinance>=0.2.40
 pandas>=2.0
