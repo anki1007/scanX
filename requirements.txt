@@ -1,0 +1,36 @@
+# Core
+pandas>=2.0
+numpy>=1.24
+requests>=2.31      # NSE/BSE feeds + Telegram notifier
+beautifulsoup4>=4.12  # Screener.in HTML parsing
+lxml>=5.0             # fast parser backend for BeautifulSoup
+
+# Live market data + execution (Zerodha Kite)
+kiteconnect>=4.2
+
+# Earnings document extraction (Agent 2)
+pdfplumber>=0.10
+camelot-py>=0.11
+tabula-py>=2.9
+
+# Optional NLP for transcript agent (Agent 5)
+# Lexicon-based scorer ships built-in; these enable richer models later.
+# transformers>=4.40
+# torch>=2.2
+
+# Storage (Phase 2)
+# psycopg2-binary>=2.9
+# duckdb>=0.10
+pyotp>=2.9             # Dhan TOTP login (scripts/dhan_login.py)
+
+# Powerful scraping engine (webscrap / Scrapling) - bypasses BSE/NSE anti-bot
+curl_cffi>=0.7         # Chrome-TLS impersonation (light; unblocks the BSE JSON API)
+scrapling>=0.2         # adaptive scraper + StealthyFetcher (Camoufox); run: python -m scrapling install
+playwright>=1.40       # required by scrapling fetchers
+yfinance>=0.2.40
+pandas>=2.0
+
+# AI Insights extractor (scripts/insights_ai.py) — operational-KPI extraction from filings
+google-genai>=0.3      # Gemini API (key read locally from gemin_api_key.md, never published)
+
+openpyxl>=3.1          # FPI/fpi_update.py NSDL workbook writer

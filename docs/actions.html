@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>scanX · Corp Actions</title>
+<style>
+  :root{
+    --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --line:#243049;
+    --text:#e6edf7; --muted:#8b9bb4; --teal:#2dd4bf; --teal2:#5eead4;
+    --green:#34d399; --red:#f87171; --amber:#fbbf24; --chip:#0f1726;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none} a:hover{text-decoration:underline}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;
+         border-bottom:1px solid var(--line);background:var(--panel)}
+  .logo{font-size:20px;font-weight:800;color:var(--teal)}
+  .logo small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .kpis{display:flex;gap:28px;margin-left:auto;text-align:right}
+  .kpi .v{font-size:20px;font-weight:800}.kpi .v.teal{color:var(--teal)}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  nav{display:flex;gap:18px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+  nav a,nav span{font-size:13px;color:var(--muted)} nav .active{color:var(--teal);font-weight:700}
+  .bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:14px 20px}
+  .bar .fld{display:flex;flex-direction:column;gap:3px}
+  .bar label{font-size:11px;color:var(--muted)}
+  input,select{background:var(--chip);border:1px solid var(--line);color:var(--text);
+        border-radius:7px;padding:8px 10px;font-size:13px}
+  .tabs{display:flex;gap:8px;padding:0 20px 8px}
+  .tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+       border-radius:8px 8px 0 0;padding:9px 16px;cursor:pointer;font-weight:600;font-size:13px}
+  .tab.on{color:var(--teal);border-color:var(--teal);background:var(--panel)}
+  .tablebox{margin:0 20px 24px;background:var(--panel);border:1px solid var(--line);
+            border-radius:0 12px 12px 12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);
+           font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:hover{color:var(--teal)} tbody tr:hover{background:#10182a}
+  th.sorted::after{content:" \25BC";font-size:9px} th.sorted.asc::after{content:" \25B2"}
+  .pos{color:var(--green)} .neg{color:var(--red)} .na{color:var(--muted)}
+  .pill{display:inline-block;background:rgba(52,211,153,.15);color:var(--green);
+        font-weight:800;border-radius:20px;padding:3px 10px}
+  .pill.amber{background:rgba(251,191,36,.15);color:var(--amber)}
+  .src{font-size:11px;color:var(--muted);padding:0 20px 18px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+       margin-right:5px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ---------- shared left nav rail ---------- */
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <div class="grpL">Intrinsic Value</div>
+      <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+      <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+      <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+      <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+      <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i active" href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+      <div class="grpL">Tools</div>
+      <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+    </aside>
+  <div class="content">
+<header>
+  <div class="ptitle">Corporate Actions</div>
+  <div class="kpis"><div class="kpi"><div class="v" id="kN">–</div><div class="l">Actions</div></div><div class="kpi"><div class="v teal" id="kShown">–</div><div class="l">Shown</div></div><div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (auto 60s)</div></div></div>
+</header>
+<div class="bar"><div class="fld"><label>Search</label><input id="q" placeholder="company…" style="width:240px"></div></div>
+<div class="tabs" id="tabs"></div>
+<div class="tablebox"><table id="tbl"><thead><tr><th>Company</th><th>Action</th><th>Ex date</th><th style="text-align:left">Detail</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="src">source: screener.in/actions/ (dividend, bonus, split, right)</div>
+<script>
+function f(id){return document.getElementById(id);}
+function scrUrl(c){return 'https://www.screener.in/company/'+encodeURIComponent(c)+'/';}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function inr(v,d){if(v===null||v===undefined||v==='')return '<span class="na">—</span>';const n=Number(v);const s=n.toLocaleString('en-IN',{maximumFractionDigits:d===undefined?0:d});return (n>0?'+':'')+s;}
+
+let DATA=[],flt='all',q='';
+const KINDS=[['all','All'],['dividend','Dividend'],['bonus','Bonus'],['split','Split'],['right','Right']];
+function badge(v){const m={dividend:'pill',bonus:'pill amber',split:'pill amber',right:'pill'};return `<span class="${m[v]||'pill'}">${esc(v||'')}</span>`;}
+function render(){let rs=DATA.slice();if(flt!=='all')rs=rs.filter(x=>x.action===flt);
+ if(q){const Q=q.toLowerCase();rs=rs.filter(x=>(x.company||'').toLowerCase().includes(Q));}
+ f('body').innerHTML=rs.map(r=>`<tr><td><a href="fundamental.html?code=${encodeURIComponent(r.code)}">${esc(r.company||r.code)}</a></td>`+
+  `<td>${badge(r.action)}</td><td>${esc(r.ex_date||'—')}</td><td style="text-align:left;white-space:normal">${esc(r.detail||'—')}</td></tr>`).join('')
+  ||'<tr><td colspan="4" class="na" style="padding:18px">No corporate actions yet — runs once scanX scrapes screener.in/actions/.</td></tr>';
+ f('kShown').textContent=rs.length;}
+f('tabs').innerHTML=KINDS.map(([k,t],i)=>`<div class="tab ${i===0?'on':''}" data-k="${k}">${t}</div>`).join('');
+f('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{f('tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');flt=t.dataset.k;render();});
+f('q').addEventListener('input',e=>{q=e.target.value.trim();render();});
+async function load(){try{const j=await fetch('data/actions.json?t='+Date.now()).then(r=>r.json());DATA=j.rows||[];
+ f('kN').textContent=DATA.length;f('kTime').innerHTML='<span class="dot"></span>'+(j.generated_at_ist||'live');render();}catch(e){render();}}
+load();setInterval(load,60000);
+
+</script>
+  </div>
+</div>
+</body>
+</html>

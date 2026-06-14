@@ -1,0 +1,11 @@
+C:\Python311\python.exe
+C:\Users\OO7\AppData\Local\Microsoft\WindowsApps\python.exe
+---VER--- 
+Python 3.11.9
+---PYLIST--- 
+ -V:3.14 *        C:\Python314\python.exe
+ -V:3.11          C:\Python311\python.exe
+ -V:Astral/CPython3.14.3 C:\Users\OO7\AppData\Roaming\uv\python\cpython-3.14.3-windows-x86_64-none\python.exe
+---DIRS--- 
+__pycache__
+---REQ--- 

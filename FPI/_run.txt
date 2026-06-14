@@ -1,0 +1,12 @@
+C:\Python311\Lib\site-packages\openpyxl\worksheet\_reader.py:329: UserWarning: Sparkline Group extension is not supported and will be removed
+  warn(msg)
+[2026-05-31 01:19:28] Loading workbook FPI_Sectorial-Analysis.xlsx
+[2026-05-31 01:19:28] Discovering fortnights …
+[2026-05-31 01:19:28]   NSDL has 45 fortnights from Jul 01-15, 2024 → May 01-15, 2026
+[2026-05-31 01:19:28]   workbook already has 45 fortnights
+[2026-05-31 01:19:28]   0 new fortnight(s) to fetch
+[2026-05-31 01:19:28] Rebuilding aggregation sheets…
+[2026-05-31 01:19:28] Saved workbook (E:\FPI\FPI_Sectorial-Analysis.xlsx)
+[2026-05-31 01:19:28]   wrote fpi_data.json & fpi_data.js (1122 rows)
+[2026-05-31 01:19:28] Done. New fortnights added this run: 0
+===RUN_DONE===  

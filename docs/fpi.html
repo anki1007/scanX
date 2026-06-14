@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scanX · FPI Flows</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+    :root{
+    --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --border:#243049;
+    --text:#e6edf7; --muted:#8b9bb4;
+    --accent:#2dd4bf; --accent-2:#5eead4;
+    --pos:#34d399; --pos-soft:rgba(52,211,153,.15);
+    --neg:#f87171; --neg-soft:rgba(248,113,113,.15);
+    --warn:#fbbf24; --grid:#243049; --teal:#2dd4bf; --line:#243049;
+    --chip:#0f1726; --green:#34d399; --red:#f87171; --amber:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px}
+  a{color:var(--accent);text-decoration:none}
+  header{display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,#161b22 0%,#0d1117 100%)}
+  header h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.2px}
+  header h1 span{color:var(--accent)}
+  header .meta{font-size:12px;color:var(--muted);text-align:right}
+  header .meta b{color:var(--text)}
+  main{padding:18px 28px;max-width:1600px;margin:0 auto}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px}
+  .kpi .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  .kpi .value{font-size:22px;font-weight:600;margin-top:4px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .kpi .delta{display:inline-block;margin-left:8px;font-size:12px;padding:2px 8px;
+    border-radius:99px;font-weight:600}
+  .delta.pos{background:var(--pos-soft);color:var(--pos)}
+  .delta.neg{background:var(--neg-soft);color:var(--neg)}
+
+  /* Tabs + filter row */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:14px}
+  .tab{padding:8px 16px;border:1px solid transparent;border-bottom:none;
+    border-radius:6px 6px 0 0;cursor:pointer;color:var(--muted);font-weight:500;font-size:13px}
+  .tab.active{background:var(--panel);border-color:var(--border);color:var(--text)}
+  .filters{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+  .filters label{font-size:12px;color:var(--muted)}
+  .filters select,.filters input[type="text"]{background:var(--panel2);border:1px solid var(--border);
+    color:var(--text);padding:6px 8px;border-radius:6px;font-size:13px}
+  .filters .pill{background:var(--panel2);border:1px solid var(--border);padding:6px 10px;
+    border-radius:6px;font-size:12px;color:var(--muted)}
+
+  /* Panels */
+  .grid{display:grid;gap:14px}
+  .grid.two{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:1fr 1fr 1fr}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px}
+  .panel h3{margin:0 0 10px 0;font-size:13px;font-weight:600;color:var(--text);letter-spacing:.2px}
+  .panel h3 .small{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+  .panel.chart{min-height:340px;display:flex;flex-direction:column}
+  .panel.chart .chart-wrap{flex:1;position:relative;min-height:280px}
+  canvas{width:100%!important;height:100%!important}
+
+  /* Leaderboards */
+  .leader{display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .leader .row{display:flex;justify-content:space-between;align-items:center;
+    padding:6px 8px;border-radius:6px;background:var(--panel2)}
+  .leader .row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+  .leader .row .val{font-weight:600;font-variant-numeric:tabular-nums}
+  .leader .row.pos .val{color:var(--pos)}
+  .leader .row.neg .val{color:var(--neg)}
+
+  /* Heatmap */
+  .heatmap-wrap{overflow-x:auto;overflow-y:hidden;max-width:100%}
+  table.heatmap{border-collapse:collapse;font-size:11px}
+  table.heatmap th,table.heatmap td{padding:5px 6px;text-align:right;
+    border:1px solid var(--bg);font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.heatmap th{background:var(--panel2);color:var(--muted);font-weight:600;position:sticky;top:0}
+  table.heatmap th.sector{text-align:left;left:0;position:sticky;background:var(--panel);z-index:2;
+    min-width:200px;max-width:220px}
+  table.heatmap td.sector{text-align:left;background:var(--panel2);color:var(--text);font-weight:500;
+    position:sticky;left:0;min-width:200px;max-width:220px;
+    overflow:hidden;text-overflow:ellipsis}
+  table.heatmap tbody tr:hover td{outline:1px solid var(--accent)}
+  table.heatmap tfoot td{font-weight:700;background:var(--panel)}
+
+  /* Footer */
+  footer{padding:18px 28px;color:var(--muted);font-size:11px;text-align:center;border-top:1px solid var(--border);margin-top:24px}
+
+  /* Empty / loading state */
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+  .empty code{background:var(--panel2);padding:2px 6px;border-radius:4px}
+
+  /* Sync button */
+  .sync-btn{display:inline-flex;align-items:center;gap:6px;margin-left:14px;
+    background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
+    cursor:pointer;font-family:inherit;vertical-align:middle;line-height:1;
+    transition:border-color .15s, color .15s}
+  .sync-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .sync-btn:disabled{opacity:.6;cursor:not-allowed}
+  .sync-btn .ico{display:inline-block;font-size:14px;line-height:1}
+  .sync-btn.syncing .ico{animation:spin 1s linear infinite}
+  .sync-btn.success{color:var(--pos);border-color:var(--pos)}
+  .sync-btn.error{color:var(--neg);border-color:var(--neg)}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  /* Toast */
+  .toast{position:fixed;bottom:24px;right:24px;
+    background:var(--panel);border:1px solid var(--border);
+    padding:12px 16px;border-radius:8px;font-size:13px;
+    max-width:420px;z-index:1000;
+    box-shadow:0 6px 20px rgba(0,0,0,.4);
+    animation:fadein .2s ease-out}
+  .toast.pos{border-color:var(--pos)}
+  .toast.neg{border-color:var(--neg)}
+  .toast .hint{display:block;margin-top:6px;color:var(--muted);font-size:11px;
+    font-family:ui-monospace,Menlo,Consolas,monospace}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Responsive */
+  @media (max-width:1100px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid.two,.grid.three{grid-template-columns:1fr}
+  }
+
+  /* ---------- shared left nav rail (scanX) ---------- */
+  .app{display:flex;min-height:100vh}
+  .navrail{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .navrail .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .navrail .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .navrail .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0;text-decoration:none}
+  .nav-i:hover{background:var(--panel2);color:var(--text)}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  header{position:static}
+  table.heatmap th.sumcol{color:var(--teal);background:rgba(45,212,191,.06)}
+  table.heatmap td.sumcol{font-weight:600}
+  table.heatmap .divend{border-right:2px solid var(--teal)!important}
+  html,body{overflow-x:hidden}
+  .grid.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .grid.three{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)}
+  .panel{min-width:0}
+  .heatmap-wrap{overflow-x:auto;max-width:100%}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="navrail">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <div class="grpL">Intrinsic Value</div>
+      <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+      <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+      <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+      <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+      <div class="grpL">Market Pulse</div>
+      <a class="nav-i" href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i active" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i" href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i" href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i" href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+      <div class="grpL">Tools</div>
+      <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+    </aside>
+  <div class="content">
+<header>
+  <h1>FPI <span>Sector Investment</span> Dashboard
+    
+  </h1>
+  <div class="meta">
+    Source: <b>NSDL Fortnightly Sector-wise FII Investment Data</b><br>
+    Last refresh: <b id="lastRefresh">—</b>
+    &nbsp;·&nbsp; Latest fortnight: <b id="latestFortnight">—</b>
+  </div>
+</header>
+<main>
+  <!-- KPI row -->
+  <div class="kpis" id="kpis">
+    <div class="kpi"><div class="label">Total Equity Net Flow (latest)</div>
+      <div class="value" id="kpiTotal">—</div>
+      <div class="sub" id="kpiTotalSub">—</div></div>
+    <div class="kpi"><div class="label">Top Inflow Sector (latest)</div>
+      <div class="value pos" id="kpiTopIn">—</div>
+      <div class="sub" id="kpiTopInSub">—</div></div>
+    <div class="kpi"><div class="label">Top Outflow Sector (latest)</div>
+      <div class="value neg" id="kpiTopOut">—</div>
+      <div class="sub" id="kpiTopOutSub">—</div></div>
+    <div class="kpi"><div class="label">Sectors with Inflows</div>
+      <div class="value" id="kpiBreadth">—</div>
+      <div class="sub" id="kpiBreadthSub">—</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="fortnight">Fortnightly</div>
+    <div class="tab" data-tab="month">Monthly</div>
+    <div class="tab" data-tab="quarter">Quarterly</div>
+    <div class="tab" data-tab="year">Yearly (FY)</div>
+  </div>
+
+  <!-- Filter row -->
+  <div class="filters">
+    <label>Sector focus</label>
+    <select id="sectorSelect" multiple size="1" style="min-width:280px"></select>
+    <label>Show top</label>
+    <select id="topN">
+      <option value="5">5</option>
+      <option value="8" selected>8</option>
+      <option value="12">12</option>
+      <option value="all">All</option>
+    </select>
+    <label>Periods</label>
+    <select id="rangeN">
+      <option value="6">Last 6</option>
+      <option value="12">Last 12</option>
+      <option value="24" selected>Last 24</option>
+      <option value="all">All</option>
+    </select>
+    <span class="pill" id="rangePill">—</span>
+    <button id="resetBtn" class="pill" style="cursor:pointer">Reset filters</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid two">
+    <div class="panel chart">
+      <h3>Total Market Net Flow <span class="small" id="aggLabel">(per fortnight)</span></h3>
+      <div class="chart-wrap"><canvas id="totalFlowChart"></canvas></div>
+    </div>
+    <div class="panel chart">
+      <h3>Cumulative Net Flow <span class="small">(running sum, INR Cr)</span></h3>
+      <div class="chart-wrap"><canvas id="cumulativeChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:14px">
+    <div class="panel chart">
+      <h3>Sector Trends <span class="small">(top sectors by absolute flow)</span></h3>
+      <div class="chart-wrap"><canvas id="sectorTrendChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>Top Movers <span class="small" id="topMoversLabel">(latest period)</span></h3>
+      <div class="grid two">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Top Inflows</div>
+          <div class="leader" id="topInflows"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Top Outflows</div>
+          <div class="leader" id="topOutflows"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <h3 style="margin-bottom:6px">Sector Momentum <span class="small">(latest – 3-period avg)</span></h3>
+        <div class="leader" id="momentum"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:minmax(0,1fr);margin-top:14px">
+    <div class="panel">
+      <h3>Sector Heatmap <span class="small">(latest first · 30–90D &amp; yearly cumulatives · green=in, red=out, INR Cr)</span></h3>
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:-4px 0 10px;font-size:12px;color:var(--muted)">
+        <label for="heatmapYear">Year</label>
+        <select id="heatmapYear" style="background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:12px;min-width:120px">
+          <option value="all">All years</option>
+        </select>
+      </div>
+      <div class="heatmap-wrap" id="heatmapWrap"></div>
+    </div>
+  </div>
+</main>
+<footer>Auto-updates fortnightly via scanX (NSDL publishes after the 15th and month-end, often a 2–4 day lag). Source: NSDL Foreign Portfolio Investment fortnightly sector-wise reports.</footer>
+<script src="vendor/chart.umd.min.js"></script>
+<script>
+"use strict";
+(async function(){
+  try{ window.fpiData = await fetch("data/fpi.json?t="+Date.now()).then(r=>r.json()); }
+  catch(e){ window.fpiData = null; }
+
+
+// ── Bootstrap ───────────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const NF = new Intl.NumberFormat("en-IN");
+const SIGN = (v) => (v == null ? "—" : (v >= 0 ? "+" : "") + NF.format(Math.round(v)));
+const ABS_NF = (v) => v == null ? "—" : NF.format(Math.round(Math.abs(v)));
+
+// ── Sync button (runs fpi_update.py via the local helper) ──────────────
+const SYNC_URL = "http://127.0.0.1:8765/refresh";
+const SYNC_STATUS_URL = "http://127.0.0.1:8765/status";
+const syncBtn = $("syncBtn");
+
+function showToast(msg, kind, hint){
+  const t = document.createElement("div");
+  t.className = "toast " + (kind || "");
+  t.innerHTML = `<div>${msg}</div>` + (hint ? `<span class="hint">${hint}</span>` : "");
+  document.body.appendChild(t);
+  const ms = kind === "neg" ? 8000 : 4500;
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; }, ms - 300);
+  setTimeout(() => t.remove(), ms);
+}
+
+function setSyncState(state, label){
+  syncBtn.classList.remove("syncing","success","error");
+  if (state) syncBtn.classList.add(state);
+  syncBtn.querySelector(".lbl").textContent = label;
+}
+
+if (syncBtn) {
+  syncBtn.addEventListener("click", async () => {
+    syncBtn.disabled = true;
+    setSyncState("syncing", "Syncing…");
+    try {
+      const res = await fetch(SYNC_URL, { method: "POST", cache: "no-store" });
+      const data = await res.json().catch(() => ({ ok:false, error:"Bad JSON from helper" }));
+      if (!data.ok) {
+        const errLine = (data.tail || "").split("\n").reverse().find(l => l.trim()) || data.error || `exit ${data.returncode}`;
+        throw new Error(errLine);
+      }
+      const n = data.new_fortnights ?? 0;
+      setSyncState("success", n > 0 ? `+${n} new` : "Up to date");
+      if (n > 0) {
+        showToast(`Sync complete — ${n} new fortnight${n>1?"s":""} added. Reloading…`, "pos");
+        setTimeout(() => {
+          // Cache-bust the page so fpi_data.js is fetched fresh.
+          const url = new URL(location.href);
+          url.searchParams.set("_t", Date.now());
+          location.replace(url.toString());
+        }, 1000);
+      } else {
+        showToast("Sync complete — no new fortnight published yet.", "pos");
+      }
+    } catch (e) {
+      const msg = String(e.message || e);
+      setSyncState("error", "Failed");
+      const offline = msg.includes("Failed to fetch") || msg.includes("NetworkError");
+      showToast(
+        offline ? "Sync helper isn't running." : "Sync failed: " + msg,
+        "neg",
+        offline ? "Start it once:  cd D:\\FPI && python fpi_server.py" : null
+      );
+    } finally {
+      syncBtn.disabled = false;
+      setTimeout(() => setSyncState(null, "Sync"), 4000);
+    }
+  });
+
+  // Lightweight ping on load so the button tooltip reflects helper status
+  fetch(SYNC_STATUS_URL, { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(() => { syncBtn.title = "Helper online — click to fetch latest from NSDL"; })
+    .catch(() => { syncBtn.title = "Helper offline — start with: python fpi_server.py"; });
+}
+
+// Safety: if data file isn't loaded
+if (!window.fpiData || !Array.isArray(window.fpiData.rows)) {
+  document.querySelector("main").innerHTML =
+    '<div class="empty">' +
+    'No <code>fpi_data.js</code> found. Run <code>python fpi_update.py</code> in this folder first ' +
+    '(or click <b>Sync</b> above if <code>fpi_server.py</code> is running).' +
+    '</div>';
+  throw new Error("fpi_data missing");
+}
+
+// Globals
+const ROWS = window.fpiData.rows.filter(r => r.sector && r.sector !== "TOTAL");
+const ALL_FORTNIGHTS = [...new Set(ROWS.map(r => r.end))].sort();   // ISO date strings
+const LATEST_END = ALL_FORTNIGHTS[ALL_FORTNIGHTS.length-1];
+const ALL_YEARS = [...new Set(ALL_FORTNIGHTS.map(d => new Date(d+"T00:00:00").getFullYear()))].sort((a,b)=>b-a);
+const CUM_WINDOWS = [30,45,60,75,90];
+function _daysBack(iso){ return Math.round((new Date(LATEST_END+"T00:00:00") - new Date(iso+"T00:00:00"))/86400000); }
+function sectorSummary(sector){
+  const d = {30:0,45:0,60:0,75:0,90:0}; const y = {}; ALL_YEARS.forEach(yr=>y[yr]=0);
+  for (const r of ROWS){
+    if (r.sector !== sector || r.equity == null) continue;
+    const diff = _daysBack(r.end);
+    CUM_WINDOWS.forEach(D => { if (diff < D) d[D] += r.equity; });
+    const yr = new Date(r.end+"T00:00:00").getFullYear();
+    if (yr in y) y[yr] += r.equity;
+  }
+  return {d, y};
+}
+const SECTORS = [...new Set(ROWS.map(r => r.sector))].sort();
+
+$("lastRefresh").textContent = (window.fpiData.generated_at || "").replace("T"," ");
+$("latestFortnight").textContent = labelFor(ALL_FORTNIGHTS[ALL_FORTNIGHTS.length-1]) || "—";
+
+// ── Aggregation helpers ─────────────────────────────────────────────────
+function labelFor(iso){
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  const mon = d.toLocaleString("en-US",{month:"short"});
+  const dStart = d.getDate() === 15 ? 1 : 16;
+  return `${mon} ${String(dStart).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}, ${d.getFullYear()}`;
+}
+function monthKey(iso){
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleString("en-US",{month:"short"}) + " " + d.getFullYear();
+}
+function quarterKey(iso){
+  const d = new Date(iso + "T00:00:00");
+  const q = Math.floor(d.getMonth()/3) + 1;
+  return d.getFullYear() + " Q" + q;
+}
+function fyKey(iso){
+  // Indian FY runs Apr-Mar
+  const d = new Date(iso + "T00:00:00");
+  const yr = d.getFullYear(), m = d.getMonth() + 1;
+  const fyStart = m >= 4 ? yr : yr - 1;
+  return `FY ${String(fyStart%100).padStart(2,"0")}-${String((fyStart+1)%100).padStart(2,"0")}`;
+}
+function periodKeyFor(iso, mode){
+  return mode === "fortnight" ? iso :
+         mode === "month"     ? monthKey(iso) :
+         mode === "quarter"   ? quarterKey(iso) :
+                                fyKey(iso);
+}
+function periodSortKey(key, mode){
+  if (mode === "fortnight") return key;
+  if (mode === "month"){
+    const d = new Date(Date.parse(key.replace(/(\w+)\s(\d+)/, "$1 1, $2")));
+    return d.getTime();
+  }
+  if (mode === "quarter"){
+    const [y,q] = key.split(" Q"); return Number(y)*10 + Number(q);
+  }
+  // FY 24-25 -> 24
+  return Number(key.split(" ")[1].split("-")[0]);
+}
+function periodLabel(key, mode){
+  if (mode !== "fortnight") return key;
+  return labelFor(key);
+}
+
+// Build a [periodKey] -> [sector] -> equity sum, also list of periods sorted
+function aggregate(mode, sectorFilter){
+  const useSectors = (sectorFilter && sectorFilter.length) ? new Set(sectorFilter) : null;
+  const map = new Map(); // periodKey -> Map(sector -> sum)
+  for (const r of ROWS){
+    if (useSectors && !useSectors.has(r.sector)) continue;
+    if (r.equity == null) continue;
+    const p = periodKeyFor(r.end, mode);
+    if (!map.has(p)) map.set(p, new Map());
+    const inner = map.get(p);
+    inner.set(r.sector, (inner.get(r.sector) || 0) + r.equity);
+  }
+  const periods = [...map.keys()].sort((a,b) =>
+    periodSortKey(a,mode) > periodSortKey(b,mode) ? 1 : -1);
+  return {map, periods};
+}
+
+// ── State ───────────────────────────────────────────────────────────────
+const state = {
+  mode: "fortnight",
+  topN: 8,
+  rangeN: 24,
+  sectorFilter: [],
+  heatmapYear: String(ALL_YEARS[0]),   // current year by default
+};
+
+// Year extraction for heatmap year filter (works across agg modes)
+function periodYear(key, mode){
+  if (mode === "fortnight"){
+    return new Date(key + "T00:00:00").getFullYear();
+  }
+  if (mode === "month"){
+    // "Mon YYYY"
+    return Number(key.split(" ")[1]);
+  }
+  if (mode === "quarter"){
+    // "YYYY QN"
+    return Number(key.split(" Q")[0]);
+  }
+  // "FY YY-YY" -> use the start year (2000 + first half)
+  return 2000 + Number(key.split(" ")[1].split("-")[0]);
+}
+
+// ── UI: populate selects ────────────────────────────────────────────────
+const sectorSelect = $("sectorSelect");
+sectorSelect.size = Math.min(8, SECTORS.length);
+SECTORS.forEach(s => {
+  const o = document.createElement("option"); o.value = s; o.textContent = s;
+  sectorSelect.appendChild(o);
+});
+sectorSelect.addEventListener("change", () => {
+  state.sectorFilter = [...sectorSelect.selectedOptions].map(o => o.value);
+  render();
+});
+$("topN").addEventListener("change", e => { state.topN = e.target.value === "all" ? Infinity : Number(e.target.value); render(); });
+$("rangeN").addEventListener("change", e => { state.rangeN = e.target.value === "all" ? Infinity : Number(e.target.value); render(); });
+$("resetBtn").addEventListener("click", () => {
+  state.sectorFilter = []; state.topN = 8; state.rangeN = 24; state.heatmapYear = "all";
+  sectorSelect.selectedIndex = -1;
+  $("topN").value = "8"; $("rangeN").value = "24";
+  $("heatmapYear").value = "all";
+  render();
+});
+$("heatmapYear").addEventListener("change", e => {
+  state.heatmapYear = e.target.value;
+  render();
+});
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  state.mode = t.dataset.tab;
+  $("aggLabel").textContent = "(per " + ({fortnight:"fortnight",month:"month",quarter:"quarter",year:"financial year"})[state.mode] + ")";
+  render();
+}));
+
+// ── Charts ──────────────────────────────────────────────────────────────
+let totalFlowChart, cumulativeChart, sectorTrendChart;
+Chart.defaults.color = "#8b9bb4";
+Chart.defaults.borderColor = "#243049";
+Chart.defaults.font.family = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+
+const PALETTE = [
+  "#2dd4bf","#f5bf42","#79c0ff","#56d364","#ff7b72","#bc8cff",
+  "#ffa657","#7ee787","#ff8484","#a5d6ff","#d2a8ff","#85c8d6",
+];
+
+function destroyChart(c){ if (c) c.destroy(); }
+
+function renderTotalFlowChart(periods, totals){
+  destroyChart(totalFlowChart);
+  const ctx = $("totalFlowChart").getContext("2d");
+  totalFlowChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: periods.map(p => periodLabel(p, state.mode)),
+      datasets: [{
+        label: "Net Equity Flow (INR Cr)",
+        data: totals,
+        backgroundColor: totals.map(v => v >= 0 ? "rgba(52,211,153,.78)" : "rgba(248,113,113,.78)"),
+        borderColor: totals.map(v => v >= 0 ? "#34d399" : "#f87171"),
+        borderWidth: 1,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => `${SIGN(c.parsed.y)} Cr` } },
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#243049"} },
+      },
+    },
+  });
+}
+
+function renderCumulativeChart(periods, totals){
+  destroyChart(cumulativeChart);
+  let cum = 0;
+  const cumData = totals.map(v => (cum += (v||0)));
+  const ctx = $("cumulativeChart").getContext("2d");
+  cumulativeChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: periods.map(p => periodLabel(p, state.mode)),
+      datasets: [{
+        label: "Cumulative",
+        data: cumData,
+        borderColor: "#2dd4bf",
+        backgroundColor: "rgba(45,212,191,.18)",
+        fill: true,
+        tension: 0.25,
+        pointRadius: 2,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display:false },
+        tooltip: { callbacks: { label: c => `${SIGN(c.parsed.y)} Cr cumulative` } } },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#243049"} },
+      },
+    },
+  });
+}
+
+function renderSectorTrendChart(periods, sectorMatrix, sectorsToShow){
+  destroyChart(sectorTrendChart);
+  const datasets = sectorsToShow.map((s, i) => ({
+    label: s,
+    data: periods.map(p => sectorMatrix[s][p] ?? null),
+    borderColor: PALETTE[i % PALETTE.length],
+    backgroundColor: PALETTE[i % PALETTE.length] + "33",
+    borderWidth: 2,
+    pointRadius: 1.5,
+    tension: 0.25,
+    spanGaps: true,
+  }));
+  const ctx = $("sectorTrendChart").getContext("2d");
+  sectorTrendChart = new Chart(ctx, {
+    type: "line",
+    data: { labels: periods.map(p => periodLabel(p, state.mode)), datasets },
+    options: {
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } },
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: ${SIGN(c.parsed.y)} Cr` } },
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#243049"} },
+      },
+    },
+  });
+}
+
+// ── Leaderboard renderers ───────────────────────────────────────────────
+function renderLeader(targetId, items, signClass){
+  const el = $(targetId);
+  el.innerHTML = "";
+  items.forEach(([name, val]) => {
+    const row = document.createElement("div");
+    row.className = "row " + signClass;
+    row.innerHTML = `<div class="name" title="${name}">${name}</div>
+                     <div class="val">${SIGN(val)}</div>`;
+    el.appendChild(row);
+  });
+}
+
+// ── Heatmap ─────────────────────────────────────────────────────────────
+function heatColor(v, maxAbs){
+  if (v == null || maxAbs <= 0) return "transparent";
+  const ratio = Math.max(-1, Math.min(1, v / maxAbs));
+  if (ratio >= 0){
+    const a = 0.10 + 0.55 * ratio;
+    return `rgba(52,211,153,${a})`;
+  }
+  const a = 0.10 + 0.55 * (-ratio);
+  return `rgba(248,113,113,${a})`;
+}
+function renderHeatmap(periods, sectors, matrix){
+  const wrap = $("heatmapWrap");
+  const years = (state.heatmapYear === "all") ? ALL_YEARS : ALL_YEARS.filter(y => y === Number(state.heatmapYear));
+  const summ = {}; sectors.forEach(s => summ[s] = sectorSummary(s));
+  // separate colour scales: period cells vs the (larger) cumulative cells
+  let pMax = 0; sectors.forEach(s => periods.forEach(p => { const v = matrix[s][p]; if (v != null && Math.abs(v) > pMax) pMax = Math.abs(v); }));
+  let sMax = 0; sectors.forEach(s => { CUM_WINDOWS.forEach(D => { const v = summ[s].d[D]; if (Math.abs(v) > sMax) sMax = Math.abs(v); }); years.forEach(y => { const v = summ[s].y[y]; if (Math.abs(v) > sMax) sMax = Math.abs(v); }); });
+  const periodsDesc = [...periods].reverse();          // latest fortnight first (left)
+
+  let html = '<table class="heatmap"><thead><tr><th class="sector">Sector</th>';
+  CUM_WINDOWS.forEach(D => html += `<th class="sumcol">${D}D</th>`);
+  years.forEach((y,i) => html += `<th class="sumcol yr${i===years.length-1?' divend':''}">${y}</th>`);
+  periodsDesc.forEach(p => html += `<th>${periodLabel(p, state.mode)}</th>`);
+  html += "</tr></thead><tbody>";
+  sectors.forEach(s => {
+    html += `<tr><td class="sector" title="${s}">${s}</td>`;
+    CUM_WINDOWS.forEach(D => { const v = summ[s].d[D]; html += `<td class="sumcol" style="background:${heatColor(v,sMax)}">${v?NF.format(Math.round(v)):""}</td>`; });
+    years.forEach((y,i) => { const v = summ[s].y[y]; html += `<td class="sumcol yr${i===years.length-1?' divend':''}" style="background:${heatColor(v,sMax)}">${v?NF.format(Math.round(v)):""}</td>`; });
+    periodsDesc.forEach(p => { const v = matrix[s][p]; html += `<td style="background:${heatColor(v,pMax)}">${v==null?"":NF.format(Math.round(v))}</td>`; });
+    html += "</tr>";
+  });
+  const tw = {}; CUM_WINDOWS.forEach(D => tw[D] = sectors.reduce((a,s)=>a+summ[s].d[D],0));
+  const ty = {}; years.forEach(y => ty[y] = sectors.reduce((a,s)=>a+summ[s].y[y],0));
+  html += '</tbody><tfoot><tr><td class="sector">TOTAL</td>';
+  CUM_WINDOWS.forEach(D => html += `<td class="sumcol" style="color:${tw[D]>=0?'var(--pos)':'var(--neg)'}">${SIGN(tw[D])}</td>`);
+  years.forEach((y,i) => html += `<td class="sumcol yr${i===years.length-1?' divend':''}" style="color:${ty[y]>=0?'var(--pos)':'var(--neg)'}">${SIGN(ty[y])}</td>`);
+  periodsDesc.forEach(p => { const t = sectors.reduce((a,s)=>a+(matrix[s][p]??0),0); html += `<td style="color:${t>=0?'var(--pos)':'var(--neg)'}">${SIGN(t)}</td>`; });
+  html += "</tr></tfoot></table>";
+  wrap.innerHTML = html;
+}
+
+// ── KPI box ─────────────────────────────────────────────────────────────
+function renderKpis(latestKey, prevKey, sectorTotalsLatest, totalLatest, totalPrev){
+  $("kpiTotal").textContent = SIGN(totalLatest) + " Cr";
+  $("kpiTotal").style.color = totalLatest >= 0 ? "var(--pos)" : "var(--neg)";
+  const delta = totalPrev == null ? null : totalLatest - totalPrev;
+  const deltaTxt = delta == null ? "" :
+    `<span class="delta ${delta>=0?'pos':'neg'}">${SIGN(delta)} vs prior</span>`;
+  $("kpiTotalSub").innerHTML = (periodLabel(latestKey, state.mode) || "—") + " " + deltaTxt;
+
+  const sortedSectors = [...sectorTotalsLatest.entries()].sort((a,b) => b[1]-a[1]);
+  if (sortedSectors.length){
+    const [topIn, topInV] = sortedSectors[0];
+    const [topOut, topOutV] = sortedSectors[sortedSectors.length-1];
+    $("kpiTopIn").textContent = topIn;
+    $("kpiTopIn").style.color = "var(--pos)";
+    $("kpiTopInSub").textContent = SIGN(topInV) + " Cr";
+    $("kpiTopOut").textContent = topOut;
+    $("kpiTopOut").style.color = "var(--neg)";
+    $("kpiTopOutSub").textContent = SIGN(topOutV) + " Cr";
+  }
+  const breadthIn = [...sectorTotalsLatest.values()].filter(v => v > 0).length;
+  $("kpiBreadth").textContent = breadthIn + "/" + sectorTotalsLatest.size;
+  const pct = sectorTotalsLatest.size ? Math.round(100*breadthIn/sectorTotalsLatest.size) : 0;
+  $("kpiBreadthSub").textContent = pct + "% of tracked sectors net positive";
+}
+
+// ── Render ──────────────────────────────────────────────────────────────
+function render(){
+  const {map, periods} = aggregate(state.mode, state.sectorFilter);
+
+  // Range cap
+  const rangedPeriods = state.rangeN === Infinity ? periods : periods.slice(-state.rangeN);
+  $("rangePill").textContent = rangedPeriods.length + " " + (state.mode === "fortnight" ? "fortnights" :
+                               state.mode === "month" ? "months" : state.mode === "quarter" ? "quarters" : "years");
+
+  // Sector matrix and per-period totals
+  const sectorsList = (state.sectorFilter.length ? state.sectorFilter : SECTORS);
+  const matrix = {};
+  sectorsList.forEach(s => matrix[s] = {});
+  rangedPeriods.forEach(p => {
+    const inner = map.get(p) || new Map();
+    sectorsList.forEach(s => matrix[s][p] = inner.get(s) ?? null);
+  });
+  const totals = rangedPeriods.map(p => {
+    const inner = map.get(p) || new Map();
+    let t = 0; sectorsList.forEach(s => t += (inner.get(s) ?? 0));
+    return t;
+  });
+
+  // KPIs use latest fortnight regardless of agg mode for "latest" period
+  const latestKey = rangedPeriods[rangedPeriods.length-1];
+  const prevKey   = rangedPeriods[rangedPeriods.length-2];
+  const innerLatest = map.get(latestKey) || new Map();
+  const innerPrev   = map.get(prevKey)   || new Map();
+  const sectorTotalsLatest = new Map();
+  sectorsList.forEach(s => sectorTotalsLatest.set(s, innerLatest.get(s) ?? 0));
+  const totalLatest = [...sectorTotalsLatest.values()].reduce((a,b) => a+b, 0);
+  const totalPrev   = prevKey != null
+    ? sectorsList.reduce((a,s) => a + (innerPrev.get(s) ?? 0), 0)
+    : null;
+  renderKpis(latestKey, prevKey, sectorTotalsLatest, totalLatest, totalPrev);
+
+  // Total flow chart + cumulative
+  renderTotalFlowChart(rangedPeriods, totals);
+  renderCumulativeChart(rangedPeriods, totals);
+
+  // Top sectors by absolute flow across the visible range
+  const sectorAbs = sectorsList.map(s => {
+    let abs = 0;
+    rangedPeriods.forEach(p => { abs += Math.abs(matrix[s][p] ?? 0); });
+    return [s, abs];
+  }).sort((a,b) => b[1]-a[1]);
+  const sectorsToShow = (state.topN === Infinity ? sectorAbs : sectorAbs.slice(0, state.topN))
+    .map(x => x[0]);
+  renderSectorTrendChart(rangedPeriods, matrix, sectorsToShow);
+
+  // Top movers + momentum
+  $("topMoversLabel").textContent = "(" + (periodLabel(latestKey, state.mode) || "latest") + ")";
+  const sortedLatest = [...sectorTotalsLatest.entries()].sort((a,b) => b[1]-a[1]);
+  renderLeader("topInflows",  sortedLatest.slice(0,8).filter(([,v]) => v > 0), "pos");
+  renderLeader("topOutflows", sortedLatest.slice(-8).reverse().filter(([,v]) => v < 0), "neg");
+
+  // Momentum: latest vs trailing-3 average
+  const momentum = sectorsList.map(s => {
+    const vals = rangedPeriods.slice(-4, -1).map(p => matrix[s][p] ?? 0);
+    const avg = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+    return [s, (matrix[s][latestKey] ?? 0) - avg];
+  }).sort((a,b) => b[1]-a[1]);
+  const momTop = momentum.slice(0,5).concat(momentum.slice(-5).reverse());
+  const momEl = $("momentum"); momEl.innerHTML = "";
+  momTop.forEach(([s, v]) => {
+    const row = document.createElement("div");
+    row.className = "row " + (v >= 0 ? "pos" : "neg");
+    row.innerHTML = `<div class="name" title="${s}">${s}</div><div class="val">${SIGN(v)}</div>`;
+    momEl.appendChild(row);
+  });
+
+  // Heatmap year dropdown — rebuild options from the periods currently in view
+  const yearsAvail = [...new Set(rangedPeriods.map(p => periodYear(p, state.mode)))]
+    .filter(y => Number.isFinite(y)).sort((a,b) => b-a);
+  const heatYearSel = $("heatmapYear");
+  const prevYear = state.heatmapYear;
+  heatYearSel.innerHTML = '<option value="all">All years</option>' +
+    yearsAvail.map(y => `<option value="${y}">${y}</option>`).join("");
+  // Preserve selection if still valid; otherwise fall back to All
+  if (prevYear === "all"){
+    heatYearSel.value = "all";                       // user explicitly chose All years
+  } else if (yearsAvail.includes(Number(prevYear))){
+    heatYearSel.value = String(prevYear);            // keep the selected (default = latest) year
+  } else if (yearsAvail.length){
+    const latest = Math.max(...yearsAvail);          // selected year vanished -> latest
+    heatYearSel.value = String(latest);
+    state.heatmapYear = String(latest);
+  } else {
+    heatYearSel.value = "all"; state.heatmapYear = "all";
+  }
+
+  // Filter periods for heatmap only (charts/leaderboards keep full range)
+  const heatPeriods = state.heatmapYear === "all"
+    ? rangedPeriods
+    : rangedPeriods.filter(p => periodYear(p, state.mode) === Number(state.heatmapYear));
+
+  // Heatmap with full sectors list (not just sectorsToShow) for completeness
+  renderHeatmap(heatPeriods, sectorsList, matrix);
+}
+
+render();
+
+})();
+</script>
+  </div>
+</div>
+</body>
+</html>

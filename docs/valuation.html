@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · Valuation</title>
+<style>
+  :root{--bg:#0c111d;--panel:#141b2d;--panel2:#1b2438;--line:#243049;--text:#e6edf7;
+    --muted:#8b9bb4;--teal:#2dd4bf;--teal2:#5eead4;--green:#34d399;--red:#f87171;--amber:#fbbf24;--chip:#0f1726;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .logo{font-size:20px;font-weight:800;color:var(--teal)}.logo small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  nav{display:flex;gap:18px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+  nav a,nav span{font-size:13px;color:var(--muted)}nav .active{color:var(--teal);font-weight:700}
+  .wrap{display:flex;gap:16px;padding:16px;align-items:flex-start;flex-wrap:wrap}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .inputs{width:300px;flex:0 0 300px}
+  .inputs h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .fld{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:7px 0}
+  .fld label{font-size:12px;color:var(--muted)}
+  .fld input{width:110px;background:var(--chip);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 8px;font-size:13px;text-align:right}
+  main{flex:1;min-width:340px}
+  .res{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .stat{flex:1;min-width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .stat .v{font-size:22px;font-weight:800;margin-top:3px}
+  .stat .v.teal{color:var(--teal)} .pos{color:var(--green)} .neg{color:var(--red)}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap;margin-top:6px}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;color:var(--muted)}
+  thead th{background:var(--panel2);color:var(--muted);font-size:11px;text-transform:uppercase}
+  h2{font-size:15px;margin:18px 0 6px}
+  .hint{font-size:11px;color:var(--muted);margin-top:8px}
+  .buy td.bp{color:var(--teal);font-weight:700}
+
+  /* ---------- shared left nav rail ---------- */
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+          <div class="grpL">Tools</div>
+      <a class="nav-i active" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+          <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+  <div class="content">
+
+<header><div class="ptitle">Valuation — fair value &amp; buy price</div></header>
+<div class="wrap">
+  <aside class="card inputs">
+    <h3>Inputs (edit)</h3>
+    <div class="fld"><label>Base Sales (₹ Cr)</label><input id="sales" type="number" value="5632"></div>
+    <div class="fld"><label>Sales growth % / yr</label><input id="growth" type="number" value="20"></div>
+    <div class="fld"><label>OPM %</label><input id="opm" type="number" value="20"></div>
+    <div class="fld"><label>Other income (₹ Cr)</label><input id="oi" type="number" value="40"></div>
+    <div class="fld"><label>Interest (₹ Cr)</label><input id="int" type="number" value="17"></div>
+    <div class="fld"><label>Depreciation (₹ Cr)</label><input id="dep" type="number" value="228"></div>
+    <div class="fld"><label>Tax %</label><input id="tax" type="number" value="23"></div>
+    <div class="fld"><label>Exit PE</label><input id="pe" type="number" value="40"></div>
+    <div class="fld"><label>Shares (Cr)</label><input id="sh" type="number" value="27.4"></div>
+    <div class="fld"><label>Current price (₹)</label><input id="cmp" type="number" value="995"></div>
+    <div class="fld"><label>Years</label><input id="yrs" type="number" value="3"></div>
+    <div class="hint">Project forward N years, value on exit PE, then back-solve the buy price for each target CAGR (your sheet's method).</div>
+  </aside>
+
+  <main>
+    <div class="res">
+      <div class="stat"><div class="l">Fair price (Year N)</div><div class="v teal" id="rFair">–</div></div>
+      <div class="stat"><div class="l">Expected CAGR from CMP</div><div class="v" id="rCagr">–</div></div>
+      <div class="stat"><div class="l">Year-N Net Profit (₹ Cr)</div><div class="v" id="rNp">–</div></div>
+      <div class="stat"><div class="l">Year-N EPS (₹)</div><div class="v" id="rEps">–</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Forward projection</h2>
+      <div style="overflow:auto"><table id="proj"><thead></thead><tbody></tbody></table></div>
+
+      <h2>Buying price for a target CAGR</h2>
+      <div style="overflow:auto"><table id="buy" class="buy">
+        <thead><tr><th>Target CAGR</th><th>Buy at or below (₹)</th><th>vs CMP</th></tr></thead>
+        <tbody></tbody></table></div>
+      <div class="hint" id="note"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const f=id=>document.getElementById(id);
+const N=v=>Number(v)||0;
+const inr=v=>v==null?'–':Number(v).toLocaleString('en-IN',{maximumFractionDigits:2});
+const TARGETS=[12,15,18,20,23,25];
+
+function calc(){
+  const sales0=N(f('sales').value), g=N(f('growth').value)/100, opm=N(f('opm').value)/100,
+    oi=N(f('oi').value), interest=N(f('int').value), dep=N(f('dep').value), tax=N(f('tax').value)/100,
+    pe=N(f('pe').value), sh=N(f('sh').value), cmp=N(f('cmp').value), yrs=Math.max(1,Math.round(N(f('yrs').value)));
+  const cols=[], rows={Sales:[],"Op Profit":[],"Other income":[],Interest:[],Depreciation:[],PBT:[],"Net Profit":[],EPS:[],"Market Cap":[],Price:[]};
+  let sales=sales0;
+  for(let t=1;t<=yrs;t++){
+    sales = t===1 ? sales0*(1+g) : sales*(1+g);
+    const op=sales*opm, pbt=op+oi-interest-dep, np=pbt*(1-tax), eps=sh?np/sh:0, mc=np*pe, price=sh?mc/sh:0;
+    cols.push("Y"+t);
+    rows["Sales"].push(sales); rows["Op Profit"].push(op); rows["Other income"].push(oi);
+    rows["Interest"].push(interest); rows["Depreciation"].push(dep); rows["PBT"].push(pbt);
+    rows["Net Profit"].push(np); rows["EPS"].push(eps); rows["Market Cap"].push(mc); rows["Price"].push(price);
+  }
+  const fair=rows["Price"][yrs-1];
+  const cagr=(cmp>0&&fair>0)?(Math.pow(fair/cmp,1/yrs)-1)*100:null;
+  f('rFair').textContent='₹'+inr(fair);
+  f('rCagr').textContent=cagr==null?'–':cagr.toFixed(1)+'%';
+  f('rCagr').className='v '+(cagr>=15?'pos':(cagr<0?'neg':''));
+  f('rNp').textContent=inr(rows["Net Profit"][yrs-1]);
+  f('rEps').textContent=inr(rows["EPS"][yrs-1]);
+
+  f('proj').querySelector('thead').innerHTML='<tr><th>Line (₹ Cr)</th>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
+  f('proj').querySelector('tbody').innerHTML=Object.keys(rows).map(k=>
+    `<tr><td>${k}</td>`+rows[k].map(v=>`<td>${inr(v)}</td>`).join('')+'</tr>').join('');
+
+  f('buy').querySelector('tbody').innerHTML=TARGETS.map(tc=>{
+    const bp=fair/Math.pow(1+tc/100,yrs);
+    const diff=cmp>0?((bp-cmp)/cmp*100):null;
+    const cls=diff>=0?'pos':'neg';
+    return `<tr><td>${tc}%</td><td class="bp">₹${inr(bp)}</td><td class="${cls}">${diff==null?'–':(diff>0?'+':'')+diff.toFixed(1)+'%'}</td></tr>`;
+  }).join('');
+  f('note').textContent = cmp>0
+    ? `At CMP ₹${inr(cmp)}, projected ${yrs}-yr return is ${cagr==null?'–':cagr.toFixed(1)+'%'}. Green buy-prices are at/above CMP (CMP already qualifies for that CAGR); red means you'd need a lower entry.`
+    : 'Enter a current price to compare against CMP.';
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+calc();
+</script>
+  </div>
+</div>
+</body>
+</html>

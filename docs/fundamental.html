@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · Fundamental Screener</title>
+<script src="vendor/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --line:#243049;
+    --text:#e6edf7; --muted:#8b9bb4; --teal:#2dd4bf; --teal2:#5eead4;
+    --green:#34d399; --red:#f87171; --amber:#fbbf24; --purple:#a78bfa; --chip:#0f1726;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;
+         border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{margin:0;font-size:18px}
+  header .sub{color:var(--muted);font-size:12px}
+  .wrap{padding:18px 22px}
+  .searchbox{position:relative;max-width:560px}
+  .searchbox input{width:100%;background:var(--chip);border:1px solid var(--line);color:var(--text);
+        border-radius:10px;padding:13px 14px;font-size:15px}
+  .searchbox input:focus{outline:none;border-color:var(--teal)}
+  .ac{position:absolute;left:0;right:0;top:52px;background:var(--panel2);border:1px solid var(--line);
+      border-radius:10px;overflow:hidden;z-index:20;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+  .ac div{padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--line)}
+  .ac div:last-child{border-bottom:none}
+  .ac div:hover,.ac div.hi{background:rgba(45,212,191,.12)}
+  .ac .c{color:var(--muted);font-size:11px;float:right}
+  .hint{color:var(--muted);font-size:12px;margin:8px 2px 0}
+  #out{margin-top:22px}
+  .stitle{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .stitle h2{margin:0;font-size:24px}
+  .stitle .px{font-size:20px;font-weight:800;color:var(--teal)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .card .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .card .v{font-size:17px;font-weight:700;margin-top:3px}
+  .sec{margin:24px 0}
+  .sec h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);
+          border-bottom:1px solid var(--line);padding-bottom:6px;margin:0 0 12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .panel .ph{font-size:14px;font-weight:700;margin:0 0 4px}
+  .panel .psub{font-size:11px;color:var(--muted);margin:0 0 12px}
+  .gturn{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .tablebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap}
+  th,td{padding:8px 11px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{background:var(--panel2);color:var(--muted);font-size:11px;
+           text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:none}
+  .pos{color:var(--green)}.neg{color:var(--red)}.na{color:var(--muted)}
+  details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  details>summary{cursor:pointer;padding:11px 14px;font-weight:700;font-size:13px;list-style:none;
+        display:flex;justify-content:space-between;align-items:center}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::after{content:"▸";color:var(--muted)}
+  details[open]>summary::after{content:"▾"}
+  details .tablebox{border:none;border-top:1px solid var(--line);border-radius:0}
+  .trend{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px}
+  .tchip{background:var(--chip);border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+  .tchip .m{font-size:12px;color:var(--text);font-weight:600}
+  .tchip .s{font-size:12px;margin-top:2px}
+  .tchip .s .ct{color:var(--muted);font-size:11px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px}
+  .pill.up{background:rgba(52,211,153,.15);color:var(--green)}
+  .pill.dn{background:rgba(248,113,113,.15);color:var(--red)}
+  .pill.mid{background:rgba(251,191,36,.15);color:var(--amber)}
+  .banner{border-radius:10px;padding:12px 14px;font-size:13px}
+  .banner.g{background:rgba(52,211,153,.10);border:1px solid rgba(52,211,153,.3)}
+  .banner.r{background:rgba(248,113,113,.10);border:1px solid rgba(248,113,113,.3)}
+  .banner.n{background:var(--chip);border:1px solid var(--line)}
+  .banner .bt{font-weight:800}
+  .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;height:300px}
+  .yrs{display:flex;flex-wrap:wrap;gap:7px}
+  .yb{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 9px;text-align:center;min-width:70px}
+  .yb .y{font-size:11px;color:var(--muted)}.yb .r{font-size:13px;font-weight:700;margin-top:1px}
+  .risk{display:flex;flex-wrap:wrap;gap:8px}
+  .rc{background:var(--chip);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:12px}
+  .rc b{color:var(--text)}
+  .heat td,.heat th{text-align:center;padding:5px 6px;font-size:11px;border:1px solid var(--bg)}
+  .heat td:first-child{text-align:left;font-weight:600}
+  .leg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;font-size:10px;color:var(--muted)}
+  .leg span{padding:2px 7px;border-radius:4px;color:#08110c}
+  .pc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pc ul{margin:6px 0 0;padding-left:18px}.pc li{margin:4px 0;font-size:13px}
+  .pc .pros h3{color:var(--green)}.pc .cons h3{color:var(--red)}
+  .empty{padding:48px;text-align:center;color:var(--muted)}
+  .chip{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:6px}
+  .chip.pos{background:rgba(52,211,153,.15);color:var(--green)}.chip.neg{background:rgba(248,113,113,.15);color:var(--red)}
+  .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);
+        border-top-color:var(--teal);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  @media(max-width:900px){.two,.pc{grid-template-columns:1fr}}
+  .verdict{border-radius:14px;padding:16px 18px;border:1px solid var(--line);background:var(--panel)}
+  .verdict.BUY{border-color:rgba(52,211,153,.5)}
+  .verdict.SELL{border-color:rgba(248,113,113,.5)}
+  .verdict.NEUTRAL{border-color:rgba(251,191,36,.5)}
+  .vhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .vlabel{font-size:24px;font-weight:800;letter-spacing:.02em;border-radius:10px;padding:6px 16px}
+  .vlabel.BUY{background:rgba(52,211,153,.16);color:var(--green)}
+  .vlabel.SELL{background:rgba(248,113,113,.16);color:var(--red)}
+  .vlabel.NEUTRAL{background:rgba(251,191,36,.16);color:var(--amber)}
+  .vmeta{font-size:12px;color:var(--muted)}.vmeta b{color:var(--text);font-size:15px}
+  .bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+  .bar .bt{height:8px;background:var(--chip);border-radius:6px;overflow:hidden}
+  .bar .bf{height:100%;border-radius:6px}
+  .vreasons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  .vreasons ul{margin:4px 0 0;padding-left:18px}.vreasons li{font-size:12.5px;margin:3px 0}
+  .vdis{font-size:11px;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+  .biascheck{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .bchead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .bctitle{font-size:13px;font-weight:700;letter-spacing:.03em}
+  .bcrisk{font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:2px 9px;border-radius:999px;border:1px solid}
+  .bcrisk.ELEVATED{color:var(--red);border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.08)}
+  .bcrisk.MODERATE{color:var(--amber);border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.08)}
+  .bcrisk.LOW{color:var(--green);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.08)}
+  .bcprin{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:10px}
+  .bcflags{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .bcflag{border:1px solid var(--line);border-left-width:3px;border-radius:8px;padding:8px 11px;background:var(--panel2)}
+  .bcflag.warn{border-left-color:var(--red)}.bcflag.caution{border-left-color:var(--amber)}
+  .bcflag.ok{border-left-color:var(--green)}.bcflag.info{border-left-color:var(--muted)}
+  .bcf-h{font-size:12.5px;font-weight:600;display:flex;gap:7px;align-items:center}
+  .bcf-h .dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px;margin-top:1px}
+  .bcflag.warn .dot{background:var(--red)}.bcflag.caution .dot{background:var(--amber)}
+  .bcflag.ok .dot{background:var(--green)}.bcflag.info .dot{background:var(--muted)}
+  .bcf-n{font-size:12px;color:var(--text);margin-top:4px;line-height:1.5}
+  .bcf-l{font-size:11px;color:var(--muted);margin-top:5px;padding-left:9px;border-left:2px solid var(--line)}
+  @media(max-width:760px){.vreasons{grid-template-columns:1fr}}
+  .instoggle{display:flex;gap:6px;margin:2px 0 10px}
+  .insbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer}
+  .insbtn.on{color:var(--teal);border-color:var(--teal);background:var(--panel)}
+  #insY td:first-child,#insQ td:first-child{text-align:left}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+    <div class="grpL">Screens</div>
+    <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+    <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+    <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+    <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+    <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+    <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+    <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+    <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+        <div class="grpL">Tools</div>
+    <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+    <a class="nav-i active" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+        <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+
+  <div class="content">
+    <header>
+      <div><h1>🔎 Fundamental Screener</h1>
+      <div class="sub">Live company lookup — type a company name or BSE code. Full auto-analysis.</div></div>
+    </header>
+
+    <div class="wrap">
+      <div class="searchbox">
+        <input id="q" type="text" autocomplete="off" spellcheck="false"
+               placeholder="e.g.  Oberoi Realty   or   500325   or   RELIANCE" />
+        <div id="ac" class="ac" style="display:none"></div>
+      </div>
+      <div class="hint" id="hint">Searches Screener live. Works when launched through <b>scanX.bat</b> (local API).</div>
+
+      <div id="out"><div class="empty">Search a company to load full fundamentals, statements, auto-DCF, trends, charts, returns &amp; risk.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const f=id=>document.getElementById(id);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+const screenerUrl=c=>'https://www.screener.in/company/'+encodeURIComponent(c)+'/';
+const charts={};
+function toNum(s){ if(s==null) return null;
+  const m=String(s).replace(/,/g,'').match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
+function growthChip(cur,prev){ const a=toNum(cur),b=toNum(prev);
+  if(a==null||b==null||b===0) return '';
+  const g=((a-b)/Math.abs(b))*100; return `<span class="chip ${g>=0?'pos':'neg'}">${g>=0?'+':''}${g.toFixed(1)}%</span>`; }
+function pctTxt(v){ if(v==null) return '<span class="na">—</span>';
+  return `<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(2)}%</span>`; }
+
+/* ---------------- autocomplete ---------------- */
+let acItems=[], acHi=-1, t=null;
+f('q').addEventListener('input',()=>{ clearTimeout(t); const v=f('q').value.trim();
+  if(v.length<2){ f('ac').style.display='none'; return; } t=setTimeout(()=>doSearch(v),220); });
+f('q').addEventListener('keydown',e=>{
+  if(f('ac').style.display==='none'){ if(e.key==='Enter'&&f('q').value.trim())doSearch(f('q').value.trim(),true); return; }
+  if(e.key==='ArrowDown'){acHi=Math.min(acHi+1,acItems.length-1);paintAc();e.preventDefault();}
+  else if(e.key==='ArrowUp'){acHi=Math.max(acHi-1,0);paintAc();e.preventDefault();}
+  else if(e.key==='Enter'){ if(acHi>=0&&acItems[acHi]) pick(acItems[acHi]); e.preventDefault(); }
+  else if(e.key==='Escape'){ f('ac').style.display='none'; } });
+document.addEventListener('click',e=>{ if(!e.target.closest('.searchbox')) f('ac').style.display='none'; });
+async function doSearch(q,autopick){
+  try{ const r=await fetch('/api/search?q='+encodeURIComponent(q)); if(!r.ok) throw 0;
+    acItems=await r.json(); acHi=acItems.length?0:-1;
+    if(autopick&&acItems.length){ pick(acItems[0]); return; } paintAc();
+  }catch(e){
+    // GitHub-Pages mode: no local API — search the static all-market index instead
+    const st=await staticSearch(q);
+    if(st.length){ acItems=st; acHi=0;
+      if(autopick){ pick(st[0]); return; } paintAc();
+      f('hint').style.display=''; f('hint').innerHTML='🔎 Static search (GitHub mode) — deep data loads for the pre-built set; the full live universe needs <b>scanX.bat</b>.';
+    } else { f('ac').style.display='none';
+      f('hint').innerHTML='⚠️ No match in the static index — the full live lookup needs <b>scanX.bat</b> (provides <code>/api/search</code>).'; } } }
+let STATIC_IDX=null;
+async function staticSearch(q){
+  try{
+    if(!STATIC_IDX){
+      const d=await (await fetch('data/magicformula.json')).json();
+      STATIC_IDX=(d.rows||[]).map(r=>({name:String(r.name),code:String(r.code)}));
+    }
+    const s=q.toLowerCase();
+    const pre=STATIC_IDX.filter(it=>it.name.toLowerCase().startsWith(s)||it.code.toLowerCase().startsWith(s));
+    const inc=STATIC_IDX.filter(it=>!pre.includes(it)&&(it.name.toLowerCase().includes(s)||it.code.toLowerCase().includes(s)));
+    return pre.concat(inc).slice(0,8);
+  }catch(e){ return []; }
+}
+function paintAc(){ if(!acItems.length){ f('ac').style.display='none'; return; }
+  f('ac').innerHTML=acItems.map((it,i)=>`<div data-i="${i}" class="${i===acHi?'hi':''}">${esc(it.name)}<span class="c">${esc(it.code)}</span></div>`).join('');
+  f('ac').style.display=''; f('ac').querySelectorAll('div').forEach(d=>d.onclick=()=>pick(acItems[+d.dataset.i])); }
+function pick(it){ f('q').value=it.name; f('ac').style.display='none'; load(it.code); }
+
+/* ---------------- load ---------------- */
+async function load(code){
+  Object.values(charts).forEach(c=>{try{c.destroy()}catch(e){}});
+  f('out').innerHTML='<div class="empty"><span class="spin"></span> &nbsp;Loading '+esc(code)+' …</div>';
+  let d=null, bundle=null, slow=false;
+  try{                                   // live lookup with a 7s cap so a slow/unreachable Screener falls back fast
+    const ctrl=new AbortController(); const to=setTimeout(()=>{slow=true;ctrl.abort();},7000);
+    const r=await fetch('/api/fundamental?code='+encodeURIComponent(code),{signal:ctrl.signal});
+    clearTimeout(to);
+    if(r.ok){ const j=await r.json(); if(j&&j.error){ slow=/timed out|Max retries|ConnectTimeout/i.test(String(j.error)); } else if(j){ d=j; } }
+  }catch(e){ if(e&&e.name==='AbortError') slow=true; }
+  if(!d){   // static fallback (GitHub Pages / Screener slow): pre-baked bundle for top board stocks
+    try{ const r=await fetch('data/fundamental/'+encodeURIComponent(code)+'.json'); if(r.ok) bundle=await r.json(); }catch(e){}
+    if(bundle && bundle.fundamental) d=bundle.fundamental;
+  }
+  if(!d){
+    f('out').innerHTML='<div class="empty">'+(slow
+      ? '⏱️ Screener is slow / unreachable right now — the live lookup timed out. The boards still show the last good crawl; try this stock again in a moment.'
+      : 'ℹ️ <b>'+esc(code)+'</b> isn’t in the offline set yet. Launch the terminal with <b>scanX.bat</b> to view it live in scanX — or it appears here automatically once the full bake completes.')+'</div>';
+    return;
+  }
+  render(d);
+  loadSignal(code, bundle && bundle.signal);
+  loadPrices(code, bundle && bundle.prices);
+}
+
+/* ---------------- statement table ---------------- */
+function latestCls(cells, idx){            // colour the latest (leftmost) cell vs prior period
+  if(idx.length<2) return '';
+  const a=toNum(cells[idx[0]]), b=toNum(cells[idx[1]]);
+  if(a==null||b==null||a===b) return '';
+  return a>b ? 'pos' : 'neg';
+}
+function stmtTable(stmt, opts){
+  opts=opts||{}; const H=stmt.headers||[], R=stmt.rows||{};
+  if(!H.length||!Object.keys(R).length) return '<div class="empty">No data.</div>';
+  const idx=H.map((_,i)=>i).reverse();      // newest first => latest at left, then descending
+  const head=idx.map(i=>`<th>${esc(H[i])}</th>`).join('');
+  const rows=Object.keys(R).map(k=>{
+    const cells=R[k]; const lc=latestCls(cells, idx);
+    const tds=idx.map((i,pos)=>`<td class="${pos===0?lc:''}">${esc(cells[i])}</td>`).join('');
+    return `<tr><td>${esc(k)}</td>${tds}</tr>`;
+  }).join('');
+  return `<div class="tablebox"><table><thead><tr><th>${esc(opts.first||'')}</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+/* ---------------- DCF ---------------- */
+function dcfSection(a){
+  const d=a.dcf; if(!d||!d.ok) return '';
+  const inp=d.inputs, rev=d.reverse||{};
+  const mos=d.margin_of_safety;
+  const dcfTbl=`<details><summary>DCF projection — 10-year (auto inputs: g ${inp.growth}%, discount ${inp.discount}%, terminal × ${inp.terminal_multiple})</summary>
+    <div class="tablebox"><table><thead><tr><th>Year</th><th>Earnings (₹Cr)</th><th>Growth</th><th>Present value</th></tr></thead>
+    <tbody>${d.dcf.rows.map(r=>`<tr><td>${r.year}</td><td>${r.earnings.toLocaleString('en-IN')}</td><td class="pos">${r.growth}%</td><td>${r.pv.toLocaleString('en-IN')}</td></tr>`).join('')}</tbody></table></div></details>`;
+  return `<div class="sec"><h3>Valuation — auto DCF &amp; Reverse DCF</h3>
+    <div class="cards" style="margin-bottom:12px">
+      <div class="card"><div class="l">Intrinsic value / share</div><div class="v">${d.intrinsic_per_share!=null?'₹'+d.intrinsic_per_share.toLocaleString('en-IN'):'—'}</div></div>
+      <div class="card"><div class="l">Current price</div><div class="v">${d.current_price!=null?'₹'+d.current_price.toLocaleString('en-IN'):'—'}</div></div>
+      <div class="card"><div class="l">Margin of safety</div><div class="v" style="color:${mos>0?'var(--green)':'var(--red)'}">${mos!=null?mos+'%':'—'}</div></div>
+      <div class="card"><div class="l">Reverse DCF — implied growth</div><div class="v">${rev.implied_growth!=null?rev.implied_growth+'%':'—'}</div></div>
+      <div class="card"><div class="l">Base earnings (FY)</div><div class="v">₹${(inp.earnings||0).toLocaleString('en-IN')} Cr</div></div>
+      <div class="card"><div class="l">Profit CAGR used</div><div class="v">${inp.growth}%</div></div>
+    </div>${dcfTbl}
+    <div class="hint">Implied growth is the earnings CAGR the current price already bakes in. If your expected growth (${inp.growth}%) exceeds it (${rev.implied_growth!=null?rev.implied_growth+'%':'—'}), the market is pricing in less than the company's track record.</div></div>`;
+}
+
+/* ---------------- trend chips ---------------- */
+function trendChip(name,tr){
+  if(!tr) return '';
+  const lab=tr.label, cls=lab==='Increasing'?'up':(lab==='Decreasing'?'dn':'mid');
+  const arr=lab==='Increasing'?'↑':(lab==='Decreasing'?'↓':'↔');
+  return `<div class="tchip"><div class="m">${esc(name)}</div><div class="s"><span class="pill ${cls}">${arr} ${lab}</span> <span class="ct">${tr.n} ${tr.unit}</span></div></div>`;
+}
+function trendsSection(a){
+  const tr=a.trends||{}; const y=tr.yearly||{}, q=tr.quarterly||{}, cyc=a.cyclical||{};
+  const yChips=Object.keys(y).map(k=>trendChip(k,y[k])).join('');
+  const qChips=Object.keys(q).map(k=>trendChip(k,q[k])).join('');
+  const pos=(cyc.positive_quarters||[]).map(m=>`<span class="pill up">${esc(m)}</span>`).join(' ')||'<span class="na">—</span>';
+  const neg=(cyc.negative_quarters||[]).map(m=>`<span class="pill dn">${esc(m)}</span>`).join(' ')||'<span class="na">—</span>';
+  return `<div class="sec"><h3>Trend &amp; cyclical analysis</h3><div class="two">
+    <div class="panel"><p class="ph">Trend analysis</p><p class="psub">Consistency in key metrics over time</p>
+      <p class="psub" style="margin:8px 0 6px;color:var(--text)">Quarterly</p><div class="trend">${qChips||'<span class="na">—</span>'}</div>
+      <p class="psub" style="margin:14px 0 6px;color:var(--text)">Yearly</p><div class="trend">${yChips||'<span class="na">—</span>'}</div></div>
+    <div class="panel"><p class="ph">Cyclical analysis</p><p class="psub">Recurring quarterly performance patterns</p>
+      <span class="pill ${cyc.label==='CYCLICAL'?'mid':'up'}">${esc(cyc.label||'—')}</span>
+      <p class="psub" style="margin:14px 0 6px;color:var(--text)">Historically strong quarters</p><div>${pos}</div>
+      <p class="psub" style="margin:12px 0 6px;color:var(--text)">Historically weak quarters</p><div>${neg}</div></div>
+  </div></div>`;
+}
+function insightSection(a){
+  const g=a.growth_insight||{}, mf=a.money_flow||{};
+  const mfCls=mf.label&&mf.label.indexOf('POSITIVE')>=0?'g':(mf.label&&mf.label.indexOf('NEGATIVE')>=0?'r':'n');
+  return `<div class="sec"><h3>Growth &amp; money flow</h3><div class="two">
+    <div class="panel"><p class="ph">Growth analysis</p><p class="psub">Price vs fundamentals</p>
+      <span class="pill ${g.label==='FUNDAMENTALS-LED'?'up':'mid'}">${esc(g.label||'—')}</span>
+      <p style="font-size:13px;margin:12px 0 0"><b>Long-term:</b> ${esc(g.long||'—')}</p>
+      ${g.recent?`<p style="font-size:13px;margin:8px 0 0"><b>Recent:</b> ${esc(g.recent)}</p>`:''}</div>
+    <div class="panel"><p class="ph">Money flow</p><p class="psub">Institutional (FII + DII) activity</p>
+      <div class="banner ${mfCls}"><span class="bt">${esc(mf.label||'—')}</span>${mf.change!=null?`  ·  ${mf.change>0?'+':''}${mf.change}% holding change`:''}</div>
+      <p class="psub" style="margin-top:10px">${esc(mf.note||'')}</p></div>
+  </div></div>`;
+}
+
+/* ---------------- charts ---------------- */
+function perfChart(id,labels,sales,np,opm,eps){
+  const el=f(id); if(!el||typeof Chart==='undefined') return;
+  charts[id]=new Chart(el,{type:'line',
+    data:{labels,datasets:[
+      {label:'Sales',data:sales,borderColor:'#2dd4bf',backgroundColor:'#2dd4bf',yAxisID:'y',tension:.35,pointRadius:2},
+      {label:'Net Profit',data:np,borderColor:'#f87171',backgroundColor:'#f87171',yAxisID:'y',tension:.35,pointRadius:2},
+      {label:'OPM%',data:opm,borderColor:'#a78bfa',backgroundColor:'#a78bfa',yAxisID:'y1',tension:.35,pointRadius:2},
+      {label:'EPS',data:eps,borderColor:'#fbbf24',backgroundColor:'#fbbf24',yAxisID:'y1',tension:.35,pointRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#8b9bb4',boxWidth:12,font:{size:11}}}},
+      scales:{x:{ticks:{color:'#8b9bb4',font:{size:10}},grid:{color:'#1b2438'}},
+        y:{position:'left',ticks:{color:'#8b9bb4',font:{size:10}},grid:{color:'#1b2438'}},
+        y1:{position:'right',ticks:{color:'#8b9bb4',font:{size:10}},grid:{drawOnChartArea:false}}}}});
+}
+function chartsSection(d){
+  return `<div class="sec"><h3>Financial performance</h3><div class="two">
+    <div><p class="psub" style="text-align:center">Quarterly</p><div class="chartbox"><canvas id="cq"></canvas></div></div>
+    <div><p class="psub" style="text-align:center">Yearly</p><div class="chartbox"><canvas id="cy"></canvas></div></div>
+  </div></div>`;
+}
+function drawCharts(d){
+  const q=d.quarters||{}, R=q.rows||{};
+  perfChart('cq',q.headers||[],
+    (R.Sales||[]).map(toNum),(R['Net Profit']||[]).map(toNum),(R.OPM||[]).map(toNum),(R.EPS||[]).map(toNum));
+  const pl=d.profit_loss||{}, PR=pl.rows||{};
+  const gr=(pre)=>{for(const k in PR){if(k.toLowerCase().startsWith(pre))return PR[k].map(toNum);}return[];};
+  perfChart('cy',pl.headers||[],gr('sales'),gr('net profit'),gr('opm'),gr('eps'));
+}
+
+/* ---------------- render fundamentals ---------------- */
+
+
+function render(d){
+  const ov=d.overview||{}, gr=d.growth||{}, q=d.quarters||{};
+  const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
+  const keys=order.filter(k=>ov[k]!=null).concat(Object.keys(ov).filter(k=>!order.includes(k)));
+  const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}</div><div class="v">${esc(ov[k])}</div></div>`).join('');
+
+  const span=['10 Years','5 Years','3 Years','TTM','1 Year','Last Year'];
+  const gturn=Object.keys(gr).map(name=>{const v=gr[name];const cols=Object.keys(v).sort((a,b)=>span.indexOf(a)-span.indexOf(b));
+    return `<div class="tablebox"><table><thead><tr><th>${esc(name)}</th>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
+      <tbody><tr><td class="na">CAGR</td>${cols.map(c=>{const n=toNum(v[c]);return `<td class="${n==null?'':(n>=0?'pos':'neg')}">${esc(v[c])}</td>`;}).join('')}</tr></tbody></table></div>`;}).join('');
+
+  let quartTbl='<div class="empty">No quarterly data.</div>', latest='';
+  const H=q.headers||[], Rq=q.rows||{};
+  if(H.length&&Object.keys(Rq).length){
+    const ro=['Sales','OPM','Net Profit','EPS'];
+    const qidx=H.map((_,i)=>i).reverse();   // latest quarter at left, then descending
+    const body=ro.filter(k=>Rq[k]).map(k=>{const c=Rq[k];const n=c.length;
+      const qoq=k==='OPM'?'':growthChip(c[n-1],c[n-2]); const yoy=(k!=='OPM'&&n>=5)?growthChip(c[n-1],c[n-5]):'';
+      const lc=latestCls(c, qidx);
+      const tds=qidx.map((i,pos)=>`<td class="${pos===0?lc:''}">${esc(c[i])}</td>`).join('');
+      return `<tr><td>${k}${k!=='OPM'?` <span class="na" style="font-size:10px">QoQ${qoq} YoY${yoy}</span>`:''}</td>${tds}</tr>`;}).join('');
+    quartTbl=`<div class="tablebox"><table><thead><tr><th>Quarter</th>${qidx.map(i=>`<th>${esc(H[i])}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
+    const np=Rq['Net Profit']||[],ep=Rq['EPS']||[],sl=Rq['Sales']||[];
+    latest=`<div class="cards">
+      <div class="card"><div class="l">Latest Qtr (${esc(H[H.length-1]||'')})</div><div class="v">Sales ${esc(sl[sl.length-1]||'—')}</div></div>
+      <div class="card"><div class="l">Net Profit ${growthChip(np[np.length-1],np[np.length-2])}<span class="na"> QoQ</span></div><div class="v">${esc(np[np.length-1]||'—')}</div></div>
+      <div class="card"><div class="l">EPS ${growthChip(ep[ep.length-1],ep[ep.length-2])}<span class="na"> QoQ</span></div><div class="v">${esc(ep[ep.length-1]||'—')}</div></div>
+      <div class="card"><div class="l">Net Profit YoY</div><div class="v">${np.length>=5?(growthChip(np[np.length-1],np[np.length-5])||'—'):'—'}</div></div></div>`;
+  }
+
+  const stmts=`<div class="sec"><h3>Financial statements</h3>
+    <details open><summary>Profit &amp; Loss (₹ Cr)</summary>${stmtTable(d.profit_loss,{first:'',hot:true})}</details>
+    <details><summary>Balance Sheet (₹ Cr)</summary>${stmtTable(d.balance_sheet,{})}</details>
+    <details><summary>Cash Flow (₹ Cr)</summary>${stmtTable(d.cash_flow,{})}</details>
+    <details><summary>Ratios</summary>${stmtTable(d.ratios,{})}</details>
+    <details><summary>Shareholding pattern (%)</summary>${stmtTable(d.shareholding,{})}</details></div>`;
+
+  const pc=(d.pros&&d.pros.length)||(d.cons&&d.cons.length)?
+    `<div class="sec"><div class="pc">
+      <div class="pros"><h3>Pros</h3><ul>${(d.pros||[]).map(p=>`<li>${esc(p)}</li>`).join('')||'<li class="na">—</li>'}</ul></div>
+      <div class="cons"><h3>Cons</h3><ul>${(d.cons||[]).map(p=>`<li>${esc(p)}</li>`).join('')||'<li class="na">—</li>'}</ul></div></div></div>`:'';
+
+  f('out').innerHTML=`
+    <div class="stitle"><h2>${esc(d.name)}</h2><span class="px">${esc(ov['Current Price']||'')}</span></div>
+    <div id="verdict" class="sec"></div>
+    <div class="sec"><h3>Overview</h3><div class="cards">${cards}</div></div>
+    ${latest?`<div class="sec"><h3>Latest results</h3>${latest}</div>`:''}
+    ${d.analysis?dcfSection(d.analysis):''}
+    ${chartsSection(d)}
+    ${d.analysis?trendsSection(d.analysis):''}
+    ${d.analysis?insightSection(d.analysis):''}
+    <div class="sec"><h3>Quarterly results</h3>${quartTbl}</div>
+    ${stmts}
+    <div class="sec"><h3>Compounded growth</h3><div class="gturn">${gturn||'<span class="na">—</span>'}</div></div>
+    <div id="priceSec" class="sec"><h3>Returns &amp; risk</h3><div class="empty"><span class="spin"></span> &nbsp;Loading price history…</div></div>
+    ${pc}`;
+  f('hint').style.display='none';
+  drawCharts(d);
+}
+
+
+/* ---------------- price analytics ---------------- */
+function heatColor(v){ if(v==null) return ['transparent','#8b9bb4'];
+  if(v>10) return ['#15803d','#eafff3']; if(v>3) return ['#22c55e','#06210f'];
+  if(v>0) return ['#86efac','#06210f']; if(v>-3) return ['#fca5a5','#3a0b0b'];
+  if(v>-10) return ['#ef4444','#fff']; return ['#b91c1c','#fff']; }
+async function loadPrices(code, preD){
+  const sec=f('priceSec'); if(!sec) return;
+  let d=preD;
+  if(!d){ try{ d=await (await fetch('/api/prices?code='+encodeURIComponent(code))).json(); }catch(e){ d={ok:false}; } }
+  if(!d||!d.ok){ sec.innerHTML='<h3>Returns &amp; risk</h3><div class="hint">Price analytics need the local server (yfinance) — run via <b>scanX.bat</b>.</div>'; return; }
+  const r=d.risk||{};
+  const rc=[['Avg weekly',r.avg_weekly,'%'],['Weekly std',r.weekly_std,'%'],['Annualized vol',r.ann_vol,'%'],
+    ['Max drawdown',r.max_drawdown,'%'],['% positive weeks',r.pct_positive,'%'],['Sharpe',r.sharpe,''],['Sortino',r.sortino,'']]
+    .map(x=>`<div class="rc">${x[0]}: <b>${x[1]==null?'—':x[1]+x[2]}</b></div>`).join('');
+  const yb=(d.yearwise||[]).map(y=>`<div class="yb"><div class="y">${y.year}</div><div class="r ${y.ret>=0?'pos':'neg'}">${y.ret>=0?'▲':'▼'} ${y.ret==null?'—':y.ret+'%'}</div></div>`).join('');
+  const M=d.heatmap||{months:[],rows:[]};
+  const head=`<tr><th>Year</th>${M.months.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th></tr>`;
+  const hrows=(M.rows||[]).slice().reverse().map(row=>{
+    const cells=row.vals.map(v=>{const[bg,fg]=heatColor(v);return `<td style="background:${bg};color:${fg}">${v==null?'—':v.toFixed(1)}</td>`;}).join('');
+    const[abg,afg]=heatColor(row.annual);
+    return `<tr><td>${row.year}</td>${cells}<td style="background:${abg};color:${afg};font-weight:700">${row.annual==null?'—':row.annual.toFixed(1)}</td></tr>`;}).join('');
+  sec.innerHTML=`<h3>Returns &amp; risk <span class="na" style="text-transform:none;font-weight:400">· ${esc(d.ticker||'')}</span></h3>
+    <div class="risk" style="margin-bottom:14px">${rc}</div>
+    <p class="psub" style="color:var(--text);margin:0 0 8px">Year-wise return</p><div class="yrs" style="margin-bottom:18px">${yb||'<span class="na">—</span>'}</div>
+    <p class="psub" style="color:var(--text);margin:0 0 8px">Monthly returns heatmap</p>
+    <div class="leg"><span style="background:#15803d;color:#fff">&gt;10%</span><span style="background:#22c55e">3-10%</span><span style="background:#86efac">0-3%</span><span style="background:#fca5a5">0 to -3%</span><span style="background:#ef4444;color:#fff">-3 to -10%</span><span style="background:#b91c1c;color:#fff">&lt;-10%</span></div>
+    <div class="tablebox"><table class="heat"><thead>${head}</thead><tbody>${hrows}</tbody></table></div>`;
+}
+
+function barColor(s){return s>=60?'var(--green)':(s<=40?'var(--red)':'var(--amber)');}
+function vbar(name,blk){const s=(blk&&blk.score)||0;
+  return `<div class="bar"><div class="bl"><span>${name}</span><span>${s}/100</span></div><div class="bt"><div class="bf" style="width:${s}%;background:${barColor(s)}"></div></div></div>`;}
+function biasHtml(bc){
+  if(!bc||!bc.flags||!bc.flags.length) return '';
+  const items=bc.flags.map(f=>`<li class="bcflag ${f.level}">`
+    +`<div class="bcf-h"><span class="dot"></span>${esc(f.title)}</div>`
+    +`<div class="bcf-n">${esc(f.note)}</div>`
+    +(f.lesson?`<div class="bcf-l">Insider-Bias \u2014 ${esc(f.lesson)}</div>`:'')
+    +`</li>`).join('');
+  const risk=esc(bc.risk||'LOW');
+  return `<div class="biascheck">`
+    +`<div class="bchead"><span class="bctitle">\u2696\uFE0E Bias Check</span>`
+    +`<span class="bcrisk ${risk}">bias risk: ${risk}</span></div>`
+    +(bc.principle?`<div class="bcprin">\u201c${esc(bc.principle)}\u201d</div>`:'')
+    +`<ul class="bcflags">${items}</ul></div>`;
+}
+async function loadSignal(code, preV){
+  const el=f('verdict'); if(!el) return;
+  let v=preV;
+  if(!v){
+    el.innerHTML='<div class="panel"><span class="spin"></span> &nbsp;Scoring TechnoFunda signal…</div>';
+    try{ v=await (await fetch('/api/signal?code='+encodeURIComponent(code))).json(); }catch(e){ el.innerHTML=''; return; }
+  }
+  if(!v||v.error){ el.innerHTML=''; return; }
+  const b=v.blocks||{};
+  const pros=(v.reasons_pos||[]).map(r=>`<li>${esc(r)}</li>`).join('')||'<li class="na">—</li>';
+  const cons=(v.reasons_neg||[]).map(r=>`<li>${esc(r)}</li>`).join('')||'<li class="na">—</li>';
+  el.innerHTML=`<div class="verdict ${v.label}">
+    <div class="vhead"><span class="vlabel ${v.label}">${v.label}</span>
+      <div class="vmeta">TechnoFunda composite <b>${v.composite}</b>/100 &nbsp;·&nbsp; confidence <b>${esc(v.confidence)}</b>${v.ticker?(' &nbsp;·&nbsp; '+esc(v.ticker)):''}</div></div>
+    <div class="bars">
+      ${vbar('Outperforming results (30%)',b.results)}
+      ${vbar('Relative strength / technical (35%)',b.technical)}
+      ${vbar('Fundamental quality / value (35%)',b.fundamental)}
+    </div>
+    <div class="vreasons">
+      <div><b style="col

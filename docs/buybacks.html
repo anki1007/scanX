@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · Buybacks</title>
+<style>
+  :root{--bg:#0c111d;--panel:#141b2d;--panel2:#1b2438;--line:#243049;--text:#e6edf7;
+    --muted:#8b9bb4;--teal:#2dd4bf;--teal2:#5eead4;--green:#34d399;--red:#f87171;--amber:#fbbf24;--chip:#0f1726;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .logo{font-size:20px;font-weight:800;color:var(--teal)}.logo small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .kpis{display:flex;gap:28px;margin-left:auto;text-align:right}
+  .kpi .v{font-size:20px;font-weight:800}.kpi .v.teal{color:var(--teal)}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  nav{display:flex;gap:18px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+  nav a,nav span{font-size:13px;color:var(--muted)}nav .active{color:var(--teal);font-weight:700}
+  .bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:14px 20px}
+  .bar .fld{display:flex;flex-direction:column;gap:3px}.bar label{font-size:11px;color:var(--muted)}
+  input,select{background:var(--chip);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px}
+  .toggle{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);padding-bottom:8px}
+  .tablebox{margin:0 20px 10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:hover{color:var(--teal)}tbody tr:hover{background:#10182a}
+  th.sorted::after{content:" \25BC";font-size:9px}th.sorted.asc::after{content:" \25B2"}
+  .pos{color:var(--green)}.neg{color:var(--red)}.na{color:var(--muted)}
+  .pill{display:inline-block;font-weight:800;border-radius:20px;padding:3px 10px}
+  .pill.go{background:rgba(52,211,153,.15);color:var(--green)}
+  .pill.no{background:rgba(248,113,113,.15);color:var(--red)}
+  .pill.om{background:rgba(139,155,180,.15);color:var(--muted)}
+  .tender{color:var(--green);font-weight:700}.openm{color:var(--muted)}
+  .src{font-size:11px;color:var(--muted);padding:0 20px 22px}
+  .note{font-size:11px;color:var(--muted);padding:2px 20px 0}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px;animation:p 2s infinite}@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ---------- shared left nav rail ---------- */
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i active" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+          <div class="grpL">Tools</div>
+      <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+          <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+  <div class="content">
+
+<header>
+  <div class="ptitle">Buyback Arbitrage</div>
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="kAll">–</div><div class="l">Buybacks</div></div>
+    <div class="kpi"><div class="v teal" id="kCand">–</div><div class="l">Tender &ge;8%</div></div>
+    <div class="kpi"><div class="v" id="kShown">–</div><div class="l">Shown</div></div>
+    <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (daily)</div></div>
+  </div>
+</header>
+<div class="bar">
+  <div class="fld"><label>Search company</label><input id="q" placeholder="name…" style="width:200px"></div>
+  <div class="fld"><label>Type</label><select id="type"><option value="">All</option><option value="Tender">Tender</option><option value="Open Market">Open Market</option></select></div>
+  <div class="fld"><label>Min Exp.Money % (Small)</label><input id="mink" type="number" value="0" style="width:140px"></div>
+  <div class="toggle"><input type="checkbox" id="cand"><label for="cand">Candidates only (Tender &ge;8%)</label></div>
+</div>
+<div class="note">Workflow: Tender only → calculate expected money (acceptance-ratio math) → ≥8% = candidate → check technicals + fundamentals → invest. Small-holding (C), participation (D) and post-buyback price (I) use sheet defaults when unknown — verify before acting.</div>
+
+<div class="tablebox">
+  <table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table>
+</div>
+<div class="src" id="src">source: –</div>
+
+<script>
+const COLS = [
+  {k:'name', t:'Stock', kind:'co'},
+  {k:'buyback_type', t:'Type', kind:'type'},
+  {k:'buyback_price', t:'Buyback Price', kind:'rs'},
+  {k:'ltp', t:'CMP', kind:'rs'},
+  {k:'exp_money_small', t:'Exp Money (Small)', kind:'pill'},
+  {k:'decision', t:'Decision', kind:'decision'},
+  {k:'exp_money_general', t:'Exp Money (Gen)', kind:'fracpct'},
+  {k:'acc_small', t:'Accept % (Small)', kind:'fracpct'},
+  {k:'acc_general', t:'Accept % (Gen)', kind:'fracpct'},
+  {k:'buyback_pct', t:'Buyback %', kind:'fracpct'},
+  {k:'record_date', t:'Record Date', kind:'txt'},
+  {k:'size_cr', t:'Offer Size', kind:'cr'},
+  {k:'market_cap', t:'Market Cap', kind:'cr'},
+  {k:'sales', t:'Sales (Qtr)', kind:'cr'},
+  {k:'opm', t:'OPM %', kind:'opm'},
+  {k:'np_latest_q', t:'NP Latest', kind:'num'},
+  {k:'eps_latest_q', t:'EPS Latest', kind:'num'},
+  {k:'np_growth_qoq', t:'NP Growth %', kind:'pct'},
+  {k:'eps_growth_qoq', t:'EPS Growth %', kind:'pct'},
+  {k:'pct_change', t:'% Chg', kind:'pct'},
+];
+let DATA=[], META={}, sort={k:'exp_money_small', dir:-1};
+const f=id=>document.getElementById(id);
+const rs=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2});
+const cr=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr';
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const safeUrl=u=>{u=String(u||'');return /^https?:\/\//i.test(u)?u:'';};
+const num=v=>v==null?'<span class="na">—</span>':esc(v);
+const txt=v=>v?esc(v):'<span class="na">—</span>';
+function fracpct(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);const c=p>0?'pos':(p<0?'neg':'');return `<span class="${c}">${p}%</span>`;}
+function pctv(v){if(v==null)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${v}%</span>`;}
+function pill(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);return `<span class="pill ${p>=8?'go':'no'}">${p}%</span>`;}
+function decision(v){if(!v||v==='—')return '<span class="na">—</span>';if(v==='Open Market')return '<span class="pill om">Open Market</span>';return `<span class="pill ${v.indexOf('8%')>=0&&v[0]==='A'?'go':'no'}">${esc(v)}</span>`;}
+function scr(code){return 'https://www.screener.in/company/'+encodeURIComponent(code)+'/';}
+
+function cell(c,row){
+  const v=row[c.k];
+  switch(c.kind){
+    case 'co': return `<td><a href="fundamental.html?code=${encodeURIComponent(row.code)}">${esc(row.name||row.code)}</a></td>`;
+    case 'type': return `<td class="${v==='Tender'?'tender':'openm'}">${v?esc(v):'<span class="na">—</span>'}</td>`;
+    case 'rs': return `<td>${rs(v)}</td>`;
+    case 'cr': return `<td>${cr(v)}</td>`;
+    case 'fracpct': return `<td>${fracpct(v)}</td>`;
+    case 'pct': return `<td>${pctv(v)}</td>`;
+    case 'opm': return `<td>${v==null?'<span class="na">—</span>':v+'%'}</td>`;
+    case 'pill': return `<td>${pill(v)}</td>`;
+    case 'decision': return `<td>${decision(v)}</td>`;
+    case 'txt': return `<td>${txt(v)}</td>`;
+    default: return `<td>${num(v)}</td>`;
+  }
+}
+function rows(){
+  const q=f('q').value.trim().toLowerCase(), ty=f('type').value, mk=parseFloat(f('mink').value)||0, only=f('cand').checked;
+  let r=DATA.slice();
+  if(q) r=r.filter(x=>(x.name||'').toLowerCase().includes(q));
+  if(ty) r=r.filter(x=>x.buyback_type===ty);
+  if(only) r=r.filter(x=>x.candidate);
+  if(mk) r=r.filter(x=>((x.exp_money_small??-9)*100)>=mk);
+  r.sort((a,b)=>{let x=a[sort.k],y=b[sort.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?sort.dir*x.localeCompare(y):sort.dir*(x-y);});
+  return r;
+}
+function render(){
+  const rs2=rows();
+  f('head').innerHTML=COLS.map(c=>{const cls=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';return `<th class="${cls}" data-k="${c.k}">${c.t}</th>`;}).join('');
+  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sort.k===k)sort.dir*=-1;else{sort.k=k;sort.dir=-1;}render();});
+  f('body').innerHTML=rs2.map(x=>'<tr>'+COLS.map(c=>cell(c,x)).join('')+'</tr>').join('')
+    || `<tr><td colspan="${COLS.length}" class="na" style="padding:18px">No buybacks yet — once scanX.bat scans BSE buy-back filings they appear here.</td></tr>`;
+  f('kAll').textContent=DATA.length;
+  f('kCand').textContent=DATA.filter(d=>d.candidate).length;
+  f('kShown').textContent=rs2.length;
+}
+async function load(){
+  try{
+    const t=Date.now();
+    const [d,m]=await Promise.all([
+      fetch('data/buybacks.json?t='+t).then(r=>r.json()).catch(()=>[]),
+      fetch('data/buybacks_meta.json?t='+t).then(r=>r.json()).catch(()=>({})),
+    ]);
+    DATA=d||[]; META=m||{};
+    f('kTime').innerHTML='<span class="dot"></span>'+(m.generated_at_ist||'live');
+    f('src').textContent='source: '+(m.source||'BSE buy-back filings + Screener')+(m.prices?(' · '+m.prices):'');
+    render();
+  }catch(e){ f('src').textContent='data load error: '+e; }
+}
+['q','type','mink'].forEach(id=>f(id).addEventListener('input',render));
+f('cand').addEventListener('change',render);
+load(); setInterval(load,60000);
+</script>
+  </div>
+</div>
+</body>
+</html>

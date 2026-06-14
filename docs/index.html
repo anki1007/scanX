@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · PEAD Result Monitor</title>
+<style>
+  :root{
+    --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --line:#243049;
+    --text:#e6edf7; --muted:#8b9bb4; --teal:#2dd4bf; --teal2:#5eead4;
+    --green:#34d399; --red:#f87171; --amber:#fbbf24; --chip:#0f1726;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;
+         border-bottom:1px solid var(--line);background:var(--panel)}
+  .logo{font-size:20px;font-weight:800;color:var(--teal)}
+  .logo small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .kpis{display:flex;gap:28px;margin-left:auto;text-align:right}
+  .kpi .v{font-size:20px;font-weight:800}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .kpi .v.teal{color:var(--teal)}
+  .wrap{display:flex;gap:16px;padding:16px;align-items:flex-start}
+  .sidebar{width:250px;flex:0 0 250px;background:var(--panel);border:1px solid var(--line);
+           border-radius:12px;padding:16px;position:sticky;top:16px}
+  .sidebar h3{margin:0 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .grp{margin:14px 0;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .grp:last-child{border-bottom:none}
+  .row2{display:flex;gap:8px}
+  label{display:block;font-size:11px;color:var(--muted);margin:8px 0 3px}
+  input[type=number]{width:100%;background:var(--chip);border:1px solid var(--line);
+        color:var(--text);border-radius:7px;padding:7px 8px;font-size:13px}
+  input[type=range]{width:100%;accent-color:var(--teal)}
+  .val{float:right;color:var(--teal);font-weight:700}
+  .btn{width:100%;margin-top:6px;background:var(--panel2);border:1px solid var(--line);
+       color:var(--text);border-radius:8px;padding:9px;cursor:pointer;font-weight:600}
+  .btn:hover{border-color:var(--teal)}
+  .toggle{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text)}
+  main{flex:1;min-width:0}
+  .title{display:flex;align-items:baseline;gap:12px;margin:2px 0 12px}
+  .title h1{margin:0;font-size:22px}.title .cnt{color:var(--muted)}
+  .tablebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;
+           color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:hover{color:var(--teal)}
+  th.sorted::after{content:" \25BC";font-size:9px}
+  th.sorted.asc::after{content:" \25B2"}
+  tbody tr:hover{background:#10182a}
+  .pos{color:var(--green)} .neg{color:var(--red)} .na{color:var(--muted)}
+  .badge{display:inline-block;min-width:46px;text-align:center;font-weight:800;
+         border-radius:7px;padding:3px 8px}
+  .HIGH{background:rgba(52,211,153,.15);color:var(--green)}
+  .MEDIUM{background:rgba(251,191,36,.15);color:var(--amber)}
+  .LOW{background:rgba(248,113,113,.15);color:var(--red)}
+  .shift{color:var(--amber);font-weight:700;font-size:11px}
+  .src{font-size:11px;color:var(--muted);padding:8px 4px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+       margin-right:5px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ---------- shared left nav rail ---------- */
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i active" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+          <div class="grpL">Tools</div>
+      <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+          <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+  <div class="content">
+
+<header>
+  <div class="ptitle">PEAD Result Monitor</div>
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="kTotal">–</div><div class="l">Total Companies</div></div>
+    <div class="kpi"><div class="v teal" id="kAfter">–</div><div class="l">After Filters</div></div>
+    <div class="kpi"><div class="v" id="kHigh">–</div><div class="l">HIGH score</div></div>
+    <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Last Updated (auto 60s)</div></div>
+  </div>
+</header>
+<div class="wrap">
+  <aside class="sidebar">
+    <button class="btn" id="clear">↺ Clear Filters</button>
+
+    <div class="grp">
+      <h3>Market Cap (₹ Cr)</h3>
+      <div class="row2">
+        <div style="flex:1"><label>Min</label><input type="number" id="mcMin" value="0"></div>
+        <div style="flex:1"><label>Max</label><input type="number" id="mcMax" value="2000000"></div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h3>PEAD Score</h3>
+      <label>Minimum <span class="val" id="peadVal">20</span></label>
+      <input type="range" id="peadMin" min="-50" max="100" value="20" step="1">
+    </div>
+
+    <div class="grp">
+      <h3>Forward PE</h3>
+      <div class="row2">
+        <div style="flex:1"><label>Min</label><input type="number" id="peMin" value="0.8" step="0.1"></div>
+        <div style="flex:1"><label>Max</label><input type="number" id="peMax" value="200"></div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h3>Growth Filters (%)</h3>
+      <div class="row2">
+        <div style="flex:1"><label>Sales YoY ≥</label><input type="number" id="syoy" value="-1000"></div>
+        <div style="flex:1"><label>Sales QoQ ≥</label><input type="number" id="sqoq" value="-1000"></div>
+      </div>
+      <div class="row2">
+        <div style="flex:1"><label>NP YoY ≥</label><input type="number" id="nyoy" value="-1000"></div>
+        <div style="flex:1"><label>NP QoQ ≥</label><input type="number" id="nqoq" value="-1000"></div>
+      </div>
+      <div class="toggle"><input type="checkbox" id="gate"><label style="margin:0">Only &gt;25% Sales &amp; NP (YoY)</label></div>
+    </div>
+
+    <div class="src" id="src">source: –</div>
+  </aside>
+
+  <main>
+    <div class="title">
+      <h1>🏆 Top PEAD Candidates</h1>
+      <span class="cnt" id="cnt"></span>
+    </div>
+    <div class="tablebox">
+      <table id="tbl">
+        <thead><tr id="head"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+const COLS = [
+  {k:'name', t:'Company', kind:'name'},
+  {k:'pead_score', t:'PEAD', kind:'badge'},
+  {k:'ltp', t:'LTP', kind:'ltp'},
+  {k:'pct_change', t:'% Chg', kind:'pct'},
+  {k:'result_date', t:'Result Date', kind:'date'},
+  {k:'pe', t:'Fwd PE', kind:'num'},
+  {k:'sales_yoy', t:'Sales YoY', kind:'pct'},
+  {k:'sales_qoq', t:'Sales QoQ', kind:'pct'},
+  {k:'np_yoy', t:'NP YoY', kind:'pct'},
+  {k:'np_qoq', t:'NP QoQ', kind:'pct'},
+  {k:'ebitda_yoy', t:'EBIDT YoY', kind:'pct'},
+  {k:'ebitda_qoq', t:'EBIDT QoQ', kind:'pct'},
+  {k:'cf_profit', t:'CF/Profit', kind:'num'},
+];
+let DATA=[], META={}, sort={k:'pead_score', dir:-1};
+
+function f(id){return document.getElementById(id);}
+function num(id){const v=parseFloat(f(id).value);return isNaN(v)?null:v;}
+
+function pctCell(v){
+  if(v===null||v===undefined) return '<span class="na">—</span>';
+  const c = v>0?'pos':(v<0?'neg':'');
+  return `<span class="${c}">${v>0?'+':''}${v}%</span>`;
+}
+function screenerUrl(code){return 'https://www.screener.in/company/'+encodeURIComponent(code)+'/';}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+function passes(s){
+  if(s.market_cap!==null && (s.market_cap<num('mcMin') || s.market_cap>num('mcMax'))) return false;
+  if(s.pead_score < num('peadMin')) return false;
+  if(s.pe!==null && (s.pe<num('peMin') || s.pe>num('peMax'))) return false;
+  if((s.sales_yoy??-9999) < num('syoy')) return false;
+  if((s.sales_qoq??-9999) < num('sqoq')) return false;
+  if((s.np_yoy??-9999) < num('nyoy')) return false;
+  if((s.np_qoq??-9999) < num('nqoq')) return false;
+  if(f('gate').checked && !s.growth_gate) return false;
+  return true;
+}
+
+function render(){
+  f('peadVal').textContent = f('peadMin').value;
+  let rows = DATA.filter(passes);
+  rows.sort((a,b)=>{
+    let x=a[sort.k], y=b[sort.k];
+    if(x===null||x===undefined) x=-1e15; if(y===null||y===undefined) y=-1e15;
+    if(typeof x==='string'){return sort.dir*x.localeCompare(y);}
+    return sort.dir*(x-y);
+  });
+  // header
+  f('head').innerHTML = COLS.map(c=>{
+    const cls = c.k===sort.k ? ('sorted '+(sort.dir>0?'asc':'')) : '';
+    return `<th class="${cls}" data-k="${c.k}">${c.t}</th>`;
+  }).join('');
+  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(sort.k===k) sort.dir*=-1; else {sort.k=k; sort.dir=-1;}
+    render();
+  });
+  // body
+  f('body').innerHTML = rows.map(s=>{
+    return '<tr>'+COLS.map(c=>{
+      const v=s[c.k];
+      if(c.kind==='name'){
+        const shift = s.sudden_shift?' <span class="shift">⚡SHIFT</span>':'';
+        return `<td><a href="fundamental.html?code=${encodeURIComponent(s.code)}">${esc(s.name)}</a>${shift}</td>`;
+      }
+      if(c.kind==='badge') return `<td><span class="badge ${esc(s.pead_category)}">${esc(v)}</span></td>`;
+      if(c.kind==='pct') return `<td>${pctCell(v)}</td>`;
+      if(c.kind==='ltp') return `<td>${v===null||v===undefined?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+      if(c.kind==='date') return `<td class="na">${esc(v||'—')}</td>`;
+      return `<td>${v===null||v===undefined?'<span class="na">—</span>':esc(v)}</td>`;
+    }).join('')+'</tr>';
+  }).join('');
+  f('kTotal').textContent = DATA.length;
+  f('kAfter').textContent = rows.length;
+  f('kHigh').textContent = DATA.filter(d=>d.pead_category==='HIGH').length;
+  f('cnt').textContent = `(${rows.length} of ${DATA.length} companies · click headers to sort)`;
+}
+
+async function load(){
+  try{
+    const t=Date.now();
+    const [d,m] = await Promise.all([
+      fetch('data/pead.json?t='+t).then(r=>r.json()),
+      fetch('data/meta.json?t='+t).then(r=>r.json()).catch(()=>({}))
+    ]);
+    DATA=d; META=m;
+    f('kTime').innerHTML = '<span class="dot"></span>'+(m.generated_at_ist||'live');
+    f('src').textContent = 'source: '+(m.source||'—')+(m.prices?(' · '+m.prices):'');
+    render();
+  }catch(e){ f('src').textContent='data load error: '+e; }
+}
+
+['mcMin','mcMax','peadMin','peMin','peMax','syoy','sqoq','nyoy','nqoq'].forEach(id=>{
+  f(id).addEventListener('input',render);
+});
+f('gate').addEventListener('change',render);
+f('clear').onclick=()=>{
+  f('mcMin').value=0; f('mcMax').value=2000000; f('peadMin').value=20;
+  f('peMin').value=0.8; f('peMax').value=200;
+  ['syoy','sqoq','nyoy','nqoq'].forEach(i=>f(i).value=-1000);
+  f('gate').checked=false; render();
+};
+
+// ---- delayed NSE/BSE quotes from the static data/quotes.json ----
+// (written by GitHub Actions every ~15 min in market hours, or by scanX.bat
+//  every 60s when running locally — same file either way, no broker, no API)
+let liveTimer=null;
+function liveSchedule(ms){ clearTimeout(liveTimer); liveTimer=setTimeout(livePoll, ms); }
+async function livePoll(){
+  try{
+    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>r.json());
+    const age=(Date.now()/1000)-(q.ts||0);
+    if(q.quotes && age<5400){                       // ignore if >90 min stale
+      let n=0;
+      DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()];
+        if(x){ if(x.ltp!=null)d.ltp=x.ltp; if(x.pct!=null)d.pct_change=x.pct; n++; } });
+      if(n){ render(); f('src').textContent='source: '+(META.source||'—')+' · ● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
+    }
+  }catch(e){}
+  liveSchedule(60000);
+}
+
+load();
+setInterval(load, 60000);   // data file refresh every 60s
+liveSchedule(1200);
+</script>
+  </div>
+</div>
+</body>
+</html>

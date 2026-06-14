@@ -1,0 +1,98 @@
+# scanX cloud refresh — runs the daily board crawls on GitHub's servers and
+# pushes docs/data, so GitHub Pages stays fresh WITHOUT your desktop running.
+#
+# What it covers : PEAD board, Orders, Buybacks, Special, FII/FPI, Market Pulse,
+#                  Sector Tailwind, TechnoFunda, Magic Formula, Fundamentals
+#                  bundles, IV Ranking — everything the static site renders.
+# What it can't  : live LTP ticks, the intraday engine, Ask-AI/AMA, live search
+#                  (those need scanX.bat's local server by design).
+#
+# One-time setup on github.com -> repo -> Settings:
+#   1. Secrets and variables -> Actions -> New repository secret:
+#        SCREENER_EMAIL    = your screener.in login email
+#        SCREENER_PASSWORD = your screener.in password
+#      (Encrypted by GitHub; never visible in the repo or logs.)
+#   2. Actions tab -> enable workflows if prompted.
+#
+# Schedule: 17:45 IST (12:15 UTC) Mon-Fri, after the daily close + results.
+# Run it any time manually: Actions tab -> "scanX data refresh" -> Run workflow.
+#
+# Caveat, stated honestly: Screener sometimes throttles datacenter IPs (GitHub
+# runners included). If a run fails with connect timeouts, the previous data
+# simply stays live; your desktop scanX.bat remains the reliable fallback.
+
+name: scanX data refresh
+
+on:
+  schedule:
+    - cron: "15 12 * * 1-5"     # 17:45 IST, Mon-Fri
+  workflow_dispatch: {}          # manual "Run workflow" button
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scanx-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PYTHONIOENCODING: utf-8
+      SCANX_NO_DHAN: "1"                      # no broker token in the cloud
+      SCREENER_EMAIL: ${{ secrets.SCREENER_EMAIL }}
+      SCREENER_PASSWORD: ${{ secrets.SCREENER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies (lean - no broker/browser extras)
+        run: |
+          python -m pip install --quiet --disable-pip-version-check \
+            "pandas>=2.0" "numpy>=1.24" "requests>=2.31" \
+            "beautifulsoup4>=4.12" "lxml>=5.0" "curl_cffi>=0.7" \
+            "yfinance>=0.2.40" "pdfplumber>=0.10" "openpyxl>=3.1" "pyotp>=2.9"
+
+      - name: Screener login
+        run: python scripts/screener_login.py
+
+      - name: Refresh boards
+        run: |
+          set +e   # one slow source must not kill the whole refresh
+          python scripts/refresh_scanx.py --pages 8
+          python scripts/refresh_orders.py --months 3
+          python scripts/refresh_buybacks.py --months 12
+          python scripts/refresh_special.py
+          python scripts/refresh_fii.py
+          python scripts/refresh_marketpulse.py
+          python scripts/refresh_fpi.py
+          python scripts/refresh_sectors.py
+          python scripts/refresh_technofunda.py --mcap-floor 5 --screen-pages 250
+          python scripts/refresh_magicformula.py --screen-pages 250
+          python scripts/refresh_fundamentals.py --top 150 --skip-existing --max-minutes 130
+          python scripts/refresh_iv.py --per-sector 30
+          exit 0
+
+      - name: Commit & push data
+        run: |
+          git config user.name  "scanx-bot"
+          git config user.email "scanx@users.noreply.github.com"
+          git add -A docs FPI 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no data changes"; exit 0
+          fi
+          git commit -m "data: cloud refresh $(date -u +%FT%TZ)"
+          # push with retry; works on a detached HEAD; on a race with another
+          # publisher, rebase keeping OUR freshly generated data (-X theirs)
+          n=0
+          until git push origin HEAD:main; do
+            n=$((n+1)); [ "$n" -gt 3 ] && { echo "push failed after retries"; exit 1; }
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done

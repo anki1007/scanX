@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · TechnoFunda 100</title>
+<style>
+  :root{--bg:#0c111d;--panel:#141b2d;--panel2:#1b2438;--line:#243049;--text:#e6edf7;
+    --muted:#8b9bb4;--teal:#2dd4bf;--teal2:#5eead4;--green:#34d399;--red:#f87171;--amber:#fbbf24;--chip:#0f1726;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header .ptitle{font-size:18px;font-weight:800}
+  header .sub{color:var(--muted);font-size:12px}
+  .kpis{display:flex;gap:26px;margin-left:auto;text-align:right}
+  .kpi .v{font-size:20px;font-weight:800}.kpi .v.g{color:var(--green)}.kpi .v.r{color:var(--red)}.kpi .v.a{color:var(--amber)}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .wrap{padding:16px 22px}
+  .bar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+  .fbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 13px;cursor:pointer;font-size:12px;font-weight:600}
+  .fbtn.on{border-color:var(--teal);color:var(--teal)}
+  .srch{margin-left:auto;background:var(--chip);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 11px;font-size:13px;min-width:200px}
+  .tablebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:center}
+  th:nth-child(2),td:nth-child(2){text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:hover{color:var(--teal)}
+  tbody tr:hover{background:#10182a}
+  .badge{display:inline-block;min-width:64px;text-align:center;font-weight:800;border-radius:7px;padding:3px 9px;font-size:12px}
+  .secc{white-space:nowrap}
+  .schip{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.02em;padding:2px 7px;border-radius:999px;border:1px solid}
+  .schip.tw{color:var(--green);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.10)}
+  .schip.nu{color:var(--amber);border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.08)}
+  .schip.hw{color:var(--red);border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.10)}
+  .snm{font-size:10px;color:var(--muted);margin-top:3px;max-width:150px;margin-left:auto;overflow:hidden;text-overflow:ellipsis}
+  .BUY{background:rgba(52,211,153,.16);color:var(--green)}
+  .SELL{background:rgba(248,113,113,.16);color:var(--red)}
+  .NEUTRAL{background:rgba(251,191,36,.16);color:var(--amber)}
+  .s-hi{color:var(--green);font-weight:700}.s-mid{color:var(--amber)}.s-lo{color:var(--red)}
+  .na{color:var(--muted)}.pos{color:var(--green)}.neg{color:var(--red)}
+  .rank{color:var(--muted);font-weight:700}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px;animation:p 2s infinite}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .dis{font-size:11px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+    <div class="grpL">Screens</div>
+    <a class="nav-i active" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+    <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+    <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+    <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+    <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+    <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+    <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+    <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+        <div class="grpL">Tools</div>
+    <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+    <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+        <div class="grpL">Market Pulse</div>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+
+  <div class="content">
+    <header>
+      <div><div class="ptitle">🎖️ TechnoFunda 100</div>
+      <div class="sub">Top stocks by composite: outperforming results + relative strength + fundamentals</div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="kUni">–</div><div class="l">Scanned</div></div>
+        <div class="kpi"><div class="v g" id="kBuy">–</div><div class="l">Buy</div></div>
+        <div class="kpi"><div class="v a" id="kNeu">–</div><div class="l">Neutral</div></div>
+        <div class="kpi"><div class="v r" id="kSell">–</div><div class="l">Sell</div></div>
+        <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated</div></div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="bar">
+        <button class="fbtn on" data-f="ALL">All</button>
+        <button class="fbtn" data-f="BUY">Buy</button>
+        <button class="fbtn" data-f="NEUTRAL">Neutral</button>
+        <button class="fbtn" data-f="SELL">Sell</button>
+        <button class="fbtn" id="showAll">Show all</button><span id="cnt" class="na" style="font-size:12px"></span><input class="srch" id="srch" placeholder="filter by name / code…">
+      </div>
+      <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
+      <div id="empty" class="empty" style="display:none"></div>
+      <div class="dis">⚠️ Rules-based screen for research/education only — not investment advice. Verify independently. Click a company to open its full TechnoFunda verdict.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLS=[["rank","#","rank"],["name","Company","name"],["label","Verdict","badge"],
+  ["composite","Composite","score"],["results","Results","score"],["momentum","RS / Mom","score"],
+  ["quality","Quality","score"],["sector_sig","Sector","sector"],["ltp","LTP","rs"],["sales_yoy","Sales YoY","pct"],
+  ["np_yoy","NP YoY","pct"],["pos_ath","% of ATH","pct1"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
+let DATA=[], flt="ALL", q="", s={k:"composite",d:-1}, LIMIT=100;
+const f=id=>document.getElementById(id);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const scoreCls=v=>v>=60?'s-hi':(v<=40?'s-lo':'s-mid');
+const fund=c=>'fundamental.html?code='+encodeURIComponent(c);
+function cell(r,c){
+  const v=r[c[0]];
+  if(c[2]==='rank') return `<td class="rank">${v??''}</td>`;
+  if(c[2]==='name') return `<td><a href="${esc(fund(r.code))}">${esc(r.name||r.code)}</a> <span class="na" style="font-size:11px">${esc(r.code)}</span></td>`;
+  if(c[2]==='badge') return `<td><span class="badge ${esc(v)}">${esc(v)}</span></td>`;
+  if(c[2]==='score') return `<td class="${scoreCls(v)}">${v==null?'—':v}</td>`;
+  if(c[2]==='pct') return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${v}%</span>`}</td>`;
+  if(c[2]==='rs') return `<td>${v==null?'—':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2})}</td>`;
+  if(c[2]==='cr') return `<td>${v==null?'—':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0})}</td>`;
+  if(c[2]==='num0') return `<td>${v==null?'—':Math.round(v)}</td>`;
+  if(c[2]==='num1') return `<td>${v==null?'—':(+v).toFixed(1)}</td>`;
+  if(c[2]==='pct1') return `<td>${v==null?'—':(+v).toFixed(0)+'%'}</td>`;
+  if(c[2]==='sector'){
+    const sgv=r.sector_sig;
+    if(!sgv) return '<td class="na">—</td>';
+    const cls=sgv==='TAILWIND'?'tw':(sgv==='HEADWIND'?'hw':'nu');
+    const ar=sgv==='TAILWIND'?'\u25B2':(sgv==='HEADWIND'?'\u25BC':'\u25AC');
+    const nm=esc(r.sector||'');
+    return `<td class="secc"><span class="schip ${cls}">${ar} ${esc(sgv)}</span>${nm?`<div class="snm">${nm}</div>`:''}</td>`;
+  }
+  return `<td>${v==null?'—':esc(v)}</td>`;
+}
+function render(){
+  f("head").innerHTML=COLS.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
+  f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
+  let rows=DATA.filter(r=>flt==='ALL'||r.label===flt);
+  if(q){const Q=q.toLowerCase();rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.code||'').toLowerCase().includes(Q));}
+  rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
+  const total=rows.length;
+  if(LIMIT!==Infinity) rows=rows.slice(0,LIMIT);
+  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent='No matching stocks.';f("cnt").textContent='';return;}
+  f("tbl").style.display='';f("empty").style.display='none';
+  f("body").innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(r,c)).join('')+'</tr>').join('');
+  window.__shown=rows.map(r=>String(r.code||'').toUpperCase());
+  f("cnt").textContent=`showing ${rows.length} of ${total}`;
+}
+function applySectors(rows, tw, st){
+  if(!rows||!rows.length) return;
+  const lab={}; ((tw&&tw.sectors)||[]).forEach(x=>{ if(x&&x.sector) lab[x.sector]=x.signal; });
+  const c2s={}; const secs=(st&&st.sectors)||{};
+  Object.keys(secs).forEach(sec=>{ (secs[sec]||[]).forEach(it=>{ const c=String(it.code||'').toUpperCase(); if(c&&!c2s[c]) c2s[c]=sec; }); });
+  rows.forEach(r=>{ if(r.sector_sig) return; const c=String(r.code||'').toUpperCase(); const sec=c2s[c]; if(sec){ r.sector=sec; r.sector_sig=lab[sec]||'NEUTRAL'; } });
+}
+async function load(){
+  try{
+    const t=Date.now();
+    const [d,m,tw,st]=await Promise.all([
+      fetch('data/technofunda.json?t='+t).then(r=>r.json()),
+      fetch('data/technofunda_meta.json?t='+t).then(r=>r.json()).catch(()=>({})),
+      fetch('data/sector_tailwind.json?t='+t).then(r=>r.json()).catch(()=>null),
+      fetch('data/sector_stocks.json?t='+t).then(r=>r.json()).catch(()=>null)]);
+    DATA=d||[];
+    applySectors(DATA, tw, st);
+    f("kUni").textContent=m.universe??'–';
+    f("kBuy").textContent=m.buy??DATA.filter(r=>r.label==='BUY').length;
+    f("kNeu").textContent=m.neutral??DATA.filter(r=>r.label==='NEUTRAL').length;
+    f("kSell").textContent=m.sell??DATA.filter(r=>r.label==='SELL').length;
+    f("kTime").innerHTML='<span class="dot"></span>'+(m.generated_at_ist||'live');
+    render();
+  }catch(e){ f("tbl").style.display='none';f("empty").style.display='';
+    f("empty").innerHTML='No board data yet. Run <code>python scripts/refresh_technofunda.py</code> (or it builds in the scanX.bat daily job).'; }
+}
+f("showAll").onclick=()=>{LIMIT=(LIMIT===Infinity?100:Infinity);f("showAll").textContent=(LIMIT===Infinity?'Top 100':'Show all');f("showAll").classList.toggle('on',LIMIT===Infinity);render();};
+document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
+f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
+// ---- delayed NSE/BSE quotes from the static data/quotes.json ----
+let liveTimer=null;
+function liveSchedule(ms){ clearTimeout(liveTimer); liveTimer=setTimeout(livePoll, ms); }
+async function livePoll(){
+  try{
+    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>r.json());
+    const age=(Date.now()/1000)-(q.ts||0);
+    if(q.quotes && age<5400){
+      let n=0;
+      DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()]; if(x&&x.ltp!=null){ d.ltp=x.ltp; n++; } });
+      if(n){ render(); f("kTime").innerHTML='<span class="dot"></span>quotes '+(q.ist||'')+' · '+n; }
+    }
+  }catch(e){}
+  liveSchedule(60000);
+}
+
+load(); setInterval(load,300000);
+liveSchedule(1500);
+</script>
+</body>
+</html>

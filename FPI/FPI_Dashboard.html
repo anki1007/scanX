@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FPI Sector Investment Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c232c; --border:#2a323d;
+    --text:#e6edf3; --muted:#8b949e;
+    --accent:#58a6ff; --accent-2:#79c0ff;
+    --pos:#2ea043; --pos-soft:rgba(46,160,67,.15);
+    --neg:#f85149; --neg-soft:rgba(248,81,73,.15);
+    --warn:#d29922;
+    --grid:#21262d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px}
+  a{color:var(--accent);text-decoration:none}
+  header{display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,#161b22 0%,#0d1117 100%)}
+  header h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.2px}
+  header h1 span{color:var(--accent)}
+  header .meta{font-size:12px;color:var(--muted);text-align:right}
+  header .meta b{color:var(--text)}
+  main{padding:18px 28px;max-width:1600px;margin:0 auto}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px}
+  .kpi .label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  .kpi .value{font-size:22px;font-weight:600;margin-top:4px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:4px}
+  .kpi .delta{display:inline-block;margin-left:8px;font-size:12px;padding:2px 8px;
+    border-radius:99px;font-weight:600}
+  .delta.pos{background:var(--pos-soft);color:var(--pos)}
+  .delta.neg{background:var(--neg-soft);color:var(--neg)}
+
+  /* Tabs + filter row */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:14px}
+  .tab{padding:8px 16px;border:1px solid transparent;border-bottom:none;
+    border-radius:6px 6px 0 0;cursor:pointer;color:var(--muted);font-weight:500;font-size:13px}
+  .tab.active{background:var(--panel);border-color:var(--border);color:var(--text)}
+  .filters{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+  .filters label{font-size:12px;color:var(--muted)}
+  .filters select,.filters input[type="text"]{background:var(--panel2);border:1px solid var(--border);
+    color:var(--text);padding:6px 8px;border-radius:6px;font-size:13px}
+  .filters .pill{background:var(--panel2);border:1px solid var(--border);padding:6px 10px;
+    border-radius:6px;font-size:12px;color:var(--muted)}
+
+  /* Panels */
+  .grid{display:grid;gap:14px}
+  .grid.two{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:1fr 1fr 1fr}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px}
+  .panel h3{margin:0 0 10px 0;font-size:13px;font-weight:600;color:var(--text);letter-spacing:.2px}
+  .panel h3 .small{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+  .panel.chart{min-height:340px;display:flex;flex-direction:column}
+  .panel.chart .chart-wrap{flex:1;position:relative;min-height:280px}
+  canvas{width:100%!important;height:100%!important}
+
+  /* Leaderboards */
+  .leader{display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .leader .row{display:flex;justify-content:space-between;align-items:center;
+    padding:6px 8px;border-radius:6px;background:var(--panel2)}
+  .leader .row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+  .leader .row .val{font-weight:600;font-variant-numeric:tabular-nums}
+  .leader .row.pos .val{color:var(--pos)}
+  .leader .row.neg .val{color:var(--neg)}
+
+  /* Heatmap */
+  .heatmap-wrap{overflow-x:auto;overflow-y:hidden;max-width:100%}
+  table.heatmap{border-collapse:collapse;font-size:11px}
+  table.heatmap th,table.heatmap td{padding:5px 6px;text-align:right;
+    border:1px solid var(--bg);font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.heatmap th{background:var(--panel2);color:var(--muted);font-weight:600;position:sticky;top:0}
+  table.heatmap th.sector{text-align:left;left:0;position:sticky;background:var(--panel);z-index:2;
+    min-width:200px;max-width:220px}
+  table.heatmap td.sector{text-align:left;background:var(--panel2);color:var(--text);font-weight:500;
+    position:sticky;left:0;min-width:200px;max-width:220px;
+    overflow:hidden;text-overflow:ellipsis}
+  table.heatmap tbody tr:hover td{outline:1px solid var(--accent)}
+  table.heatmap tfoot td{font-weight:700;background:var(--panel)}
+
+  /* Footer */
+  footer{padding:18px 28px;color:var(--muted);font-size:11px;text-align:center;border-top:1px solid var(--border);margin-top:24px}
+
+  /* Empty / loading state */
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+  .empty code{background:var(--panel2);padding:2px 6px;border-radius:4px}
+
+  /* Sync button */
+  .sync-btn{display:inline-flex;align-items:center;gap:6px;margin-left:14px;
+    background:var(--panel2);border:1px solid var(--border);color:var(--text);
+    padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
+    cursor:pointer;font-family:inherit;vertical-align:middle;line-height:1;
+    transition:border-color .15s, color .15s}
+  .sync-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .sync-btn:disabled{opacity:.6;cursor:not-allowed}
+  .sync-btn .ico{display:inline-block;font-size:14px;line-height:1}
+  .sync-btn.syncing .ico{animation:spin 1s linear infinite}
+  .sync-btn.success{color:var(--pos);border-color:var(--pos)}
+  .sync-btn.error{color:var(--neg);border-color:var(--neg)}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  /* Toast */
+  .toast{position:fixed;bottom:24px;right:24px;
+    background:var(--panel);border:1px solid var(--border);
+    padding:12px 16px;border-radius:8px;font-size:13px;
+    max-width:420px;z-index:1000;
+    box-shadow:0 6px 20px rgba(0,0,0,.4);
+    animation:fadein .2s ease-out}
+  .toast.pos{border-color:var(--pos)}
+  .toast.neg{border-color:var(--neg)}
+  .toast .hint{display:block;margin-top:6px;color:var(--muted);font-size:11px;
+    font-family:ui-monospace,Menlo,Consolas,monospace}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Responsive */
+  @media (max-width:1100px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid.two,.grid.three{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>FPI <span>Sector Investment</span> Dashboard
+    <button id="syncBtn" class="sync-btn" title="Fetch latest NSDL data (requires fpi_server.py running)">
+      <span class="ico">&#x21bb;</span><span class="lbl">Sync</span>
+    </button>
+  </h1>
+  <div class="meta">
+    Source: <b>NSDL Fortnightly Sector-wise FII Investment Data</b><br>
+    Last refresh: <b id="lastRefresh">—</b>
+    &nbsp;·&nbsp; Latest fortnight: <b id="latestFortnight">—</b>
+  </div>
+</header>
+
+<main>
+  <!-- KPI row -->
+  <div class="kpis" id="kpis">
+    <div class="kpi"><div class="label">Total Equity Net Flow (latest)</div>
+      <div class="value" id="kpiTotal">—</div>
+      <div class="sub" id="kpiTotalSub">—</div></div>
+    <div class="kpi"><div class="label">Top Inflow Sector (latest)</div>
+      <div class="value pos" id="kpiTopIn">—</div>
+      <div class="sub" id="kpiTopInSub">—</div></div>
+    <div class="kpi"><div class="label">Top Outflow Sector (latest)</div>
+      <div class="value neg" id="kpiTopOut">—</div>
+      <div class="sub" id="kpiTopOutSub">—</div></div>
+    <div class="kpi"><div class="label">Sectors with Inflows</div>
+      <div class="value" id="kpiBreadth">—</div>
+      <div class="sub" id="kpiBreadthSub">—</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="fortnight">Fortnightly</div>
+    <div class="tab" data-tab="month">Monthly</div>
+    <div class="tab" data-tab="quarter">Quarterly</div>
+    <div class="tab" data-tab="year">Yearly (FY)</div>
+  </div>
+
+  <!-- Filter row -->
+  <div class="filters">
+    <label>Sector focus</label>
+    <select id="sectorSelect" multiple size="1" style="min-width:280px"></select>
+    <label>Show top</label>
+    <select id="topN">
+      <option value="5">5</option>
+      <option value="8" selected>8</option>
+      <option value="12">12</option>
+      <option value="all">All</option>
+    </select>
+    <label>Periods</label>
+    <select id="rangeN">
+      <option value="6">Last 6</option>
+      <option value="12">Last 12</option>
+      <option value="24" selected>Last 24</option>
+      <option value="all">All</option>
+    </select>
+    <span class="pill" id="rangePill">—</span>
+    <button id="resetBtn" class="pill" style="cursor:pointer">Reset filters</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid two">
+    <div class="panel chart">
+      <h3>Total Market Net Flow <span class="small" id="aggLabel">(per fortnight)</span></h3>
+      <div class="chart-wrap"><canvas id="totalFlowChart"></canvas></div>
+    </div>
+    <div class="panel chart">
+      <h3>Cumulative Net Flow <span class="small">(running sum, INR Cr)</span></h3>
+      <div class="chart-wrap"><canvas id="cumulativeChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:14px">
+    <div class="panel chart">
+      <h3>Sector Trends <span class="small">(top sectors by absolute flow)</span></h3>
+      <div class="chart-wrap"><canvas id="sectorTrendChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>Top Movers <span class="small" id="topMoversLabel">(latest period)</span></h3>
+      <div class="grid two">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Top Inflows</div>
+          <div class="leader" id="topInflows"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Top Outflows</div>
+          <div class="leader" id="topOutflows"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <h3 style="margin-bottom:6px">Sector Momentum <span class="small">(latest – 3-period avg)</span></h3>
+        <div class="leader" id="momentum"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr;margin-top:14px">
+    <div class="panel">
+      <h3>Sector Heatmap <span class="small">(green = inflow, red = outflow, INR Cr)</span></h3>
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:-4px 0 10px;font-size:12px;color:var(--muted)">
+        <label for="heatmapYear">Year</label>
+        <select id="heatmapYear" style="background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:12px;min-width:120px">
+          <option value="all">All years</option>
+        </select>
+      </div>
+      <div class="heatmap-wrap" id="heatmapWrap"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Dashboard reads <code>fpi_data.js</code> in this folder.
+  Re-run <code>fpi_update.py</code> to refresh data, then reload this page.
+  Data: NSDL Foreign Portfolio Investment fortnightly sector-wise reports.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="./fpi_data.js"></script>
+<script>
+"use strict";
+
+// ── Bootstrap ───────────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const NF = new Intl.NumberFormat("en-IN");
+const SIGN = (v) => (v == null ? "—" : (v >= 0 ? "+" : "") + NF.format(Math.round(v)));
+const ABS_NF = (v) => v == null ? "—" : NF.format(Math.round(Math.abs(v)));
+
+// ── Sync button (runs fpi_update.py via the local helper) ──────────────
+const SYNC_URL = "http://127.0.0.1:8765/refresh";
+const SYNC_STATUS_URL = "http://127.0.0.1:8765/status";
+const syncBtn = $("syncBtn");
+
+function showToast(msg, kind, hint){
+  const t = document.createElement("div");
+  t.className = "toast " + (kind || "");
+  t.innerHTML = `<div>${msg}</div>` + (hint ? `<span class="hint">${hint}</span>` : "");
+  document.body.appendChild(t);
+  const ms = kind === "neg" ? 8000 : 4500;
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; }, ms - 300);
+  setTimeout(() => t.remove(), ms);
+}
+
+function setSyncState(state, label){
+  syncBtn.classList.remove("syncing","success","error");
+  if (state) syncBtn.classList.add(state);
+  syncBtn.querySelector(".lbl").textContent = label;
+}
+
+if (syncBtn) {
+  syncBtn.addEventListener("click", async () => {
+    syncBtn.disabled = true;
+    setSyncState("syncing", "Syncing…");
+    try {
+      const res = await fetch(SYNC_URL, { method: "POST", cache: "no-store" });
+      const data = await res.json().catch(() => ({ ok:false, error:"Bad JSON from helper" }));
+      if (!data.ok) {
+        const errLine = (data.tail || "").split("\n").reverse().find(l => l.trim()) || data.error || `exit ${data.returncode}`;
+        throw new Error(errLine);
+      }
+      const n = data.new_fortnights ?? 0;
+      setSyncState("success", n > 0 ? `+${n} new` : "Up to date");
+      if (n > 0) {
+        showToast(`Sync complete — ${n} new fortnight${n>1?"s":""} added. Reloading…`, "pos");
+        setTimeout(() => {
+          // Cache-bust the page so fpi_data.js is fetched fresh.
+          const url = new URL(location.href);
+          url.searchParams.set("_t", Date.now());
+          location.replace(url.toString());
+        }, 1000);
+      } else {
+        showToast("Sync complete — no new fortnight published yet.", "pos");
+      }
+    } catch (e) {
+      const msg = String(e.message || e);
+      setSyncState("error", "Failed");
+      const offline = msg.includes("Failed to fetch") || msg.includes("NetworkError");
+      showToast(
+        offline ? "Sync helper isn't running." : "Sync failed: " + msg,
+        "neg",
+        offline ? "Start it once:  cd D:\\FPI && python fpi_server.py" : null
+      );
+    } finally {
+      syncBtn.disabled = false;
+      setTimeout(() => setSyncState(null, "Sync"), 4000);
+    }
+  });
+
+  // Lightweight ping on load so the button tooltip reflects helper status
+  fetch(SYNC_STATUS_URL, { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(() => { syncBtn.title = "Helper online — click to fetch latest from NSDL"; })
+    .catch(() => { syncBtn.title = "Helper offline — start with: python fpi_server.py"; });
+}
+
+// Safety: if data file isn't loaded
+if (!window.fpiData || !Array.isArray(window.fpiData.rows)) {
+  document.querySelector("main").innerHTML =
+    '<div class="empty">' +
+    'No <code>fpi_data.js</code> found. Run <code>python fpi_update.py</code> in this folder first ' +
+    '(or click <b>Sync</b> above if <code>fpi_server.py</code> is running).' +
+    '</div>';
+  throw new Error("fpi_data missing");
+}
+
+// Globals
+const ROWS = window.fpiData.rows.filter(r => r.sector && r.sector !== "TOTAL");
+const ALL_FORTNIGHTS = [...new Set(ROWS.map(r => r.end))].sort();   // ISO date strings
+const SECTORS = [...new Set(ROWS.map(r => r.sector))].sort();
+
+$("lastRefresh").textContent = (window.fpiData.generated_at || "").replace("T"," ");
+$("latestFortnight").textContent = labelFor(ALL_FORTNIGHTS[ALL_FORTNIGHTS.length-1]) || "—";
+
+// ── Aggregation helpers ─────────────────────────────────────────────────
+function labelFor(iso){
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  const mon = d.toLocaleString("en-US",{month:"short"});
+  const dStart = d.getDate() === 15 ? 1 : 16;
+  return `${mon} ${String(dStart).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}, ${d.getFullYear()}`;
+}
+function monthKey(iso){
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleString("en-US",{month:"short"}) + " " + d.getFullYear();
+}
+function quarterKey(iso){
+  const d = new Date(iso + "T00:00:00");
+  const q = Math.floor(d.getMonth()/3) + 1;
+  return d.getFullYear() + " Q" + q;
+}
+function fyKey(iso){
+  // Indian FY runs Apr-Mar
+  const d = new Date(iso + "T00:00:00");
+  const yr = d.getFullYear(), m = d.getMonth() + 1;
+  const fyStart = m >= 4 ? yr : yr - 1;
+  return `FY ${String(fyStart%100).padStart(2,"0")}-${String((fyStart+1)%100).padStart(2,"0")}`;
+}
+function periodKeyFor(iso, mode){
+  return mode === "fortnight" ? iso :
+         mode === "month"     ? monthKey(iso) :
+         mode === "quarter"   ? quarterKey(iso) :
+                                fyKey(iso);
+}
+function periodSortKey(key, mode){
+  if (mode === "fortnight") return key;
+  if (mode === "month"){
+    const d = new Date(Date.parse(key.replace(/(\w+)\s(\d+)/, "$1 1, $2")));
+    return d.getTime();
+  }
+  if (mode === "quarter"){
+    const [y,q] = key.split(" Q"); return Number(y)*10 + Number(q);
+  }
+  // FY 24-25 -> 24
+  return Number(key.split(" ")[1].split("-")[0]);
+}
+function periodLabel(key, mode){
+  if (mode !== "fortnight") return key;
+  return labelFor(key);
+}
+
+// Build a [periodKey] -> [sector] -> equity sum, also list of periods sorted
+function aggregate(mode, sectorFilter){
+  const useSectors = (sectorFilter && sectorFilter.length) ? new Set(sectorFilter) : null;
+  const map = new Map(); // periodKey -> Map(sector -> sum)
+  for (const r of ROWS){
+    if (useSectors && !useSectors.has(r.sector)) continue;
+    if (r.equity == null) continue;
+    const p = periodKeyFor(r.end, mode);
+    if (!map.has(p)) map.set(p, new Map());
+    const inner = map.get(p);
+    inner.set(r.sector, (inner.get(r.sector) || 0) + r.equity);
+  }
+  const periods = [...map.keys()].sort((a,b) =>
+    periodSortKey(a,mode) > periodSortKey(b,mode) ? 1 : -1);
+  return {map, periods};
+}
+
+// ── State ───────────────────────────────────────────────────────────────
+const state = {
+  mode: "fortnight",
+  topN: 8,
+  rangeN: 24,
+  sectorFilter: [],
+  heatmapYear: "all",
+};
+
+// Year extraction for heatmap year filter (works across agg modes)
+function periodYear(key, mode){
+  if (mode === "fortnight"){
+    return new Date(key + "T00:00:00").getFullYear();
+  }
+  if (mode === "month"){
+    // "Mon YYYY"
+    return Number(key.split(" ")[1]);
+  }
+  if (mode === "quarter"){
+    // "YYYY QN"
+    return Number(key.split(" Q")[0]);
+  }
+  // "FY YY-YY" -> use the start year (2000 + first half)
+  return 2000 + Number(key.split(" ")[1].split("-")[0]);
+}
+
+// ── UI: populate selects ────────────────────────────────────────────────
+const sectorSelect = $("sectorSelect");
+sectorSelect.size = Math.min(8, SECTORS.length);
+SECTORS.forEach(s => {
+  const o = document.createElement("option"); o.value = s; o.textContent = s;
+  sectorSelect.appendChild(o);
+});
+sectorSelect.addEventListener("change", () => {
+  state.sectorFilter = [...sectorSelect.selectedOptions].map(o => o.value);
+  render();
+});
+$("topN").addEventListener("change", e => { state.topN = e.target.value === "all" ? Infinity : Number(e.target.value); render(); });
+$("rangeN").addEventListener("change", e => { state.rangeN = e.target.value === "all" ? Infinity : Number(e.target.value); render(); });
+$("resetBtn").addEventListener("click", () => {
+  state.sectorFilter = []; state.topN = 8; state.rangeN = 24; state.heatmapYear = "all";
+  sectorSelect.selectedIndex = -1;
+  $("topN").value = "8"; $("rangeN").value = "24";
+  $("heatmapYear").value = "all";
+  render();
+});
+$("heatmapYear").addEventListener("change", e => {
+  state.heatmapYear = e.target.value;
+  render();
+});
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  state.mode = t.dataset.tab;
+  $("aggLabel").textContent = "(per " + ({fortnight:"fortnight",month:"month",quarter:"quarter",year:"financial year"})[state.mode] + ")";
+  render();
+}));
+
+// ── Charts ──────────────────────────────────────────────────────────────
+let totalFlowChart, cumulativeChart, sectorTrendChart;
+Chart.defaults.color = "#8b949e";
+Chart.defaults.borderColor = "#21262d";
+Chart.defaults.font.family = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+
+const PALETTE = [
+  "#58a6ff","#f5bf42","#79c0ff","#56d364","#ff7b72","#bc8cff",
+  "#ffa657","#7ee787","#ff8484","#a5d6ff","#d2a8ff","#85c8d6",
+];
+
+function destroyChart(c){ if (c) c.destroy(); }
+
+function renderTotalFlowChart(periods, totals){
+  destroyChart(totalFlowChart);
+  const ctx = $("totalFlowChart").getContext("2d");
+  totalFlowChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: periods.map(p => periodLabel(p, state.mode)),
+      datasets: [{
+        label: "Net Equity Flow (INR Cr)",
+        data: totals,
+        backgroundColor: totals.map(v => v >= 0 ? "rgba(46,160,67,.75)" : "rgba(248,81,73,.75)"),
+        borderColor: totals.map(v => v >= 0 ? "#2ea043" : "#f85149"),
+        borderWidth: 1,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => `${SIGN(c.parsed.y)} Cr` } },
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#21262d"} },
+      },
+    },
+  });
+}
+
+function renderCumulativeChart(periods, totals){
+  destroyChart(cumulativeChart);
+  let cum = 0;
+  const cumData = totals.map(v => (cum += (v||0)));
+  const ctx = $("cumulativeChart").getContext("2d");
+  cumulativeChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: periods.map(p => periodLabel(p, state.mode)),
+      datasets: [{
+        label: "Cumulative",
+        data: cumData,
+        borderColor: "#58a6ff",
+        backgroundColor: "rgba(88,166,255,.18)",
+        fill: true,
+        tension: 0.25,
+        pointRadius: 2,
+      }],
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display:false },
+        tooltip: { callbacks: { label: c => `${SIGN(c.parsed.y)} Cr cumulative` } } },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#21262d"} },
+      },
+    },
+  });
+}
+
+function renderSectorTrendChart(periods, sectorMatrix, sectorsToShow){
+  destroyChart(sectorTrendChart);
+  const datasets = sectorsToShow.map((s, i) => ({
+    label: s,
+    data: periods.map(p => sectorMatrix[s][p] ?? null),
+    borderColor: PALETTE[i % PALETTE.length],
+    backgroundColor: PALETTE[i % PALETTE.length] + "33",
+    borderWidth: 2,
+    pointRadius: 1.5,
+    tension: 0.25,
+    spanGaps: true,
+  }));
+  const ctx = $("sectorTrendChart").getContext("2d");
+  sectorTrendChart = new Chart(ctx, {
+    type: "line",
+    data: { labels: periods.map(p => periodLabel(p, state.mode)), datasets },
+    options: {
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } },
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: ${SIGN(c.parsed.y)} Cr` } },
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{maxRotation:60, minRotation:30, autoSkip:true} },
+        y: { ticks:{callback:v => NF.format(v)}, grid:{color:"#21262d"} },
+      },
+    },
+  });
+}
+
+// ── Leaderboard renderers ───────────────────────────────────────────────
+function renderLeader(targetId, items, signClass){
+  const el = $(targetId);
+  el.innerHTML = "";
+  items.forEach(([name, val]) => {
+    const row = document.createElement("div");
+    row.className = "row " + signClass;
+    row.innerHTML = `<div class="name" title="${name}">${name}</div>
+                     <div class="val">${SIGN(val)}</div>`;
+    el.appendChild(row);
+  });
+}
+
+// ── Heatmap ─────────────────────────────────────────────────────────────
+function heatColor(v, maxAbs){
+  if (v == null || maxAbs <= 0) return "transparent";
+  const ratio = Math.max(-1, Math.min(1, v / maxAbs));
+  if (ratio >= 0){
+    const a = 0.10 + 0.55 * ratio;
+    return `rgba(46,160,67,${a})`;
+  }
+  const a = 0.10 + 0.55 * (-ratio);
+  return `rgba(248,81,73,${a})`;
+}
+function renderHeatmap(periods, sectors, matrix){
+  const wrap = $("heatmapWrap");
+  let maxAbs = 0;
+  sectors.forEach(s => periods.forEach(p => {
+    const v = matrix[s][p];
+    if (v != null && Math.abs(v) > maxAbs) maxAbs = Math.abs(v);
+  }));
+  const totals = periods.map(p =>
+    sectors.reduce((acc, s) => acc + (matrix[s][p] ?? 0), 0));
+
+  let html = '<table class="heatmap"><thead><tr><th class="sector">Sector</th>';
+  periods.forEach(p => html += `<th>${periodLabel(p, state.mode)}</th>`);
+  html += "</tr></thead><tbody>";
+  sectors.forEach(s => {
+    html += `<tr><td class="sector" title="${s}">${s}</td>`;
+    periods.forEach(p => {
+      const v = matrix[s][p];
+      const bg = heatColor(v, maxAbs);
+      const txt = v == null ? "" : NF.format(Math.round(v));
+      html += `<td style="background:${bg}">${txt}</td>`;
+    });
+    html += "</tr>";
+  });
+  html += "</tbody><tfoot><tr><td class='sector'>TOTAL</td>";
+  totals.forEach(t => html += `<td style="color:${t>=0?'var(--pos)':'var(--neg)'}">${SIGN(t)}</td>`);
+  html += "</tr></tfoot></table>";
+  wrap.innerHTML = html;
+}
+
+// ── KPI box ─────────────────────────────────────────────────────────────
+function renderKpis(latestKey, prevKey, sectorTotalsLatest, totalLatest, totalPrev){
+  $("kpiTotal").textContent = SIGN(totalLatest) + " Cr";
+  $("kpiTotal").style.color = totalLatest >= 0 ? "var(--pos)" : "var(--neg)";
+  const delta = totalPrev == null ? null : totalLatest - totalPrev;
+  const deltaTxt = delta == null ? "" :
+    `<span class="delta ${delta>=0?'pos':'neg'}">${SIGN(delta)} vs prior</span>`;
+  $("kpiTotalSub").innerHTML = (periodLabel(latestKey, state.mode) || "—") + " " + deltaTxt;
+
+  const sortedSectors = [...sectorTotalsLatest.entries()].sort((a,b) => b[1]-a[1]);
+  if (sortedSectors.length){
+    const [topIn, topInV] = sortedSectors[0];
+    const [topOut, topOutV] = sortedSectors[sortedSectors.length-1];
+    $("kpiTopIn").textContent = topIn;
+    $("kpiTopIn").style.color = "var(--pos)";
+    $("kpiTopInSub").textContent = SIGN(topInV) + " Cr";
+    $("kpiTopOut").textContent = topOut;
+    $("kpiTopOut").style.color = "var(--neg)";
+    $("kpiTopOutSub").textContent = SIGN(topOutV) + " Cr";
+  }
+  const breadthIn = [...sectorTotalsLatest.values()].filter(v => v > 0).length;
+  $("kpiBreadth").textContent = breadthIn + "/" + sectorTotalsLatest.size;
+  const pct = sectorTotalsLatest.size ? Math.round(100*breadthIn/sectorTotalsLatest.size) : 0;
+  $("kpiBreadthSub").textContent = pct + "% of tracked sectors net positive";
+}
+
+// ── Render ──────────────────────────────────────────────────────────────
+function render(){
+  const {map, periods} = aggregate(state.mode, state.sectorFilter);
+
+  // Range cap
+  const rangedPeriods = state.rangeN === Infinity ? periods : periods.slice(-state.rangeN);
+  $("rangePill").textContent = rangedPeriods.length + " " + (state.mode === "fortnight" ? "fortnights" :
+                               state.mode === "month" ? "months" : state.mode === "quarter" ? "quarters" : "years");
+
+  // Sector matrix and per-period totals
+  const sectorsList = (state.sectorFilter.length ? state.sectorFilter : SECTORS);
+  const matrix = {};
+  sectorsList.forEach(s => matrix[s] = {});
+  rangedPeriods.forEach(p => {
+    const inner = map.get(p) || new Map();
+    sectorsList.forEach(s => matrix[s][p] = inner.get(s) ?? null);
+  });
+  const totals = rangedPeriods.map(p => {
+    const inner = map.get(p) || new Map();
+    let t = 0; sectorsList.forEach(s => t += (inner.get(s) ?? 0));
+    return t;
+  });
+
+  // KPIs use latest fortnight regardless of agg mode for "latest" period
+  const latestKey = rangedPeriods[rangedPeriods.length-1];
+  const prevKey   = rangedPeriods[rangedPeriods.length-2];
+  const innerLatest = map.get(latestKey) || new Map();
+  const innerPrev   = map.get(prevKey)   || new Map();
+  const sectorTotalsLatest = new Map();
+  sectorsList.forEach(s => sectorTotalsLatest.set(s, innerLatest.get(s) ?? 0));
+  const totalLatest = [...sectorTotalsLatest.values()].reduce((a,b) => a+b, 0);
+  const totalPrev   = prevKey != null
+    ? sectorsList.reduce((a,s) => a + (innerPrev.get(s) ?? 0), 0)
+    : null;
+  renderKpis(latestKey, prevKey, sectorTotalsLatest, totalLatest, totalPrev);
+
+  // Total flow chart + cumulative
+  renderTotalFlowChart(rangedPeriods, totals);
+  renderCumulativeChart(rangedPeriods, totals);
+
+  // Top sectors by absolute flow across the visible range
+  const sectorAbs = sectorsList.map(s => {
+    let abs = 0;
+    rangedPeriods.forEach(p => { abs += Math.abs(matrix[s][p] ?? 0); });
+    return [s, abs];
+  }).sort((a,b) => b[1]-a[1]);
+  const sectorsToShow = (state.topN === Infinity ? sectorAbs : sectorAbs.slice(0, state.topN))
+    .map(x => x[0]);
+  renderSectorTrendChart(rangedPeriods, matrix, sectorsToShow);
+
+  // Top movers + momentum
+  $("topMoversLabel").textContent = "(" + (periodLabel(latestKey, state.mode) || "latest") + ")";
+  const sortedLatest = [...sectorTotalsLatest.entries()].sort((a,b) => b[1]-a[1]);
+  renderLeader("topInflows",  sortedLatest.slice(0,8).filter(([,v]) => v > 0), "pos");
+  renderLeader("topOutflows", sortedLatest.slice(-8).reverse().filter(([,v]) => v < 0), "neg");
+
+  // Momentum: latest vs trailing-3 average
+  const momentum = sectorsList.map(s => {
+    const vals = rangedPeriods.slice(-4, -1).map(p => matrix[s][p] ?? 0);
+    const avg = vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+    return [s, (matrix[s][latestKey] ?? 0) - avg];
+  }).sort((a,b) => b[1]-a[1]);
+  const momTop = momentum.slice(0,5).concat(momentum.slice(-5).reverse());
+  const momEl = $("momentum"); momEl.innerHTML = "";
+  momTop.forEach(([s, v]) => {
+    const row = document.createElement("div");
+    row.className = "row " + (v >= 0 ? "pos" : "neg");
+    row.innerHTML = `<div class="name" title="${s}">${s}</div><div class="val">${SIGN(v)}</div>`;
+    momEl.appendChild(row);
+  });
+
+  // Heatmap year dropdown — rebuild options from the periods currently in view
+  const yearsAvail = [...new Set(rangedPeriods.map(p => periodYear(p, state.mode)))]
+    .filter(y => Number.isFinite(y)).sort((a,b) => a-b);
+  const heatYearSel = $("heatmapYear");
+  const prevYear = state.heatmapYear;
+  heatYearSel.innerHTML = '<option value="all">All years</option>' +
+    yearsAvail.map(y => `<option value="${y}">${y}</option>`).join("");
+  // Preserve selection if still valid; otherwise fall back to All
+  if (prevYear !== "all" && yearsAvail.includes(Number(prevYear))){
+    heatYearSel.value = String(prevYear);
+  } else {
+    heatYearSel.value = "all";
+    state.heatmapYear = "all";
+  }
+
+  // Filter periods for heatmap only (charts/leaderboards keep full range)
+  const heatPeriods = state.heatmapYear === "all"
+    ? rangedPeriods
+    : rangedPeriods.filter(p => periodYear(p, state.mode) === Number(state.heatmapYear));
+
+  // Heatmap with full sectors list (not just sectorsToShow) for completeness
+  renderHeatmap(heatPeriods, sectorsList, matrix);
+}
+
+render();
+</script>
+</body>
+</html>

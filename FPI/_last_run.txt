@@ -1,0 +1,18 @@
+=== RUN START === 
+[2026-06-05 09:05:51] Loading workbook FPI_Sectorial-Analysis.xlsx
+[2026-06-05 09:05:51] Discovering fortnights ...
+[2026-06-05 09:05:51]   NSDL has 46 fortnights from Jul 01-15, 2024 to May 16-31, 2026
+[2026-06-05 09:05:51]   workbook already has 46 fortnights
+[2026-06-05 09:05:51]   0 new fortnight(s) to fetch
+[2026-06-05 09:05:51] Rebuilding aggregation sheets...
+[2026-06-05 09:05:52] Saved workbook (E:\FPI\FPI_Sectorial-Analysis.xlsx)
+[2026-06-05 09:05:52]   wrote fpi_data.json & fpi_data.js (1101 rows)
+[2026-06-05 09:05:52] Done. New fortnights added this run: 0
+ 
+=== PYTHON EXIT CODE: 0 === 
+ 
+=== FPI_DATA.JSON STRUCTURE INSPECTION === 
+top type: dict
+top keys: ['generated_at', 'rows']
+ 
+=== DONE === 

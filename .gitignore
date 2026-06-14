@@ -1,0 +1,44 @@
+# Secrets — never commit (credentials.example.ps1 is a safe template and stays tracked)
+credentials.ps1
+kite/
+dhan/
+kite_token.json
+dhan_token.json
+screener_session.json
+*_credentials.txt
+*_api_credentials*
+*secret*.txt
+*.pem
+*.key
+.env
+.env.*
+
+# Runtime output
+alerts/
+.deps_ok
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Gemini API key — LOCAL ONLY, never publish
+gemin_api_key.md
+gemini_api_key.md
+*_api_key*.md
+*api*key*.md
+.cache/insights_*.json
+
+# stray scratch file (safe to delete)
+__sync_test_bash.txt
+# scratch queue / batch log (safe to delete)
+alerts/bake_batch.log
+alerts/bake_full.log
+
+# FPI runtime log
+FPI/*.log
+
+# local audit report (not for publishing)
+SECURITY_AUDIT.md

@@ -1,0 +1,8 @@
+{
+  "generated_at_ist": "2026-06-12 00:58:36 IST",
+  "buybacks": 25,
+  "candidates": 10,
+  "source": "Screener /actions/buyback (authoritative) + full-text",
+  "prices": "yfinance delayed 0/25 — Dhan: HTTP 401: {\"data\":{\"808\":\"Authentication Failed - Client ID or Token invalid\"},\"",
+  "offer_types": "25 Tender, 0 Open Market (25 live buybacks)"
+}
