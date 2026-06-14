@@ -19,6 +19,7 @@
     "eps_latest_q": -3.5,
     "np_growth_qoq": -585.71,
     "eps_growth_qoq": -646.87,
+    "pct_change": null,
     "buyback_pct": 0.1547,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -29,8 +30,7 @@
     "exp_money_general": 0.3901,
     "exp_money_small": 1.232,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "VLSFINANCE",
@@ -52,6 +52,7 @@
     "eps_latest_q": -19.44,
     "np_growth_qoq": -506.67,
     "eps_growth_qoq": -546.9,
+    "pct_change": null,
     "buyback_pct": 0.0838,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -62,8 +63,7 @@
     "exp_money_general": 0.1039,
     "exp_money_small": 0.328,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "530077",
@@ -85,6 +85,7 @@
     "eps_latest_q": 4.69,
     "np_growth_qoq": 38.01,
     "eps_growth_qoq": 37.94,
+    "pct_change": 0.79,
     "buyback_pct": 0.1377,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -95,8 +96,7 @@
     "exp_money_general": 0.0782,
     "exp_money_small": 0.2468,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "GHCL",
@@ -118,6 +118,7 @@
     "eps_latest_q": 13.05,
     "np_growth_qoq": 12.15,
     "eps_growth_qoq": 12.4,
+    "pct_change": null,
     "buyback_pct": 0.045,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -128,8 +129,7 @@
     "exp_money_general": 0.0586,
     "exp_money_small": 0.1851,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "MATRIMONY",
@@ -151,6 +151,7 @@
     "eps_latest_q": 4.03,
     "np_growth_qoq": -7.13,
     "eps_growth_qoq": -3.12,
+    "pct_change": null,
     "buyback_pct": 0.0432,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -161,8 +162,7 @@
     "exp_money_general": 0.0558,
     "exp_money_small": 0.1762,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "NURECA",
@@ -184,6 +184,7 @@
     "eps_latest_q": -6.95,
     "np_growth_qoq": -305.26,
     "eps_growth_qoq": -305.01,
+    "pct_change": null,
     "buyback_pct": 0.0609,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -194,8 +195,7 @@
     "exp_money_general": 0.0489,
     "exp_money_small": 0.1543,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "WIPRO",
@@ -283,6 +283,7 @@
     "eps_latest_q": 13.72,
     "np_growth_qoq": 2.38,
     "eps_growth_qoq": 2.46,
+    "pct_change": null,
     "buyback_pct": 0.0066,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -293,8 +294,7 @@
     "exp_money_general": 0.0308,
     "exp_money_small": 0.0972,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "INFY",
@@ -316,6 +316,7 @@
     "eps_latest_q": 19.66,
     "np_growth_qoq": 8.31,
     "eps_growth_qoq": 8.26,
+    "pct_change": null,
     "buyback_pct": 0.0246,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -326,8 +327,7 @@
     "exp_money_general": 0.0287,
     "exp_money_small": 0.0906,
     "decision": "Apply (>=8%)",
-    "candidate": true,
-    "pct_change": null
+    "candidate": true
   },
   {
     "code": "FAIRCHEMOR",
@@ -349,6 +349,7 @@
     "eps_latest_q": 2.83,
     "np_growth_qoq": 3790.0,
     "eps_growth_qoq": 3637.5,
+    "pct_change": null,
     "buyback_pct": 0.0326,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -359,8 +360,7 @@
     "exp_money_general": 0.0218,
     "exp_money_small": 0.0688,
     "decision": "<8%",
-    "candidate": false,
-    "pct_change": null
+    "candidate": false
   },
   {
     "code": "ONWARDTEC",
@@ -415,6 +415,7 @@
     "eps_latest_q": 1.47,
     "np_growth_qoq": 10.88,
     "eps_growth_qoq": 10.53,
+    "pct_change": null,
     "buyback_pct": 0.0262,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -425,8 +426,7 @@
     "exp_money_general": 0.014,
     "exp_money_small": 0.0442,
     "decision": "<8%",
-    "candidate": false,
-    "pct_change": null
+    "candidate": false
   },
   {
     "code": "CYBERTECH",
@@ -745,6 +745,7 @@
     "eps_latest_q": 11.92,
     "np_growth_qoq": 18.9,
     "eps_growth_qoq": 18.96,
+    "pct_change": null,
     "buyback_pct": 0.0093,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -755,8 +756,7 @@
     "exp_money_general": 0.0,
     "exp_money_small": 0.0001,
     "decision": "<8%",
-    "candidate": false,
-    "pct_change": null
+    "candidate": false
   },
   {
     "code": "GARFIBRES",
@@ -811,6 +811,7 @@
     "eps_latest_q": 4.91,
     "np_growth_qoq": 33.33,
     "eps_growth_qoq": 34.89,
+    "pct_change": null,
     "buyback_pct": 0.0493,
     "small_holding": 0.05,
     "participation": 0.5,
@@ -821,7 +822,6 @@
     "exp_money_general": -0.0478,
     "exp_money_small": -0.1509,
     "decision": "<8%",
-    "candidate": false,
-    "pct_change": null
+    "candidate": false
   }
 ]

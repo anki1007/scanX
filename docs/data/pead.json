@@ -19,7 +19,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 139.0,
     "pct_change": null
   },
@@ -43,7 +43,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 4.07,
     "pct_change": 4.9
   },
@@ -67,7 +67,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 1310.0,
     "pct_change": null
   },
@@ -91,7 +91,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 543.0,
     "pct_change": null
   },
@@ -115,7 +115,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 27.5,
     "pct_change": null
   },
@@ -139,7 +139,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 1626.0,
     "pct_change": null
   },
@@ -163,7 +163,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 169.1,
     "pct_change": 5.85
   },
@@ -187,7 +187,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 929.0,
     "pct_change": null
   },
@@ -211,7 +211,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 2115.0,
     "pct_change": null
   },
@@ -235,7 +235,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 208.0,
     "pct_change": null
   },
@@ -259,7 +259,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": true,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 89.5,
     "pct_change": 5.0
   },
@@ -283,7 +283,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 0.49,
     "pct_change": null
   },
@@ -307,7 +307,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 2743.0,
     "pct_change": null
   },
@@ -331,7 +331,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 3.41,
     "pct_change": null
   },
@@ -355,7 +355,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 82.6,
     "pct_change": null
   },
@@ -379,7 +379,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 1394.0,
     "pct_change": null
   },
@@ -403,7 +403,7 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 0.19,
     "pct_change": 0.0
   },
@@ -427,7 +427,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 56.39,
     "pct_change": -2.52
   },
@@ -451,7 +451,7 @@
     "pead_category": "MEDIUM",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 70.6,
     "pct_change": 3.38
   },
@@ -475,7 +475,7 @@
     "pead_category": "MEDIUM",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 3.41,
     "pct_change": null
   },
@@ -499,7 +499,7 @@
     "pead_category": "MEDIUM",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 180.0,
     "pct_change": 0.5
   },
@@ -523,7 +523,7 @@
     "pead_category": "LOW",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 166.0,
     "pct_change": null
   },
@@ -547,7 +547,7 @@
     "pead_category": "LOW",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 878.0,
     "pct_change": null
   },
@@ -571,7 +571,7 @@
     "pead_category": "LOW",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 61.05,
     "pct_change": 1.29
   },
@@ -595,7 +595,7 @@
     "pead_category": "LOW",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-06-14T11:48:21+00:00",
+    "calculation_date": "2026-06-14T11:51:15+00:00",
     "ltp": 929.0,
     "pct_change": null
   }
