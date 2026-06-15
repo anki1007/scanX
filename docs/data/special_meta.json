@@ -1,5 +1,5 @@
 {
-  "generated_at_ist": "2026-06-15 21:46:36 IST",
+  "generated_at_ist": "2026-06-15 23:02:41 IST",
   "count": 76,
   "by_category": {
     "NCLT": 15,
@@ -11,5 +11,5 @@
     "Warrant": 12
   },
   "source": "Screener full-text-search",
-  "prices": "NseBseProvider LTP 25/76"
+  "prices": "yfinance delayed 0/76 \u2014 Dhan: BSE 503635: Timeout: Failed to perform, curl: (28) Operation timed out after 600"
 }

@@ -198,6 +198,15 @@
     "orders_pct_revenue": 5.5
   },
   {
+    "code": "544189",
+    "name": "Sattrix Information Security Ltd",
+    "order_count": 1,
+    "total_value_cr": 3.04,
+    "revenue_fy": 58.76,
+    "market_cap": 427.0,
+    "orders_pct_revenue": 5.17
+  },
+  {
     "code": "CEINSYS",
     "name": "Ceinsys Tech Ltd",
     "order_count": 1,
@@ -393,15 +402,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 1367.0,
     "market_cap": 7311.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "544189",
-    "name": "Sattrix Information Security Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 58.76,
-    "market_cap": 427.0,
     "orders_pct_revenue": null
   },
   {
