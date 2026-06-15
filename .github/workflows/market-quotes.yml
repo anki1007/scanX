@@ -9,8 +9,7 @@ name: scanX market quotes
 
 on:
   schedule:
-    - cron: "*/15 4-9 * * 1-5"     # 09:30-15:30 IST window (UTC+5:30), Mon-Fri
-    - cron: "0 10 * * 1-5"          # one closing snapshot ~15:30 IST
+    - cron: "*/15 3-10 * * 1-5"    # ~08:45-15:45 IST window (UTC+5:30), Mon-Fri
   workflow_dispatch: {}
 
 permissions:
@@ -27,6 +26,7 @@ jobs:
     env:
       PYTHONIOENCODING: utf-8
       SCANX_NO_DHAN: "1"
+      SCANX_QUOTES_CLOUD: "1"       # NSE blocks datacenter IPs -> real-time BSE-direct (+ Yahoo gap-fill)
     steps:
       - uses: actions/checkout@v4
 
@@ -36,7 +36,7 @@ jobs:
           cache: pip
 
       - name: Install minimal deps
-        run: python -m pip install --quiet --disable-pip-version-check requests curl_cffi
+        run: python -m pip install --quiet --disable-pip-version-check requests curl_cffi yfinance pandas numpy
 
       - name: Fetch quotes
         run: python scripts/refresh_quotes.py || echo "quotes unavailable this cycle"
