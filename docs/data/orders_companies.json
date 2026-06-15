@@ -5,7 +5,7 @@
     "order_count": 1,
     "total_value_cr": 1200.0,
     "revenue_fy": 0.02,
-    "market_cap": 377.0,
+    "market_cap": 380.0,
     "orders_pct_revenue": 6000000.0
   },
   {
@@ -45,12 +45,21 @@
     "orders_pct_revenue": 32.73
   },
   {
+    "code": "CEWATER",
+    "name": "Concord Enviro Systems Ltd",
+    "order_count": 1,
+    "total_value_cr": 16.0,
+    "revenue_fy": 55.87,
+    "market_cap": 556.0,
+    "orders_pct_revenue": 28.64
+  },
+  {
     "code": "CAPACITE",
     "name": "Capacite Infraprojects Ltd",
     "order_count": 1,
     "total_value_cr": 589.0,
     "revenue_fy": 2236.0,
-    "market_cap": 1886.0,
+    "market_cap": 1892.0,
     "orders_pct_revenue": 26.34
   },
   {
@@ -68,7 +77,7 @@
     "order_count": 1,
     "total_value_cr": 11.16,
     "revenue_fy": 55.77,
-    "market_cap": 226.0,
+    "market_cap": 227.0,
     "orders_pct_revenue": 20.01
   },
   {
@@ -95,7 +104,7 @@
     "order_count": 1,
     "total_value_cr": 16.55,
     "revenue_fy": 112.0,
-    "market_cap": 82.7,
+    "market_cap": 82.4,
     "orders_pct_revenue": 14.78
   },
   {
@@ -140,7 +149,7 @@
     "order_count": 1,
     "total_value_cr": 125.88,
     "revenue_fy": 1423.0,
-    "market_cap": 1640.0,
+    "market_cap": 1631.0,
     "orders_pct_revenue": 8.85
   },
   {
@@ -149,7 +158,7 @@
     "order_count": 1,
     "total_value_cr": 35.0,
     "revenue_fy": 548.0,
-    "market_cap": 319.0,
+    "market_cap": 320.0,
     "orders_pct_revenue": 6.39
   },
   {
@@ -158,7 +167,7 @@
     "order_count": 1,
     "total_value_cr": 18.0,
     "revenue_fy": 301.0,
-    "market_cap": 1761.0,
+    "market_cap": 1762.0,
     "orders_pct_revenue": 5.98
   },
   {
@@ -176,7 +185,7 @@
     "order_count": 1,
     "total_value_cr": 266.26,
     "revenue_fy": 4728.0,
-    "market_cap": 8971.0,
+    "market_cap": 9016.0,
     "orders_pct_revenue": 5.63
   },
   {
@@ -185,7 +194,7 @@
     "order_count": 1,
     "total_value_cr": 17.15,
     "revenue_fy": 312.0,
-    "market_cap": 315.0,
+    "market_cap": 318.0,
     "orders_pct_revenue": 5.5
   },
   {
@@ -194,7 +203,7 @@
     "order_count": 1,
     "total_value_cr": 30.06,
     "revenue_fy": 635.0,
-    "market_cap": 1941.0,
+    "market_cap": 1948.0,
     "orders_pct_revenue": 4.73
   },
   {
@@ -203,7 +212,7 @@
     "order_count": 1,
     "total_value_cr": 9.94,
     "revenue_fy": 221.0,
-    "market_cap": 4443.0,
+    "market_cap": 4437.0,
     "orders_pct_revenue": 4.5
   },
   {
@@ -239,7 +248,7 @@
     "order_count": 1,
     "total_value_cr": 2.46,
     "revenue_fy": 105.0,
-    "market_cap": 254.0,
+    "market_cap": 255.0,
     "orders_pct_revenue": 2.34
   },
   {
@@ -297,21 +306,12 @@
     "orders_pct_revenue": 1.07
   },
   {
-    "code": "KEL",
-    "name": "Kundan Edifice Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.05,
-    "revenue_fy": 105.0,
-    "market_cap": 84.2,
-    "orders_pct_revenue": 1.0
-  },
-  {
     "code": "NBCC",
     "name": "NBCC (India) Ltd",
     "order_count": 1,
     "total_value_cr": 83.24,
     "revenue_fy": 9755.0,
-    "market_cap": 28988.0,
+    "market_cap": 29004.0,
     "orders_pct_revenue": 0.85
   },
   {
@@ -320,7 +320,7 @@
     "order_count": 1,
     "total_value_cr": 90.0,
     "revenue_fy": 33782.0,
-    "market_cap": 133328.0,
+    "market_cap": 133311.0,
     "orders_pct_revenue": 0.27
   },
   {
@@ -329,7 +329,7 @@
     "order_count": 1,
     "total_value_cr": 16.26,
     "revenue_fy": 6763.0,
-    "market_cap": 7413.0,
+    "market_cap": 7405.0,
     "orders_pct_revenue": 0.24
   },
   {
@@ -338,8 +338,17 @@
     "order_count": 1,
     "total_value_cr": 1.67,
     "revenue_fy": 811.0,
-    "market_cap": 4873.0,
+    "market_cap": 4874.0,
     "orders_pct_revenue": 0.21
+  },
+  {
+    "code": "RAILTEL",
+    "name": "Railtel Corporation of India Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 4277.0,
+    "market_cap": 10230.0,
+    "orders_pct_revenue": null
   },
   {
     "code": "UNIDT",
@@ -347,7 +356,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 182.0,
-    "market_cap": 471.0,
+    "market_cap": 470.0,
     "orders_pct_revenue": null
   },
   {
@@ -365,7 +374,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 5667.0,
-    "market_cap": 3749.0,
+    "market_cap": 3747.0,
     "orders_pct_revenue": null
   },
   {
@@ -374,7 +383,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 6321.0,
-    "market_cap": 16053.0,
+    "market_cap": 15978.0,
     "orders_pct_revenue": null
   },
   {
@@ -383,7 +392,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1367.0,
-    "market_cap": 7350.0,
+    "market_cap": 7311.0,
     "orders_pct_revenue": null
   },
   {
@@ -396,12 +405,21 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "KEL",
+    "name": "Kundan Edifice Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 105.0,
+    "market_cap": 84.2,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "539697",
     "name": "Hiliks Technologies Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 29.59,
-    "market_cap": 61.3,
+    "market_cap": 60.4,
     "orders_pct_revenue": null
   },
   {
@@ -437,7 +455,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 325.0,
-    "market_cap": 365.0,
+    "market_cap": 369.0,
     "orders_pct_revenue": null
   },
   {
@@ -446,7 +464,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 949.0,
-    "market_cap": 794.0,
+    "market_cap": 792.0,
     "orders_pct_revenue": null
   },
   {
@@ -500,7 +518,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1798.0,
-    "market_cap": 2929.0,
+    "market_cap": 2930.0,
     "orders_pct_revenue": null
   },
   {
@@ -509,7 +527,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 245.0,
-    "market_cap": 1936.0,
+    "market_cap": 1931.0,
     "orders_pct_revenue": null
   },
   {
@@ -545,7 +563,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 574.0,
-    "market_cap": 213.0,
+    "market_cap": 214.0,
     "orders_pct_revenue": null
   },
   {
@@ -554,7 +572,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 288.0,
-    "market_cap": 741.0,
+    "market_cap": 743.0,
     "orders_pct_revenue": null
   },
   {
@@ -572,7 +590,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2097.0,
-    "market_cap": 3575.0,
+    "market_cap": 3579.0,
     "orders_pct_revenue": null
   },
   {
@@ -590,7 +608,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 30.01,
-    "market_cap": 34.1,
+    "market_cap": 34.3,
     "orders_pct_revenue": null
   },
   {
@@ -599,7 +617,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 209.0,
-    "market_cap": 818.0,
+    "market_cap": 817.0,
     "orders_pct_revenue": null
   },
   {
@@ -608,7 +626,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3284.0,
-    "market_cap": 10149.0,
+    "market_cap": 10148.0,
     "orders_pct_revenue": null
   },
   {
@@ -657,21 +675,12 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "RAILTEL",
-    "name": "Railtel Corporation of India Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 4277.0,
-    "market_cap": 10230.0,
-    "orders_pct_revenue": null
-  },
-  {
     "code": "WAAREERTL",
     "name": "Waaree Renewable Technologies Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3331.0,
-    "market_cap": 10068.0,
+    "market_cap": 10063.0,
     "orders_pct_revenue": null
   },
   {
@@ -680,7 +689,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 10.32,
-    "market_cap": 73.0,
+    "market_cap": 74.1,
     "orders_pct_revenue": null
   },
   {
@@ -689,7 +698,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 126366.0,
-    "market_cap": 119932.0,
+    "market_cap": 119978.0,
     "orders_pct_revenue": null
   },
   {
@@ -698,7 +707,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2556.0,
-    "market_cap": 1093.0,
+    "market_cap": 1088.0,
     "orders_pct_revenue": null
   },
   {
@@ -734,7 +743,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 47.0,
-    "market_cap": 64.7,
+    "market_cap": 65.2,
     "orders_pct_revenue": null
   },
   {
@@ -770,7 +779,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 188.0,
-    "market_cap": 379.0,
+    "market_cap": 385.0,
     "orders_pct_revenue": null
   },
   {
@@ -806,7 +815,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1331.0,
-    "market_cap": 868.0,
+    "market_cap": 866.0,
     "orders_pct_revenue": null
   },
   {
@@ -851,16 +860,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 481.0,
-    "market_cap": 4601.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "CEWATER",
-    "name": "Concord Enviro Systems Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 55.87,
-    "market_cap": 556.0,
+    "market_cap": 4596.0,
     "orders_pct_revenue": null
   },
   {
@@ -869,7 +869,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 102.0,
-    "market_cap": 1570.0,
+    "market_cap": 1573.0,
     "orders_pct_revenue": null
   },
   {
@@ -878,16 +878,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 87.74,
-    "market_cap": 296.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "PARAS",
-    "name": "Paras Defence and Space Technologies Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 417.0,
-    "market_cap": 8931.0,
+    "market_cap": 292.0,
     "orders_pct_revenue": null
   }
 ]
