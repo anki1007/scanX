@@ -155,8 +155,13 @@ async function quotesFallback(){
       (p||[]).forEach(x=>pead[String(x.code||'').toUpperCase()]={s:x.pead_score,c:x.pead_category}); }catch(e){}
     DATA=Object.entries(q.quotes).filter(([k,v])=>v.pct!=null&&v.ltp!=null)
       .sort((a,b)=>Math.abs(b[1].pct)-Math.abs(a[1].pct)).slice(0,25)
-      .map(([k,v])=>({symbol:k,exchange:'NSE',pct_change:v.pct,last:v.ltp,
-        pead_score:(pead[k]||{}).s??null,pead_category:(pead[k]||{}).c||''}));
+      .map(([k,v])=>{const ltp=v.ltp,hi=v.high,lo=v.low,wap=v.vwap;
+        return {symbol:k,exchange:v.ex||'BSE',pct_change:v.pct,last:ltp,
+          open:v.open??null,high:hi??null,low:lo??null,prev_close:v.prev_close??null,
+          volume:v.vol??null,
+          vwap_pos:(wap&&ltp)?((ltp-wap)/wap*100):null,
+          range_pos:(hi!=null&&lo!=null&&hi>lo)?((ltp-lo)/(hi-lo)*100):null,
+          pead_score:(pead[k]||{}).s??null,pead_category:(pead[k]||{}).c||''};});
     if(!DATA.length) return false;
     f("kTime").innerHTML='<span class="dot"></span>quotes '+(q.ist||'')+' · '+(q.source||'delayed');
     f("tbl").style.display=''; f("empty").style.display='none'; render();
