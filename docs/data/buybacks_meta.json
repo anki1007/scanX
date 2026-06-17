@@ -1,8 +1,8 @@
 {
-  "generated_at_ist": "2026-06-16 22:54:58 IST",
+  "generated_at_ist": "2026-06-17 21:36:21 IST",
   "buybacks": 25,
   "candidates": 10,
   "source": "Screener /actions/buyback (authoritative) + Screener full-text search",
   "offer_types": "offer-type: 25/25 tagged from 25 actions",
-  "prices": "NseBseProvider LTP 1/25"
+  "prices": "yfinance delayed 0/25 \u2014 Dhan: BSE ECLERX: Timeout: Failed to perform, curl: (28) Operation timed out after 600"
 }
