@@ -1,9 +1,9 @@
 {
- "generated_at_ist": "2026-06-22 22:52:52 IST",
+ "generated_at_ist": "2026-06-23 21:04:05 IST",
  "source": "screener.in screen",
  "query": "Return on capital employed > 0 AND EVEBITDA > 0",
- "universe": 4382,
- "ranked": 4382,
+ "universe": 4383,
+ "ranked": 4383,
  "financials_flagged": 517,
  "mcap_floor": 0.0
 }
