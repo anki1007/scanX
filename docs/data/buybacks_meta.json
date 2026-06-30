@@ -1,7 +1,7 @@
 {
-  "generated_at_ist": "2026-06-29 21:44:07 IST",
+  "generated_at_ist": "2026-06-30 20:17:18 IST",
   "buybacks": 25,
-  "candidates": 7,
+  "candidates": 8,
   "source": "Screener /actions/buyback (authoritative) + Screener full-text search",
   "offer_types": "offer-type: 25/25 tagged from 25 actions",
   "prices": "NseBseProvider LTP 1/25"
