@@ -3,9 +3,9 @@
     "code": "526071",
     "name": "Stellant Secu.",
     "url": "https://www.screener.in/company/526071/",
-    "market_cap": 333.0,
-    "last_price": 601.0,
-    "pe": 9.1,
+    "market_cap": 350.0,
+    "last_price": 631.0,
+    "pe": 9.5,
     "result_date": "Jun 2026",
     "sales_yoy": 408.62,
     "sales_qoq": 100.34,
@@ -19,9 +19,9 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": true,
-    "calculation_date": "2026-07-06T15:54:16+00:00",
-    "ltp": 601.35,
-    "pct_change": 4.99
+    "calculation_date": "2026-07-07T15:13:33+00:00",
+    "ltp": 631.4,
+    "pct_change": 5.0
   },
   {
     "code": "id",
@@ -43,7 +43,7 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-07-06T15:54:16+00:00",
+    "calculation_date": "2026-07-07T15:13:33+00:00",
     "ltp": null,
     "pct_change": null
   },
@@ -51,9 +51,9 @@
     "code": "523465",
     "name": "Ind Bank Housing",
     "url": "https://www.screener.in/company/523465/",
-    "market_cap": 50.6,
-    "last_price": 50.6,
-    "pe": 13.0,
+    "market_cap": 53.4,
+    "last_price": 53.4,
+    "pe": 13.7,
     "result_date": "Jun 2026",
     "sales_yoy": null,
     "sales_qoq": null,
@@ -67,17 +67,17 @@
     "pead_category": "HIGH",
     "sudden_shift": true,
     "growth_gate": false,
-    "calculation_date": "2026-07-06T15:54:16+00:00",
-    "ltp": 50.6,
-    "pct_change": 10.22
+    "calculation_date": "2026-07-07T15:13:33+00:00",
+    "ltp": 53.42,
+    "pct_change": 5.57
   },
   {
     "code": "KARNIKA",
     "name": "Karnika Industri",
     "url": "https://www.screener.in/company/KARNIKA/",
-    "market_cap": 601.0,
-    "last_price": 96.9,
-    "pe": 21.5,
+    "market_cap": 630.0,
+    "last_price": 102.0,
+    "pe": 22.5,
     "result_date": "Jun 2026",
     "sales_yoy": null,
     "sales_qoq": 2.93,
@@ -91,8 +91,8 @@
     "pead_category": "HIGH",
     "sudden_shift": false,
     "growth_gate": false,
-    "calculation_date": "2026-07-06T15:54:16+00:00",
-    "ltp": 96.9,
+    "calculation_date": "2026-07-07T15:13:33+00:00",
+    "ltp": 102.0,
     "pct_change": null
   }
 ]

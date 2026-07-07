@@ -1,16 +1,16 @@
 {
-  "generated_at_ist": "2026-07-06 21:29:29 IST",
-  "count": 72,
+  "generated_at_ist": "2026-07-07 20:49:20 IST",
+  "count": 77,
   "by_category": {
-    "Preferential": 31,
-    "Scheme/Arrangement": 8,
-    "Warrant": 9,
-    "Demerger": 4,
+    "Preferential": 27,
+    "Scheme/Arrangement": 9,
+    "Warrant": 11,
+    "Open Offer": 8,
+    "Demerger": 6,
     "NCLT": 10,
-    "Delisting": 4,
-    "Open Offer": 5,
-    "Special": 1
+    "Special": 2,
+    "Delisting": 4
   },
   "source": "Screener full-text-search",
-  "prices": "NseBseProvider LTP 25/72"
+  "prices": "NseBseProvider LTP 25/77"
 }
