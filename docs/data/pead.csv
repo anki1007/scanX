@@ -1,5 +1,8 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-526071,Stellant Secu.,https://www.screener.in/company/526071/,350.0,631.0,9.5,Jun 2026,408.62,100.34,905.88,442.69,904.41,445.98,,,97.5,HIGH,True,True,2026-07-07T15:13:33+00:00,631.4,5.0
-id,Betala Glob.Sec.,https://www.screener.in/company/id/,,,,Jun 2026,,,,125.0,50.0,80.0,,,68.8,HIGH,True,False,2026-07-07T15:13:33+00:00,,
-523465,Ind Bank Housing,https://www.screener.in/company/523465/,53.4,53.4,13.7,Jun 2026,,,3627.27,19500.0,-270.59,-173.91,,,57.5,HIGH,True,False,2026-07-07T15:13:33+00:00,53.42,5.57
-KARNIKA,Karnika Industri,https://www.screener.in/company/KARNIKA/,630.0,102.0,22.5,Jun 2026,,2.93,,-1.93,,65.15,,,55.0,HIGH,False,False,2026-07-07T15:13:33+00:00,102.0,
+526071,Stellant Secu.,https://www.screener.in/company/526071/,352.0,635.0,9.6,Jun 2026,408.62,100.34,905.88,442.69,904.41,445.98,,,97.5,HIGH,True,True,2026-07-08T14:40:00+00:00,635.2,0.6
+id,Betala Glob.Sec.,https://www.screener.in/company/id/,21.9,29.2,,Jun 2026,,,,125.0,50.0,80.0,,,68.8,HIGH,True,False,2026-07-08T14:40:00+00:00,29.2,
+INDBANK,Indbank Merchant,https://www.screener.in/company/INDBANK/,151.0,33.8,20.9,Jun 2026,3.14,17.15,11.21,96.69,8.59,72.68,,,68.6,HIGH,True,False,2026-07-08T14:40:00+00:00,33.8,
+523465,Ind Bank Housing,https://www.screener.in/company/523465/,51.0,51.0,13.1,Jun 2026,,,3627.27,19500.0,-270.59,-173.91,,,57.5,HIGH,True,False,2026-07-08T14:40:00+00:00,51.0,-4.53
+KARNIKA,Karnika Industri,https://www.screener.in/company/KARNIKA/,635.0,102.0,22.7,Jun 2026,,2.93,,-1.93,,65.15,,,55.0,HIGH,False,False,2026-07-08T14:40:00+00:00,102.0,
+538547,Oasis Tradelink,https://www.screener.in/company/538547/,1.0,0.92,,Jun 2026,,,-200.0,25.0,-200.0,25.0,,,37.8,MEDIUM,True,False,2026-07-08T14:40:00+00:00,0.92,-1.08
+512301,Chambal Brewer,https://www.screener.in/company/512301/,21.9,29.2,,Jun 2026,,,-14.29,-60.0,-28.57,-50.0,,,31.0,MEDIUM,False,False,2026-07-08T14:40:00+00:00,29.21,5.0
