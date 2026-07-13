@@ -1,24 +1,26 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-SHARDUL,Shardul Sec.,https://www.screener.in/company/SHARDUL/,293.0,33.6,12.6,Jun 2026,100.64,4017.65,103.12,324.49,106.94,342.46,,,97.5,HIGH,True,True,2026-07-10T14:50:38+00:00,33.6,
-526071,Stellant Secu.,https://www.screener.in/company/526071/,329.0,594.0,9.0,Jun 2026,408.62,100.34,905.88,442.69,904.41,445.98,,,97.5,HIGH,True,True,2026-07-10T14:50:38+00:00,594.35,-1.51
-ANANDRATHI,Anand Rathi Wea.,https://www.screener.in/company/ANANDRATHI/,35592.0,2147.0,77.0,Jun 2026,18.11,13.0,76.79,59.8,-13.6,29.96,,,76.7,HIGH,True,False,2026-07-10T14:50:38+00:00,2147.0,
-539983,Sidh Automobiles,https://www.screener.in/company/539983/,3.7,12.5,,Jun 2026,,0.0,100.0,0.0,157.14,0.0,,,70.0,HIGH,False,False,2026-07-10T14:50:38+00:00,12.5,25.0
-id,Betala Glob.Sec.,https://www.screener.in/company/id/,24.1,32.2,,Jun 2026,,,,125.0,50.0,80.0,,,68.8,HIGH,True,False,2026-07-10T14:50:38+00:00,32.2,
-INDBANK,Indbank Merchant,https://www.screener.in/company/INDBANK/,150.0,34.0,20.7,Jun 2026,3.14,17.15,11.21,96.69,8.59,72.68,,,68.6,HIGH,True,False,2026-07-10T14:50:38+00:00,34.0,
-LTF,L&T Finance Ltd,https://www.screener.in/company/LTF/,80507.0,321.0,25.1,Jun 2026,22.37,9.26,30.67,13.23,23.63,12.43,,,68.3,HIGH,False,False,2026-07-10T14:50:38+00:00,321.0,
-EIMCOELECO,Eimco Elecon(I),https://www.screener.in/company/EIMCOELECO/,1007.0,1745.0,25.4,Jun 2026,14.64,15.84,6.21,142.14,15.45,10.08,,,66.4,HIGH,True,False,2026-07-10T14:50:38+00:00,1745.0,
-INDIANB,Indian Bank,https://www.screener.in/company/INDIANB/,117310.0,871.0,9.2,Jun 2026,11.11,3.47,47.43,5.77,6.52,4.04,,,64.6,HIGH,False,False,2026-07-10T14:50:38+00:00,871.0,
-MAHABANK,Bank of Maha,https://www.screener.in/company/MAHABANK/,64809.0,84.2,8.6,Jun 2026,13.91,3.61,34.51,-1.08,18.81,1.27,,,62.3,HIGH,False,False,2026-07-10T14:50:38+00:00,84.2,
-GMBREW,G M Breweries,https://www.screener.in/company/GMBREW/,2144.0,940.0,12.7,Jun 2026,22.7,-0.99,45.56,-30.31,50.16,-11.45,,,62.3,HIGH,False,False,2026-07-10T14:50:38+00:00,940.0,
-514060,Newtrac Foods,https://www.screener.in/company/514060/,31.2,4.64,,Jun 2026,64.18,645.76,-66.67,101.3,-25.0,100.97,,,61.9,HIGH,True,False,2026-07-10T14:50:38+00:00,4.64,-0.85
-523465,Ind Bank Housing,https://www.screener.in/company/523465/,53.4,53.4,13.7,Jun 2026,,,3627.27,19500.0,-270.59,-173.91,,,57.5,HIGH,True,False,2026-07-10T14:50:38+00:00,53.38,0.66
-504340,Longspur Intl,https://www.screener.in/company/504340/,22.8,7.36,45.5,Jun 2026,15.38,-48.98,-15.79,155.17,-8.82,616.67,,,55.7,HIGH,True,False,2026-07-10T14:50:38+00:00,7.36,3.95
-KARNIKA,Karnika Industri,https://www.screener.in/company/KARNIKA/,742.0,120.0,26.6,Jun 2026,,2.93,,-1.93,,65.15,,,55.0,HIGH,False,False,2026-07-10T14:50:38+00:00,120.0,
-TCS,TCS,https://www.screener.in/company/TCS/,749222.0,2069.0,14.0,Jun 2026,13.93,2.23,4.69,-2.64,9.96,-3.74,,,53.9,HIGH,False,False,2026-07-10T14:50:38+00:00,2069.0,
-512361,Cupid Breweries,https://www.screener.in/company/512361/,304.0,33.2,,Jun 2026,,,-123.68,32.54,-13.16,45.57,,,47.0,MEDIUM,True,False,2026-07-10T14:50:38+00:00,33.25,-0.09
-530881,Arunjyoti Bio,https://www.screener.in/company/530881/,111.0,5.96,,Jun 2026,-5.86,13.26,-70.24,111.3,-42.22,187.76,,,45.4,MEDIUM,True,False,2026-07-10T14:50:38+00:00,5.96,2.41
-507960,Gujarat Hotels,https://www.screener.in/company/507960/,71.4,188.0,12.5,Jun 2026,17.28,-41.36,5.0,-6.37,18.84,-44.59,,,45.1,MEDIUM,False,False,2026-07-10T14:50:38+00:00,188.45,-0.69
-538547,Oasis Tradelink,https://www.screener.in/company/538547/,1.0,0.92,,Jun 2026,,,-200.0,25.0,-200.0,25.0,,,37.8,MEDIUM,True,False,2026-07-10T14:50:38+00:00,0.92,-1.08
-ELECON,Elecon Engg.Co,https://www.screener.in/company/ELECON/,11442.0,511.0,37.9,Jun 2026,6.11,-30.16,-59.77,1073.33,-16.15,-31.01,,,36.4,MEDIUM,True,False,2026-07-10T14:50:38+00:00,511.0,
-UMIYA-MRO,Umiya Buildcon,https://www.screener.in/company/UMIYA-MRO/,170.0,91.3,18.9,Jun 2026,27.34,-22.01,-99.24,-61.9,15.44,-11.46,,,32.3,MEDIUM,False,False,2026-07-10T14:50:38+00:00,91.3,
-512301,Chambal Brewer,https://www.screener.in/company/512301/,24.1,32.2,,Jun 2026,,,-14.29,-60.0,-28.57,-50.0,,,31.0,MEDIUM,False,False,2026-07-10T14:50:38+00:00,32.2,4.99
+SHARDUL,Shardul Sec.,https://www.screener.in/company/SHARDUL/,352.0,40.3,15.2,Jun 2026,100.64,4017.65,103.12,324.49,106.94,342.46,,,97.5,HIGH,True,True,2026-07-13T15:10:04+00:00,40.3,
+513488,Sh. Steel Wire,https://www.screener.in/company/513488/,10.7,32.4,,Jun 2026,122.94,35.0,221.05,475.0,600.0,1350.0,,,96.9,HIGH,True,True,2026-07-13T15:10:04+00:00,32.4,20.0
+GRADIENTE,Gradiente Info.,https://www.screener.in/company/GRADIENTE/,8.18,3.63,1.9,Jun 2026,2117.95,20.14,13200.0,1230.0,1466.67,317.78,,,95.0,HIGH,True,True,2026-07-13T15:10:04+00:00,3.63,
+530709,Gowra Leasing,https://www.screener.in/company/530709/,76.6,98.9,10.4,Jun 2026,51.15,30.26,123.26,48.45,53.33,36.3,,,93.5,HIGH,True,True,2026-07-13T15:10:04+00:00,98.9,4.99
+AVANTEL,Avantel,https://www.screener.in/company/AVANTEL/,4882.0,184.0,284.4,Jun 2026,35.65,10.34,66.87,13.0,67.31,27.94,,,83.2,HIGH,False,True,2026-07-13T15:10:04+00:00,184.0,
+BAJAJCON,Bajaj Consumer,https://www.screener.in/company/BAJAJCON/,8652.0,660.0,38.8,Jun 2026,25.27,4.59,84.86,11.32,103.41,8.88,,,78.0,HIGH,False,True,2026-07-13T15:10:04+00:00,660.0,
+PLASTIBLEN,Plastiblends (I),https://www.screener.in/company/PLASTIBLEN/,512.0,196.0,12.0,Jun 2026,11.0,5.21,68.16,7.91,62.96,16.4,,,76.0,HIGH,False,False,2026-07-13T15:10:04+00:00,196.0,
+LTF,L&T Finance Ltd,https://www.screener.in/company/LTF/,81359.0,325.0,25.4,Jun 2026,22.37,9.26,30.67,13.23,23.63,12.43,,,68.3,HIGH,False,False,2026-07-13T15:10:04+00:00,325.0,
+DMART,Avenue Super.,https://www.screener.in/company/DMART/,260389.0,3994.0,85.2,Jun 2026,14.88,6.28,11.25,31.1,15.4,23.78,,,66.3,HIGH,True,False,2026-07-13T15:10:04+00:00,3994.0,
+534741,Virtual Global,https://www.screener.in/company/534741/,26.0,0.46,,Jun 2026,,,,133.33,22.22,58.82,,,65.3,HIGH,True,False,2026-07-13T15:10:04+00:00,0.46,-8.0
+ICICIAMC,ICICI AMC,https://www.screener.in/company/ICICIAMC/,158414.0,3206.0,45.5,Jun 2026,17.51,1.43,23.09,25.49,19.77,-3.0,,,64.8,HIGH,True,False,2026-07-13T15:10:04+00:00,3206.0,
+INDIANB,Indian Bank,https://www.screener.in/company/INDIANB/,113456.0,843.0,8.9,Jun 2026,11.11,3.47,47.43,5.77,6.52,4.04,,,64.6,HIGH,False,False,2026-07-13T15:10:04+00:00,843.0,
+MAHABANK,Bank of Maha,https://www.screener.in/company/MAHABANK/,63426.0,82.6,8.4,Jun 2026,13.91,3.61,34.51,-1.08,18.81,1.27,,,62.3,HIGH,False,False,2026-07-13T15:10:04+00:00,82.6,
+514060,Newtrac Foods,https://www.screener.in/company/514060/,31.6,4.7,,Jun 2026,64.18,645.76,-66.67,101.3,-25.0,100.97,,,61.9,HIGH,True,False,2026-07-13T15:10:04+00:00,4.7,1.29
+LTM,LTM,https://www.screener.in/company/LTM/,122216.0,4124.0,21.8,Jun 2026,17.96,2.8,17.05,5.91,24.98,4.46,,,61.7,HIGH,False,False,2026-07-13T15:10:04+00:00,4124.0,
+JUSTDIAL,Just Dial,https://www.screener.in/company/JUSTDIAL/,5751.0,677.0,11.1,Jun 2026,9.73,6.51,3.75,66.0,1.16,-1.58,,,60.7,HIGH,True,False,2026-07-13T15:10:04+00:00,677.0,
+KRISHANA,Krishana Phosch.,https://www.screener.in/company/KRISHANA/,4297.0,139.0,21.9,Jun 2026,34.34,-29.54,53.92,-43.32,35.67,-0.56,,,60.2,HIGH,False,True,2026-07-13T15:10:04+00:00,139.0,
+HCLTECH,HCL Technologies,https://www.screener.in/company/HCLTECH/,331806.0,1221.0,18.3,Jun 2026,13.94,1.76,20.34,3.03,13.84,2.35,,,59.4,HIGH,False,False,2026-07-13T15:10:04+00:00,1221.0,
+504340,Longspur Intl,https://www.screener.in/company/504340/,21.6,7.0,43.3,Jun 2026,15.38,-48.98,-15.79,155.17,-8.82,616.67,,,55.7,HIGH,True,False,2026-07-13T15:10:04+00:00,7.0,-4.89
+KHAICHEM,Khaitan Chemical,https://www.screener.in/company/KHAICHEM/,501.0,51.9,8.6,Jun 2026,-5.56,14.51,-49.07,765.08,-25.55,34.09,,,49.2,MEDIUM,True,False,2026-07-13T15:10:04+00:00,51.9,
+539488,Tirup. Fin-Lease,https://www.screener.in/company/539488/,4882.0,184.0,284.4,Jun 2026,-48.81,-14.0,-5.45,233.33,-51.02,172.73,,,45.1,MEDIUM,True,False,2026-07-13T15:10:04+00:00,184.0,
+500213,Intl. Travel Hse,https://www.screener.in/company/500213/,255.0,319.0,11.8,Jun 2026,-2.98,-2.98,-17.9,7.84,-16.81,-4.31,,,44.2,MEDIUM,False,False,2026-07-13T15:10:04+00:00,319.15,-3.55
+ELECON,Elecon Engg.Co,https://www.screener.in/company/ELECON/,11270.0,502.0,37.3,Jun 2026,6.11,-30.16,-59.77,1073.33,-16.15,-31.01,,,36.4,MEDIUM,True,False,2026-07-13T15:10:04+00:00,502.0,
+UMIYA-MRO,Umiya Buildcon,https://www.screener.in/company/UMIYA-MRO/,168.0,90.0,18.7,Jun 2026,27.34,-22.01,-99.24,-61.9,15.44,-11.46,,,32.3,MEDIUM,False,False,2026-07-13T15:10:04+00:00,90.0,
+539383,Mahaveer Infoway,https://www.screener.in/company/539383/,8.54,15.5,20.8,Jun 2026,-100.0,-100.0,-230.0,-128.26,-206.25,66.67,,,12.5,LOW,False,False,2026-07-13T15:10:04+00:00,15.5,4.94
