@@ -14,7 +14,7 @@
     "order_count": 1,
     "total_value_cr": 482.27,
     "revenue_fy": 468.0,
-    "market_cap": 846.0,
+    "market_cap": 844.0,
     "orders_pct_revenue": 103.05
   },
   {
@@ -41,7 +41,7 @@
     "order_count": 1,
     "total_value_cr": 58.21,
     "revenue_fy": 209.0,
-    "market_cap": 720.0,
+    "market_cap": 719.0,
     "orders_pct_revenue": 27.85
   },
   {
@@ -50,17 +50,17 @@
     "order_count": 1,
     "total_value_cr": 100.53,
     "revenue_fy": 426.0,
-    "market_cap": 3424.0,
+    "market_cap": 3427.0,
     "orders_pct_revenue": 23.6
   },
   {
-    "code": "EMSLIMITED",
-    "name": "EMS Ltd",
+    "code": "522001",
+    "name": "Cranex Ltd",
     "order_count": 1,
-    "total_value_cr": 102.85,
-    "revenue_fy": 608.0,
-    "market_cap": 2316.0,
-    "orders_pct_revenue": 16.92
+    "total_value_cr": 10.87,
+    "revenue_fy": 55.37,
+    "market_cap": 67.6,
+    "orders_pct_revenue": 19.63
   },
   {
     "code": "WELCORP",
@@ -68,7 +68,7 @@
     "order_count": 1,
     "total_value_cr": 1400.0,
     "revenue_fy": 8299.0,
-    "market_cap": 41812.0,
+    "market_cap": 41718.0,
     "orders_pct_revenue": 16.87
   },
   {
@@ -77,7 +77,7 @@
     "order_count": 1,
     "total_value_cr": 79.05,
     "revenue_fy": 656.0,
-    "market_cap": 906.0,
+    "market_cap": 903.0,
     "orders_pct_revenue": 12.05
   },
   {
@@ -88,15 +88,6 @@
     "revenue_fy": 112.0,
     "market_cap": 76.9,
     "orders_pct_revenue": 11.89
-  },
-  {
-    "code": "GOLDIAM",
-    "name": "Goldiam International Ltd",
-    "order_count": 1,
-    "total_value_cr": 60.0,
-    "revenue_fy": 530.0,
-    "market_cap": 5200.0,
-    "orders_pct_revenue": 11.32
   },
   {
     "code": "ARTSONENGG",
@@ -131,8 +122,17 @@
     "order_count": 1,
     "total_value_cr": 185.0,
     "revenue_fy": 1944.0,
-    "market_cap": 11720.0,
+    "market_cap": 11719.0,
     "orders_pct_revenue": 9.52
+  },
+  {
+    "code": "AVANTEL",
+    "name": "Avantel Ltd",
+    "order_count": 1,
+    "total_value_cr": 20.81,
+    "revenue_fy": 240.0,
+    "market_cap": 4521.0,
+    "orders_pct_revenue": 8.67
   },
   {
     "code": "RMC",
@@ -140,7 +140,7 @@
     "order_count": 1,
     "total_value_cr": 23.64,
     "revenue_fy": 303.0,
-    "market_cap": 306.0,
+    "market_cap": 309.0,
     "orders_pct_revenue": 7.8
   },
   {
@@ -189,15 +189,6 @@
     "orders_pct_revenue": 2.53
   },
   {
-    "code": "DBL",
-    "name": "Dilip Buildcon Ltd",
-    "order_count": 1,
-    "total_value_cr": 160.2,
-    "revenue_fy": 7005.0,
-    "market_cap": 6646.0,
-    "orders_pct_revenue": 2.29
-  },
-  {
     "code": "544291",
     "name": "Rajesh Power Services Ltd",
     "order_count": 1,
@@ -212,7 +203,7 @@
     "order_count": 1,
     "total_value_cr": 572.0,
     "revenue_fy": 27480.0,
-    "market_cap": 299336.0,
+    "market_cap": 299299.0,
     "orders_pct_revenue": 2.08
   },
   {
@@ -230,7 +221,7 @@
     "order_count": 1,
     "total_value_cr": 38.14,
     "revenue_fy": 2880.0,
-    "market_cap": 10069.0,
+    "market_cap": 10072.0,
     "orders_pct_revenue": 1.32
   },
   {
@@ -257,7 +248,7 @@
     "order_count": 1,
     "total_value_cr": 85.64,
     "revenue_fy": 9755.0,
-    "market_cap": 26244.0,
+    "market_cap": 26258.0,
     "orders_pct_revenue": 0.88
   },
   {
@@ -275,8 +266,17 @@
     "order_count": 1,
     "total_value_cr": 24.0,
     "revenue_fy": 3252.0,
-    "market_cap": 20568.0,
+    "market_cap": 20565.0,
     "orders_pct_revenue": 0.74
+  },
+  {
+    "code": "ARSSBL",
+    "name": "Anand Rathi Share & Stock Brokers Ltd",
+    "order_count": 1,
+    "total_value_cr": 4.94,
+    "revenue_fy": 976.0,
+    "market_cap": 3367.0,
+    "orders_pct_revenue": 0.51
   },
   {
     "code": "543928",
@@ -293,7 +293,7 @@
     "order_count": 1,
     "total_value_cr": 18.54,
     "revenue_fy": 4277.0,
-    "market_cap": 9575.0,
+    "market_cap": 9564.0,
     "orders_pct_revenue": 0.43
   },
   {
@@ -311,7 +311,7 @@
     "order_count": 1,
     "total_value_cr": 0.75,
     "revenue_fy": 198.0,
-    "market_cap": 533.0,
+    "market_cap": 536.0,
     "orders_pct_revenue": 0.38
   },
   {
@@ -338,7 +338,7 @@
     "order_count": 1,
     "total_value_cr": 5.28,
     "revenue_fy": 2679.0,
-    "market_cap": 6389.0,
+    "market_cap": 6386.0,
     "orders_pct_revenue": 0.2
   },
   {
@@ -347,7 +347,7 @@
     "order_count": 1,
     "total_value_cr": 4.15,
     "revenue_fy": 2438.0,
-    "market_cap": 4045.0,
+    "market_cap": 4052.0,
     "orders_pct_revenue": 0.17
   },
   {
@@ -356,8 +356,17 @@
     "order_count": 1,
     "total_value_cr": 0.3,
     "revenue_fy": 7540.0,
-    "market_cap": 5369.0,
+    "market_cap": 5368.0,
     "orders_pct_revenue": 0.0
+  },
+  {
+    "code": "INNOVISION",
+    "name": "Innovision Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 979.0,
+    "market_cap": 685.0,
+    "orders_pct_revenue": null
   },
   {
     "code": "KDL",
@@ -374,7 +383,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 20991.0,
-    "market_cap": 81709.0,
+    "market_cap": 81713.0,
     "orders_pct_revenue": null
   },
   {
@@ -383,7 +392,25 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 290.0,
-    "market_cap": 26932.0,
+    "market_cap": 26898.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "EMSLIMITED",
+    "name": "EMS Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 608.0,
+    "market_cap": 2316.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "GOLDIAM",
+    "name": "Goldiam International Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 530.0,
+    "market_cap": 5200.0,
     "orders_pct_revenue": null
   },
   {
@@ -401,7 +428,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1676.0,
-    "market_cap": 14421.0,
+    "market_cap": 14430.0,
     "orders_pct_revenue": null
   },
   {
@@ -410,7 +437,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 19047.0,
-    "market_cap": 13185.0,
+    "market_cap": 13188.0,
     "orders_pct_revenue": null
   },
   {
@@ -428,7 +455,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 5819.0,
-    "market_cap": 12627.0,
+    "market_cap": 12626.0,
     "orders_pct_revenue": null
   },
   {
@@ -441,21 +468,12 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "INNOVISION",
-    "name": "Innovision Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 979.0,
-    "market_cap": 685.0,
-    "orders_pct_revenue": null
-  },
-  {
     "code": "KIRLOSBROS",
     "name": "Kirloskar Brothers Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2828.0,
-    "market_cap": 14828.0,
+    "market_cap": 14835.0,
     "orders_pct_revenue": null
   },
   {
@@ -473,7 +491,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3595.0,
-    "market_cap": 16934.0,
+    "market_cap": 16926.0,
     "orders_pct_revenue": null
   },
   {
@@ -500,7 +518,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 5667.0,
-    "market_cap": 3579.0,
+    "market_cap": 3583.0,
     "orders_pct_revenue": null
   },
   {
@@ -509,7 +527,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 102.0,
-    "market_cap": 1663.0,
+    "market_cap": 1671.0,
     "orders_pct_revenue": null
   },
   {
@@ -518,7 +536,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2276.0,
-    "market_cap": 10487.0,
+    "market_cap": 10481.0,
     "orders_pct_revenue": null
   },
   {
@@ -536,7 +554,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 8258.0,
-    "market_cap": 76372.0,
+    "market_cap": 76425.0,
     "orders_pct_revenue": null
   },
   {
@@ -554,7 +572,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 182.0,
-    "market_cap": 456.0,
+    "market_cap": 454.0,
     "orders_pct_revenue": null
   },
   {
@@ -572,7 +590,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 9847.0,
-    "market_cap": 36866.0,
+    "market_cap": 36855.0,
     "orders_pct_revenue": null
   },
   {
@@ -590,7 +608,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 4528.0,
-    "market_cap": 32596.0,
+    "market_cap": 32628.0,
     "orders_pct_revenue": null
   },
   {
@@ -626,7 +644,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 308.0,
-    "market_cap": 160.0,
+    "market_cap": 163.0,
     "orders_pct_revenue": null
   },
   {
@@ -644,7 +662,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 78.12,
-    "market_cap": 273.0,
+    "market_cap": 271.0,
     "orders_pct_revenue": null
   },
   {
@@ -662,7 +680,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 449.0,
-    "market_cap": 581.0,
+    "market_cap": 582.0,
     "orders_pct_revenue": null
   },
   {
@@ -689,7 +707,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 7193.0,
-    "market_cap": 16507.0,
+    "market_cap": 16516.0,
     "orders_pct_revenue": null
   },
   {
@@ -707,7 +725,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3869.0,
-    "market_cap": 5941.0,
+    "market_cap": 5947.0,
     "orders_pct_revenue": null
   },
   {
@@ -734,16 +752,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2039.0,
-    "market_cap": 4201.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "537840",
-    "name": "Raunaq International Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 36.05,
-    "market_cap": 12.1,
+    "market_cap": 4210.0,
     "orders_pct_revenue": null
   }
 ]
