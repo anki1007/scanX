@@ -85,7 +85,12 @@ class RealtimeEngine:
 
     @staticmethod
     def _now_min() -> int:
-        n = datetime.now()
+        # market window is IST — anchor to IST so a UTC host polls the right hours
+        try:
+            from zoneinfo import ZoneInfo
+            n = datetime.now(ZoneInfo("Asia/Kolkata"))
+        except Exception:  # noqa: BLE001
+            n = datetime.now()
         return n.hour * 60 + n.minute
 
     def _metrics(self, u: dict, q: dict) -> Optional[dict]:

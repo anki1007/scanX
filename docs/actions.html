@@ -103,9 +103,8 @@
 <div class="src">source: screener.in/actions/ (dividend, bonus, split, right)</div>
 <script>
 function f(id){return document.getElementById(id);}
-function scrUrl(c){return 'https://www.screener.in/company/'+encodeURIComponent(c)+'/';}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function inr(v,d){if(v===null||v===undefined||v==='')return '<span class="na">—</span>';const n=Number(v);const s=n.toLocaleString('en-IN',{maximumFractionDigits:d===undefined?0:d});return (n>0?'+':'')+s;}
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 
 let DATA=[],flt='all',q='';
 const KINDS=[['all','All'],['dividend','Dividend'],['bonus','Bonus'],['split','Split'],['right','Right']];
@@ -119,8 +118,8 @@ function render(){let rs=DATA.slice();if(flt!=='all')rs=rs.filter(x=>x.action===
 f('tabs').innerHTML=KINDS.map(([k,t],i)=>`<div class="tab ${i===0?'on':''}" data-k="${k}">${t}</div>`).join('');
 f('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{f('tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');flt=t.dataset.k;render();});
 f('q').addEventListener('input',e=>{q=e.target.value.trim();render();});
-async function load(){try{const j=await fetch('data/actions.json?t='+Date.now()).then(r=>r.json());DATA=j.rows||[];
- f('kN').textContent=DATA.length;f('kTime').innerHTML='<span class="dot"></span>'+(j.generated_at_ist||'live');render();}catch(e){render();}}
+async function load(){try{const j=await fetch('data/actions.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});DATA=j.rows||[];
+ f('kN').textContent=DATA.length;f('kTime').innerHTML=(staleChip(j.generated_at_ist)||'<span class="dot"></span>')+esc(j.generated_at_ist||'live');render();}catch(e){render();}}
 load();setInterval(load,60000);
 
 </script>

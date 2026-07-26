@@ -15,6 +15,12 @@ IST = timezone(timedelta(hours=5, minutes=30))
 _SESSION_CACHE = ROOT / "screener_session.json"; _CACHE = ROOT / ".cache"
 
 
+def _atomic(path, text):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
 def _sid():
     sid = os.environ.get("SCREENER_SESSIONID")
     if not sid and _SESSION_CACHE.exists():
@@ -178,12 +184,12 @@ def main() -> None:
     apply_workflow(rows)
     rows.sort(key=lambda r: (r.get("candidate", False), r.get("exp_money_small") is not None,
                              r.get("exp_money_small") or -1), reverse=True)
-    (out / "buybacks.json").write_text(json.dumps(rows, indent=2))
+    _atomic(out / "buybacks.json", json.dumps(rows, indent=2))
     now = datetime.now(IST)
     cands = sum(1 for r in rows if r.get("candidate"))
     meta = {"generated_at_ist": now.strftime("%Y-%m-%d %H:%M:%S IST"), "buybacks": len(rows),
             "candidates": cands, "source": source, "offer_types": offer_note, "prices": price_note}
-    (out / "buybacks_meta.json").write_text(json.dumps(meta, indent=2))
+    _atomic(out / "buybacks_meta.json", json.dumps(meta, indent=2))
     print(f"[buybacks] {len(rows)} buybacks / {cands} tender>=8% | {source} | {offer_note} | {price_note} | {now:%H:%M:%S IST}")
 
 

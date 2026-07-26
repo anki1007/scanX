@@ -101,6 +101,10 @@
 
     <div class="wrap">
       <div class="bar">
+        <select id="view" class="fbtn" style="cursor:pointer">
+          <option value="TF">TechnoFunda 100</option>
+          <option value="GARP">GARP screen</option>
+        </select>
         <button class="fbtn on" data-f="ALL">All</button>
         <button class="fbtn" data-f="BUY">Buy</button>
         <button class="fbtn" data-f="NEUTRAL">Neutral</button>
@@ -119,7 +123,16 @@ const COLS=[["rank","#","rank"],["name","Company","name"],["label","Verdict","ba
   ["composite","Composite","score"],["results","Results","score"],["momentum","RS / Mom","score"],
   ["quality","Quality","score"],["sector_sig","Sector","sector"],["ltp","LTP","rs"],["sales_yoy","Sales YoY","pct"],
   ["np_yoy","NP YoY","pct"],["pos_ath","% of ATH","pct1"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
-let DATA=[], flt="ALL", q="", s={k:"composite",d:-1}, LIMIT=100;
+/* GARP view: growth at a reasonable price — PEG = PE / NP-growth, with an
+   earnings-momentum bias chip driven by the Results score. */
+const GARP_COLS=[["rank","#","rank"],["name","Company","name"],["peg","PEG","num2"],
+  ["pe","PE","num1"],["np_yoy","NP YoY","pct"],["sales_yoy","Sales YoY","pct"],
+  ["em","Earnings Momentum","em"],["results","Results","score"],["composite","Composite","score"],
+  ["sector_sig","Sector","sector"],["ltp","LTP","rs"],["mcap","MCap ₹Cr","cr"],["label","Verdict","badge"]];
+/* sanity bounds keep base-effect artifacts out: a 12,000% NP jump off a
+   near-zero base or a 0.01 PE is data noise, not growth at a reasonable price */
+const GARP={peg_max:1.5, np_min:15, np_max:200, sales_min:10, pe_min:3, mcap_min:300};
+let DATA=[], flt="ALL", q="", s={k:"composite",d:-1}, LIMIT=100, view="TF";
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const scoreCls=v=>v>=60?'s-hi':(v<=40?'s-lo':'s-mid');
@@ -135,7 +148,14 @@ function cell(r,c){
   if(c[2]==='cr') return `<td>${v==null?'—':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0})}</td>`;
   if(c[2]==='num0') return `<td>${v==null?'—':Math.round(v)}</td>`;
   if(c[2]==='num1') return `<td>${v==null?'—':(+v).toFixed(1)}</td>`;
+  if(c[2]==='num2') return `<td>${v==null?'—':(+v).toFixed(2)}</td>`;
   if(c[2]==='pct1') return `<td>${v==null?'—':(+v).toFixed(0)+'%'}</td>`;
+  if(c[2]==='em'){
+    if(!v) return '<td class="na">—</td>';
+    const cls=v==='ACCELERATING'?'tw':(v==='DECELERATING'?'hw':'nu');
+    const ar=v==='ACCELERATING'?'▲':(v==='DECELERATING'?'▼':'▬');
+    return `<td><span class="schip ${cls}">${ar} ${esc(v)}</span></td>`;
+  }
   if(c[2]==='sector'){
     const sgv=r.sector_sig;
     if(!sgv) return '<td class="na">—</td>';
@@ -146,17 +166,27 @@ function cell(r,c){
   }
   return `<td>${v==null?'—':esc(v)}</td>`;
 }
+function garpRows(rows){
+  return rows.filter(r=>r.peg!=null&&r.peg<=GARP.peg_max
+    &&r.pe>=GARP.pe_min
+    &&(r.np_yoy??-1e9)>=GARP.np_min&&r.np_yoy<=GARP.np_max
+    &&(r.sales_yoy??-1e9)>=GARP.sales_min
+    &&(r.mcap??0)>=GARP.mcap_min);
+}
 function render(){
-  f("head").innerHTML=COLS.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
+  const cols=view==='GARP'?GARP_COLS:COLS;
+  f("head").innerHTML=cols.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
   f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
   let rows=DATA.filter(r=>flt==='ALL'||r.label===flt);
+  if(view==='GARP') rows=garpRows(rows);
   if(q){const Q=q.toLowerCase();rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.code||'').toLowerCase().includes(Q));}
   rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
+  if(view==='GARP') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
   const total=rows.length;
   if(LIMIT!==Infinity) rows=rows.slice(0,LIMIT);
-  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent='No matching stocks.';f("cnt").textContent='';return;}
+  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
   f("tbl").style.display='';f("empty").style.display='none';
-  f("body").innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(r,c)).join('')+'</tr>').join('');
+  f("body").innerHTML=rows.map(r=>'<tr>'+cols.map(c=>cell(r,c)).join('')+'</tr>').join('');
   window.__shown=rows.map(r=>String(r.code||'').toUpperCase());
   f("cnt").textContent=`showing ${rows.length} of ${total}`;
 }
@@ -177,6 +207,12 @@ async function load(){
       fetch('data/sector_stocks.json?t='+t).then(r=>r.json()).catch(()=>null)]);
     DATA=d||[];
     applySectors(DATA, tw, st);
+    // GARP inputs: PEG from PE / NP-growth; earnings-momentum bias from the
+    // Results score (the quarterly-results read baked by refresh_technofunda)
+    DATA.forEach(r=>{
+      r.peg=(r.pe>0&&r.np_yoy>0)?+(r.pe/r.np_yoy).toFixed(2):null;
+      r.em=r.results==null?null:(r.results>=60?'ACCELERATING':(r.results<40?'DECELERATING':'STABLE'));
+    });
     f("kUni").textContent=m.universe??'–';
     f("kBuy").textContent=m.buy??DATA.filter(r=>r.label==='BUY').length;
     f("kNeu").textContent=m.neutral??DATA.filter(r=>r.label==='NEUTRAL').length;
@@ -187,6 +223,7 @@ async function load(){
     f("empty").innerHTML='No board data yet. Run <code>python scripts/refresh_technofunda.py</code> (or it builds in the scanX.bat daily job).'; }
 }
 f("showAll").onclick=()=>{LIMIT=(LIMIT===Infinity?100:Infinity);f("showAll").textContent=(LIMIT===Infinity?'Top 100':'Show all');f("showAll").classList.toggle('on',LIMIT===Infinity);render();};
+f("view").onchange=e=>{view=e.target.value;s=view==='GARP'?{k:'peg',d:1}:{k:'composite',d:-1};render();};
 document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
 // ---- delayed NSE/BSE quotes from the static data/quotes.json ----

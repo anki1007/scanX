@@ -38,7 +38,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 200
     env:
       PYTHONIOENCODING: utf-8
       SCANX_NO_DHAN: "1"                      # no broker token in the cloud
@@ -63,24 +63,40 @@ jobs:
         run: python scripts/screener_login.py
 
       - name: Refresh boards
+        id: refresh
         run: |
-          set +e   # one slow source must not kill the whole refresh
-          python scripts/refresh_scanx.py --pages 8
-          python scripts/refresh_orders.py --months 3
-          python scripts/refresh_buybacks.py --months 12
-          python scripts/refresh_special.py
-          python scripts/refresh_fii.py
-          python scripts/refresh_marketpulse.py
-          python scripts/refresh_fpi.py
-          python scripts/refresh_sectors.py
-          python scripts/refresh_technofunda.py --mcap-floor 5 --screen-pages 250
-          python scripts/refresh_magicformula.py --screen-pages 250
+          # one slow source must not kill the whole refresh, but every failure
+          # must be VISIBLE: track failures, publish a summary, and let the
+          # final step turn the run red AFTER the good data has been committed.
+          set +e
+          FAILED=""
+          run() {
+            echo "::group::$*"
+            "$@"; rc=$?
+            echo "::endgroup::"
+            if [ $rc -ne 0 ]; then FAILED="$FAILED $2"; echo "::warning::$2 failed (rc=$rc)"; fi
+          }
+          run python scripts/refresh_scanx.py --pages 8
+          run python scripts/refresh_orders.py --months 3
+          run python scripts/refresh_buybacks.py --months 12
+          run python scripts/refresh_special.py
+          run python scripts/refresh_fii.py
+          run python scripts/refresh_marketpulse.py
+          run python scripts/refresh_fpi.py
+          run python scripts/refresh_sectors.py
+          run python scripts/refresh_technofunda.py --mcap-floor 5 --screen-pages 250
+          run python scripts/refresh_magicformula.py --screen-pages 250
           # 1) keep the top names fresh (re-bake today's data)
-          python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 50
+          run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
           #    each daily run bakes more new stocks until every listed name is covered
-          python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 100
-          python scripts/refresh_iv.py --per-sector 30
+          run python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 90
+          run python scripts/refresh_iv.py --per-sector 30
+          echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## scanX refresh summary"
+            if [ -n "$FAILED" ]; then echo "Failed:${FAILED}"; else echo "All refresh steps succeeded"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
           exit 0
 
       - name: Commit & push data
@@ -100,3 +116,10 @@ jobs:
             git fetch origin main
             git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
           done
+
+      - name: Surface board failures
+        if: steps.refresh.outputs.failed != ''
+        run: |
+          echo "These refresh steps failed:${{ steps.refresh.outputs.failed }}"
+          echo "Good data from the surviving steps was still committed above."
+          exit 1

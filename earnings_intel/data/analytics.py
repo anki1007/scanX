@@ -231,3 +231,102 @@ def auto_dcf(overview: dict, growth: dict, profit_loss: dict) -> dict:
             "intrinsic_per_share": round(intrinsic_ps) if intrinsic_ps else None,
             "current_price": price, "market_cap": mcap,
             "margin_of_safety": mos}
+
+
+# ------------------------------------------------------------- health ratios
+def _stmt_map(stmt: dict, prefix: str) -> dict:
+    """{year-header: float} for the first row whose label starts with prefix."""
+    st = stmt or {}
+    rows = st.get("rows") or {}
+    headers = st.get("headers") or []
+    for label, vals in rows.items():
+        if str(label).lower().startswith(prefix.lower()):
+            return {h: to_float(v) for h, v in zip(headers, vals)}
+    return {}
+
+
+def _latest_common(a: dict, b: dict):
+    """(year, a[year], b[year]) for the newest year present in both, else None."""
+    common = [y for y in a if y in b and a[y] is not None and b[y] is not None]
+    if not common:
+        return None
+    y = max(common)  # 'Mar YYYY' sorts correctly by the year suffix within same month word
+    return y, a[y], b[y]
+
+
+def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
+    """Financial-health ratios with a +/-/neutral bias tag each (todo.md items a-c).
+
+    - current_ratio: Current Assets / Current Liabilities. Screener's compact
+      balance sheet doesn't carry the current split, so this computes only when
+      the expanded schedule rows are present and is honestly 'na' otherwise.
+    - ocf_np: Operating Cash Flow / Net Profit for the latest common year;
+      >= 1 means reported profit is fully backed by cash.
+    - cwip: capex-completion signal — a large CWIP drawdown means construction
+      finished and capacity is about to commission (todo.md's 100 -> 30 case);
+      a large build-up means an investment phase is underway.
+    """
+    out: dict = {}
+
+    ca = _stmt_map(bs, "Total Current Assets") or _stmt_map(bs, "Current Assets")
+    cl = _stmt_map(bs, "Total Current Liabilities") or _stmt_map(bs, "Current Liabilities")
+    got = _latest_common(ca, cl) if (ca and cl) else None
+    if got and got[2]:
+        y, a, l = got
+        v = round(a / l, 2)
+        bias = "positive" if v >= 1.5 else "neutral" if v >= 1.0 else "negative"
+        note = (f"{v}x ({y}): " +
+                ("comfortable short-term liquidity" if v >= 1.5 else
+                 "adequate but thin buffer" if v >= 1.0 else
+                 "current liabilities exceed current assets"))
+        out["current_ratio"] = {"value": v, "year": y, "bias": bias, "note": note}
+    else:
+        out["current_ratio"] = {"value": None, "bias": "na",
+                                "note": "needs the expanded balance-sheet schedule "
+                                        "(not in Screener's compact view)"}
+
+    ocf = _stmt_map(cf, "Cash from Operating")
+    np_ = _stmt_map(pl, "Net Profit")
+    got = _latest_common(ocf, np_) if (ocf and np_) else None
+    if got and got[2]:
+        y, o, n = got
+        v = round(o / n, 2) if n else None
+        if o < 0:
+            bias, note = "negative", f"operating cash flow is NEGATIVE in {y}"
+        elif n < 0:
+            bias, note = "neutral", f"loss year {y} — ratio not meaningful, but OCF is positive"
+        elif v >= 1.0:
+            bias, note = "positive", f"{v}x ({y}): profits fully backed by cash"
+        elif v >= 0.6:
+            bias, note = "neutral", f"{v}x ({y}): moderate cash conversion"
+        else:
+            bias, note = "negative", f"{v}x ({y}): profits far ahead of cash — check receivables/accruals"
+        out["ocf_np"] = {"value": v, "year": y, "bias": bias, "note": note}
+    else:
+        out["ocf_np"] = {"value": None, "bias": "na", "note": "cash-flow or P&L data missing"}
+
+    cwip = _stmt_map(bs, "CWIP")
+    ta = _stmt_map(bs, "Total Assets")
+    series = [(y, v) for y, v in sorted(cwip.items()) if v is not None]
+    if len(series) >= 2:
+        (py, pv), (ly, lv) = series[-2], series[-1]
+        assets = ta.get(ly) or 0
+        signif = pv > 0 and (not assets or pv >= 0.01 * assets)
+        pct = round((lv - pv) / pv * 100, 1) if pv else None
+        if pct is not None and pct <= -30 and signif:
+            bias = "positive"
+            note = (f"CWIP down {abs(pct)}% ({py.split()[-1]}->{ly.split()[-1]}): "
+                    "capex largely completed — new capacity coming online")
+        elif pct is not None and pct >= 30:
+            bias = "neutral"
+            note = (f"CWIP up {pct}% ({py.split()[-1]}->{ly.split()[-1]}): "
+                    "capex build-up phase — growth spend underway, watch for completion")
+        else:
+            bias = "neutral"
+            note = f"CWIP steady ({py.split()[-1]}->{ly.split()[-1]})"
+        out["cwip"] = {"latest": lv, "prev": pv, "pct_change": pct,
+                       "year": ly, "bias": bias, "note": note}
+    else:
+        out["cwip"] = {"latest": series[-1][1] if series else None, "prev": None,
+                       "pct_change": None, "bias": "na", "note": "CWIP history unavailable"}
+    return out

@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -51,8 +52,24 @@ def _read_board(path):
 
 def _atomic(path, text):
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text)
+    tmp.write_text(text, encoding="utf-8")
     os.replace(tmp, path)
+
+
+def _baked_on(path):
+    """Date a bundle was baked, from the generated_at stamp at the start of the file.
+
+    File mtime is useless in CI (a fresh checkout stamps every file "today"), so
+    freshness must live inside the bundle. Legacy bundles without the stamp
+    return "" and are treated as stale, which re-bakes them exactly once.
+    """
+    try:
+        with open(path, "rb") as f:
+            head = f.read(64)
+        m = re.match(rb'\{"generated_at":"(\d{4}-\d{2}-\d{2})', head)
+        return m.group(1).decode() if m else ""
+    except Exception:  # noqa: BLE001
+        return ""
 
 
 def _sid():
@@ -84,6 +101,15 @@ def main():
     board.sort(key=lambda r: r.get("composite", 0), reverse=True)
     codes = [r["code"] for r in board[:args.top] if r.get("code")]
 
+    seen = set(codes)
+
+    def _add(seq):
+        for c in seq:
+            c = str(c or "").strip()
+            if c and c not in seen:
+                seen.add(c)
+                codes.append(c)
+
     # also bake the Magic Formula top-100 (the board's default view) AND every
     # PEAD-board name (the homepage) so clicking them works on GitHub Pages
     # without the local server
@@ -91,38 +117,24 @@ def main():
         mf = json.loads((ROOT / "docs" / "data" / "magicformula.json")
                         .read_text(encoding="utf-8", errors="replace"))
         rows = mf.get("rows") or []
-        for r in rows[:100]:                      # Magic Formula top-100
-            c = str(r.get("code") or "")
-            if c and c not in codes:
-                codes.append(c)
+        _add(r.get("code") for r in rows[:100])   # Magic Formula top-100
         # ... plus the 300 largest companies by market cap, so household
         # names (RELIANCE, TCS, banks, ...) always open on GitHub Pages
         big = sorted((r for r in rows if isinstance(r.get("mcap"), (int, float))),
                      key=lambda r: -r["mcap"])[:300]
-        for r in big:
-            c = str(r.get("code") or "")
-            if c and c not in codes:
-                codes.append(c)
+        _add(r.get("code") for r in big)
     except Exception:  # noqa: BLE001
         pass
     try:
         pead = json.loads((ROOT / "docs" / "data" / "pead.json")
                           .read_text(encoding="utf-8", errors="replace"))
-        for r in pead if isinstance(pead, list) else []:
-            c = str(r.get("code") or "")
-            if c and c not in codes:
-                codes.append(c)
+        _add(r.get("code") for r in (pead if isinstance(pead, list) else []))
     except Exception:  # noqa: BLE001
         pass
 
     # --- "bake everything": also bake every stock reachable from the Fair Value,
     # Special Situations and FII-sector screens, so clicking ANY of them opens on
     # the static GitHub Pages site (no local server needed).
-    def _add(seq):
-        for c in seq:
-            c = str(c or "").strip()
-            if c and c not in codes:
-                codes.append(c)
 
     try:                                    # Fair Value  (docs/data/iv_fairvalue.json)
         fv = json.loads((ROOT / "docs" / "data" / "iv_fairvalue.json")
@@ -149,18 +161,17 @@ def main():
 
     sid = _sid()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
-    done, fail, avail = 0, 0, []
-    import time as _t
-    today = _t.strftime("%Y-%m-%d")
+    done, fail, skipped = 0, 0, 0
+    today = time.strftime("%Y-%m-%d")
     _bake_start = time.time()
     for i, code in enumerate(codes, 1):
         if args.max_minutes and (time.time() - _bake_start) > args.max_minutes * 60:
             print(f'[fund] time budget {args.max_minutes:.0f}min reached at {i}/{len(codes)} - committing what is baked'); break
         bf = out / f"{code}.json"
         if args.skip_any and bf.exists():
-            avail.append(code); continue
-        if args.skip_existing and bf.exists() and _t.strftime("%Y-%m-%d", _t.localtime(bf.stat().st_mtime)) == today:
-            avail.append(code); continue
+            skipped += 1; continue
+        if args.skip_existing and bf.exists() and _baked_on(bf) == today:
+            skipped += 1; continue
         try:
             fund = co.fundamentals(code, sid)
             if "error" in fund:
@@ -169,9 +180,9 @@ def main():
             sec = sl.sector_for(code, fund.get("name"))
             sigv = sg.technofunda_signal(fund, price, sec)
             _atomic(out / f"{code}.json", json.dumps(
-                {"fundamental": fund, "prices": price, "signal": sigv},
+                {"generated_at": today, "fundamental": fund, "prices": price, "signal": sigv},
                 separators=(",", ":")))
-            avail.append(code); done += 1
+            done += 1
             if i <= 8 or i % 25 == 0:
                 print(f"  [{i}/{len(codes)}] baked {fund.get('name','')[:30]} ({code})")
         except Exception as e:  # noqa: BLE001
@@ -179,8 +190,11 @@ def main():
             print(f"  [{i}/{len(codes)}] FAIL {code}: {type(e).__name__}")
         time.sleep(0.15)
 
-    _atomic(out / "index.json", json.dumps(sorted(avail)))
-    print(f"[fund] baked {done} bundles, {fail} failed -> {out}")
+    # index.json lists every bundle that exists on disk, not just this run's
+    # visits — a --max-minutes break must never shrink the site's search index.
+    baked = sorted(p.stem for p in out.glob("*.json") if p.name != "index.json")
+    _atomic(out / "index.json", json.dumps(baked))
+    print(f"[fund] baked {done}, skipped {skipped}, failed {fail}; index {len(baked)} -> {out}")
 
 
 if __name__ == "__main__":

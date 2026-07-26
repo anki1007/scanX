@@ -15,6 +15,12 @@ IST = timezone(timedelta(hours=5, minutes=30))
 _SESSION_CACHE = ROOT / "screener_session.json"; _CACHE = ROOT / ".cache"
 
 
+def _atomic(path, text):
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
 def _sid():
     sid = os.environ.get("SCREENER_SESSIONID")
     if not sid and _SESSION_CACHE.exists():
@@ -103,12 +109,12 @@ def main() -> None:
         price_note = f"price err: {type(e).__name__}"
     rows.sort(key=lambda r: (r.get("order_size_pct") is not None, r.get("order_size_pct") or -1), reverse=True)
     companies = consolidate(rows)
-    (out / "orders.json").write_text(json.dumps(rows, indent=2))
-    (out / "orders_companies.json").write_text(json.dumps(companies, indent=2))
+    _atomic(out / "orders.json", json.dumps(rows, indent=2))
+    _atomic(out / "orders_companies.json", json.dumps(companies, indent=2))
     now = datetime.now(IST)
     meta = {"generated_at_ist": now.strftime("%Y-%m-%d %H:%M:%S IST"), "orders": len(rows),
             "companies": len(companies), "source": source, "prices": price_note}
-    (out / "orders_meta.json").write_text(json.dumps(meta, indent=2))
+    _atomic(out / "orders_meta.json", json.dumps(meta, indent=2))
     print(f"[orders] {len(rows)} orders / {len(companies)} cos | {source} | {price_note} | {now:%H:%M:%S IST}")
 
 

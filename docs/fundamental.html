@@ -370,6 +370,24 @@ function insightSection(a){
       <p class="psub" style="margin-top:10px">${esc(mf.note||'')}</p></div>
   </div></div>`;
 }
+/* ---------------- financial health ratios (bias-tagged) ---------------- */
+function healthChip(name,h){
+  if(!h) return '';
+  const cls=h.bias==='positive'?'up':(h.bias==='negative'?'dn':'mid');
+  const sign=h.bias==='positive'?'+':(h.bias==='negative'?'−':'○');
+  const val=h.value!=null?h.value+'x':(h.pct_change!=null?(h.pct_change>0?'+':'')+h.pct_change+'%':'n/a');
+  return `<div class="tchip"><div class="m">${esc(name)} <span class="pill ${cls}">${sign} ${val}</span></div>
+    <div class="s"><span class="ct">${esc(h.note||'')}</span></div></div>`;
+}
+function healthSection(a){
+  const h=a.health; if(!h) return '';
+  const chips=[healthChip('Current Ratio',h.current_ratio),
+               healthChip('OCF / Net Profit',h.ocf_np),
+               healthChip('CWIP trend (capex)',h.cwip)].join('');
+  return `<div class="sec"><h3>Financial health</h3><div class="panel">
+    <p class="psub">Cash-backing of profits, liquidity, and capex-completion signal — each tagged +/−/neutral</p>
+    <div class="trend">${chips}</div></div></div>`;
+}
 
 /* ---------------- charts ---------------- */
 function perfChart(id,labels,sales,np,opm,eps){
@@ -455,6 +473,7 @@ function render(d){
     ${d.analysis?dcfSection(d.analysis):''}
     ${chartsSection(d)}
     ${d.analysis?trendsSection(d.analysis):''}
+    ${d.analysis?healthSection(d.analysis):''}
     ${d.analysis?insightSection(d.analysis):''}
     <div class="sec"><h3>Quarterly results</h3>${quartTbl}</div>
     ${stmts}

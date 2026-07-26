@@ -83,6 +83,11 @@ def _score(sales_yoy, sales_qoq, np_yoy, np_qoq, ebitda_yoy, ebitda_qoq,
         "cf_profit": 50.0 if cf_profit is None else max(0, min(100, cf_profit * 60)),
     }
     score = sum(parts[k] * _WEIGHTS[k] for k in _WEIGHTS)
+    inputs = (sales_yoy, sales_qoq, np_yoy, np_qoq, ebitda_yoy, ebitda_qoq, cf_profit)
+    if all(v is None for v in inputs):
+        # every part defaulted to neutral: zero evidence must never be
+        # labeled HIGH conviction (all-None used to score exactly 50 -> HIGH)
+        return score, "LOW"
     category = "HIGH" if score >= 50 else "MEDIUM" if score >= 30 else "LOW"
     return score, category
 

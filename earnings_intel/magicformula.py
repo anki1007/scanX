@@ -53,7 +53,7 @@ def compute(rows: list[dict], sector_of=None) -> list[dict]:
     Ties get the same ordinal position resolved deterministically
     (secondary key: bigger mcap first, then code).
     """
-    rs = [dict(r) for r in rows if _valid(r)]
+    rs = [dict(r) for r in rows if _valid(r) and r.get("code")]
 
     # de-dup by code (paginated crawls can repeat)
     seen: set = set()

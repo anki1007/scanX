@@ -98,7 +98,7 @@ class AlertSink:
                     datetime.now().isoformat(timespec="seconds"),
                     meta.get("source", ""), meta.get("symbol", ""),
                     meta.get("kind", ""), meta.get("action", ""),
-                    meta.get("score", ""), meta.get("headline", "")[:200],
+                    meta.get("score", ""), (meta.get("headline") or "")[:200],
                     meta.get("url", ""),
                 ])
         except Exception as e:  # noqa: BLE001

@@ -40,7 +40,7 @@ _SESSION = ROOT / "screener_session.json"
 
 def _atomic(path, text):
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text)
+    tmp.write_text(text, encoding="utf-8")
     os.replace(tmp, path)
 
 

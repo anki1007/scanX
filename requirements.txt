@@ -36,3 +36,8 @@ pandas>=2.0
 google-genai>=0.3      # Gemini API (key read locally from gemin_api_key.md, never published)
 
 openpyxl>=3.1          # FPI/fpi_update.py NSDL workbook writer
+
+# ---------------------------------------------------------------------------
+# Quant Lab — Upstox fundamentals ingestion (quantlab/)
+duckdb>=0.10           # quantlab.store — local analytics database
+apscheduler>=3.10      # quantlab.scheduler — cron-based background sync

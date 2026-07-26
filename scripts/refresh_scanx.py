@@ -39,7 +39,7 @@ IST = timezone(timedelta(hours=5, minutes=30))
 
 def _atomic(path, text):
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text)
+    tmp.write_text(text, encoding="utf-8")
     os.replace(tmp, path)
 _SESSION_CACHE = ROOT / "screener_session.json"
 
@@ -138,7 +138,10 @@ def _yf_fill(rows: list) -> int:
         if not tk:
             continue
         try:
-            df = data[tk] if len(tickers) > 1 else data
+            try:
+                df = data[tk]          # multi-ticker (and some single-ticker) shapes
+            except Exception:  # noqa: BLE001
+                df = data              # flat frame when only one ticker resolved
             closes = df["Close"].dropna()
             if len(closes) >= 1:
                 last = float(closes.iloc[-1])
@@ -192,11 +195,13 @@ def enrich_prices(rows: list, provider=None) -> str:
         return f"Dhan quote error: {type(e).__name__}"
 
     hits = 0
+    missed = []
     for r in rows:
         code = str(r.get("code", "")).strip().upper()
         q = next((quotes[k] for k in cand.get(code, [])
                   if quotes.get(k) and quotes[k].get("last_price") is not None), None)
         if not q:
+            missed.append(r)
             continue
         last = q.get("last_price")
         nc = q.get("net_change")
@@ -208,9 +213,14 @@ def enrich_prices(rows: list, provider=None) -> str:
         r["pct_change"] = pct
         hits += 1
     if hits:
-        return f"{type(prov).__name__} LTP {hits}/{len(rows)}"
+        # partial coverage is the NORM in the cloud (NSE blocks datacenter IPs),
+        # so gap-fill the missed rows with delayed Yahoo prices instead of
+        # leaving them at crawl-time values.
+        n = _yf_fill(missed) if missed else 0
+        tag = f"{type(prov).__name__} LTP {hits}/{len(rows)}"
+        return f"{tag} + yfinance {n}" if n else tag
     err = getattr(prov, "last_error", None)
-    n = _yf_fill(rows)   # Dhan gave nothing -> show delayed prices, never blank
+    n = _yf_fill(rows)   # provider gave nothing -> show delayed prices, never blank
     reason = err or "no quotes (enable Dhan Data API / use a self access token)"
     return f"yfinance delayed {n}/{len(rows)} — Dhan: {str(reason)[:80]}"
 
@@ -251,7 +261,11 @@ def main() -> None:
     if source.startswith("sample") and not args.sample:
         prev = out / "pead.json"
         try:
-            if prev.exists() and len(json.loads(prev.read_text(encoding="utf-8"))) > len(rows):
+            # any existing non-empty board beats the bundled sample — the live
+            # board is often exactly the sample's size, so a ">" comparison
+            # would let one bad cycle overwrite real data.
+            prev_rows = json.loads(prev.read_text(encoding="utf-8")) if prev.exists() else []
+            if isinstance(prev_rows, list) and prev_rows:
                 print(f"[scanx] Screener unreachable — keeping previous real board "
                       f"(skipping sample overwrite) | {datetime.now(IST):%H:%M:%S IST}")
                 return

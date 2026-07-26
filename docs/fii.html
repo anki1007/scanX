@@ -102,8 +102,8 @@
 <div class="src" id="src">source: screener.in/fii/</div>
 <script>
 function f(id){return document.getElementById(id);}
-function scrUrl(c){return 'https://www.screener.in/company/'+encodeURIComponent(c)+'/';}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 function inr(v,d){if(v===null||v===undefined||v==='')return '<span class="na">—</span>';const n=Number(v);const s=n.toLocaleString('en-IN',{maximumFractionDigits:d===undefined?0:d});return (n>0?'+':'')+s;}
 
 let DATA=[],sort={k:'fortnight',dir:-1};
@@ -120,11 +120,11 @@ function render(){const rows=DATA.slice().sort((a,b)=>{let x=a[sort.k],y=b[sort.
  f('head').innerHTML=COLS.map(c=>{const cl=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';return `<th class="${cl}" data-k="${c.k}">${c.t}</th>`;}).join('');
  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sort.k===k)sort.dir*=-1;else{sort.k=k;sort.dir=-1;}render();});
  f('body').innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(c,r)).join('')+'</tr>').join('')||'<tr><td colspan="4" class="na" style="padding:18px">No FII data yet — runs once scanX scrapes screener.in/fii/.</td></tr>';}
-async function load(){try{const j=await fetch('data/fii.json?t='+Date.now()).then(r=>r.json());DATA=j.sectors||[];
+async function load(){try{const j=await fetch('data/fii.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});DATA=j.sectors||[];
  const tt=j.totals||{};f('kFn').textContent=tt.fortnight!=null?inr(tt.fortnight):'–';f('kFn').className='v '+((tt.fortnight||0)>=0?'':'');
  f('kFn').style.color=(tt.fortnight||0)>=0?'var(--green)':'var(--red)';
  f('kY1').textContent=tt.oneY!=null?inr(tt.oneY):'–';f('kY1').style.color=(tt.oneY||0)>=0?'var(--green)':'var(--red)';
- f('kSec').textContent=DATA.length;f('kTime').innerHTML='<span class="dot"></span>'+(j.generated_at_ist||'live');render();}
+ f('kSec').textContent=DATA.length;f('kTime').innerHTML=(staleChip(j.generated_at_ist)||'<span class="dot"></span>')+esc(j.generated_at_ist||'live');render();}
  catch(e){f('src').textContent='No FII data yet — run scanX (needs a logged-in Screener session).';}}
 load();setInterval(load,60000);
 

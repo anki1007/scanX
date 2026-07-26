@@ -9,7 +9,10 @@ name: scanX market quotes
 
 on:
   schedule:
-    - cron: "*/15 3-10 * * 1-5"    # ~08:45-15:45 IST window (UTC+5:30), Mon-Fri
+    # GitHub's shared cron scheduler drops most */15 firings (observed ~3/day).
+    # Offset minutes away from :00 get picked up far more reliably; window
+    # 03:07-10:47 UTC = 08:37-16:17 IST, Mon-Fri.
+    - cron: "7,27,47 3-10 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
@@ -17,7 +20,7 @@ permissions:
 
 concurrency:
   group: scanx-quotes
-  cancel-in-progress: true
+  cancel-in-progress: false   # never cancel a run between its commit and push
 
 jobs:
   quotes:

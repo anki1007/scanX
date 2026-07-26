@@ -63,8 +63,13 @@ def _date_index(dates: list, d) -> Optional[int]:
 
 def _simulate(window: list[PriceBar], entry: float, stop: float, target: float,
               is_short: bool) -> tuple[float, str, str]:
-    """Walk forward; exit on stop/target intrabar else at the last close."""
-    for b in window[1:]:
+    """Walk forward; exit on stop/target intrabar else at the last close.
+
+    The entry bar is included: entry is at window[0].open, and a stop or
+    target touched later that same day must count (stop checked first, the
+    conservative convention used on every other bar).
+    """
+    for b in window:
         if not is_short:
             if b.low <= stop:
                 return stop, b.date.isoformat(), "stop"
@@ -139,16 +144,21 @@ class Backtester:
             exit_price, exit_date, outcome = _simulate(
                 window, entry_price, plan.stop, plan.target2, is_short)
 
+            # short return is measured on entry notional: (entry - exit) / entry
             gross = (exit_price / entry_price - 1) if not is_short else (
-                entry_price / exit_price - 1)
+                1 - exit_price / entry_price)
             ret_pct = gross - cost
             risk_per_share = abs(entry_price - plan.stop)
             r_multiple = ((exit_price - entry_price) if not is_short
                           else (entry_price - exit_price)) / max(risk_per_share, 1e-9)
             r_multiple -= cost * entry_price / max(risk_per_share, 1e-9)
 
-            # Each trade risks `risk_frac` of equity; PnL = R-multiple * risk amount.
-            pnl = r_multiple * (equity * risk_frac)
+            # PnL from the position ACTUALLY sized by the trade plan (which
+            # caps quantity at max_position_pct of equity) — not from the
+            # theoretical full risk budget, which overstated capped trades.
+            per_share = ((exit_price - entry_price) if not is_short
+                         else (entry_price - exit_price))
+            pnl = (per_share - cost * entry_price) * plan.quantity
             prev = equity
             equity += pnl
             trade_returns.append(pnl / prev)

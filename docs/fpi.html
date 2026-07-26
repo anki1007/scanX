@@ -94,33 +94,6 @@
   .empty{padding:40px;text-align:center;color:var(--muted);font-size:13px}
   .empty code{background:var(--panel2);padding:2px 6px;border-radius:4px}
 
-  /* Sync button */
-  .sync-btn{display:inline-flex;align-items:center;gap:6px;margin-left:14px;
-    background:var(--panel2);border:1px solid var(--border);color:var(--text);
-    padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
-    cursor:pointer;font-family:inherit;vertical-align:middle;line-height:1;
-    transition:border-color .15s, color .15s}
-  .sync-btn:hover{border-color:var(--accent);color:var(--accent)}
-  .sync-btn:disabled{opacity:.6;cursor:not-allowed}
-  .sync-btn .ico{display:inline-block;font-size:14px;line-height:1}
-  .sync-btn.syncing .ico{animation:spin 1s linear infinite}
-  .sync-btn.success{color:var(--pos);border-color:var(--pos)}
-  .sync-btn.error{color:var(--neg);border-color:var(--neg)}
-  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-
-  /* Toast */
-  .toast{position:fixed;bottom:24px;right:24px;
-    background:var(--panel);border:1px solid var(--border);
-    padding:12px 16px;border-radius:8px;font-size:13px;
-    max-width:420px;z-index:1000;
-    box-shadow:0 6px 20px rgba(0,0,0,.4);
-    animation:fadein .2s ease-out}
-  .toast.pos{border-color:var(--pos)}
-  .toast.neg{border-color:var(--neg)}
-  .toast .hint{display:block;margin-top:6px;color:var(--muted);font-size:11px;
-    font-family:ui-monospace,Menlo,Consolas,monospace}
-  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
   /* Responsive */
   @media (max-width:1100px){
     .kpis{grid-template-columns:repeat(2,1fr)}
@@ -299,82 +272,17 @@ const $ = (id) => document.getElementById(id);
 const NF = new Intl.NumberFormat("en-IN");
 const SIGN = (v) => (v == null ? "—" : (v >= 0 ? "+" : "") + NF.format(Math.round(v)));
 const ABS_NF = (v) => v == null ? "—" : NF.format(Math.round(Math.abs(v)));
-
-// ── Sync button (runs fpi_update.py via the local helper) ──────────────
-const SYNC_URL = "http://127.0.0.1:8765/refresh";
-const SYNC_STATUS_URL = "http://127.0.0.1:8765/status";
-const syncBtn = $("syncBtn");
-
-function showToast(msg, kind, hint){
-  const t = document.createElement("div");
-  t.className = "toast " + (kind || "");
-  t.innerHTML = `<div>${msg}</div>` + (hint ? `<span class="hint">${hint}</span>` : "");
-  document.body.appendChild(t);
-  const ms = kind === "neg" ? 8000 : 4500;
-  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; }, ms - 300);
-  setTimeout(() => t.remove(), ms);
-}
-
-function setSyncState(state, label){
-  syncBtn.classList.remove("syncing","success","error");
-  if (state) syncBtn.classList.add(state);
-  syncBtn.querySelector(".lbl").textContent = label;
-}
-
-if (syncBtn) {
-  syncBtn.addEventListener("click", async () => {
-    syncBtn.disabled = true;
-    setSyncState("syncing", "Syncing…");
-    try {
-      const res = await fetch(SYNC_URL, { method: "POST", cache: "no-store" });
-      const data = await res.json().catch(() => ({ ok:false, error:"Bad JSON from helper" }));
-      if (!data.ok) {
-        const errLine = (data.tail || "").split("\n").reverse().find(l => l.trim()) || data.error || `exit ${data.returncode}`;
-        throw new Error(errLine);
-      }
-      const n = data.new_fortnights ?? 0;
-      setSyncState("success", n > 0 ? `+${n} new` : "Up to date");
-      if (n > 0) {
-        showToast(`Sync complete — ${n} new fortnight${n>1?"s":""} added. Reloading…`, "pos");
-        setTimeout(() => {
-          // Cache-bust the page so fpi_data.js is fetched fresh.
-          const url = new URL(location.href);
-          url.searchParams.set("_t", Date.now());
-          location.replace(url.toString());
-        }, 1000);
-      } else {
-        showToast("Sync complete — no new fortnight published yet.", "pos");
-      }
-    } catch (e) {
-      const msg = String(e.message || e);
-      setSyncState("error", "Failed");
-      const offline = msg.includes("Failed to fetch") || msg.includes("NetworkError");
-      showToast(
-        offline ? "Sync helper isn't running." : "Sync failed: " + msg,
-        "neg",
-        offline ? "Start it once:  cd D:\\FPI && python fpi_server.py" : null
-      );
-    } finally {
-      syncBtn.disabled = false;
-      setTimeout(() => setSyncState(null, "Sync"), 4000);
-    }
-  });
-
-  // Lightweight ping on load so the button tooltip reflects helper status
-  fetch(SYNC_STATUS_URL, { cache: "no-store" })
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(() => { syncBtn.title = "Helper online — click to fetch latest from NSDL"; })
-    .catch(() => { syncBtn.title = "Helper offline — start with: python fpi_server.py"; });
-}
+const esc = (s) => (s == null ? "" : String(s)).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 
 // Safety: if data file isn't loaded
 if (!window.fpiData || !Array.isArray(window.fpiData.rows)) {
   document.querySelector("main").innerHTML =
     '<div class="empty">' +
-    'No <code>fpi_data.js</code> found. Run <code>python fpi_update.py</code> in this folder first ' +
-    '(or click <b>Sync</b> above if <code>fpi_server.py</code> is running).' +
+    'No FPI data yet — <code>data/fpi.json</code> has not been published. It is generated by ' +
+    '<code>scripts/refresh_fpi.py</code> in the scanX data-refresh job (GitHub Actions), from the NSDL fortnightly reports.' +
     '</div>';
-  throw new Error("fpi_data missing");
+  throw new Error("fpi data missing");
 }
 
 // Globals
@@ -397,7 +305,7 @@ function sectorSummary(sector){
 }
 const SECTORS = [...new Set(ROWS.map(r => r.sector))].sort();
 
-$("lastRefresh").textContent = (window.fpiData.generated_at || "").replace("T"," ");
+$("lastRefresh").innerHTML = staleChip(window.fpiData.generated_at) + esc((window.fpiData.generated_at || "—").replace("T"," "));
 $("latestFortnight").textContent = labelFor(ALL_FORTNIGHTS[ALL_FORTNIGHTS.length-1]) || "—";
 
 // ── Aggregation helpers ─────────────────────────────────────────────────
@@ -634,7 +542,7 @@ function renderLeader(targetId, items, signClass){
   items.forEach(([name, val]) => {
     const row = document.createElement("div");
     row.className = "row " + signClass;
-    row.innerHTML = `<div class="name" title="${name}">${name}</div>
+    row.innerHTML = `<div class="name" title="${esc(name)}">${esc(name)}</div>
                      <div class="val">${SIGN(val)}</div>`;
     el.appendChild(row);
   });
@@ -666,7 +574,7 @@ function renderHeatmap(periods, sectors, matrix){
   periodsDesc.forEach(p => html += `<th>${periodLabel(p, state.mode)}</th>`);
   html += "</tr></thead><tbody>";
   sectors.forEach(s => {
-    html += `<tr><td class="sector" title="${s}">${s}</td>`;
+    html += `<tr><td class="sector" title="${esc(s)}">${esc(s)}</td>`;
     CUM_WINDOWS.forEach(D => { const v = summ[s].d[D]; html += `<td class="sumcol" style="background:${heatColor(v,sMax)}">${v?NF.format(Math.round(v)):""}</td>`; });
     years.forEach((y,i) => { const v = summ[s].y[y]; html += `<td class="sumcol yr${i===years.length-1?' divend':''}" style="background:${heatColor(v,sMax)}">${v?NF.format(Math.round(v)):""}</td>`; });
     periodsDesc.forEach(p => { const v = matrix[s][p]; html += `<td style="background:${heatColor(v,pMax)}">${v==null?"":NF.format(Math.round(v))}</td>`; });
@@ -775,7 +683,7 @@ function render(){
   momTop.forEach(([s, v]) => {
     const row = document.createElement("div");
     row.className = "row " + (v >= 0 ? "pos" : "neg");
-    row.innerHTML = `<div class="name" title="${s}">${s}</div><div class="val">${SIGN(v)}</div>`;
+    row.innerHTML = `<div class="name" title="${esc(s)}">${esc(s)}</div><div class="val">${SIGN(v)}</div>`;
     momEl.appendChild(row);
   });
 

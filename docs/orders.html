@@ -160,11 +160,10 @@ function ltpCell(v){return v===null||v===undefined?'<span class="na">—</span>'
 function pctCell(v){if(v===null||v===undefined)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${v}%</span>`;}
 function pill(v){if(v===null||v===undefined)return '<span class="na">—</span>';const cls=v>=100?'pill':'pill amber';return `<span class="${cls}">${v}%</span>`;}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function safeUrl(u){u=String(u||'');return /^https?:\/\//i.test(u)?u:'';}
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 function txt(v){return v?esc(v):'<span class="na">—</span>';}
 function plainNum(v){return v===null||v===undefined?'<span class="na">—</span>':esc(v);}
 function pctPlain(v){return v===null||v===undefined?'<span class="na">—</span>':v+'%';}
-function scrUrl(code){return 'https://www.screener.in/company/'+encodeURIComponent(code)+'/';}
 
 function cell(c,row){
   const v=row[c.k];
@@ -233,7 +232,7 @@ async function load(){
     ORDERS=o||[]; COMPANIES=c||[]; META=m||{};
     f('kOrders').textContent = ORDERS.length;
     f('kCos').textContent = COMPANIES.length;
-    f('kTime').innerHTML = '<span class="dot"></span>'+(m.generated_at_ist||'live');
+    f('kTime').innerHTML = (staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
     f('src').textContent = 'source: '+(m.source||'BSE filings + Screener')+(m.prices?(' · '+m.prices):'');
     render();
   }catch(e){ f('src').textContent='data load error: '+e; }

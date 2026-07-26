@@ -108,17 +108,20 @@ const COLS=[["symbol","Symbol","sym"],["pct_change","% Chg","pct"],["last","LTP"
   ["open","Open","num"],["high","High","num"],["low","Low","num"],["prev_close","Prev Close","num"],
   ["vwap_pos","vs VWAP","pct"],["range_pos","Day range","rng"],["volume","Volume","vol"],
   ["pead_score","PEAD","badge"]];
-let DATA=[],s={k:"pct_change",d:-1};
+let DATA=[],s={k:"pct_change",d:-1},FALLBACK=false;
 const f=id=>document.getElementById(id);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const pct=v=>v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(1)}%</span>`;
 const url=c=>'https://www.screener.in/company/'+encodeURIComponent(c)+'/';
 function render(){
-  f("head").innerHTML=COLS.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
+  // GitHub/static fallback: quotes.json rows may lack some engine columns — drop the all-empty ones
+  const cols=FALLBACK?COLS.filter(c=>c[0]==='symbol'||DATA.some(r=>r[c[0]]!=null)):COLS;
+  f("head").innerHTML=cols.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
   f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
   const rows=[...DATA].sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
-  f("body").innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>{
+  f("body").innerHTML=rows.map(r=>'<tr>'+cols.map(c=>{
     const v=r[c[0]];
-    if(c[2]==='sym')return `<td><a href="fundamental.html?code=${encodeURIComponent(r.symbol)}">${r.symbol}</a> <span class="na">${r.exchange||''}</span></td>`;
+    if(c[2]==='sym')return `<td><a href="fundamental.html?code=${encodeURIComponent(r.symbol)}">${esc(r.symbol)}</a> <span class="na">${esc(r.exchange||'')}</span></td>`;
     if(c[2]==='pct')return `<td>${pct(v)}</td>`;
     if(c[2]==='num')return `<td>${v==null?'—':(+v).toFixed(2)}</td>`;
     if(c[2]==='rng')return `<td>${v==null?'—':(+v).toFixed(0)+'%'}</td>`;
@@ -138,8 +141,8 @@ async function load(){
     const rows=j.rows||[];
     const fresh=j.generated_at && (Date.now()-new Date(j.generated_at).getTime() < 2*3600e3);
     if(rows.length && fresh){
-      DATA=rows;
-      f("kTime").innerHTML='<span class="dot"></span>'+(j.generated_at||'live').replace('T',' ');
+      DATA=rows; FALLBACK=false;
+      f("kTime").innerHTML='<span class="dot"></span>'+esc((j.generated_at||'live').replace('T',' '));
       f("tbl").style.display=''; f("empty").style.display='none'; render();
     } else if(!(await quotesFallback())) showEmpty("No movers yet this cycle.");
   }catch(e){ if(!(await quotesFallback())) showEmpty("No intraday data yet — movers appear during market hours (09:15–15:30 IST)."); }
@@ -147,11 +150,11 @@ async function load(){
 async function quotesFallback(){
   // GitHub mode: rank top |%| moves from the delayed NSE/BSE quotes snapshot
   try{
-    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>r.json());
+    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();});
     const age=(Date.now()/1000)-(q.ts||0);
     if(!q.quotes || age>5400) return false;
     let pead={};
-    try{ const p=await fetch('data/pead.json?t='+Date.now()).then(r=>r.json());
+    try{ const p=await fetch('data/pead.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();});
       (p||[]).forEach(x=>pead[String(x.code||'').toUpperCase()]={s:x.pead_score,c:x.pead_category}); }catch(e){}
     DATA=Object.entries(q.quotes).filter(([k,v])=>v.pct!=null&&v.ltp!=null)
       .sort((a,b)=>Math.abs(b[1].pct)-Math.abs(a[1].pct)).slice(0,25)
@@ -163,7 +166,8 @@ async function quotesFallback(){
           range_pos:(hi!=null&&lo!=null&&hi>lo)?((ltp-lo)/(hi-lo)*100):null,
           pead_score:(pead[k]||{}).s??null,pead_category:(pead[k]||{}).c||''};});
     if(!DATA.length) return false;
-    f("kTime").innerHTML='<span class="dot"></span>quotes '+(q.ist||'')+' · '+(q.source||'delayed');
+    FALLBACK=true;
+    f("kTime").innerHTML='<span class="dot"></span>quotes '+esc(q.ist||'')+' · '+esc(q.source||'delayed');
     f("tbl").style.display=''; f("empty").style.display='none'; render();
     return true;
   }catch(e){ return false; }

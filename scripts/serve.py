@@ -81,7 +81,7 @@ def _live_quotes(codes):
     if need:
         prov = _pick_provider()
         if prov is None:
-            return {"_error": "no Dhan token (live prices need a valid dhan_token.json)"}
+            return {"_error": "quote provider unavailable (free NSE/BSE feed failed to start)"}
         cand, keys = {}, set()
         for c in need:
             ks = [f"BSE:{c}"] if c.isdigit() else [f"NSE:{c}", f"BSE:{c}"]

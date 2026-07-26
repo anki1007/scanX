@@ -1,5 +1,7 @@
 # Secrets — never commit (credentials.example.ps1 is a safe template and stays tracked)
 credentials.ps1
+credentials.bat
+quantlab_token.txt
 kite/
 dhan/
 kite_token.json
@@ -33,12 +35,24 @@ gemini_api_key.md
 
 # stray scratch file (safe to delete)
 __sync_test_bash.txt
+.deltest/
 # scratch queue / batch log (safe to delete)
 alerts/bake_batch.log
 alerts/bake_full.log
 
-# FPI runtime log
+# FPI runtime log + local run artifacts (never publish machine paths/usernames)
 FPI/*.log
+FPI/_diag.txt
+FPI/_run.txt
+FPI/_last_run.txt
+FPI/_run_done.flag
 
 # local audit report (not for publishing)
 SECURITY_AUDIT.md
+
+# Quant Lab (quantlab/) — local artifacts, never commit
+quantlab_token.txt
+quantlab.duckdb
+*.duckdb
+.cache/quantlab/
+FPI/_run_fpi.bat

@@ -133,14 +133,13 @@ const f=id=>document.getElementById(id);
 const rs=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2});
 const cr=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr';
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const safeUrl=u=>{u=String(u||'');return /^https?:\/\//i.test(u)?u:'';};
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 const num=v=>v==null?'<span class="na">—</span>':esc(v);
 const txt=v=>v?esc(v):'<span class="na">—</span>';
 function fracpct(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);const c=p>0?'pos':(p<0?'neg':'');return `<span class="${c}">${p}%</span>`;}
 function pctv(v){if(v==null)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${v}%</span>`;}
 function pill(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);return `<span class="pill ${p>=8?'go':'no'}">${p}%</span>`;}
 function decision(v){if(!v||v==='—')return '<span class="na">—</span>';if(v==='Open Market')return '<span class="pill om">Open Market</span>';return `<span class="pill ${v.indexOf('8%')>=0&&v[0]==='A'?'go':'no'}">${esc(v)}</span>`;}
-function scr(code){return 'https://www.screener.in/company/'+encodeURIComponent(code)+'/';}
 
 function cell(c,row){
   const v=row[c.k];
@@ -186,7 +185,7 @@ async function load(){
       fetch('data/buybacks_meta.json?t='+t).then(r=>r.json()).catch(()=>({})),
     ]);
     DATA=d||[]; META=m||{};
-    f('kTime').innerHTML='<span class="dot"></span>'+(m.generated_at_ist||'live');
+    f('kTime').innerHTML=(staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
     f('src').textContent='source: '+(m.source||'BSE buy-back filings + Screener')+(m.prices?(' · '+m.prices):'');
     render();
   }catch(e){ f('src').textContent='data load error: '+e; }

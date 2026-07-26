@@ -122,7 +122,11 @@ def compute_features(
     breakout = bool(close.iloc[-1] > prior_high)
 
     ema20, ema50, ema200 = _ema(close, 20), _ema(close, 50), _ema(close, 200)
-    deliv = float(df["deliv"].iloc[-3:].mean()) if df["deliv"].notna().any() else 50.0
+    # NSE publishes delivery T+1, so the newest bars are routinely NaN — average
+    # the last 3 bars that actually HAVE delivery data instead of a raw tail
+    # slice (whose all-NaN mean poisoned the PEAD delivery driver).
+    _dl = df["deliv"].dropna()
+    deliv = float(_dl.iloc[-3:].mean()) if len(_dl) else 50.0
 
     return MarketFeatures(
         close=float(close.iloc[-1]),

@@ -219,6 +219,7 @@ def _analyze(overview, growth, quarters, pl, bs, cf, ratios, sh) -> dict:
             pcagr.get("TTM"), scagr.get("1 Year")),
         "money_flow": A.money_flow(sh.get("headers", []), fii, dii),
         "dcf": A.auto_dcf(overview, growth, pl),
+        "health": A.health_ratios(bs, cf, pl),
     }
 
 

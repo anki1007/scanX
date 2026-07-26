@@ -14,14 +14,22 @@ from ._util import clamp
 def score_valuation(v: ValuationInputs) -> float:
     parts: list[tuple[float, float]] = []   # (score, weight)
 
-    # Relative PE vs sector: cheaper than peers is better.
-    if v.pe and v.sector_median_pe:
-        rel = v.pe / v.sector_median_pe
-        parts.append((clamp(50 + (1 - rel) * 100, 0, 100), 0.5))
+    # Relative PE vs sector: cheaper than peers is better. A negative PE means
+    # the company is loss-making — that is not "cheap", it is uninvestable on
+    # this metric, so penalize mildly instead of letting rel < 0 score 100.
+    if v.pe and v.sector_median_pe and v.sector_median_pe > 0:
+        if v.pe <= 0:
+            parts.append((35.0, 0.5))
+        else:
+            rel = v.pe / v.sector_median_pe
+            parts.append((clamp(50 + (1 - rel) * 100, 0, 100), 0.5))
 
-    # PEG: <1 cheap for the growth, >2 expensive.
+    # PEG: <1 cheap for the growth, >2 expensive. Negative PEG (negative
+    # earnings or shrinking earnings) is a red flag, not a bargain.
     if v.peg is not None:
-        if v.peg <= 1:
+        if v.peg < 0:
+            peg_score = 30
+        elif v.peg <= 1:
             peg_score = 90
         elif v.peg >= 2:
             peg_score = 25

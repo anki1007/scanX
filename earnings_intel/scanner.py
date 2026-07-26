@@ -56,7 +56,13 @@ class LiveScanner:
     # ----------------------------------------------------------- time window
     @staticmethod
     def _now() -> datetime:
-        return datetime.now()
+        # window strings are IST market hours — anchor the clock to IST so a
+        # UTC host (cloud runner) doesn't scan at the wrong hours
+        try:
+            from zoneinfo import ZoneInfo
+            return datetime.now(ZoneInfo("Asia/Kolkata")).replace(tzinfo=None)
+        except Exception:  # noqa: BLE001
+            return datetime.now()
 
     def _window_state(self, start: str, end: str) -> str:
         now_min = self._now().hour * 60 + self._now().minute
