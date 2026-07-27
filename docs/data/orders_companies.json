@@ -5,7 +5,7 @@
     "order_count": 1,
     "total_value_cr": 8.0,
     "revenue_fy": 4.12,
-    "market_cap": 429.0,
+    "market_cap": 398.0,
     "orders_pct_revenue": 194.17
   },
   {
@@ -14,7 +14,7 @@
     "order_count": 1,
     "total_value_cr": 71.0,
     "revenue_fy": 111.0,
-    "market_cap": 859.0,
+    "market_cap": 877.0,
     "orders_pct_revenue": 63.96
   },
   {
@@ -32,7 +32,7 @@
     "order_count": 1,
     "total_value_cr": 16.03,
     "revenue_fy": 55.37,
-    "market_cap": 72.2,
+    "market_cap": 74.9,
     "orders_pct_revenue": 28.95
   },
   {
@@ -41,7 +41,7 @@
     "order_count": 1,
     "total_value_cr": 5.9,
     "revenue_fy": 23.54,
-    "market_cap": 19.6,
+    "market_cap": 20.0,
     "orders_pct_revenue": 25.06
   },
   {
@@ -50,7 +50,7 @@
     "order_count": 1,
     "total_value_cr": 66.6,
     "revenue_fy": 310.0,
-    "market_cap": 1025.0,
+    "market_cap": 1076.0,
     "orders_pct_revenue": 21.48
   },
   {
@@ -59,8 +59,17 @@
     "order_count": 1,
     "total_value_cr": 52.0,
     "revenue_fy": 297.0,
-    "market_cap": 401.0,
+    "market_cap": 399.0,
     "orders_pct_revenue": 17.51
+  },
+  {
+    "code": "WELCORP",
+    "name": "Welspun Corp Ltd",
+    "order_count": 1,
+    "total_value_cr": 960.0,
+    "revenue_fy": 8038.0,
+    "market_cap": 42279.0,
+    "orders_pct_revenue": 11.94
   },
   {
     "code": "544334",
@@ -68,7 +77,7 @@
     "order_count": 1,
     "total_value_cr": 1.57,
     "revenue_fy": 15.58,
-    "market_cap": 42.2,
+    "market_cap": 44.1,
     "orders_pct_revenue": 10.08
   },
   {
@@ -77,7 +86,7 @@
     "order_count": 1,
     "total_value_cr": 3.08,
     "revenue_fy": 32.25,
-    "market_cap": 38.4,
+    "market_cap": 38.6,
     "orders_pct_revenue": 9.55
   },
   {
@@ -86,7 +95,7 @@
     "order_count": 1,
     "total_value_cr": 76.2,
     "revenue_fy": 865.0,
-    "market_cap": 1185.0,
+    "market_cap": 1266.0,
     "orders_pct_revenue": 8.81
   },
   {
@@ -95,7 +104,7 @@
     "order_count": 1,
     "total_value_cr": 20.81,
     "revenue_fy": 240.0,
-    "market_cap": 4344.0,
+    "market_cap": 4376.0,
     "orders_pct_revenue": 8.67
   },
   {
@@ -104,7 +113,7 @@
     "order_count": 1,
     "total_value_cr": 6.11,
     "revenue_fy": 95.0,
-    "market_cap": 238.0,
+    "market_cap": 235.0,
     "orders_pct_revenue": 6.43
   },
   {
@@ -113,7 +122,7 @@
     "order_count": 1,
     "total_value_cr": 60.0,
     "revenue_fy": 949.0,
-    "market_cap": 4616.0,
+    "market_cap": 4716.0,
     "orders_pct_revenue": 6.32
   },
   {
@@ -122,7 +131,7 @@
     "order_count": 1,
     "total_value_cr": 138.0,
     "revenue_fy": 2262.0,
-    "market_cap": 5600.0,
+    "market_cap": 5618.0,
     "orders_pct_revenue": 6.1
   },
   {
@@ -131,7 +140,7 @@
     "order_count": 1,
     "total_value_cr": 18.0,
     "revenue_fy": 365.0,
-    "market_cap": 476.0,
+    "market_cap": 456.0,
     "orders_pct_revenue": 4.93
   },
   {
@@ -140,8 +149,17 @@
     "order_count": 1,
     "total_value_cr": 28.69,
     "revenue_fy": 600.0,
-    "market_cap": 315.0,
+    "market_cap": 334.0,
     "orders_pct_revenue": 4.78
+  },
+  {
+    "code": "544291",
+    "name": "Rajesh Power Services Ltd",
+    "order_count": 1,
+    "total_value_cr": 75.05,
+    "revenue_fy": 1628.0,
+    "market_cap": 1532.0,
+    "orders_pct_revenue": 4.61
   },
   {
     "code": "AVG",
@@ -149,7 +167,7 @@
     "order_count": 1,
     "total_value_cr": 25.0,
     "revenue_fy": 556.0,
-    "market_cap": 381.0,
+    "market_cap": 387.0,
     "orders_pct_revenue": 4.5
   },
   {
@@ -158,7 +176,7 @@
     "order_count": 1,
     "total_value_cr": 6.4,
     "revenue_fy": 172.0,
-    "market_cap": 309.0,
+    "market_cap": 317.0,
     "orders_pct_revenue": 3.72
   },
   {
@@ -167,17 +185,8 @@
     "order_count": 1,
     "total_value_cr": 3.84,
     "revenue_fy": 123.0,
-    "market_cap": 164.0,
+    "market_cap": 156.0,
     "orders_pct_revenue": 3.12
-  },
-  {
-    "code": "544291",
-    "name": "Rajesh Power Services Ltd",
-    "order_count": 1,
-    "total_value_cr": 40.58,
-    "revenue_fy": 1628.0,
-    "market_cap": 1511.0,
-    "orders_pct_revenue": 2.49
   },
   {
     "code": "544686",
@@ -185,7 +194,7 @@
     "order_count": 1,
     "total_value_cr": 0.99,
     "revenue_fy": 40.27,
-    "market_cap": 52.7,
+    "market_cap": 54.5,
     "orders_pct_revenue": 2.46
   },
   {
@@ -203,7 +212,7 @@
     "order_count": 1,
     "total_value_cr": 3.36,
     "revenue_fy": 172.0,
-    "market_cap": 734.0,
+    "market_cap": 738.0,
     "orders_pct_revenue": 1.95
   },
   {
@@ -212,7 +221,7 @@
     "order_count": 1,
     "total_value_cr": 4.83,
     "revenue_fy": 314.0,
-    "market_cap": 409.0,
+    "market_cap": 438.0,
     "orders_pct_revenue": 1.54
   },
   {
@@ -221,7 +230,7 @@
     "order_count": 1,
     "total_value_cr": 108.85,
     "revenue_fy": 9755.0,
-    "market_cap": 25337.0,
+    "market_cap": 25664.0,
     "orders_pct_revenue": 1.12
   },
   {
@@ -230,8 +239,17 @@
     "order_count": 1,
     "total_value_cr": 2.84,
     "revenue_fy": 303.0,
-    "market_cap": 284.0,
+    "market_cap": 287.0,
     "orders_pct_revenue": 0.94
+  },
+  {
+    "code": "543806",
+    "name": "ITCONS E-Solutions Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.81,
+    "revenue_fy": 87.74,
+    "market_cap": 251.0,
+    "orders_pct_revenue": 0.92
   },
   {
     "code": "RAILTEL",
@@ -239,17 +257,8 @@
     "order_count": 1,
     "total_value_cr": 32.74,
     "revenue_fy": 4277.0,
-    "market_cap": 9139.0,
+    "market_cap": 9269.0,
     "orders_pct_revenue": 0.77
-  },
-  {
-    "code": "HBLENGINE",
-    "name": "HBL Engineering Ltd",
-    "order_count": 1,
-    "total_value_cr": 24.0,
-    "revenue_fy": 3252.0,
-    "market_cap": 19365.0,
-    "orders_pct_revenue": 0.74
   },
   {
     "code": "NIYATILEAS",
@@ -257,7 +266,7 @@
     "order_count": 1,
     "total_value_cr": 0.16,
     "revenue_fy": 32.48,
-    "market_cap": 83.0,
+    "market_cap": 84.4,
     "orders_pct_revenue": 0.49
   },
   {
@@ -266,7 +275,7 @@
     "order_count": 1,
     "total_value_cr": 1.58,
     "revenue_fy": 334.0,
-    "market_cap": 1129.0,
+    "market_cap": 1132.0,
     "orders_pct_revenue": 0.47
   },
   {
@@ -275,7 +284,7 @@
     "order_count": 1,
     "total_value_cr": 1.72,
     "revenue_fy": 454.0,
-    "market_cap": 664.0,
+    "market_cap": 655.0,
     "orders_pct_revenue": 0.38
   },
   {
@@ -293,7 +302,7 @@
     "order_count": 1,
     "total_value_cr": 0.4,
     "revenue_fy": 139.0,
-    "market_cap": 253.0,
+    "market_cap": 257.0,
     "orders_pct_revenue": 0.29
   },
   {
@@ -302,7 +311,7 @@
     "order_count": 1,
     "total_value_cr": 0.85,
     "revenue_fy": 320.0,
-    "market_cap": 791.0,
+    "market_cap": 783.0,
     "orders_pct_revenue": 0.27
   },
   {
@@ -311,17 +320,26 @@
     "order_count": 1,
     "total_value_cr": 14.42,
     "revenue_fy": 6141.0,
-    "market_cap": 11655.0,
+    "market_cap": 11911.0,
     "orders_pct_revenue": 0.23
   },
   {
-    "code": "DELHIVERY",
-    "name": "Delhivery Ltd",
+    "code": "543963",
+    "name": "Shelter Pharma Ltd",
     "order_count": 1,
-    "total_value_cr": 7.61,
-    "revenue_fy": 9847.0,
-    "market_cap": 34648.0,
-    "orders_pct_revenue": 0.08
+    "total_value_cr": 0.0,
+    "revenue_fy": 73.13,
+    "market_cap": 48.8,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "ASHOKLEY",
+    "name": "Ashok Leyland Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 44007.0,
+    "market_cap": 90281.0,
+    "orders_pct_revenue": null
   },
   {
     "code": "WAAREERTL",
@@ -329,7 +347,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3539.0,
-    "market_cap": 9725.0,
+    "market_cap": 9720.0,
     "orders_pct_revenue": null
   },
   {
@@ -347,7 +365,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 442.0,
-    "market_cap": 8664.0,
+    "market_cap": 8869.0,
     "orders_pct_revenue": null
   },
   {
@@ -356,7 +374,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3419.0,
-    "market_cap": 23521.0,
+    "market_cap": 23385.0,
     "orders_pct_revenue": null
   },
   {
@@ -365,16 +383,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 290.0,
-    "market_cap": 26585.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "543963",
-    "name": "Shelter Pharma Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 73.13,
-    "market_cap": 45.3,
+    "market_cap": 27062.0,
     "orders_pct_revenue": null
   },
   {
@@ -383,7 +392,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 153680.0,
-    "market_cap": 520796.0,
+    "market_cap": 524428.0,
     "orders_pct_revenue": null
   },
   {
@@ -392,7 +401,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 366.0,
-    "market_cap": 13385.0,
+    "market_cap": 13538.0,
     "orders_pct_revenue": null
   },
   {
@@ -401,7 +410,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 138.0,
-    "market_cap": 22.2,
+    "market_cap": 23.0,
     "orders_pct_revenue": null
   },
   {
@@ -410,7 +419,16 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 979.0,
-    "market_cap": 679.0,
+    "market_cap": 678.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "DELHIVERY",
+    "name": "Delhivery Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 9847.0,
+    "market_cap": 34809.0,
     "orders_pct_revenue": null
   },
   {
@@ -419,7 +437,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 48.23,
-    "market_cap": 44.0,
+    "market_cap": 45.3,
     "orders_pct_revenue": null
   },
   {
@@ -428,7 +446,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 416.0,
-    "market_cap": 15970.0,
+    "market_cap": 15320.0,
     "orders_pct_revenue": null
   },
   {
@@ -437,7 +455,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 362.0,
-    "market_cap": 82.9,
+    "market_cap": 89.7,
     "orders_pct_revenue": null
   },
   {
@@ -446,7 +464,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 250.0,
-    "market_cap": 899.0,
+    "market_cap": 890.0,
     "orders_pct_revenue": null
   },
   {
@@ -464,7 +482,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 70.0,
-    "market_cap": 209.0,
+    "market_cap": 208.0,
     "orders_pct_revenue": null
   },
   {
@@ -473,7 +491,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 196.0,
-    "market_cap": 316.0,
+    "market_cap": 354.0,
     "orders_pct_revenue": null
   },
   {
@@ -482,7 +500,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 41.04,
-    "market_cap": 114.0,
+    "market_cap": 111.0,
     "orders_pct_revenue": null
   },
   {
@@ -491,7 +509,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 112.0,
-    "market_cap": 113.0,
+    "market_cap": 114.0,
     "orders_pct_revenue": null
   },
   {
@@ -500,7 +518,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 57.09,
-    "market_cap": 187.0,
+    "market_cap": 188.0,
     "orders_pct_revenue": null
   },
   {
@@ -509,7 +527,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 148.0,
-    "market_cap": 480.0,
+    "market_cap": 483.0,
     "orders_pct_revenue": null
   },
   {
@@ -518,7 +536,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2635.0,
-    "market_cap": 3421.0,
+    "market_cap": 3422.0,
     "orders_pct_revenue": null
   },
   {
@@ -527,7 +545,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 602.0,
-    "market_cap": 4021.0,
+    "market_cap": 3820.0,
     "orders_pct_revenue": null
   },
   {
@@ -536,7 +554,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3284.0,
-    "market_cap": 12741.0,
+    "market_cap": 12306.0,
     "orders_pct_revenue": null
   },
   {
@@ -545,7 +563,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 178.0,
-    "market_cap": 1761.0,
+    "market_cap": 1807.0,
     "orders_pct_revenue": null
   },
   {
@@ -554,7 +572,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 13226.0,
-    "market_cap": 119634.0,
+    "market_cap": 119793.0,
     "orders_pct_revenue": null
   },
   {
@@ -563,7 +581,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 976.0,
-    "market_cap": 3205.0,
+    "market_cap": 3231.0,
     "orders_pct_revenue": null
   },
   {
@@ -572,7 +590,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 468.0,
-    "market_cap": 839.0,
+    "market_cap": 838.0,
     "orders_pct_revenue": null
   },
   {
@@ -590,7 +608,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 145.0,
-    "market_cap": 551.0,
+    "market_cap": 539.0,
     "orders_pct_revenue": null
   },
   {
@@ -599,7 +617,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 62.71,
-    "market_cap": 142.0,
+    "market_cap": 141.0,
     "orders_pct_revenue": null
   },
   {
@@ -608,7 +626,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 20991.0,
-    "market_cap": 77723.0,
+    "market_cap": 79248.0,
     "orders_pct_revenue": null
   },
   {
@@ -617,7 +635,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2438.0,
-    "market_cap": 4317.0,
+    "market_cap": 4257.0,
     "orders_pct_revenue": null
   },
   {
@@ -626,7 +644,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2880.0,
-    "market_cap": 9935.0,
+    "market_cap": 10216.0,
     "orders_pct_revenue": null
   },
   {
@@ -635,7 +653,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1944.0,
-    "market_cap": 15554.0,
+    "market_cap": 16020.0,
     "orders_pct_revenue": null
   },
   {
@@ -644,7 +662,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 115.0,
-    "market_cap": 263.0,
+    "market_cap": 260.0,
     "orders_pct_revenue": null
   },
   {
@@ -653,7 +671,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 208.0,
-    "market_cap": 88.9,
+    "market_cap": 98.6,
     "orders_pct_revenue": null
   },
   {
@@ -662,7 +680,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 656.0,
-    "market_cap": 1007.0,
+    "market_cap": 1003.0,
     "orders_pct_revenue": null
   },
   {
@@ -671,7 +689,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 209.0,
-    "market_cap": 739.0,
+    "market_cap": 737.0,
     "orders_pct_revenue": null
   },
   {
@@ -680,7 +698,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 213.0,
-    "market_cap": 514.0,
+    "market_cap": 513.0,
     "orders_pct_revenue": null
   },
   {
@@ -689,7 +707,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 608.0,
-    "market_cap": 2240.0,
+    "market_cap": 2227.0,
     "orders_pct_revenue": null
   },
   {
@@ -698,7 +716,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 530.0,
-    "market_cap": 5262.0,
+    "market_cap": 5339.0,
     "orders_pct_revenue": null
   },
   {
@@ -707,43 +725,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 69.0,
-    "market_cap": 262.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "ANURAS",
-    "name": "Anupam Rasayan India Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1676.0,
-    "market_cap": 14226.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "KEC",
-    "name": "KEC International Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 19047.0,
-    "market_cap": 12509.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "544684",
-    "name": "Digilogic Systems Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 77.0,
-    "market_cap": 345.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "TMB",
-    "name": "Tamilnad Mercantile Bank Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 5819.0,
-    "market_cap": 12739.0,
+    "market_cap": 261.0,
     "orders_pct_revenue": null
   }
 ]
