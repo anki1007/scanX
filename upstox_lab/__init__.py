@@ -1,23 +1,23 @@
-"""Quant Lab — production-grade Upstox Fundamentals ingestion.
+"""Upstox Lab — production-grade Upstox Fundamentals ingestion.
 
 Read-only Analytics-token access to the Upstox ``/v2/fundamentals`` APIs,
 normalized into DuckDB with incremental sync, retries, rate limiting and
-APScheduler-based scheduling.  See ``quantlab/README.md``.
+APScheduler-based scheduling.  See ``upstox_lab/README.md``.
 
 Heavy optional dependencies (``duckdb``, ``apscheduler``) are imported
-lazily inside their modules, so ``import quantlab`` always works.
+lazily inside their modules, so ``import upstox_lab`` always works.
 """
 from __future__ import annotations
 
 from .auth import TokenInfo, inspect_token, load_token
 from .client import ENDPOINTS, EndpointSpec, TokenBucket, UpstoxFundamentalsClient
-from .config import TOKEN_ENV_VAR, QuantLabSettings
+from .config import TOKEN_ENV_VAR, UpstoxLabSettings
 from .errors import (
     AuthTokenError,
     MissingDependencyError,
-    QuantLabAPIError,
-    QuantLabConfigError,
-    QuantLabError,
+    UpstoxLabAPIError,
+    UpstoxLabConfigError,
+    UpstoxLabError,
 )
 from .normalize import NORMALIZERS, Dataset, normalize
 from .store import FundamentalsStore, SyncState
@@ -35,10 +35,10 @@ __all__ = [
     "FundamentalsStore",
     "InstrumentResolver",
     "MissingDependencyError",
-    "QuantLabAPIError",
-    "QuantLabConfigError",
-    "QuantLabError",
-    "QuantLabSettings",
+    "UpstoxLabAPIError",
+    "UpstoxLabConfigError",
+    "UpstoxLabError",
+    "UpstoxLabSettings",
     "SyncEngine",
     "SyncReport",
     "SyncState",

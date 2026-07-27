@@ -35,10 +35,10 @@ from typing import Any, Callable, Mapping
 import requests
 
 from . import auth
-from .config import QuantLabSettings
-from .errors import AuthTokenError, QuantLabAPIError
+from .config import UpstoxLabSettings
+from .errors import AuthTokenError, UpstoxLabAPIError
 
-logger = logging.getLogger("quantlab.client")
+logger = logging.getLogger("upstox_lab.client")
 
 #: HTTP statuses that are worth retrying.
 RETRYABLE_STATUSES = frozenset({408, 425, 429, 500, 502, 503, 504})
@@ -183,7 +183,7 @@ class UpstoxFundamentalsClient:
 
     def __init__(
         self,
-        settings: QuantLabSettings,
+        settings: UpstoxLabSettings,
         *,
         token: str | None = None,
         session: Any | None = None,
@@ -268,7 +268,7 @@ class UpstoxFundamentalsClient:
     ) -> dict[str, Any]:
         """Fetch one endpoint for one ISIN, with rate limiting and retries.
 
-        Raises :class:`QuantLabAPIError` on non-retryable HTTP errors or when
+        Raises :class:`UpstoxLabAPIError` on non-retryable HTTP errors or when
         retries are exhausted, and :class:`AuthTokenError` on 401/403.
         A bad ``endpoint`` name is a programmer error -> ``ValueError``.
         """
@@ -320,7 +320,7 @@ class UpstoxFundamentalsClient:
                         self._sleep(self._backoff_delay(attempt))
                     continue
                 if not isinstance(payload, dict):
-                    raise QuantLabAPIError(
+                    raise UpstoxLabAPIError(
                         f"{endpoint}/{isin}: unexpected non-object JSON payload",
                         status_code=status,
                     )
@@ -350,13 +350,13 @@ class UpstoxFundamentalsClient:
                 continue
 
             # Non-retryable client error (400, 404, UDAPI12xx, ...)
-            raise QuantLabAPIError(
+            raise UpstoxLabAPIError(
                 f"{endpoint}/{isin}: HTTP {status} {body_snippet}",
                 status_code=status,
                 error_code=_extract_error_code(response),
             )
 
-        raise QuantLabAPIError(
+        raise UpstoxLabAPIError(
             f"{endpoint}/{isin}: giving up after {attempts} attempts ({last_error})",
             status_code=last_status,
         )

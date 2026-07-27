@@ -14,10 +14,10 @@ import pytest
 
 duckdb = pytest.importorskip("duckdb")
 
-from quantlab.config import QuantLabSettings
-from quantlab.normalize import Dataset
-from quantlab.store import SCHEMA_DDL, FundamentalsStore
-from quantlab.sync import InstrumentResolver, SyncEngine, content_hash
+from upstox_lab.config import UpstoxLabSettings
+from upstox_lab.normalize import Dataset
+from upstox_lab.store import SCHEMA_DDL, FundamentalsStore
+from upstox_lab.sync import InstrumentResolver, SyncEngine, content_hash
 
 ISIN = "INE002A01018"
 FETCHED = datetime(2026, 7, 27, 12, 0, 0)
@@ -130,7 +130,7 @@ class StaticResolver(InstrumentResolver):
 
 
 def make_engine(tmp_path, store, payloads):
-    settings = QuantLabSettings(
+    settings = UpstoxLabSettings(
         db_path=tmp_path / "ql.duckdb",
         token_file=tmp_path / "tok.txt",
         refresh_after_hours=24.0,
@@ -180,16 +180,16 @@ def test_sync_unchanged_content_skips_rewrite(tmp_path):
 
 
 def test_sync_records_failures_and_continues(tmp_path):
-    from quantlab.errors import QuantLabAPIError
+    from upstox_lab.errors import UpstoxLabAPIError
 
     class FailingClient(StubClient):
         def fetch(self, endpoint, isin, *, params=None):
             if endpoint == "share_holdings":
-                raise QuantLabAPIError("HTTP 500 boom", status_code=500)
+                raise UpstoxLabAPIError("HTTP 500 boom", status_code=500)
             return super().fetch(endpoint, isin, params=params)
 
     with FundamentalsStore(tmp_path / "ql.duckdb") as store:
-        settings = QuantLabSettings(db_path=tmp_path / "ql.duckdb", token_file=tmp_path / "t")
+        settings = UpstoxLabSettings(db_path=tmp_path / "ql.duckdb", token_file=tmp_path / "t")
         client = FailingClient({"key_ratios": {"status": "success", "data": []}})
         engine = SyncEngine(settings, store, client, resolver=StaticResolver(settings))
         report = engine.run(["RELIANCE"], endpoints=["share_holdings", "key_ratios"])

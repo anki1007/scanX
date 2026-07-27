@@ -211,6 +211,33 @@ function growthChip(cur,prev){ const a=toNum(cur),b=toNum(prev);
 function pctTxt(v){ if(v==null) return '<span class="na">—</span>';
   return `<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(2)}%</span>`; }
 
+/* ---------------- live/delayed LTP overlay ----------------
+   The bundle's 'Current Price' is the BAKE-TIME price and can be weeks old.
+   Overlay the freshest price available: local API live quote first (scanX.bat
+   mode), else the delayed quotes.json the cloud refreshes in market hours. */
+async function overlayLivePrice(code){
+  const el=f('pxNow'); if(!el||!code) return;
+  code=String(code).toUpperCase();
+  let ltp=null,pct=null,src='';
+  try{
+    const ctl=new AbortController(); setTimeout(()=>ctl.abort(),4000);
+    const r=await fetch('/api/quote?codes='+encodeURIComponent(code),{signal:ctl.signal});
+    if(r.ok){ const j=await r.json(); const q=j[code];
+      if(q&&q.ltp!=null){ ltp=q.ltp; pct=q.pct; src='live'; } }
+  }catch(e){}
+  if(ltp==null){
+    try{
+      const r=await fetch('data/quotes.json?t='+Date.now()); if(!r.ok) throw 0;
+      const j=await r.json(); const q=(j.quotes||{})[code];
+      if(q&&q.ltp!=null){ ltp=q.ltp; pct=q.pct; src=j.ist?('as of '+j.ist):'delayed'; }
+    }catch(e){}
+  }
+  if(ltp==null) return;
+  el.innerHTML='₹'+Number(ltp).toLocaleString('en-IN',{maximumFractionDigits:2})
+    +(pct!=null?' '+pctTxt(pct):'')
+    +(src?` <span class="na" style="font-size:11px;font-weight:400">${esc(src)}</span>`:'');
+}
+
 /* ---------------- autocomplete ---------------- */
 let acItems=[], acHi=-1, t=null;
 f('q').addEventListener('input',()=>{ clearTimeout(t); const v=f('q').value.trim();
@@ -467,7 +494,7 @@ function render(d){
       <div class="cons"><h3>Cons</h3><ul>${(d.cons||[]).map(p=>`<li>${esc(p)}</li>`).join('')||'<li class="na">—</li>'}</ul></div></div></div>`:'';
 
   f('out').innerHTML=`
-    <div class="stitle"><h2>${esc(d.name)}</h2><span class="px">${esc(ov['Current Price']||'')}</span></div>
+    <div class="stitle"><h2>${esc(d.name)}</h2><span class="px" id="pxNow">${esc(ov['Current Price']||'')}</span></div>
     <div id="verdict" class="sec"></div>
     <div class="sec"><h3>Overview</h3><div class="cards">${cards}</div></div>
     ${latest?`<div class="sec"><h3>Latest results</h3>${latest}</div>`:''}
@@ -483,6 +510,7 @@ function render(d){
     ${pc}`;
   f('hint').style.display='none';
   drawCharts(d);
+  overlayLivePrice(d.code);
 }
 
 

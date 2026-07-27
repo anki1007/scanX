@@ -1,11 +1,11 @@
-"""Command-line interface for the Quant Lab fundamentals pipeline.
+"""Command-line interface for the Upstox Lab fundamentals pipeline.
 
 Usage (from the repo root)::
 
-    python -m quantlab sync --symbols RELIANCE,TCS
-    python -m quantlab sync --full --limit 50
-    python -m quantlab status
-    python -m quantlab serve-scheduler
+    python -m upstox_lab sync --symbols RELIANCE,TCS
+    python -m upstox_lab sync --full --limit 50
+    python -m upstox_lab status
+    python -m upstox_lab serve-scheduler
 """
 from __future__ import annotations
 
@@ -15,10 +15,10 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from .config import QuantLabSettings
-from .errors import QuantLabError
+from .config import UpstoxLabSettings
+from .errors import UpstoxLabError
 
-logger = logging.getLogger("quantlab.cli")
+logger = logging.getLogger("upstox_lab.cli")
 
 
 def _setup_logging(level: str) -> None:
@@ -31,8 +31,8 @@ def _setup_logging(level: str) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="python -m quantlab",
-        description="Upstox Fundamentals ingestion for Quant Lab (Analytics-token, read-only).",
+        prog="python -m upstox_lab",
+        description="Upstox Fundamentals ingestion for Upstox Lab (Analytics-token, read-only).",
     )
     parser.add_argument("--db", type=Path, default=None, help="override DuckDB path")
     parser.add_argument("--log-level", default=None, help="DEBUG/INFO/WARNING/ERROR")
@@ -64,7 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _cmd_sync(settings: QuantLabSettings, args: argparse.Namespace) -> int:
+def _cmd_sync(settings: UpstoxLabSettings, args: argparse.Namespace) -> int:
     from .client import UpstoxFundamentalsClient
     from .store import FundamentalsStore
     from .sync import SyncEngine
@@ -90,11 +90,11 @@ def _cmd_sync(settings: QuantLabSettings, args: argparse.Namespace) -> int:
     return 0 if report.failed == 0 else 2
 
 
-def _cmd_status(settings: QuantLabSettings) -> int:
+def _cmd_status(settings: UpstoxLabSettings) -> int:
     from .store import FundamentalsStore
 
     if not Path(settings.db_path).exists():
-        print(f"no database at {settings.db_path} - run `python -m quantlab sync` first")
+        print(f"no database at {settings.db_path} - run `python -m upstox_lab sync` first")
         return 1
     with FundamentalsStore(settings.db_path) as store:
         print(f"database: {settings.db_path}")
@@ -128,7 +128,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        settings = QuantLabSettings.from_env()
+        settings = UpstoxLabSettings.from_env()
         overrides: dict[str, object] = {}
         if args.db is not None:
             overrides["db_path"] = args.db
@@ -153,7 +153,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _cmd_endpoints()
         parser.error(f"unknown command {args.command!r}")
         return 2
-    except QuantLabError as exc:
+    except UpstoxLabError as exc:
         # Operational/config error: readable message, non-zero exit, no traceback.
         logger.error("%s", exc)
         print(f"error: {exc}", file=sys.stderr)

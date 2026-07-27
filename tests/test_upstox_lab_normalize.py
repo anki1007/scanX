@@ -10,8 +10,8 @@ from datetime import datetime
 
 import pytest
 
-from quantlab.client import ENDPOINTS
-from quantlab.normalize import NORMALIZERS, normalize, to_float
+from upstox_lab.client import ENDPOINTS
+from upstox_lab.normalize import NORMALIZERS, normalize, to_float
 
 ISIN = "INE002A01018"
 FETCHED = datetime(2026, 7, 27, 12, 0, 0)

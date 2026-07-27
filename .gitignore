@@ -1,7 +1,7 @@
 # Secrets — never commit (credentials.example.ps1 is a safe template and stays tracked)
 credentials.ps1
 credentials.bat
-quantlab_token.txt
+upstox_lab_token.txt
 kite/
 dhan/
 kite_token.json
@@ -50,9 +50,9 @@ FPI/_run_done.flag
 # local audit report (not for publishing)
 SECURITY_AUDIT.md
 
-# Quant Lab (quantlab/) — local artifacts, never commit
-quantlab_token.txt
-quantlab.duckdb
+# Upstox Lab (upstox_lab/) — local artifacts, never commit
+upstox_lab_token.txt
+upstox_lab.duckdb
 *.duckdb
-.cache/quantlab/
+.cache/upstox_lab/
 FPI/_run_fpi.bat

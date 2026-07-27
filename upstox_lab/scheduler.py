@@ -10,10 +10,10 @@ import logging
 import time
 from typing import Any
 
-from .config import QuantLabSettings
-from .errors import MissingDependencyError, QuantLabError
+from .config import UpstoxLabSettings
+from .errors import MissingDependencyError, UpstoxLabError
 
-logger = logging.getLogger("quantlab.scheduler")
+logger = logging.getLogger("upstox_lab.scheduler")
 
 
 def _require_apscheduler() -> tuple[Any, Any]:
@@ -28,7 +28,7 @@ def _require_apscheduler() -> tuple[Any, Any]:
     return BackgroundScheduler, CronTrigger
 
 
-def _run_sync_job(settings: QuantLabSettings) -> None:
+def _run_sync_job(settings: UpstoxLabSettings) -> None:
     """One scheduled run: build fresh components, sync, close the store."""
     # Local imports keep scheduler importable without duckdb installed.
     from .client import UpstoxFundamentalsClient
@@ -41,26 +41,26 @@ def _run_sync_job(settings: QuantLabSettings) -> None:
             client = UpstoxFundamentalsClient(settings)
             report = SyncEngine(settings, store, client).run()
             logger.info("scheduled sync finished %s", report.summary())
-    except QuantLabError as exc:
+    except UpstoxLabError as exc:
         # Operational failure: log and wait for the next trigger.
         logger.error("scheduled sync failed error=%s", exc)
 
 
-def build_scheduler(settings: QuantLabSettings) -> Any:
+def build_scheduler(settings: UpstoxLabSettings) -> Any:
     """Create a BackgroundScheduler with the configured cron trigger."""
     background_scheduler, cron_trigger = _require_apscheduler()
     try:
         trigger = cron_trigger.from_crontab(settings.schedule_cron)
     except ValueError as exc:
-        raise QuantLabError(
-            f"invalid QUANTLAB_SCHEDULE_CRON {settings.schedule_cron!r}: {exc}"
+        raise UpstoxLabError(
+            f"invalid UPSTOX_LAB_SCHEDULE_CRON {settings.schedule_cron!r}: {exc}"
         ) from exc
     scheduler = background_scheduler()
     scheduler.add_job(
         _run_sync_job,
         trigger=trigger,
         args=[settings],
-        id="quantlab-fundamentals-sync",
+        id="upstox_lab-fundamentals-sync",
         name="Upstox fundamentals incremental sync",
         coalesce=True,          # collapse missed runs into one
         max_instances=1,        # never overlap two syncs
@@ -69,7 +69,7 @@ def build_scheduler(settings: QuantLabSettings) -> Any:
     return scheduler
 
 
-def serve(settings: QuantLabSettings) -> None:
+def serve(settings: UpstoxLabSettings) -> None:
     """Start the scheduler and block until Ctrl+C."""
     scheduler = build_scheduler(settings)
     scheduler.start()

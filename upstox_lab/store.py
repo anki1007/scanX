@@ -4,7 +4,7 @@ Layout: one table per endpoint family plus ``_sync_state`` which tracks, per
 (isin, dataset, variant), the last successful sync time and a content hash of
 the raw payload — the backbone of incremental synchronization.
 
-Writes are idempotent: every :class:`~quantlab.normalize.Dataset` carries a
+Writes are idempotent: every :class:`~upstox_lab.normalize.Dataset` carries a
 natural-key ``scope``; the store runs ``DELETE (scope) + INSERT rows`` inside
 a single transaction, so replaying a sync never duplicates rows.
 
@@ -22,7 +22,7 @@ from typing import Any
 from .errors import MissingDependencyError
 from .normalize import Dataset
 
-logger = logging.getLogger("quantlab.store")
+logger = logging.getLogger("upstox_lab.store")
 
 
 def _require_duckdb() -> Any:
@@ -30,7 +30,7 @@ def _require_duckdb() -> Any:
         import duckdb
     except ImportError as exc:  # pragma: no cover - exercised only without duckdb
         raise MissingDependencyError(
-            "duckdb is required for quantlab storage. Install it with: "
+            "duckdb is required for upstox_lab storage. Install it with: "
             "pip install 'duckdb>=0.10'"
         ) from exc
     return duckdb

@@ -1,4 +1,4 @@
-"""Typed exception hierarchy for the Quant Lab fundamentals pipeline.
+"""Typed exception hierarchy for the Upstox Lab fundamentals pipeline.
 
 Network failures are *expected* operational events: they are caught, logged
 and recorded in ``_sync_state`` so the next run retries them.  Programmer
@@ -8,23 +8,23 @@ loudly — they must never be swallowed.
 from __future__ import annotations
 
 
-class QuantLabError(Exception):
-    """Base class for every error raised by the ``quantlab`` package."""
+class UpstoxLabError(Exception):
+    """Base class for every error raised by the ``upstox_lab`` package."""
 
 
-class QuantLabConfigError(QuantLabError):
+class UpstoxLabConfigError(UpstoxLabError):
     """Invalid or missing configuration (bad env var value, bad cron, ...)."""
 
 
-class AuthTokenError(QuantLabError):
+class AuthTokenError(UpstoxLabError):
     """The Analytics token is missing, rejected (401/403) or expired."""
 
 
-class MissingDependencyError(QuantLabError):
+class MissingDependencyError(UpstoxLabError):
     """An optional runtime dependency (duckdb / apscheduler) is not installed."""
 
 
-class QuantLabAPIError(QuantLabError):
+class UpstoxLabAPIError(UpstoxLabError):
     """A non-retryable (or retries-exhausted) Upstox API failure.
 
     Attributes

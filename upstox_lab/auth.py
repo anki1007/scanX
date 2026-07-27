@@ -7,7 +7,7 @@ Fundamentals APIs without any trading scope.
 Security rules enforced here:
 
 * The token value is read ONLY from the ``UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN``
-  environment variable, with a gitignored ``quantlab_token.txt`` at the repo
+  environment variable, with a gitignored ``upstox_lab_token.txt`` at the repo
   root as fallback.  It is never hardcoded and NEVER logged — log lines carry
   only a one-way SHA-256 fingerprint prefix.
 * Expiry is decoded from the JWT payload WITHOUT verifying the signature —
@@ -24,10 +24,10 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Mapping
 
-from .config import TOKEN_ENV_VAR, QuantLabSettings
+from .config import TOKEN_ENV_VAR, UpstoxLabSettings
 from .errors import AuthTokenError
 
-logger = logging.getLogger("quantlab.auth")
+logger = logging.getLogger("upstox_lab.auth")
 
 #: Warn when the token expires within this window.
 EXPIRY_WARNING = timedelta(days=14)
@@ -44,7 +44,7 @@ class TokenInfo:
 
 
 def load_token(
-    settings: QuantLabSettings,
+    settings: UpstoxLabSettings,
     env: Mapping[str, str] | None = None,
 ) -> str:
     """Return the Analytics token from env var, else the gitignored file.

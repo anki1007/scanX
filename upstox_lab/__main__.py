@@ -1,4 +1,4 @@
-"""``python -m quantlab`` entry point."""
+"""``python -m upstox_lab`` entry point."""
 from __future__ import annotations
 
 import sys

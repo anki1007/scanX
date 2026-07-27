@@ -1,4 +1,4 @@
-# Quant Lab — Upstox fundamentals ingestion (quantlab/) in the cloud.
+# Upstox Lab — Upstox fundamentals ingestion (upstox_lab/) in the cloud.
 #
 # Requires ONE repository secret (Settings -> Secrets and variables -> Actions):
 #   UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN  = your Upstox Analytics token
@@ -7,11 +7,14 @@
 # Until the secret is set, runs exit early with a notice (never red).
 # The DuckDB file is uploaded as a workflow artifact (gitignored, not committed).
 
-name: quantlab sync
+name: upstox_lab sync
 
 on:
   schedule:
-    - cron: "37 13 * * 6"        # Saturday 19:07 IST, after the weekly close
+    # Sunday 03:37 IST (Sat 22:07 UTC): markets closed and far from any
+    # market-hours job on the VPS Quant Lab platform, which shares this
+    # Upstox token — the two ingesters must never run at the same time.
+    - cron: "7 22 * * 6"
   workflow_dispatch:
     inputs:
       symbols:
@@ -23,7 +26,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: quantlab-sync
+  group: upstox-lab-sync
   cancel-in-progress: false
 
 jobs:
@@ -60,17 +63,17 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: |
           if [ -n "${{ inputs.symbols }}" ]; then
-            python -m quantlab sync --symbols "${{ inputs.symbols }}"
+            python -m upstox_lab sync --symbols "${{ inputs.symbols }}"
           else
-            python -m quantlab sync --full
+            python -m upstox_lab sync --full
           fi
-          python -m quantlab status | tee -a "$GITHUB_STEP_SUMMARY"
+          python -m upstox_lab status | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Upload database artifact
         if: steps.gate.outputs.ready == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: quantlab-duckdb
-          path: quantlab.duckdb
+          name: upstox-lab-duckdb
+          path: upstox_lab.duckdb
           retention-days: 30
           if-no-files-found: warn

@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Callable, Mapping
 
-logger = logging.getLogger("quantlab.normalize")
+logger = logging.getLogger("upstox_lab.normalize")
 
 Row = tuple[Any, ...]
 
@@ -345,7 +345,7 @@ def normalize_competitors(
     )
 
 
-#: Endpoint name -> normalizer.  Keys mirror ``quantlab.client.ENDPOINTS``.
+#: Endpoint name -> normalizer.  Keys mirror ``upstox_lab.client.ENDPOINTS``.
 Normalizer = Callable[[str, Mapping[str, Any], Mapping[str, str], datetime], Dataset]
 
 NORMALIZERS: dict[str, Normalizer] = {

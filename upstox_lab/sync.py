@@ -27,12 +27,12 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from .client import ENDPOINTS, UpstoxFundamentalsClient, variant_key
-from .config import REPO_ROOT, QuantLabSettings
-from .errors import AuthTokenError, QuantLabError
+from .config import REPO_ROOT, UpstoxLabSettings
+from .errors import AuthTokenError, UpstoxLabError
 from .normalize import normalize
 from .store import FundamentalsStore
 
-logger = logging.getLogger("quantlab.sync")
+logger = logging.getLogger("upstox_lab.sync")
 
 #: NSE/BSE ISIN, e.g. INE002A01018
 ISIN_RE = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}\d$")
@@ -50,12 +50,12 @@ class InstrumentResolver:
     """Map trading symbols to ISINs via the Upstox NSE instruments master.
 
     The master (``NSE.json.gz``) is downloaded once and cached under
-    ``.cache/quantlab/`` (gitignored), refreshed after
+    ``.cache/upstox_lab/`` (gitignored), refreshed after
     ``instruments_max_age_hours``.  Inputs that are already ISINs or
     ``NSE_EQ|<ISIN>`` instrument keys resolve without the master.
     """
 
-    def __init__(self, settings: QuantLabSettings, *, session: Any | None = None) -> None:
+    def __init__(self, settings: UpstoxLabSettings, *, session: Any | None = None) -> None:
         self.settings = settings
         self._session = session
         self._symbol_to_isin: dict[str, str] | None = None
@@ -98,7 +98,7 @@ class InstrumentResolver:
         if self._symbol_to_isin is None:
             try:
                 records = self._load_master_records()
-            except (OSError, ValueError, QuantLabError) as exc:
+            except (OSError, ValueError, UpstoxLabError) as exc:
                 logger.error("instrument master unavailable error=%s", exc)
                 records = []
             mapping: dict[str, str] = {}
@@ -135,10 +135,10 @@ class InstrumentResolver:
         try:
             response = session.get(url, timeout=self.settings.request_timeout)
         except Exception as exc:  # broad: network layer varies by session impl
-            raise QuantLabError(f"instrument master download failed: {exc}") from exc
+            raise UpstoxLabError(f"instrument master download failed: {exc}") from exc
         status = getattr(response, "status_code", None)
         if status != 200:
-            raise QuantLabError(f"instrument master download failed: HTTP {status}")
+            raise UpstoxLabError(f"instrument master download failed: HTTP {status}")
         cache.parent.mkdir(parents=True, exist_ok=True)
         cache.write_bytes(response.content)
 
@@ -146,7 +146,7 @@ class InstrumentResolver:
 # ---------------------------------------------------------------------------
 # universe loading
 # ---------------------------------------------------------------------------
-def load_universe(settings: QuantLabSettings) -> list[str]:
+def load_universe(settings: UpstoxLabSettings) -> list[str]:
     """Load the instrument universe per ``settings.universe_source``.
 
     * ``"index"`` — the repo's ``docs/data/fundamental/index.json`` code list.
@@ -159,11 +159,11 @@ def load_universe(settings: QuantLabSettings) -> list[str]:
     else:
         path = Path(source)
     if not path.is_file():
-        raise QuantLabError(f"universe source not found: {path}")
+        raise UpstoxLabError(f"universe source not found: {path}")
     if path.suffix.lower() == ".json":
         data = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(data, list):
-            raise QuantLabError(f"universe JSON must be a list of codes: {path}")
+            raise UpstoxLabError(f"universe JSON must be a list of codes: {path}")
         return [str(item).strip().upper() for item in data if str(item).strip()]
     symbols: list[str] = []
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -221,7 +221,7 @@ class SyncEngine:
 
     def __init__(
         self,
-        settings: QuantLabSettings,
+        settings: UpstoxLabSettings,
         store: FundamentalsStore,
         client: UpstoxFundamentalsClient,
         resolver: InstrumentResolver | None = None,
@@ -310,7 +310,7 @@ class SyncEngine:
                 except AuthTokenError:
                     # A dead token fails everything — abort instead of hammering.
                     raise
-                except QuantLabError as exc:
+                except UpstoxLabError as exc:
                     # Operational failure: record and continue with the rest.
                     report.failed += 1
                     logger.error(
@@ -322,7 +322,7 @@ class SyncEngine:
                             isin, spec.name, vkey,
                             content_hash=None, status="error", error=str(exc)[:500],
                         )
-                    except QuantLabError as store_exc:  # pragma: no cover
+                    except UpstoxLabError as store_exc:  # pragma: no cover
                         logger.error("could not record failure: %s", store_exc)
 
     def _sync_dataset(

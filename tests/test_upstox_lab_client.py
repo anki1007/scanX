@@ -9,9 +9,9 @@ from pathlib import Path
 
 import pytest
 
-from quantlab.client import ENDPOINTS, TokenBucket, UpstoxFundamentalsClient, variant_key
-from quantlab.config import QuantLabSettings
-from quantlab.errors import AuthTokenError, QuantLabAPIError
+from upstox_lab.client import ENDPOINTS, TokenBucket, UpstoxFundamentalsClient, variant_key
+from upstox_lab.config import UpstoxLabSettings
+from upstox_lab.errors import AuthTokenError, UpstoxLabAPIError
 
 FAKE_TOKEN = "unit-test-token-not-real"  # deliberately not a JWT; never a live value
 ISIN = "INE002A01018"
@@ -51,10 +51,10 @@ class StubSession:
         return item
 
 
-def make_settings(tmp_path: Path, **overrides) -> QuantLabSettings:
+def make_settings(tmp_path: Path, **overrides) -> UpstoxLabSettings:
     defaults = dict(
         db_path=tmp_path / "test.duckdb",
-        token_file=tmp_path / "quantlab_token.txt",
+        token_file=tmp_path / "upstox_lab_token.txt",
         rate_limit_rps=1000.0,   # effectively unlimited in tests
         rate_limit_burst=1000,
         max_retries=3,
@@ -62,7 +62,7 @@ def make_settings(tmp_path: Path, **overrides) -> QuantLabSettings:
         backoff_cap=8.0,
     )
     defaults.update(overrides)
-    return QuantLabSettings(**defaults)
+    return UpstoxLabSettings(**defaults)
 
 
 def make_client(tmp_path: Path, responses, **settings_overrides):
@@ -151,7 +151,7 @@ def test_network_errors_are_retried_then_raise_api_error(tmp_path):
 
     responses = [requests.ConnectionError("nope")] * 4  # max_retries=3 -> 4 attempts
     client, session, _ = make_client(tmp_path, responses)
-    with pytest.raises(QuantLabAPIError) as excinfo:
+    with pytest.raises(UpstoxLabAPIError) as excinfo:
         client.fetch("company_profile", ISIN)
     assert len(session.calls) == 4
     assert "giving up" in str(excinfo.value)
@@ -161,7 +161,7 @@ def test_no_retry_on_400_and_error_code_extracted(tmp_path):
     body = {"status": "error", "errors": [{"errorCode": "UDAPI1206", "message": "Invalid ISIN"}]}
     responses = [StubResponse(400, payload=body, text="Invalid ISIN")]
     client, session, sleeps = make_client(tmp_path, responses)
-    with pytest.raises(QuantLabAPIError) as excinfo:
+    with pytest.raises(UpstoxLabAPIError) as excinfo:
         client.fetch("company_profile", "BADISIN00000")
     assert len(session.calls) == 1
     assert sleeps == []
@@ -184,7 +184,7 @@ def test_unknown_endpoint_is_programmer_error(tmp_path):
 
 def test_token_never_appears_in_logs(tmp_path, caplog):
     client, _, _ = make_client(tmp_path, [StubResponse(200, OK)])
-    with caplog.at_level("DEBUG", logger="quantlab"):
+    with caplog.at_level("DEBUG", logger="upstox_lab"):
         client.get_company_profile(ISIN)
     assert FAKE_TOKEN not in caplog.text
 
