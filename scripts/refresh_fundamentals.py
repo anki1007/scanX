@@ -7,6 +7,12 @@ docs/data/fundamental/<CODE>.json = {fundamental, prices, signal} — exactly wh
 /api/fundamental + /api/prices + /api/signal return live. fundamental.html falls
 back to these files when the local API isn't present.
 
+When an Upstox analytics token is configured the bundle also carries
+"upstox_ratios" and its analysis.health gains the ratios Screener's compact
+statements cannot produce (current ratio, a debt/equity proxy) plus the six
+key ratios against their sector benchmark. Without a token nothing is fetched
+and the bundle is byte-for-byte what it has always been.
+
     python scripts/refresh_fundamentals.py                 # top 120
     python scripts/refresh_fundamentals.py --top 200
     python scripts/refresh_fundamentals.py --limit 3       # quick test
@@ -24,12 +30,63 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from earnings_intel.data import analytics as A        # noqa: E402
 from earnings_intel.data import company as co        # noqa: E402
 from earnings_intel.data import pricehist as ph       # noqa: E402
 from earnings_intel.data import signal as sg          # noqa: E402
 from earnings_intel.data import sectorlookup as sl
 
 _SESSION = ROOT / "screener_session.json"
+
+# Upstox key ratios + balance-sheet fill-ins for the health panel. Entirely
+# optional: probed ONCE, and with no token configured the whole feature stays
+# off so a token-less bake costs nothing and looks exactly like it always has.
+_RATIOS = {"ready": None, "fetch": None, "settings": None}
+
+
+def _ratio_extra(code: str) -> dict:
+    """Upstox ratios for one code — {} when unavailable, and never raises.
+
+    A ratio lookup must never fail a company: no token, no upstox_lab, an HTTP
+    error or a malformed payload all degrade to {} and the bake carries on with
+    the Screener-only numbers.
+    """
+    if _RATIOS["ready"] is None:
+        _RATIOS["ready"] = False
+        try:
+            from earnings_intel.data.ratios import fetch_ratios
+            from upstox_lab import auth
+            from upstox_lab.config import UpstoxLabSettings
+            settings = UpstoxLabSettings.from_env()
+            auth.load_token(settings)          # absent/unreadable token -> stay off
+            _RATIOS.update(ready=True, fetch=fetch_ratios, settings=settings)
+            print("[fund] Upstox ratios ON - filling current ratio / D-E proxy / peer ratios")
+        except Exception as e:  # noqa: BLE001 - optional feature, absent token is routine
+            print(f"[fund] Upstox ratios off ({type(e).__name__}) - Screener-only health")
+    if not _RATIOS["ready"]:
+        return {}
+    try:
+        return _RATIOS["fetch"](code, settings=_RATIOS["settings"]) or {}
+    except Exception as e:  # noqa: BLE001 - network boundary
+        print(f"  ratios skipped for {code}: {type(e).__name__}")
+        return {}
+
+
+def _with_upstox_health(fund: dict, code: str) -> dict:
+    """Recompute analysis.health with the Upstox fill-ins; return them for the bundle."""
+    extra = _ratio_extra(code)
+    if not extra:
+        return {}
+    try:
+        health = A.health_ratios(fund.get("balance_sheet") or {},
+                                 fund.get("cash_flow") or {},
+                                 fund.get("profit_loss") or {},
+                                 extra=extra)
+        fund.setdefault("analysis", {})["health"] = health
+    except Exception as e:  # noqa: BLE001 - a ratio must never break a bake
+        print(f"  health merge skipped for {code}: {type(e).__name__}")
+        return {}
+    return extra
 
 
 def _read_board(path):
@@ -176,12 +233,15 @@ def main():
             fund = co.fundamentals(code, sid)
             if "error" in fund:
                 fail += 1; continue
+            ratios = _with_upstox_health(fund, code)
             price = ph.price_analytics(code, overview=fund.get("overview"))
             sec = sl.sector_for(code, fund.get("name"))
             sigv = sg.technofunda_signal(fund, price, sec)
-            _atomic(out / f"{code}.json", json.dumps(
-                {"generated_at": today, "fundamental": fund, "prices": price, "signal": sigv},
-                separators=(",", ":")))
+            bundle = {"generated_at": today, "fundamental": fund,
+                      "prices": price, "signal": sigv}
+            if ratios:
+                bundle["upstox_ratios"] = ratios
+            _atomic(out / f"{code}.json", json.dumps(bundle, separators=(",", ":")))
             done += 1
             if i <= 8 or i % 25 == 0:
                 print(f"  [{i}/{len(codes)}] baked {fund.get('name','')[:30]} ({code})")

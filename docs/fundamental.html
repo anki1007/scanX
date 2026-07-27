@@ -422,14 +422,28 @@ function insightSection(a){
       <p class="psub" style="margin-top:10px">${esc(mf.note||'')}</p></div>
   </div></div>`;
 }
-/* ---------------- financial health ratios (bias-tagged) ---------------- */
+/* ---------------- financial health ratios (bias-tagged) ----------------
+   Ratios Screener's compact statements can't produce are filled from Upstox by
+   scripts/refresh_fundamentals.py, which also adds analysis.health.peers (the
+   six key ratios vs their sector). Both are optional — a bundle baked without
+   a token has neither, and must render exactly as before. */
+const PEER_ROW=[['pe','P/E'],['pb','P/B'],['ev_ebitda','EV/EBITDA'],
+                ['roa','ROA'],['roe','ROE'],['roce','ROCE']];
+const biasCls=b=>b==='positive'?'up':(b==='negative'?'dn':'mid');
+const ratioNum=(v,u)=>v==null?'n/a':(u==='pct'?v+'%':v+'x');
 function healthChip(name,h){
   if(!h) return '';
-  const cls=h.bias==='positive'?'up':(h.bias==='negative'?'dn':'mid');
+  const cls=biasCls(h.bias);
   const sign=h.bias==='positive'?'+':(h.bias==='negative'?'−':'○');
   const val=h.value!=null?h.value+'x':(h.pct_change!=null?(h.pct_change>0?'+':'')+h.pct_change+'%':'n/a');
-  return `<div class="tchip"><div class="m">${esc(name)} <span class="pill ${cls}">${sign} ${val}</span></div>
-    <div class="s"><span class="ct">${esc(h.note||'')}</span></div></div>`;
+  const sec=h.sector!=null?`<div class="s"><span class="ct">vs sector ${esc(ratioNum(h.sector,h.unit))}</span></div>`:'';
+  return `<div class="tchip"><div class="m">${esc(name)} <span class="pill ${cls}">${sign} ${esc(val)}</span></div>
+    <div class="s"><span class="ct">${esc(h.note||'')}</span></div>${sec}</div>`;
+}
+function peerChip(label,p){
+  if(!p||p.value==null) return '';
+  const sec=p.sector!=null?`<div class="s"><span class="ct">vs sector ${esc(ratioNum(p.sector,p.unit))}</span></div>`:'';
+  return `<div class="tchip"><div class="m">${esc(label)} <span class="pill ${biasCls(p.bias)}">${esc(ratioNum(p.value,p.unit))}</span></div>${sec}</div>`;
 }
 function healthSection(a){
   const h=a.health; if(!h) return '';
@@ -437,9 +451,13 @@ function healthSection(a){
                healthChip('OCF / Net Profit',h.ocf_np),
                healthChip('Debt / Equity',h.debt_equity),
                healthChip('CWIP trend (capex)',h.cwip)].join('');
+  const pr=h.peers||{};
+  const pchips=PEER_ROW.map(r=>peerChip(r[1],pr[r[0]])).join('');
+  const peers=pchips?`<p class="psub" style="margin:16px 0 6px;color:var(--text)">Valuation &amp; returns vs sector</p>
+    <div class="trend">${pchips}</div>`:'';
   return `<div class="sec"><h3>Financial health</h3><div class="panel">
     <p class="psub">Cash-backing of profits, liquidity, and capex-completion signal — each tagged +/−/neutral</p>
-    <div class="trend">${chips}</div></div></div>`;
+    <div class="trend">${chips}</div>${peers}</div></div>`;
 }
 
 /* ---------------- what management said (grounded facts from the filings) ----------------

@@ -9,6 +9,7 @@ Everything here is automatic — inputs are derived from the company's own numbe
 """
 from __future__ import annotations
 
+import math
 import re
 from typing import Optional
 
@@ -254,7 +255,123 @@ def _latest_common(a: dict, b: dict):
     return y, a[y], b[y]
 
 
-def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
+# --- optional Upstox fill-ins (earnings_intel.data.ratios) -------------------
+#: The six Upstox key ratios shown against their sector benchmark, mapped to
+#: (display label, lower reading is the better one).  Valuation multiples are
+#: better low; return ratios are better high.
+PEER_RATIOS: dict = {
+    "pe":        ("P/E", True),
+    "pb":        ("P/B", True),
+    "roa":       ("ROA", False),
+    "roe":       ("ROE", False),
+    "roce":      ("ROCE", False),
+    "ev_ebitda": ("EV/EBITDA", True),
+}
+
+#: A reading within +/-10% of the sector benchmark is "in line", not a verdict.
+PEER_BAND = 0.10
+
+
+def _fnum(x) -> Optional[float]:
+    """Finite float or None. Bools, blanks and junk are not numbers."""
+    if x is None or isinstance(x, bool):
+        return None
+    v = to_float(x)
+    return v if (v is not None and math.isfinite(v)) else None
+
+
+def _peer_bias(value: Optional[float], sector: Optional[float], lower_is_better: bool) -> str:
+    """'positive' beats the sector, 'negative' trails it, 'neutral' inside the
+    +/-10% band, 'na' with no benchmark to compare against."""
+    if value is None or sector is None:
+        return "na"
+    if abs(value - sector) <= abs(sector) * PEER_BAND:
+        return "neutral"
+    better = value < sector if lower_is_better else value > sector
+    return "positive" if better else "negative"
+
+
+def _peers_from_extra(extra: dict) -> dict:
+    """{key: {value, unit, sector, source, bias}} for whichever of the six exist."""
+    out: dict = {}
+    for key, (_label, lower_is_better) in PEER_RATIOS.items():
+        row = extra.get(key)
+        if not isinstance(row, dict):
+            continue
+        value = _fnum(row.get("value"))
+        if value is None:
+            continue
+        sector = _fnum(row.get("sector"))
+        out[key] = {"value": value,
+                    "unit": str(row.get("unit") or "x"),
+                    "sector": sector,
+                    "source": str(row.get("source") or "upstox"),
+                    "bias": _peer_bias(value, sector, lower_is_better)}
+    return out
+
+
+def _extra_parts(row):
+    """(value, period, sector, source) from one ratios.py entry, else None."""
+    if not isinstance(row, dict):
+        return None
+    value = _fnum(row.get("value"))
+    if value is None:
+        return None
+    return (value, str(row.get("period") or "").strip(),
+            _fnum(row.get("sector")), str(row.get("source") or "upstox"))
+
+
+def _tag(base: dict, period: str, sector: Optional[float], source: str) -> dict:
+    """Same shape as the Screener-computed entries + provenance, so the UI is unchanged."""
+    out = dict(base)
+    if period:
+        out["year"] = period
+    out["source"] = source
+    if sector is not None:
+        out["sector"] = sector
+    return out
+
+
+def _current_ratio_from_extra(row) -> Optional[dict]:
+    """Upstox Current Assets / Current Liabilities -> a current_ratio entry."""
+    got = _extra_parts(row)
+    if got is None:
+        return None
+    value, period, sector, source = got
+    v = round(value, 2)
+    bias = "positive" if v >= 2.0 else "neutral" if v >= 1.0 else "negative"
+    reading = ("comfortable short-term liquidity" if v >= 2.0 else
+               "adequate but thin buffer" if v >= 1.0 else
+               "current liabilities exceed current assets")
+    where = f" ({period})" if period else ""
+    note = f"{v}x{where}: {reading} — from the Upstox balance sheet"
+    return _tag({"value": v, "bias": bias, "note": note}, period, sector, source)
+
+
+def _debt_equity_from_extra(row) -> Optional[dict]:
+    """Upstox Non-Current Liabilities / Equity Capital -> a debt_equity PROXY entry.
+
+    Flagged ``"proxy": True`` and said plainly in the note: this is not
+    borrowings / net worth, so it must never be read as an exact D/E.
+    """
+    got = _extra_parts(row)
+    if got is None:
+        return None
+    value, period, sector, source = got
+    v = round(value, 2)
+    bias = "positive" if v <= 0.30 else "neutral" if v <= 1.0 else "negative"
+    reading = ("conservatively financed" if v <= 0.30 else
+               "moderate leverage" if v <= 1.0 else
+               "non-current liabilities exceed equity capital — leverage risk")
+    where = f" ({period})" if period else ""
+    note = (f"{v}x{where}: {reading} · PROXY — non-current liabilities / equity capital "
+            "from the Upstox balance sheet, not borrowings / net worth")
+    out = _tag({"value": v, "bias": bias, "note": note}, period, sector, source)
+    out["proxy"] = True
+    return out
+
+
+def health_ratios(bs: dict, cf: dict, pl: dict, extra: Optional[dict] = None) -> dict:
     """Financial-health ratios with a +/-/neutral bias tag each (todo.md items a-c).
 
     - current_ratio: Current Assets / Current Liabilities. Screener's compact
@@ -265,6 +382,24 @@ def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
     - cwip: capex-completion signal — a large CWIP drawdown means construction
       finished and capacity is about to commission (todo.md's 100 -> 30 case);
       a large build-up means an investment phase is underway.
+
+    ``extra`` is an optional :func:`earnings_intel.data.ratios.fetch_ratios`
+    result.  With it absent the output is exactly what it has always been.  With
+    it present:
+
+    - a current_ratio / debt_equity that Screener's compact statements could NOT
+      produce (bias 'na') is filled from ``extra["current_ratio"]`` /
+      ``extra["debt_equity_proxy"]`` — same keys as always plus ``source`` (and
+      ``sector`` when a benchmark exists) so a reader can see where the number
+      came from.  Screener wins whenever it has an answer, and a real finding
+      such as a non-positive net worth is never overwritten by the proxy.
+    - the six Upstox key ratios land under ``peers`` as
+      ``{key: {value, unit, sector, source, bias}}``; bias is 'positive' when the
+      company beats its sector, allowing for a +/-10% in-line band, with LOWER
+      better for pe/pb/ev_ebitda and HIGHER better for roa/roe/roce.
+
+    ``peers`` is omitted entirely when there is nothing to show, so a bundle
+    baked without a token looks exactly like today's.
     """
     out: dict = {}
 
@@ -354,4 +489,25 @@ def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
     else:
         out["cwip"] = {"latest": series[-1][1] if series else None, "prev": None,
                        "pct_change": None, "bias": "na", "note": "CWIP history unavailable"}
+
+    if not isinstance(extra, dict) or not extra:
+        return out
+
+    def _missing(key: str) -> bool:
+        """True only when Screener had NO data — a real finding is never overwritten."""
+        cur = out.get(key) or {}
+        return cur.get("value") is None and cur.get("bias") == "na"
+
+    if _missing("current_ratio"):
+        filled = _current_ratio_from_extra(extra.get("current_ratio"))
+        if filled:
+            out["current_ratio"] = filled
+    if _missing("debt_equity"):
+        filled = _debt_equity_from_extra(extra.get("debt_equity_proxy"))
+        if filled:
+            out["debt_equity"] = filled
+
+    peers = _peers_from_extra(extra)
+    if peers:
+        out["peers"] = peers
     return out
