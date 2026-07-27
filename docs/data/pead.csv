@@ -1,26 +1,26 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-FAIRCHEMOR,Fairchem Organic,https://www.screener.in/company/FAIRCHEMOR/,1016.0,788.0,67.2,Jun 2026,34.35,50.43,754.7,171.0,242.26,122.91,,,93.2,HIGH,True,True,2026-07-27T10:28:01+00:00,788.0,
-MONOLITH,Monolithisch Ind,https://www.screener.in/company/MONOLITH/,1798.0,827.0,62.5,Jun 2026,63.89,16.26,135.43,24.54,98.79,14.91,,,88.5,HIGH,True,True,2026-07-27T10:28:01+00:00,827.0,
-IDFCFIRSTB,IDFC First Bank,https://www.screener.in/company/IDFCFIRSTB/,73132.0,84.9,32.6,Jun 2026,14.61,4.72,132.18,236.99,36.45,21.63,,,80.3,HIGH,True,False,2026-07-27T10:28:01+00:00,84.9,
-BHAGYANGR,Bhagyanagar Ind,https://www.screener.in/company/BHAGYANGR/,1380.0,418.0,22.0,Jun 2026,45.06,-4.08,166.84,9.19,136.42,5.8,,,79.4,HIGH,False,True,2026-07-27T10:28:01+00:00,418.0,
-EXXARO,Exxaro Tiles,https://www.screener.in/company/EXXARO/,290.0,6.6,70.7,Jun 2026,31.28,-14.71,155.56,935.0,14.24,22.67,,,78.0,HIGH,True,True,2026-07-27T10:28:01+00:00,6.6,
-502015,Asi Industries,https://www.screener.in/company/502015/,248.0,27.5,9.9,Jun 2026,33.9,-18.89,59.65,16.43,72.26,-1.84,,,76.1,HIGH,False,True,2026-07-27T10:28:01+00:00,27.49,17.93
-SUMICHEM,Sumitomo Chemi.,https://www.screener.in/company/SUMICHEM/,26877.0,538.0,47.0,Jun 2026,0.57,57.08,20.56,95.5,6.82,76.69,,,72.7,HIGH,True,False,2026-07-27T10:28:01+00:00,538.0,
-531126,Kati patang Life,https://www.screener.in/company/531126/,69.0,13.8,,Jun 2026,152.27,94.74,-8.8,63.93,-28.07,61.98,,,72.2,HIGH,True,False,2026-07-27T10:28:01+00:00,13.75,-3.31
-SMCGLOBAL,SMC Global Sec.,https://www.screener.in/company/SMCGLOBAL/,1591.0,76.0,14.6,Jun 2026,21.18,-0.39,22.33,70.7,7.0,19.29,,,68.9,HIGH,True,False,2026-07-27T10:28:01+00:00,76.0,
-CANBK,Canara Bank,https://www.screener.in/company/CANBK/,115423.0,127.0,5.8,Jun 2026,4.55,3.51,60.28,13.27,22.76,-1.75,,,68.8,HIGH,False,False,2026-07-27T10:28:01+00:00,127.0,
-TMB,T N Merc. Bank,https://www.screener.in/company/TMB/,14166.0,893.0,9.8,Jun 2026,19.91,7.23,35.08,10.16,24.21,9.75,,,67.7,HIGH,False,False,2026-07-27T10:28:01+00:00,893.0,
-SBFC,SBFC Finance,https://www.screener.in/company/SBFC/,9991.0,90.2,20.8,Jun 2026,26.55,8.15,28.71,5.69,24.44,4.75,,,66.1,HIGH,False,True,2026-07-27T10:28:01+00:00,90.2,
-IRISDOREME,Iris Clothings,https://www.screener.in/company/IRISDOREME/,931.0,48.9,53.0,Jun 2026,26.2,-21.98,52.47,-37.64,53.04,-25.46,,,58.9,HIGH,False,True,2026-07-27T10:28:01+00:00,48.9,
-531869,Sacheta Metals,https://www.screener.in/company/531869/,47.8,3.82,23.9,Jun 2026,3.81,6.86,-7.5,2.78,-17.69,181.58,,,53.2,HIGH,False,False,2026-07-27T10:28:01+00:00,3.82,-0.78
-FIVESTAR,Five-Star Bus.Fi,https://www.screener.in/company/FIVESTAR/,15948.0,540.0,14.5,Jun 2026,5.34,1.47,1.88,0.74,-2.38,-1.3,,,51.1,HIGH,False,False,2026-07-27T10:28:01+00:00,540.0,
-NESCO,NESCO,https://www.screener.in/company/NESCO/,7127.0,1011.0,17.1,Jun 2026,9.84,-15.87,4.06,7.53,-7.27,-13.56,,,49.3,MEDIUM,False,False,2026-07-27T10:28:01+00:00,1011.0,
-531553,Disha Resources,https://www.screener.in/company/531553/,19.7,26.9,,Jun 2026,2333.33,52.08,-16.67,-187.5,-25.0,-433.33,,,45.9,MEDIUM,True,False,2026-07-27T10:28:01+00:00,26.9,1.97
-533268,Sea TV Network,https://www.screener.in/company/533268/,3.17,2.63,,Jun 2026,28.19,-13.62,-300.0,-414.29,65.52,62.5,,,45.5,MEDIUM,False,False,2026-07-27T10:28:01+00:00,2.63,-4.36
-MANYAVAR,Vedant Fashions,https://www.screener.in/company/MANYAVAR/,9938.0,409.0,25.7,Jun 2026,7.12,-24.56,14.65,-29.3,8.26,-26.82,,,43.4,MEDIUM,False,False,2026-07-27T10:28:01+00:00,409.0,
-SURYALA,Suryalata Spg.,https://www.screener.in/company/SURYALA/,180.0,423.0,5.1,Jun 2026,-1.59,18.1,1.03,-45.37,9.6,-23.03,,,43.0,MEDIUM,False,False,2026-07-27T10:28:01+00:00,423.0,
-ESFL,Essen Speciality,https://www.screener.in/company/ESFL/,323.0,130.0,,Jun 2026,-23.3,-1.56,-79.78,104.09,-83.52,105.09,,,38.4,MEDIUM,True,False,2026-07-27T10:28:01+00:00,130.0,
-531695,Veronica Product,https://www.screener.in/company/531695/,2.28,0.32,,Jun 2026,-82.04,,-200.0,54.55,-171.43,54.55,,,32.5,MEDIUM,True,False,2026-07-27T10:28:01+00:00,0.32,-3.03
-531944,Lexoraa Ind,https://www.screener.in/company/531944/,6.53,16.6,,Jun 2026,620.78,7.77,-600.0,-286.67,-600.0,-221.74,,,28.5,LOW,False,False,2026-07-27T10:28:01+00:00,16.6,-0.3
-ZENTEC,Zen Technologies,https://www.screener.in/company/ZENTEC/,15254.0,1690.0,84.0,Jun 2026,-10.13,-20.22,-40.11,-32.63,-40.19,-22.58,,,23.5,LOW,False,False,2026-07-27T10:28:01+00:00,1690.0,
-504176,High Energy Bat.,https://www.screener.in/company/504176/,518.0,578.0,37.9,Jun 2026,-40.68,-73.25,-333.33,-123.98,-382.43,-117.86,,,5.7,LOW,False,False,2026-07-27T10:28:01+00:00,578.0,-5.56
+506979,Apt Packaging,https://www.screener.in/company/506979/,91.6,77.5,26.7,Jun 2026,124.79,61.63,18100.0,160.0,535.29,96.36,,,97.5,HIGH,True,True,2026-07-27T15:12:14+00:00,77.5,1.4
+519097,Ritesh Intl.,https://www.screener.in/company/519097/,75.7,80.8,14.1,Jun 2026,44.29,3.48,357.89,65.71,192.78,35.24,,,89.7,HIGH,True,True,2026-07-27T15:12:14+00:00,80.78,0.98
+538935,Abhishek Finle.,https://www.screener.in/company/538935/,24.7,53.6,,Jun 2026,14.29,-27.27,50.0,400.0,,100.0,,,71.9,HIGH,True,False,2026-07-27T15:12:14+00:00,53.64,-4.99
+MOLDTKPAC,Mold-Tek Pack.,https://www.screener.in/company/MOLDTKPAC/,2308.0,692.0,30.4,Jun 2026,24.48,26.05,14.29,24.27,19.23,16.49,,,69.3,HIGH,True,False,2026-07-27T15:12:14+00:00,692.0,
+GRAVITA,Gravita India,https://www.screener.in/company/GRAVITA/,13205.0,1789.0,33.7,Jun 2026,41.83,25.75,13.86,15.47,8.91,-2.65,,,66.8,HIGH,True,False,2026-07-27T15:12:14+00:00,1789.0,
+USHAMART,Usha Martin,https://www.screener.in/company/USHAMART/,15315.0,502.0,28.1,Jun 2026,16.46,5.52,40.59,-4.05,43.45,-1.89,,,66.3,HIGH,False,False,2026-07-27T15:12:14+00:00,502.0,
+KANPRPLA,Kanpur Plastipa.,https://www.screener.in/company/KANPRPLA/,552.0,225.0,12.7,Jun 2026,12.78,13.41,111.17,-17.12,39.06,-14.01,,,66.2,HIGH,False,False,2026-07-27T15:12:14+00:00,225.0,
+NORTHARC,Northern Arc,https://www.screener.in/company/NORTHARC/,4853.0,300.0,11.1,Jun 2026,28.93,5.12,45.78,-14.29,27.86,-0.72,,,65.7,HIGH,False,True,2026-07-27T15:12:14+00:00,300.0,
+HOMEFIRST,Home First Finan,https://www.screener.in/company/HOMEFIRST/,12363.0,1182.0,21.3,Jun 2026,18.5,7.39,34.45,7.38,16.67,7.14,,,65.5,HIGH,False,False,2026-07-27T15:12:14+00:00,1182.0,
+TATAPOWER,Tata Power Co.,https://www.screener.in/company/TATAPOWER/,120528.0,377.0,30.8,Jun 2026,5.63,27.86,11.01,-1.06,8.27,48.52,,,62.5,HIGH,True,False,2026-07-27T15:12:14+00:00,377.0,
+CINELINE,Cineline India,https://www.screener.in/company/CINELINE/,281.0,82.3,20.9,Jun 2026,30.91,-4.66,41.26,-136.45,104.23,-15.94,,,61.2,HIGH,False,True,2026-07-27T15:12:14+00:00,82.3,
+TATACHEM,Tata Chemicals,https://www.screener.in/company/TATACHEM/,17827.0,699.0,,Jun 2026,14.41,23.76,-81.01,102.84,-17.1,96.35,,,53.2,HIGH,True,False,2026-07-27T15:12:14+00:00,699.0,
+539220,Mishka Exim,https://www.screener.in/company/539220/,62.1,43.0,31.9,Jun 2026,234.45,104.39,-11.11,-76.81,-11.11,-80.95,,,48.8,MEDIUM,True,False,2026-07-27T15:12:14+00:00,42.98,2.24
+COALINDIA,Coal India,https://www.screener.in/company/COALINDIA/,263549.0,428.0,8.5,Jun 2026,7.77,-0.51,0.71,-18.87,-4.12,-4.77,,,46.7,MEDIUM,False,False,2026-07-27T15:12:14+00:00,428.0,
+508815,JM Finan. Credit,https://www.screener.in/company/508815/,91.6,77.5,26.7,Jun 2026,-1.0,26.11,-67.1,59.38,-51.34,17.53,,,43.9,MEDIUM,True,False,2026-07-27T15:12:14+00:00,77.5,
+539314,Universal Auto.,https://www.screener.in/company/539314/,69.5,55.9,,Jun 2026,16.74,-8.42,-336.76,-3.87,-23.67,138.54,,,40.6,MEDIUM,False,False,2026-07-27T15:12:14+00:00,55.87,5.43
+BEL,Bharat Electron,https://www.screener.in/company/BEL/,297581.0,407.0,48.4,Jun 2026,24.93,-45.75,8.88,-52.61,12.12,-53.45,,,40.0,MEDIUM,False,False,2026-07-27T15:12:14+00:00,407.0,
+ACL,Andhra Cements,https://www.screener.in/company/ACL/,451.0,48.4,,Jun 2026,42.71,-8.39,-21.28,-174.02,-43.67,-57.64,,,33.7,MEDIUM,False,False,2026-07-27T15:12:14+00:00,48.4,
+BKMINDST,BKM Industries,https://www.screener.in/company/BKMINDST/,11.8,1.8,,Jun 2026,,4.55,-357.5,65.47,-526.67,-88.0,,,33.1,MEDIUM,True,False,2026-07-27T15:12:14+00:00,1.8,
+SAGCEM,Sagar Cements,https://www.screener.in/company/SAGCEM/,2403.0,183.0,,Jun 2026,5.22,-10.29,-475.17,-128.1,-40.17,-11.17,,,23.2,LOW,False,False,2026-07-27T15:12:14+00:00,183.0,
+TOKYOPLAST,Tokyo Plast Intl,https://www.screener.in/company/TOKYOPLAST/,79.3,81.4,226.5,Jun 2026,8.79,-13.54,-350.0,-600.0,-28.29,-36.99,,,21.6,LOW,False,False,2026-07-27T15:12:14+00:00,81.4,
+535910,Money Masters,https://www.screener.in/company/535910/,6.73,0.67,12.5,Jun 2026,-3.13,-26.19,-45.45,-53.85,-26.32,-39.13,,,21.1,LOW,False,False,2026-07-27T15:12:14+00:00,0.67,-1.47
+NELCAST,Nelcast,https://www.screener.in/company/NELCAST/,1013.0,117.0,24.7,Jun 2026,2.71,-7.34,-58.88,-66.41,-43.97,-50.47,,,19.3,LOW,False,False,2026-07-27T15:12:14+00:00,117.0,
+530145,Kisan Mouldings,https://www.screener.in/company/530145/,277.0,23.2,,Jun 2026,6.02,-19.11,-11250.0,-102.11,-338.31,-299.17,,,16.1,LOW,False,False,2026-07-27T15:12:14+00:00,23.19,-3.33
+GODFRYPHLP,Godfrey Phillips,https://www.screener.in/company/GODFRYPHLP/,34520.0,2210.0,25.2,Jun 2026,-18.84,-32.51,-44.38,-62.0,-46.45,-67.27,,,15.2,LOW,False,False,2026-07-27T15:12:14+00:00,2210.0,
