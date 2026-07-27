@@ -72,3 +72,43 @@ def test_code_for_unlisted_makers_are_none():
 def test_code_for_tolerates_empty():
     assert ra.code_for("") is None
     assert ra.code_for(None) is None
+
+def test_blocked_vahan_keeps_data_and_stays_green(monkeypatch, tmp_path, capsys):
+    """Vahan refuses datacenter IPs, so a blocked CI run is EXPECTED.
+
+    It must keep the previous board and exit 0 — failing daily would train
+    everyone to ignore red builds, which is how the June price freeze stayed
+    invisible for six weeks.
+    """
+    (tmp_path / "auto.json").write_text('{"years":{}}', encoding="utf-8")
+
+    def _boom(*a, **kw):
+        raise RuntimeError("SSLError: curl: (35) Recv failure: Connection reset by peer")
+
+    monkeypatch.setattr(ra, "build", _boom)
+    monkeypatch.setattr("sys.argv", ["refresh_auto.py", "--out", str(tmp_path)])
+    assert ra.main() == 0
+    assert "blocks datacenter IPs" in capsys.readouterr().out
+    assert (tmp_path / "auto.json").read_text(encoding="utf-8") == '{"years":{}}'
+
+
+def test_unexpected_failure_still_fails_the_build(monkeypatch, tmp_path):
+    """A layout change must NOT be silently swallowed like an IP block."""
+    (tmp_path / "auto.json").write_text('{"years":{}}', encoding="utf-8")
+
+    def _boom(*a, **kw):
+        raise RuntimeError("no ViewState - Vahan layout changed")
+
+    monkeypatch.setattr(ra, "build", _boom)
+    monkeypatch.setattr("sys.argv", ["refresh_auto.py", "--out", str(tmp_path)])
+    assert ra.main() == 1
+
+
+def test_blocked_with_no_previous_data_still_fails(monkeypatch, tmp_path):
+    """Nothing to keep means nothing to publish — that IS a failure."""
+    def _boom(*a, **kw):
+        raise RuntimeError("SSLError: Connection reset by peer")
+
+    monkeypatch.setattr(ra, "build", _boom)
+    monkeypatch.setattr("sys.argv", ["refresh_auto.py", "--out", str(tmp_path)])
+    assert ra.main() == 1

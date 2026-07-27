@@ -252,9 +252,21 @@ def main() -> int:
     try:
         data = build(years, args.max_pages, args.top)
     except Exception as e:  # noqa: BLE001
-        # keep-last-good: Vahan blocks datacenter IPs intermittently, and a
-        # blocked run must never blank the board.
+        # keep-last-good: a blocked run must never blank the board.
         print(f"[auto] FAILED ({type(e).__name__}: {str(e)[:120]}) — keeping previous data")
+        blocked = any(x in f"{type(e).__name__}: {e}" for x in (
+            "SSLError", "ConnectionError", "Connection reset", "curl: (35)",
+            "curl: (56)", "Max retries", "timed out", "Timeout"))
+        if blocked and (out / "auto.json").exists():
+            # Vahan refuses connections from datacenter ranges, so this is the
+            # NORMAL outcome on a GitHub runner. Failing the build daily would
+            # train everyone to ignore red runs — the exact blindness that let
+            # the June price freeze go unnoticed. Warn loudly, stay green, and
+            # let the VPS-side run (residential/Indian IP) supply fresh data.
+            print("[auto] NOTE: Vahan blocks datacenter IPs — this is expected in CI. "
+                  "Previous data retained; run scripts/refresh_auto.py from the VPS "
+                  "or a desktop for a fresh scrape.")
+            return 0
         return 1
     if not any(v["makers"] for v in data.values()):
         print("[auto] no rows parsed — keeping previous data")
