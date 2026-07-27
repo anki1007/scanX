@@ -146,4 +146,5 @@ async function load(){
 document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');view=b.dataset.v;s={k:null,d:1};render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
 load(); setInterval(load,300000);
-</script></body></html>
+</script><script src="vendor/nav.js"></script>
+</body></html>

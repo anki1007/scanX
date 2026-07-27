@@ -105,4 +105,5 @@ async function load(){try{const d=await fetch('data/iv_fairvalue.json?t='+Date.n
   }catch(e){f("empty").style.display='';f("tbl").style.display='none';f("empty").textContent='No fair-value data yet — run via scanX.bat.';}}
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
 load();setInterval(load,300000);
-</script></body></html>
+</script><script src="vendor/nav.js"></script>
+</body></html>

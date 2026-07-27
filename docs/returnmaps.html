@@ -109,4 +109,5 @@ async function load(){try{const d=await fetch('data/iv_returnmap.json?t='+Date.n
   }catch(e){f("empty").style.display='';f("empty").textContent='No return-map data yet — run via scanX.bat.';}}
 document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');xk=b.dataset.x;draw();});
 load();setInterval(load,300000);
-</script></body></html>
+</script><script src="vendor/nav.js"></script>
+</body></html>
