@@ -44,6 +44,11 @@ jobs:
       SCANX_NO_DHAN: "1"                      # no broker token in the cloud
       SCREENER_EMAIL: ${{ secrets.SCREENER_EMAIL }}
       SCREENER_PASSWORD: ${{ secrets.SCREENER_PASSWORD }}
+      # SERVER-SIDE ONLY. Used by refresh_docinsights.py to bake concall/PPT/
+      # annual-report analysis into static JSON here in CI. It is never written
+      # into docs/, never sent to a browser, and no runtime endpoint uses it —
+      # the site only ever serves the pre-baked result.
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,7 +62,8 @@ jobs:
           python -m pip install --quiet --disable-pip-version-check \
             "pandas>=2.0" "numpy>=1.24" "requests>=2.31" \
             "beautifulsoup4>=4.12" "lxml>=5.0" "curl_cffi>=0.7" \
-            "yfinance>=0.2.40" "pdfplumber>=0.10" "openpyxl>=3.1" "pyotp>=2.9"
+            "yfinance>=0.2.40" "pdfplumber>=0.10" "openpyxl>=3.1" "pyotp>=2.9" \
+            "google-genai>=0.3"
 
       - name: Screener login
         run: python scripts/screener_login.py
@@ -100,6 +106,8 @@ jobs:
           # covers ~500 board names, so without this ~90% of company pages fall
           # back to the price frozen into their bundle at bake time
           run python scripts/refresh_quotes.py --wide
+          # concall / PPT / annual-report analysis, grounded in verbatim quotes
+          run python scripts/refresh_docinsights.py --top 100 --skip-existing --max-minutes 25
           run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           {

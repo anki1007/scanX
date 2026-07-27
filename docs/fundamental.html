@@ -149,6 +149,16 @@
   .insbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer}
   .insbtn.on{color:var(--teal);border-color:var(--teal);background:var(--panel)}
   #insY td:first-child,#insQ td:first-child{text-align:left}
+  /* what management said — grounded facts quoted out of the company's own filings */
+  .mgmt .msum{font-size:13px;line-height:1.6;margin:0}
+  .mgmt details{margin-bottom:8px}
+  .fact{border-top:1px solid var(--line);padding:11px 14px}
+  .fact:first-child{border-top:none}
+  .fact .fc{font-size:13px;font-weight:600;line-height:1.5}
+  .fact blockquote{margin:7px 0 0;padding:7px 12px;background:var(--chip);border-left:3px solid var(--teal);
+        border-radius:0 8px 8px 0;font-size:12.5px;line-height:1.55;color:var(--muted);font-style:italic}
+  .fact .fs{font-size:11px;color:var(--muted);margin-top:6px}
+  .panel .fact{padding:11px 0}
 </style>
 </head>
 <body>
@@ -333,6 +343,7 @@ async function load(code){
   render(d);
   loadSignal(code, bundle && bundle.signal);
   loadPrices(code, bundle && bundle.prices);
+  loadDocs(code);
 }
 
 /* ---------------- statement table ---------------- */
@@ -431,6 +442,57 @@ function healthSection(a){
     <div class="trend">${chips}</div></div></div>`;
 }
 
+/* ---------------- what management said (grounded facts from the filings) ----------------
+   Baked by scripts/refresh_docinsights.py to data/docs/<CODE>.json: every claim
+   carries the verbatim sentence it came from. Only a slice of the universe is
+   baked, so a missing file must render NOTHING — no error, no empty box. */
+const DOC_THEMES=[['guidance','Guidance'],['demand_outlook','Demand outlook'],
+  ['capex_expansion','Capex & expansion'],['margins_costs','Margins & costs'],
+  ['orders_capacity','Orders & capacity'],['capital_allocation','Capital allocation'],
+  ['risks_headwinds','Risks & headwinds']];
+const DOC_KINDS={concall_transcript:'concall transcript',concall_ppt:'concall presentation',
+  concall_notes:'concall notes',annual_report:'annual report',announcement:'announcement'};
+const DOC_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const docWhen=iso=>{const m=/^(\d{4})-(\d{2})/.exec(String(iso==null?'':iso));
+  return m?DOC_MON[+m[2]-1]+' '+m[1]:'';};
+const docHref=u=>{u=String(u==null?'':u).trim();      // real links only, quotes neutralised
+  return /^https?:\/\//i.test(u)?u.replace(/"/g,'%22'):'';};
+function docFact(x){
+  if(!x||!x.claim||!x.quote) return '';
+  const kind=DOC_KINDS[x.doc_kind]||String(x.doc_kind==null?'document':x.doc_kind).replace(/_/g,' ');
+  const when=docWhen(x.doc_date), href=docHref(x.url);
+  const src=esc(kind)+(when?' · '+esc(when):'');
+  const tf=x.timeframe?` <span class="pill mid">${esc(x.timeframe)}</span>`:'';
+  return `<div class="fact"><div class="fc">${esc(x.claim)}${tf}</div>`
+    +`<blockquote>“${esc(x.quote)}”</blockquote>`
+    +`<div class="fs">${href?`<a href="${esc(href)}" target="_blank" rel="noopener">${src} ↗</a>`:src}</div></div>`;
+}
+function docsSection(dd){
+  dd=dd||{};
+  const a=dd.analysis||{}, th=a.themes||{}, mc=a.management_commitments||[], cov=a.coverage||{}, m=dd._meta||{};
+  const panels=DOC_THEMES.map(t=>{const fx=(th[t[0]]||[]).map(docFact).join('');
+    return fx?`<details><summary><span>${esc(t[1])} <span class="pill mid">${(th[t[0]]||[]).length}</span></span></summary>${fx}</details>`:'';}).join('');
+  const cm=(mc||[]).map(docFact).join('');
+  if(!panels&&!cm&&!a.summary) return '';          // nothing grounded -> render nothing
+  const meta=[cov.docs_analysed?cov.docs_analysed+' document'+(cov.docs_analysed===1?'':'s')+' read':'',
+    m.facts_kept?m.facts_kept+' quoted facts':'',
+    dd.generated_at?'as of '+dd.generated_at:''].filter(x=>x).join(' · ');
+  return `<div class="sec mgmt"><h3>What management said</h3>
+    ${a.summary?`<div class="panel" style="margin-bottom:12px"><p class="ph">Summary</p>
+      ${meta?`<p class="psub">${esc(meta)}</p>`:''}<p class="msum">${esc(a.summary)}</p></div>`:''}
+    ${panels}
+    ${cm?`<div class="panel"><p class="ph">Management commitments</p>
+      <p class="psub">What management undertook to do, with the sentence it came from</p>${cm}</div>`:''}
+    <div class="hint">Every claim is quoted verbatim from the company's own concall / filing — claims whose quote could not be found were dropped at bake time.</div></div>`;
+}
+async function loadDocs(code){
+  const el=f('docsSec'); if(!el||!code) return;
+  let dd=null;
+  try{ const r=await fetch('data/docs/'+encodeURIComponent(code)+'.json'); if(!r.ok) throw 0; dd=await r.json(); }
+  catch(e){ return; }                              // not baked for this company yet
+  try{ el.innerHTML=docsSection(dd); }catch(e){}
+}
+
 /* ---------------- charts ---------------- */
 function perfChart(id,labels,sales,np,opm,eps){
   const el=f(id); if(!el||typeof Chart==='undefined') return;
@@ -516,6 +578,7 @@ function render(d){
     ${chartsSection(d)}
     ${d.analysis?trendsSection(d.analysis):''}
     ${d.analysis?healthSection(d.analysis):''}
+    <div id="docsSec"></div>
     ${d.analysis?insightSection(d.analysis):''}
     <div class="sec"><h3>Quarterly results</h3>${quartTbl}</div>
     ${stmts}
