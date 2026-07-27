@@ -29,12 +29,25 @@
     var el = document.createElement("style");
     el.id = "scanx-nav-css";
     el.textContent = [
-      ".nav .grpL{cursor:pointer;display:flex;align-items:center;gap:6px;",
-      "  user-select:none;border-radius:6px;padding:4px 6px;margin-left:4px;margin-right:4px;",
-      "  transition:color .12s ease,background .12s ease}",
-      ".nav .grpL:hover{color:var(--teal,#2dd4bf);background:rgba(255,255,255,.04)}",
-      ".nav .grpL .cv{font-size:9px;line-height:1;transition:transform .16s ease;opacity:.75}",
+      /* group heading = a real button: raised surface, border, its own hit area */
+      ".nav .grpL{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;",
+      "  font-size:12px;font-weight:800;letter-spacing:.05em;line-height:1.2;",
+      "  color:var(--text,#e6edf7);background:var(--panel2,#1b2438);",
+      "  border:1px solid var(--line,#243049);border-radius:9px;",
+      "  padding:10px 11px;margin:14px 4px 6px;",
+      "  transition:color .12s ease,background .12s ease,border-color .12s ease}",
+      ".nav .grpL:first-of-type{margin-top:10px}",
+      ".nav .grpL:hover{color:var(--teal,#2dd4bf);border-color:var(--teal,#2dd4bf);",
+      "  background:rgba(45,212,191,.10)}",
+      ".nav .grpL:active{transform:translateY(1px)}",
+      ".nav .grpL:focus-visible{outline:2px solid var(--teal,#2dd4bf);outline-offset:2px}",
+      ".nav .grpL.open{color:var(--teal,#2dd4bf);border-color:rgba(45,212,191,.45);",
+      "  background:rgba(45,212,191,.08)}",
+      ".nav .grpL .cv{font-size:10px;line-height:1;transition:transform .16s ease;opacity:.9}",
       ".nav .grpL.open .cv{transform:rotate(90deg)}",
+      /* sub-items: larger, roomier */
+      ".nav .nav-i{font-size:14px;padding:10px 11px;gap:11px}",
+      ".nav .nav-i .ic{font-size:17px;width:20px}",
       /* a dot on a shut group that contains the page you're on */
       ".nav .grpL .hasact{width:5px;height:5px;border-radius:50%;background:var(--teal,#2dd4bf);",
       "  margin-left:auto;flex:0 0 auto}",
@@ -46,7 +59,11 @@
       "  text-align:center;border:1px solid var(--line,#243049);border-radius:6px;cursor:pointer;",
       "  color:var(--muted,#8b9bb4);font-size:12px;background:var(--panel2,#1b2438);z-index:5}",
       ".nav .railtog:hover{color:var(--teal,#2dd4bf);border-color:var(--teal,#2dd4bf)}",
-      ".nav{position:relative}",
+      /* the larger type needs a little more room, or "TechnoFunda 100" and
+         "INTRINSIC VALUE" wrap onto two lines */
+      ".nav{position:relative;width:224px;flex-basis:224px}",
+      ".nav .nav-i span:not(.ic),.nav .grpL .lbl{white-space:nowrap;overflow:hidden;",
+      "  text-overflow:ellipsis;min-width:0}",
       ".nav.railmin{width:58px!important;flex-basis:58px!important;padding-left:6px;padding-right:6px}",
       ".nav.railmin .brand small,.nav.railmin .nav-i span:not(.ic),",
       ".nav.railmin .grpL .lbl,.nav.railmin .grpL .cv,.nav.railmin .grpL .hasact{display:none}",
