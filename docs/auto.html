@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>scanX · Auto Sales</title>
+<script src="vendor/chart.umd.min.js"></script>
 <style>
   :root{
     --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --line:#243049;
@@ -29,6 +30,13 @@
   .tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
        border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13px}
   .tab.on{color:var(--teal);border-color:var(--teal);background:var(--panel)}
+  .fbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+        border-radius:7px;padding:8px 11px;cursor:pointer;font-size:12px;font-weight:600}
+  .fbtn:hover{border-color:var(--teal);color:var(--teal)}
+  .views{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px 0;
+         border-bottom:1px solid var(--line);margin-bottom:0}
+  .views .tab{border-bottom-left-radius:0;border-bottom-right-radius:0;margin-bottom:-1px}
+  .views .tab.on{border-bottom-color:var(--panel)}
   .tablebox{margin:0 20px 24px;background:var(--panel);border:1px solid var(--line);
             border-radius:12px;overflow:auto}
   table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
@@ -36,13 +44,28 @@
   th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
   thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);
            font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:first-child{background:var(--panel2)}
   thead th:hover{color:var(--teal)} tbody tr:hover{background:#10182a}
   th.sorted::after{content:" \25BC";font-size:9px} th.sorted.asc::after{content:" \25B2"}
   .pos{color:var(--green)} .neg{color:var(--red)} .na{color:var(--muted)}
+  /* sub-rows: YoY growth / market share sit UNDER the maker row, they do not replace it */
+  tr.sub td{color:var(--muted);font-size:12px;padding-top:5px;padding-bottom:5px;
+            border-bottom:1px solid rgba(36,48,73,.45)}
+  tr.sub.last td{border-bottom:1px solid var(--line)}
+  tr.sub td.lab{padding-left:26px;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+  tr.mrow td{border-bottom:1px solid rgba(36,48,73,.45)}
+  tr.mrow.solo td{border-bottom:1px solid var(--line)}
   .lst{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.03em;color:var(--teal);
        border:1px solid rgba(45,212,191,.4);border-radius:4px;padding:1px 5px;margin-left:7px}
+  .ytd{color:var(--amber);border-color:rgba(251,191,36,.45)}
   .src{font-size:11px;color:var(--muted);padding:0 20px 18px}
+  .note{font-size:11px;color:var(--muted);padding:0 20px 12px}
   .empty{padding:40px;text-align:center;color:var(--muted)}
+  .blk{margin:0 20px 20px;background:var(--panel);border:1px solid var(--line);
+       border-radius:12px;padding:12px 14px}
+  .blkh{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  .blkh b{font-size:14px} .blkh span{font-size:11px;color:var(--muted)}
+  .chartbox{height:230px;position:relative}
   .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
        margin-right:5px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
@@ -105,34 +128,150 @@
   </div>
 </header>
 
-<div class="bar">
+<div class="views">
+  <button class="tab on" id="vbCompany">Company View</button>
+  <button class="tab" id="vbCategory">Category View</button>
+  <button class="tab" id="vbGroup">Category Group</button>
+  <button class="tab" id="vbIndustry">Industry View</button>
+</div>
+
+<!-- ---------------- company view ---------------- -->
+<div class="bar" id="barCompany">
   <div class="fld"><label for="year">Year</label><select id="year"></select></div>
-  <div class="fld"><label>View</label>
+  <div class="fld"><label>Period</label>
     <div style="display:flex;gap:6px">
-      <button class="tab on" id="tNum">Numbers</button>
-      <button class="tab" id="tYoY">YoY %</button>
+      <button class="tab on" id="pMon">Monthly</button>
+      <button class="tab" id="pQtr">Quarterly</button>
     </div>
   </div>
+  <label class="chk"><input type="checkbox" id="cNum" checked/> Numbers</label>
+  <label class="chk"><input type="checkbox" id="cYoY" checked/> YoY %</label>
+  <div class="fld"><label for="showN">Show</label>
+    <select id="showN">
+      <option value="10">10</option><option value="20">20</option>
+      <option value="50" selected>50</option><option value="100">100</option>
+      <option value="200">200</option><option value="0">All</option>
+    </select></div>
   <div class="fld"><label for="minU">Min annual units</label>
     <input id="minU" type="number" value="1000" step="500" style="width:130px"/></div>
   <div class="fld"><label for="srch">Search maker</label>
     <input id="srch" placeholder="name…" style="width:170px"/></div>
   <label class="chk"><input type="checkbox" id="listed"/> Listed only</label>
+  <div class="fld"><label>&nbsp;</label><button class="fbtn" id="resetC">Reset Sort</button></div>
 </div>
 
-<div class="tablebox"><table id="tbl">
-  <thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
-<div id="empty" class="empty" style="display:none"></div>
+<div id="vCompany">
+  <div class="tablebox" id="boxC"><table id="tbl">
+    <thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
+  <div id="empty" class="empty" style="display:none"></div>
+</div>
+
+<!-- ------------ category / category group ------------ -->
+<div class="bar" id="barCat" style="display:none">
+  <div class="fld"><label for="catSel" id="catSelL">Category</label><select id="catSel" style="min-width:190px"></select></div>
+  <div class="fld"><label for="showN2">Show</label>
+    <select id="showN2">
+      <option value="10">10</option><option value="20" selected>20</option>
+      <option value="50">50</option><option value="100">100</option>
+      <option value="200">200</option><option value="0">All</option>
+    </select></div>
+  <div class="fld"><label for="srch2">Search maker</label>
+    <input id="srch2" placeholder="name…" style="width:170px"/></div>
+  <label class="chk"><input type="checkbox" id="listed2"/> Listed only</label>
+  <div class="fld"><label>&nbsp;</label><button class="fbtn" id="resetK">Reset Sort</button></div>
+</div>
+<div id="vCat" style="display:none"></div>
+
+<!-- ---------------- industry view ---------------- -->
+<div class="bar" id="barInd" style="display:none">
+  <div class="fld"><label>View</label>
+    <div style="display:flex;gap:6px">
+      <button class="tab" id="iTbl">Table</button>
+      <button class="tab on" id="iCht">Chart</button>
+    </div>
+  </div>
+  <div class="fld"><label>Detail</label>
+    <div style="display:flex;gap:6px">
+      <button class="tab on" id="iRoll" title="Two Wheeler, Three Wheeler, …">Vehicle type</button>
+      <button class="tab" id="iRaw" title="All 17 Vahan categories">Every category</button>
+    </div>
+  </div>
+  <div class="fld"><label for="iYears">Show last</label>
+    <select id="iYears">
+      <option value="1">1 Year</option><option value="2">2 Years</option>
+      <option value="3">3 Years</option><option value="5">5 Years</option>
+      <option value="7">7 Years</option><option value="10" selected>10 Years</option>
+      <option value="15">15 Years</option><option value="20">20 Years</option>
+    </select></div>
+</div>
+<div id="vInd" style="display:none"></div>
+
 <div class="src" id="src">Vehicle REGISTRATIONS from the government Vahan dashboard (all-India, all categories).
   Registrations trail factory dispatches, so these run slightly below a company's reported wholesale volumes.</div>
 </div></div>
 
 <script>
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-let DATA=null, YEAR=null, MODE="num", sort={k:"total",d:-1};
+const QTR=["Q1","Q2","Q3","Q4"];
+let AUTO=null, CAT=null, IND=null, META={};
+let VIEW='company';
+let YEAR=null, PERIOD='m', SHOWN=50, showNum=true, showYoY=true;
+let sortC={k:'total',d:-1}, sortK={k:'total',d:-1};
+let CATSEL={category:'',group:''};
+let INDMODE='chart', INDYEARS=10, CHARTS=[];
+let INDROLL=true;   // roll the 17 Vahan codes up into vehicle types by default
+
+/* Vahan labels categories with its own abbreviations. "2WN" means nothing to a
+   reader, so everything on this page shows the expansion and rolls the codes up
+   into the vehicle types the industry is actually discussed in. */
+const VCAT={
+  "2WIC":["Two Wheeler (Invalid Carriage)","Two Wheeler"],
+  "2WN":["Two Wheeler (Non-Transport)","Two Wheeler"],
+  "2WT":["Two Wheeler (Transport)","Two Wheeler"],
+  "3WIC":["Three Wheeler (Invalid Carriage)","Three Wheeler"],
+  "3WN":["Three Wheeler (Non-Transport)","Three Wheeler"],
+  "3WT":["Three Wheeler (Transport)","Three Wheeler"],
+  "4WIC":["Four Wheeler (Invalid Carriage)","Four Wheeler"],
+  "LMV":["Light Motor Vehicle","Light Vehicle"],
+  "LGV":["Light Goods Vehicle","Light Vehicle"],
+  "LPV":["Light Passenger Vehicle","Light Vehicle"],
+  "MMV":["Medium Motor Vehicle","Medium Vehicle"],
+  "MGV":["Medium Goods Vehicle","Medium Vehicle"],
+  "MPV":["Medium Passenger Vehicle","Medium Vehicle"],
+  "HMV":["Heavy Motor Vehicle","Heavy Vehicle"],
+  "HGV":["Heavy Goods Vehicle","Heavy Vehicle"],
+  "HPV":["Heavy Passenger Vehicle","Heavy Vehicle"],
+  "OTH":["Others","Others"]
+};
+const catLabel=c=>(VCAT[c]&&VCAT[c][0])||c;
+const catGroup=c=>(VCAT[c]&&VCAT[c][1])||c;
+
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const nf=v=>v==null?'<span class="na">—</span>':Number(v).toLocaleString('en-IN');
+const na='<span class="na">—</span>';
+function pctCell(v,suffix){
+  if(v==null) return '<td>'+na+'</td>';
+  const c=v>0?'pos':(v<0?'neg':'');
+  return '<td><span class="'+c+'">'+(v>0?'+':'')+esc(v)+(suffix||'%')+'</span></td>';
+}
+function shareTxt(v){
+  if(v==null) return na;
+  return esc((v>=1?v.toFixed(1):v.toFixed(2)))+'%';
+}
+/* compact Indian units — a 2W year is ~2 crore registrations, which does not fit on a bar */
+function short(v){
+  if(v==null) return '—';
+  const a=Math.abs(v);
+  if(a>=1e7) return (v/1e7).toFixed(a>=1e8?0:1)+' Cr';
+  if(a>=1e5) return (v/1e5).toFixed(a>=1e6?0:1)+' L';
+  if(a>=1e3) return (v/1e3).toFixed(0)+'k';
+  return String(Math.round(v));
+}
+function growth(cur,prev){
+  if(cur==null||prev==null||!prev) return null;
+  return +(((cur-prev)/prev)*100).toFixed(1);
+}
 /* Vahan publishes monthly, so only warn once a full refresh cycle has been missed */
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);
   const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;
@@ -140,115 +279,439 @@ function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{
   const dd=Math.floor((Date.now()-t)/864e5);
   return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 
+/* The year still running is year-to-date: its total, share and YoY are not
+   comparable with a full year, so every view marks it instead of pretending. */
+function partialYear(){
+  if(IND&&IND.series){
+    for(const k in IND.series){
+      const pts=IND.series[k]||[];
+      for(let i=0;i<pts.length;i++) if(pts[i].partial) return String(pts[i].year);
+    }
+  }
+  return String(new Date().getFullYear());
+}
+function headHtml(cols,st){
+  return cols.map(c=>'<th class="'+(c.k===st.k?'sorted '+(st.d>0?'asc':''):'')+'" data-k="'+esc(c.k)+'">'
+    +esc(c.t)+(c.ytd?'<span class="lst ytd">YTD</span>':'')+'</th>').join('');
+}
+function wireHead(el,st,redraw){
+  el.querySelectorAll('th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k; if(st.k===k)st.d*=-1; else {st.k=k;st.d=-1;} redraw();});
+}
+function sortRows(rs,st){
+  rs.sort((a,b)=>{let x=a.sk[st.k],y=b.sk[st.k];
+    if(x==null)x=-1e15; if(y==null)y=-1e15;
+    return typeof x==='string'?st.d*x.localeCompare(y):st.d*(x-y);});
+  return rs;
+}
+function makerCell(r){
+  return r.code
+    ? '<a href="fundamental.html?code='+encodeURIComponent(r.code)+'">'+esc(r.maker)+'</a><span class="lst">LISTED</span>'
+    : esc(r.maker);
+}
+
+/* ============================ company view ============================ */
 function prevYearMap(){
-  const yrs=Object.keys(DATA.years).sort();
+  const yrs=Object.keys(AUTO.years).sort();
   const i=yrs.indexOf(String(YEAR));
   if(i<=0) return null;
   const m={};
-  (DATA.years[yrs[i-1]].makers||[]).forEach(r=>{m[r.maker]=r;});
+  (AUTO.years[yrs[i-1]].makers||[]).forEach(r=>{m[r.maker]=r;});
   return m;
 }
-function rows(){
+function periodLabels(){return PERIOD==='q'?QTR:MON;}
+/* quarters are summed client-side from the monthly data — a quarter is null
+   only when none of its months has landed yet */
+function toPeriods(months){
+  const m=(months||[]).slice(0,12);
+  if(PERIOD!=='q') return m.concat(new Array(Math.max(0,12-m.length)).fill(null)).slice(0,12);
+  return [0,1,2,3].map(q=>{
+    let any=false,s=0;
+    for(let i=q*3;i<q*3+3;i++) if(m[i]!=null){any=true;s+=m[i];}
+    return any?s:null;});
+}
+/* like-for-like base: only the months the current year has actually reported */
+function basePeriods(cur,prev){
+  const c=(cur||[]).slice(0,12), p=(prev||[]).slice(0,12);
+  if(PERIOD!=='q') return c.map((v,i)=>v==null?null:(p[i]==null?null:p[i]));
+  return [0,1,2,3].map(q=>{
+    let any=false,s=0;
+    for(let i=q*3;i<q*3+3;i++) if(c[i]!=null&&p[i]!=null){any=true;s+=p[i];}
+    return any?s:null;});
+}
+function companyRows(all){
   const prev=prevYearMap();
   const minU=parseFloat(f('minU').value)||0, q=f('srch').value.trim().toLowerCase();
-  return (DATA.years[YEAR].makers||[]).filter(r=>{
-    if(r.total<minU) return false;
+  const src=(AUTO.years[YEAR].makers||[]);
+  return src.filter(r=>{
+    if(all) return true;
+    if((r.total||0)<minU) return false;
     if(f('listed').checked && !r.code) return false;
-    if(q && !r.maker.toLowerCase().includes(q)) return false;
+    if(q && !String(r.maker).toLowerCase().includes(q)) return false;
     return true;
   }).map(r=>{
     const p=prev?prev[r.maker]:null;
-    const o=Object.assign({},r);
-    // like-for-like: the current year is partial, so compare YTD vs the SAME
-    // months last year — never 7 months against a full 12-month total
-    const ytd=r.months.reduce((s,v)=>s+(v||0),0);
-    const pYtd=p?r.months.reduce((s,v,i)=>s+((v!=null&&p.months[i]!=null)?p.months[i]:0),0):0;
-    o.yoy=pYtd?+(((ytd-pYtd)/pYtd)*100).toFixed(1):null;
-    o.mYoY=r.months.map((v,i)=>{
-      const pv=p?p.months[i]:null;
-      return (v!=null&&pv)?+(((v-pv)/pv)*100).toFixed(1):null;});
+    const vals=toPeriods(r.months);
+    const base=p?basePeriods(r.months,p.months):null;
+    const yoy=vals.map((v,i)=>base?growth(v,base[i]):null);
+    // like-for-like YTD: the current year is partial, so the total compares the
+    // SAME months last year — never 7 months against a full 12-month total
+    const ytd=(r.months||[]).reduce((s,v)=>s+(v||0),0);
+    const pYtd=p?(r.months||[]).reduce((s,v,i)=>s+((v!=null&&p.months[i]!=null)?p.months[i]:0),0):0;
+    const o={maker:r.maker,code:r.code,total:r.total,vals:vals,yoy:yoy,
+             tyoy:pYtd?+(((ytd-pYtd)/pYtd)*100).toFixed(1):null};
+    o.sk={maker:r.maker,total:r.total};
+    vals.forEach((v,i)=>{o.sk['p'+i]=v;});
     return o;
   });
 }
-function render(){
-  if(!DATA||!YEAR) return;
-  let rs=rows();
-  rs.sort((a,b)=>{let x=a[sort.k],y=b[sort.k];
-    if(x==null)x=-1e15; if(y==null)y=-1e15;
-    return typeof x==='string'?sort.d*x.localeCompare(y):sort.d*(x-y);});
-  const cols=[{k:'maker',t:'Maker'}].concat(
-    MON.map((m,i)=>({k:'m'+i,t:m,mi:i})),
-    [{k:MODE==='num'?'total':'yoy',t:MODE==='num'?'Total':'YoY % (YTD)'}]);
-  f('head').innerHTML=cols.map(c=>`<th class="${c.k===sort.k?'sorted '+(sort.d>0?'asc':''):''}" data-k="${esc(c.k)}">${esc(c.t)}</th>`).join('');
-  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{
-    const k=th.dataset.k; if(sort.k===k)sort.d*=-1; else {sort.k=k;sort.d=-1;} render();});
-  if(!rs.length){f('tbl').style.display='none';f('empty').style.display='';
-    f('empty').textContent='No makers match these filters.';return;}
-  f('tbl').style.display='';f('empty').style.display='none';
+function renderCompany(){
+  if(!AUTO||!YEAR){
+    f('boxC').style.display='none';f('empty').style.display='';
+    f('empty').textContent='No Vahan data yet — builds in the daily cloud refresh. '+
+      'The government dashboard sometimes blocks datacenter IPs, in which case data lands on the next successful run.';
+    return;
+  }
+  if(!showNum&&!showYoY){
+    f('boxC').style.display='none';f('empty').style.display='';
+    f('empty').textContent='Tick Numbers or YoY % to show something.';
+    return;
+  }
+  const labels=periodLabels();
+  let rs=sortRows(companyRows(false),sortC);
+  if(SHOWN) rs=rs.slice(0,SHOWN);
+  const ytd=String(YEAR)===partialYear();
+  const cols=[{k:'maker',t:'Maker'}]
+    .concat(labels.map((m,i)=>({k:'p'+i,t:m})))
+    .concat([{k:'total',t:'Total',ytd:ytd}]);
+  f('head').innerHTML=headHtml(cols,sortC);
+  wireHead(f('head'),sortC,renderCompany);
+  if(!rs.length){
+    f('boxC').style.display='none';f('empty').style.display='';
+    f('empty').textContent='No makers match these filters.';return;
+  }
+  f('boxC').style.display='';f('empty').style.display='none';
   f('body').innerHTML=rs.map(r=>{
-    const name=r.code
-      ? `<a href="fundamental.html?code=${encodeURIComponent(r.code)}">${esc(r.maker)}</a><span class="lst">LISTED</span>`
-      : esc(r.maker);
-    const cells=MON.map((m,i)=>{
-      if(MODE==='num') return `<td>${nf(r.months[i])}</td>`;
-      const v=r.mYoY[i];
-      return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${v}%</span>`}</td>`;
-    }).join('');
-    const tail=MODE==='num'?`<td><b>${nf(r.total)}</b></td>`
-      :`<td>${r.yoy==null?'<span class="na">—</span>':`<span class="${r.yoy>0?'pos':'neg'}">${r.yoy>0?'+':''}${r.yoy}%</span>`}</td>`;
-    return `<tr><td>${name}</td>${cells}${tail}</tr>`;
+    let html='';
+    if(showNum){
+      html+='<tr class="mrow'+(showYoY?'':' solo')+'"><td>'+makerCell(r)+'</td>'
+        +r.vals.map(v=>'<td>'+nf(v)+'</td>').join('')
+        +'<td><b>'+nf(r.total)+'</b></td></tr>';
+      if(showYoY)
+        html+='<tr class="sub last"><td class="lab">YoY Growth</td>'
+          +r.yoy.map(v=>pctCell(v)).join('')+pctCell(r.tyoy)+'</tr>';
+    }else{
+      html+='<tr class="mrow solo"><td>'+makerCell(r)+'</td>'
+        +r.yoy.map(v=>pctCell(v)).join('')+pctCell(r.tyoy)+'</tr>';
+    }
+    return html;
   }).join('');
-  kpis(rs);
 }
-function kpis(rs){
-  // latest month with any data across the filtered set
+
+/* ======================= category / group view ======================= */
+function catSet(){
+  if(!CAT) return null;
+  const grp=VIEW==='group';
+  return {list:(grp?CAT.groups:CAT.categories)||[],
+          data:(grp?CAT.by_group:CAT.by_category)||{},
+          key:grp?'group':'category'};
+}
+function fillCatSelect(){
+  const s=catSet();
+  f('catSelL').textContent=VIEW==='group'?'Category group':'Category';
+  if(!s||!s.list.length){f('catSel').innerHTML='';return;}
+  const key=s.key;
+  if(!CATSEL[key]||!s.data[CATSEL[key]]){
+    CATSEL[key]=s.list.find(c=>s.data[c])||s.list[0];
+  }
+  f('catSel').innerHTML=s.list.map(c=>'<option value="'+esc(c)+'"'
+    +(c===CATSEL[key]?' selected':'')+'>'+esc(catLabel(c))+'</option>').join('');
+}
+function renderCat(){
+  killCharts();
+  const s=catSet();
+  if(!s||!s.list.length){
+    f('vCat').innerHTML='<div class="empty">No '+(VIEW==='group'?'category-group':'category')
+      +' data yet — <code>data/auto_category.json</code> lands with the next Vahan refresh '
+      +'(the dashboard blocks datacenter IPs, so it can take a run or two).</div>';
+    return;
+  }
+  const blk=s.data[CATSEL[s.key]];
+  if(!blk||!(blk.makers||[]).length){
+    f('vCat').innerHTML='<div class="empty">No makers recorded for '+esc(CATSEL[s.key])+'.</div>';
+    return;
+  }
+  const years=blk.years||[], all=blk.makers||[];
+  const py=partialYear();
+  // share is against EVERY maker in the category, not just the visible slice
+  const colTot=years.map((y,i)=>all.reduce((sum,r)=>sum+((r.values||[])[i]||0),0));
+  const grandTot=all.reduce((sum,r)=>sum+(r.total||0),0);
+  const q=f('srch2').value.trim().toLowerCase(), only=f('listed2').checked;
+  let rs=all.filter(r=>{
+    if(only&&!r.code) return false;
+    if(q&&!String(r.maker).toLowerCase().includes(q)) return false;
+    return true;
+  }).map(r=>{
+    const v=(r.values||[]).slice(0,years.length);
+    const o={maker:r.maker,code:r.code,total:r.total,vals:v,
+      share:v.map((x,i)=>(x==null||!colTot[i])?null:+((x/colTot[i])*100).toFixed(2)),
+      yoy:v.map((x,i)=>i?growth(x,v[i-1]):null),
+      tshare:grandTot?+(((r.total||0)/grandTot)*100).toFixed(2):null};
+    o.sk={maker:r.maker,total:r.total};
+    v.forEach((x,i)=>{o.sk['y'+i]=x;});
+    return o;
+  });
+  rs=sortRows(rs,sortK);
+  const shown=SHOWN2()?rs.slice(0,SHOWN2()):rs;
+  const cols=[{k:'maker',t:'Maker'}]
+    .concat(years.map((y,i)=>({k:'y'+i,t:y,ytd:String(y)===py})))
+    .concat([{k:'total',t:'Total'}]);
+  const body=shown.map(r=>{
+    let h='<tr class="mrow"><td>'+makerCell(r)+'</td>'
+      +r.vals.map(v=>'<td>'+nf(v)+'</td>').join('')+'<td><b>'+nf(r.total)+'</b></td></tr>';
+    h+='<tr class="sub"><td class="lab">Market Share %</td>'
+      +r.share.map(v=>'<td>'+shareTxt(v)+'</td>').join('')
+      +'<td>'+shareTxt(r.tshare)+'</td></tr>';
+    h+='<tr class="sub last"><td class="lab">YoY Growth %</td>'
+      +r.yoy.map(v=>pctCell(v)).join('')+'<td>'+na+'</td></tr>';
+    return h;
+  }).join('');
+  f('vCat').innerHTML='<div class="tablebox"><table>'
+    +'<thead><tr id="head2"></tr></thead><tbody>'+body+'</tbody></table></div>'
+    +(years.some(y=>String(y)===py)
+      ? '<div class="note">'+esc(py)+' is year-to-date, so its share and YoY sit against '
+        +'full prior years — read that column as a run-rate, not a finished year.</div>' : '')
+    +'<div class="note">Showing '+shown.length+' of '+rs.length+' makers in '
+      +esc(CATSEL[s.key])+'. Market share is against all '+all.length
+      +' makers Vahan lists for this '+(VIEW==='group'?'group':'category')+'.</div>';
+  const h2=f('head2');
+  if(h2){h2.innerHTML=headHtml(cols,sortK);wireHead(h2,sortK,renderCat);}
+}
+function SHOWN2(){return parseInt(f('showN2').value,10)||0;}
+
+/* ============================ industry view ============================ */
+function killCharts(){
+  // a rebuilt board used to leak one Chart instance per redraw — always destroy first
+  CHARTS.forEach(c=>{try{c.destroy();}catch(e){/* already gone */}});
+  CHARTS=[];
+}
+function hatch(color){
+  try{
+    const c=document.createElement('canvas'); c.width=c.height=8;
+    const x=c.getContext('2d'); if(!x) return color;
+    x.strokeStyle=color; x.lineWidth=2;
+    x.beginPath(); x.moveTo(0,8); x.lineTo(8,0); x.moveTo(-2,2); x.lineTo(2,-2);
+    x.moveTo(6,10); x.lineTo(10,6); x.stroke();
+    return x.createPattern(c,'repeat')||color;
+  }catch(e){return color;}
+}
+const barLabels={id:'barLabels',afterDatasetsDraw(ch,arg,opts){
+  const pts=(opts&&opts.points)||[], meta=ch.getDatasetMeta(0);
+  if(!meta||!meta.data) return;
+  const cx=ch.ctx; cx.save();
+  cx.textAlign='center'; cx.font='700 10px -apple-system,Segoe UI,Roboto,sans-serif';
+  meta.data.forEach((bar,i)=>{
+    const p=pts[i]; if(!p) return;
+    let y=bar.y-6;
+    if(p.yoy!=null){
+      cx.fillStyle=p.yoy>0?'#34d399':(p.yoy<0?'#f87171':'#8b9bb4');
+      cx.fillText((p.yoy>0?'+':'')+p.yoy+'%',bar.x,y); y-=12;
+    }
+    if(p.partial&&p.extrapolated!=null){
+      cx.fillStyle='#fbbf24';
+      cx.fillText('est '+short(p.extrapolated),bar.x,y);
+    }
+  });
+  cx.restore();
+}};
+/* Sum several Vahan codes into one vehicle-type series. Totals and the
+   extrapolation add; YoY is recomputed from the summed totals rather than
+   averaged, and stays null when the previous year is absent — averaging
+   component YoYs would invent a number. */
+function rollSeries(list){
+  const byYear={};
+  list.forEach(pts=>(pts||[]).forEach(p=>{
+    const y=p.year, t=byYear[y]||(byYear[y]={year:y,total:0,partial:false,
+                                            extrapolated:0,months_elapsed:p.months_elapsed});
+    t.total+=(p.total||0);
+    if(p.partial){ t.partial=true; t.months_elapsed=p.months_elapsed; }
+    if(p.extrapolated!=null) t.extrapolated+=p.extrapolated;
+  }));
+  const out=Object.keys(byYear).map(y=>byYear[y]).sort((a,b)=>a.year-b.year);
+  out.forEach((p,i)=>{
+    const prev=i?out[i-1]:null;
+    p.yoy=(prev&&prev.total&&!p.partial&&!prev.partial)
+      ? +(((p.total-prev.total)/prev.total)*100).toFixed(1) : null;
+    if(!p.partial) delete p.extrapolated;
+  });
+  return out;
+}
+function indBlocks(){
+  const ser=(IND&&IND.series)||{};
+  let raw;
+  if(INDROLL){
+    const g={};
+    Object.keys(ser).forEach(c=>{(g[catGroup(c)]||(g[catGroup(c)]=[])).push(ser[c]);});
+    raw=Object.keys(g).map(name=>({cat:name,pts:rollSeries(g[name])}));
+  }else{
+    raw=Object.keys(ser).map(c=>({cat:catLabel(c),
+                                  pts:(ser[c]||[]).slice().sort((a,b)=>a.year-b.year)}));
+  }
+  return raw.map(b=>({cat:b.cat,pts:INDYEARS?b.pts.slice(-INDYEARS):b.pts}))
+    .filter(b=>b.pts.length)
+    .sort((a,b)=>(b.pts[b.pts.length-1].total||0)-(a.pts[a.pts.length-1].total||0));
+}
+function renderInd(){
+  killCharts();
+  const blocks=indBlocks();
+  if(!blocks.length){
+    f('vInd').innerHTML='<div class="empty">No industry history yet — '
+      +'<code>data/auto_industry.json</code> lands with the next Vahan refresh '
+      +'(the dashboard blocks datacenter IPs, so it can take a run or two).</div>';
+    return;
+  }
+  if(INDMODE==='table'){
+    f('vInd').innerHTML=blocks.map(b=>{
+      const rows=b.pts.slice().reverse().map(p=>
+        '<tr><td>'+esc(p.year)+(p.partial?'<span class="lst ytd">YTD</span>':'')+'</td>'
+        +'<td>'+nf(p.total)+'</td>'
+        +pctCell(p.yoy)
+        +'<td>'+(p.partial&&p.extrapolated!=null
+          ? '<span style="color:var(--amber)">'+nf(p.extrapolated)+'</span>' : na)+'</td>'
+        +'<td class="na">'+(p.partial?esc((p.months_elapsed||0)+' of 12 months'):'full year')+'</td></tr>').join('');
+      return '<div class="tablebox"><div style="padding:10px 12px 0"><b>'+esc(b.cat)+'</b></div>'
+        +'<table><thead><tr><th style="cursor:default">Year</th>'
+        +'<th style="cursor:default">Registrations</th><th style="cursor:default">YoY %</th>'
+        +'<th style="cursor:default">Full-year est.</th>'
+        +'<th style="cursor:default">Coverage</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    }).join('');
+    return;
+  }
+  f('vInd').innerHTML=blocks.map((b,i)=>
+    '<div class="blk"><div class="blkh"><b>'+esc(b.cat)+'</b><span>'
+    +esc(b.pts[0].year)+'–'+esc(b.pts[b.pts.length-1].year)+' registrations</span></div>'
+    +'<div class="chartbox"><canvas id="ic'+i+'"></canvas></div></div>').join('');
+  if(typeof Chart==='undefined') return;
+  const solid='rgba(45,212,191,.75)', part=hatch('rgba(251,191,36,.85)');
+  blocks.forEach((b,i)=>{
+    const el=f('ic'+i); if(!el) return;
+    CHARTS.push(new Chart(el,{type:'bar',
+      data:{labels:b.pts.map(p=>String(p.year)+(p.partial?'*':'')),
+        datasets:[{label:b.cat,data:b.pts.map(p=>p.total),
+          backgroundColor:b.pts.map(p=>p.partial?part:solid),
+          borderColor:b.pts.map(p=>p.partial?'#fbbf24':'#2dd4bf'),
+          borderWidth:b.pts.map(p=>p.partial?2:0),borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},barLabels:{points:b.pts},
+          tooltip:{callbacks:{label:c=>{
+            const p=b.pts[c.dataIndex]||{};
+            const bits=[Number(c.parsed.y||0).toLocaleString('en-IN')+' registrations'];
+            if(p.yoy!=null) bits.push('YoY '+(p.yoy>0?'+':'')+p.yoy+'%');
+            if(p.partial) bits.push((p.months_elapsed||0)+' of 12 months · full-year est. '
+              +Number(p.extrapolated||0).toLocaleString('en-IN'));
+            return bits;}}}},
+        scales:{x:{ticks:{color:'#8b9bb4',font:{size:10}},grid:{display:false}},
+          y:{beginAtZero:true,grace:'25%',
+             ticks:{color:'#8b9bb4',font:{size:10},callback:v=>short(v)},
+             grid:{color:'#1b2438'}}}},
+      plugins:[barLabels]}));
+  });
+}
+
+/* ================================ shell ================================ */
+function kpis(){
+  const set=(t,l,y,u,d)=>{f('kTot').textContent=t;f('kTotL').textContent=l;
+    f('kYoY').textContent=y;f('kUp').textContent=u;f('kDn').textContent=d;};
+  if(!AUTO||!YEAR||!AUTO.years[YEAR]){set('–','Latest month','–','–','–');
+    f('kYoY').className='v';return;}
+  const save=PERIOD; PERIOD='m';
+  const rs=companyRows(true);
+  PERIOD=save;
   let li=-1;
-  rs.forEach(r=>r.months.forEach((v,i)=>{if(v!=null&&i>li)li=i;}));
-  if(li<0){f('kTot').textContent='–';return;}
-  const tot=rs.reduce((s,r)=>s+(r.months[li]||0),0);
+  rs.forEach(r=>r.vals.forEach((v,i)=>{if(v!=null&&i>li)li=i;}));
+  if(li<0){set('–','Latest month','–','–','–');f('kYoY').className='v';return;}
+  const tot=rs.reduce((s,r)=>s+(r.vals[li]||0),0);
   f('kTot').textContent=Number(tot).toLocaleString('en-IN');
   f('kTotL').textContent=MON[li]+' '+YEAR+' units';
-  const yv=rs.map(r=>r.mYoY[li]).filter(v=>v!=null);
-  const prev=rs.reduce((s,r)=>{const p=r.months[li],y=r.mYoY[li];
+  const prev=rs.reduce((s,r)=>{const p=r.vals[li],y=r.yoy[li];
     return s+((p!=null&&y!=null&&y!==-100)?p/(1+y/100):0);},0);
   const agg=prev?((tot-prev)/prev*100):null;
   f('kYoY').textContent=agg==null?'–':(agg>0?'+':'')+agg.toFixed(1)+'%';
   f('kYoY').className='v '+(agg>0?'g':(agg<0?'r':''));
-  const majors=rs.filter(r=>r.total>=50000&&r.mYoY[li]!=null)
-                 .sort((a,b)=>b.mYoY[li]-a.mYoY[li]);
-  f('kUp').textContent=majors.length?`${majors[0].maker.split(' ')[0]} ${majors[0].mYoY[li]>0?'+':''}${majors[0].mYoY[li]}%`:'–';
-  f('kDn').textContent=majors.length?`${majors[majors.length-1].maker.split(' ')[0]} ${majors[majors.length-1].mYoY[li]}%`:'–';
-  void yv;
+  const majors=rs.filter(r=>(r.total||0)>=50000&&r.yoy[li]!=null).sort((a,b)=>b.yoy[li]-a.yoy[li]);
+  f('kUp').textContent=majors.length?majors[0].maker.split(' ')[0]+' '+(majors[0].yoy[li]>0?'+':'')+majors[0].yoy[li]+'%':'–';
+  const last=majors.length?majors[majors.length-1]:null;
+  f('kDn').textContent=last?last.maker.split(' ')[0]+' '+last.yoy[li]+'%':'–';
+}
+function render(){
+  const cat=(VIEW==='category'||VIEW==='group');
+  f('barCompany').style.display=VIEW==='company'?'':'none';
+  f('vCompany').style.display=VIEW==='company'?'':'none';
+  f('barCat').style.display=cat?'':'none';
+  f('vCat').style.display=cat?'':'none';
+  f('barInd').style.display=VIEW==='industry'?'':'none';
+  f('vInd').style.display=VIEW==='industry'?'':'none';
+  [['company','vbCompany'],['category','vbCategory'],['group','vbGroup'],['industry','vbIndustry']]
+    .forEach(([v,id])=>f(id).classList.toggle('on',VIEW===v));
+  if(VIEW!=='industry'&&VIEW!=='category'&&VIEW!=='group') killCharts();
+  kpis();
+  if(VIEW==='company') renderCompany();
+  else if(cat){fillCatSelect();renderCat();}
+  else renderInd();
+}
+function setView(v){
+  if(VIEW===v) return;
+  killCharts();
+  VIEW=v; render();
 }
 async function load(){
-  try{
-    const t=Date.now();
-    const [d,m]=await Promise.all([
-      fetch('data/auto.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}),
-      fetch('data/auto_meta.json?t='+t).then(r=>r.json()).catch(()=>({}))]);
-    DATA=d;
-    const yrs=Object.keys(d.years||{}).sort().reverse();
-    if(!yrs.length) throw new Error('no years');
-    if(!YEAR||!d.years[YEAR]) YEAR=yrs[0];
-    f('year').innerHTML=yrs.map(y=>`<option value="${esc(y)}"${y===YEAR?' selected':''}>${esc(y)}</option>`).join('');
-    f('kTime').innerHTML=(staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
-    if(m.source) f('src').textContent='Source: '+m.source+
-      ' — registrations trail factory dispatches, so these run slightly below reported wholesale volumes.';
-    render();
-  }catch(e){
-    f('tbl').style.display='none';f('empty').style.display='';
-    f('empty').textContent='No Vahan data yet — builds in the daily cloud refresh. '+
-      'The government dashboard sometimes blocks datacenter IPs, in which case data lands on the next successful run.';
-  }
+  const t=Date.now();
+  const grab=u=>fetch(u+'?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+                     .catch(()=>null);
+  // each board is fetched independently: auto_category.json / auto_industry.json
+  // do not exist until the extended scrape runs, and a 404 must not blank the rest
+  const [d,c,i,m]=await Promise.all([
+    grab('data/auto.json'),grab('data/auto_category.json'),
+    grab('data/auto_industry.json'),grab('data/auto_meta.json')]);
+  AUTO=(d&&d.years&&Object.keys(d.years).length)?d:null;
+  CAT=(c&&(c.by_category||c.by_group))?c:null;
+  IND=(i&&i.series&&Object.keys(i.series).length)?i:null;
+  META=m||{};
+  if(AUTO){
+    const yrs=Object.keys(AUTO.years).sort().reverse();
+    if(!YEAR||!AUTO.years[YEAR]) YEAR=(AUTO.latest_year&&AUTO.years[AUTO.latest_year])?String(AUTO.latest_year):yrs[0];
+    f('year').innerHTML=yrs.map(y=>'<option value="'+esc(y)+'"'+(y===YEAR?' selected':'')+'>'+esc(y)+'</option>').join('');
+  }else{YEAR=null;f('year').innerHTML='';}
+  f('kTime').innerHTML=(staleChip(META.generated_at_ist)||'<span class="dot"></span>')+esc(META.generated_at_ist||'live');
+  if(META.source) f('src').textContent='Source: '+META.source+
+    ' — registrations trail factory dispatches, so these run slightly below reported wholesale volumes.';
+  render();
 }
+f('vbCompany').onclick=()=>setView('company');
+f('vbCategory').onclick=()=>setView('category');
+f('vbGroup').onclick=()=>setView('group');
+f('vbIndustry').onclick=()=>setView('industry');
 f('year').onchange=e=>{YEAR=e.target.value;render();};
-f('tNum').onclick=()=>{MODE='num';f('tNum').classList.add('on');f('tYoY').classList.remove('on');
-  if(sort.k==='yoy')sort.k='total'; render();};
-/* stay ordered by volume when switching to YoY: a new entrant off a near-zero
-   base prints +17000% and would otherwise bury every major maker */
-f('tYoY').onclick=()=>{MODE='yoy';f('tYoY').classList.add('on');f('tNum').classList.remove('on');render();};
-['minU','srch'].forEach(id=>f(id).addEventListener('input',render));
-f('listed').addEventListener('change',render);
+f('pMon').onclick=()=>{PERIOD='m';f('pMon').classList.add('on');f('pQtr').classList.remove('on');
+  if(/^p\d+$/.test(sortC.k))sortC={k:'total',d:-1}; renderCompany();};
+f('pQtr').onclick=()=>{PERIOD='q';f('pQtr').classList.add('on');f('pMon').classList.remove('on');
+  if(/^p\d+$/.test(sortC.k))sortC={k:'total',d:-1}; renderCompany();};
+f('cNum').onchange=e=>{showNum=e.target.checked;renderCompany();};
+f('cYoY').onchange=e=>{showYoY=e.target.checked;renderCompany();};
+f('showN').onchange=e=>{SHOWN=parseInt(e.target.value,10)||0;renderCompany();};
+f('resetC').onclick=()=>{sortC={k:'total',d:-1};renderCompany();};
+['minU','srch'].forEach(id=>f(id).addEventListener('input',renderCompany));
+f('listed').addEventListener('change',renderCompany);
+f('catSel').onchange=e=>{const s=catSet();if(s)CATSEL[s.key]=e.target.value;renderCat();};
+f('showN2').onchange=renderCat;
+f('srch2').addEventListener('input',renderCat);
+f('listed2').addEventListener('change',renderCat);
+f('resetK').onclick=()=>{sortK={k:'total',d:-1};renderCat();};
+f('iTbl').onclick=()=>{INDMODE='table';f('iTbl').classList.add('on');f('iCht').classList.remove('on');renderInd();};
+f('iCht').onclick=()=>{INDMODE='chart';f('iCht').classList.add('on');f('iTbl').classList.remove('on');renderInd();};
+f('iYears').onchange=e=>{INDYEARS=parseInt(e.target.value,10)||0;renderInd();};
+f('iRoll').onclick=()=>{INDROLL=true;f('iRoll').classList.add('on');f('iRaw').classList.remove('on');renderInd();};
+f('iRaw').onclick=()=>{INDROLL=false;f('iRaw').classList.add('on');f('iRoll').classList.remove('on');renderInd();};
 load(); setInterval(load,300000);
 </script>
 <script src="vendor/nav.js"></script>

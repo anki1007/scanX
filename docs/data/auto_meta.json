@@ -1,9 +1,40 @@
 {
-  "generated_at_ist": "2026-07-27 08:32:49 IST",
+  "generated_at_ist": "2026-07-27 17:06:17 IST",
   "source": "Vahan dashboard (RTO registrations, all-India)",
   "years": [
     "2026",
-    "2025"
+    "2025",
+    "2024",
+    "2023",
+    "2022",
+    "2021"
   ],
-  "makers": 300
+  "makers": 300,
+  "category_years": [
+    "2026",
+    "2025",
+    "2024",
+    "2023",
+    "2022"
+  ],
+  "categories": 17,
+  "groups": 4,
+  "industry_years": [
+    "2026",
+    "2025",
+    "2024",
+    "2023",
+    "2022",
+    "2021",
+    "2020",
+    "2019",
+    "2018",
+    "2017",
+    "2016",
+    "2015",
+    "2014",
+    "2013",
+    "2012"
+  ],
+  "industry_categories": 17
 }
