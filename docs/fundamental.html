@@ -236,6 +236,16 @@ async function overlayLivePrice(code){
       if(q&&q.ltp!=null){ ltp=q.ltp; pct=q.pct; src=j.ist?('as of '+j.ist):'delayed'; }
     }catch(e){}
   }
+  if(ltp==null){
+    // intraday quotes.json only carries the ~500 board names; the wide file
+    // carries a daily close for EVERY baked company, so small caps stop
+    // showing the price frozen into their bundle at bake time
+    try{
+      const r=await fetch('data/quotes_wide.json?t='+Date.now()); if(!r.ok) throw 0;
+      const j=await r.json(); const q=(j.quotes||{})[code];
+      if(q&&q.ltp!=null){ ltp=q.ltp; pct=q.pct; src=j.date?('close '+j.date):'daily close'; }
+    }catch(e){}
+  }
   if(ltp==null) return;
   el.innerHTML='₹'+Number(ltp).toLocaleString('en-IN',{maximumFractionDigits:2})
     +(pct!=null?' '+pctTxt(pct):'')

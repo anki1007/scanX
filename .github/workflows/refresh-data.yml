@@ -96,6 +96,10 @@ jobs:
           run python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 90
           # banking heatmaps assemble from the bundles baked just above
           run python scripts/refresh_banking.py
+          # daily close for EVERY baked company: the intraday quotes file only
+          # covers ~500 board names, so without this ~90% of company pages fall
+          # back to the price frozen into their bundle at bake time
+          run python scripts/refresh_quotes.py --wide
           run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           {

@@ -30,6 +30,9 @@ jobs:
       PYTHONIOENCODING: utf-8
       SCANX_NO_DHAN: "1"
       SCANX_QUOTES_CLOUD: "1"       # NSE blocks datacenter IPs -> real-time BSE-direct (+ Yahoo gap-fill)
+      # read-only Analytics token: prices the FULL baked universe, not just
+      # the ~500 board names the BSE per-scrip endpoint can serve per cycle
+      UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN: ${{ secrets.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -44,11 +47,15 @@ jobs:
       - name: Fetch quotes
         run: python scripts/refresh_quotes.py || echo "quotes unavailable this cycle"
 
+      - name: Fetch wide quotes (whole universe, needs the Upstox token)
+        if: env.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN != ''
+        run: python scripts/refresh_quotes.py --wide || echo "wide quotes unavailable this cycle"
+
       - name: Commit & push
         run: |
           git config user.name  "scanx-bot"
           git config user.email "scanx@users.noreply.github.com"
-          git add docs/data/quotes.json 2>/dev/null || true
+          git add docs/data/quotes.json docs/data/quotes_wide.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no quote changes"; exit 0
           fi

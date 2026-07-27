@@ -211,7 +211,68 @@ def _yf_quotes(codes: list, batch: int = 150) -> dict:
 
 
 # ------------------------------------------------------------------------ main
+def _bundle_codes() -> list:
+    """Every company that has a baked fundamental bundle (the whole site's universe)."""
+    try:
+        idx = json.loads((ROOT / "docs" / "data" / "fundamental" / "index.json")
+                         .read_text(encoding="utf-8"))
+        return [str(c).upper() for c in idx if str(c).strip()]
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def wide() -> int:
+    """Daily close for EVERY baked company -> docs/data/quotes_wide.json.
+
+    The intraday quotes.json only carries the ~500 board names the BSE
+    per-scrip endpoint can serve in one cycle, which left ~90% of company
+    pages showing the price frozen into their bundle at bake time. Yahoo
+    batches 150 symbols per call, so the full universe costs ~35 calls once
+    a day — delayed, but a day old instead of six weeks old.
+    """
+    codes = _bundle_codes()
+    if not codes:
+        print("[quotes] wide: no fundamental/index.json — nothing to do")
+        return 1
+
+    # Upstox first when the Analytics token is present: real exchange prices,
+    # and the token is read-only/GET-only so it cannot trade. Yahoo fills
+    # whatever Upstox could not resolve (BSE-only scrip codes, mostly).
+    q, src = {}, "Yahoo delayed (daily close)"
+    try:
+        from upstox_lab.quotes import fetch_ltp
+        q = fetch_ltp(codes) or {}
+        if q:
+            src = "Upstox market-quote (Analytics token)"
+            print(f"[quotes] wide: Upstox priced {len(q)}/{len(codes)}")
+    except Exception as e:  # noqa: BLE001
+        print(f"[quotes] wide: Upstox unavailable ({type(e).__name__}) — using Yahoo")
+
+    missing = [c for c in codes if c not in q]
+    if missing:
+        print(f"[quotes] wide: Yahoo filling {len(missing)} …")
+        yq = _yf_quotes(missing)
+        if yq and q:
+            src += " + Yahoo gaps"
+        for k, v in yq.items():
+            q.setdefault(k, v)
+    if not q:
+        print("[quotes] wide: nothing fetched — keeping previous file")
+        return 1
+    now = datetime.now(IST)
+    out = ROOT / "docs" / "data" / "quotes_wide.json"
+    _atomic(out, json.dumps({
+        "ts": int(time.time()), "ist": now.strftime("%H:%M IST"),
+        "date": now.strftime("%Y-%m-%d"), "source": src,
+        "quotes": q,
+    }, separators=(",", ":")))
+    print(f"[quotes] wide: wrote {len(q)}/{len(codes)} quotes -> {out.name}")
+    return 0
+
+
 def main() -> int:
+    if "--wide" in sys.argv:
+        return wide()
     yf_only = os.environ.get("SCANX_QUOTES_YF") == "1"
     cloud = yf_only or os.environ.get("SCANX_QUOTES_CLOUD") == "1"
     limit = int(os.environ.get("SCANX_QUOTES_LIMIT", "500"))
