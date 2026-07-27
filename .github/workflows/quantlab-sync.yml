@@ -1,0 +1,76 @@
+# Quant Lab — Upstox fundamentals ingestion (quantlab/) in the cloud.
+#
+# Requires ONE repository secret (Settings -> Secrets and variables -> Actions):
+#   UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN  = your Upstox Analytics token
+# The token lives ONLY in GitHub's encrypted secret store — never in the repo.
+#
+# Until the secret is set, runs exit early with a notice (never red).
+# The DuckDB file is uploaded as a workflow artifact (gitignored, not committed).
+
+name: quantlab sync
+
+on:
+  schedule:
+    - cron: "37 13 * * 6"        # Saturday 19:07 IST, after the weekly close
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Comma-separated symbols (empty = full universe)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quantlab-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PYTHONIOENCODING: utf-8
+      UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN: ${{ secrets.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secret is configured
+        id: gate
+        run: |
+          if [ -z "$UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN" ]; then
+            echo "UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN secret is not set — skipping." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        if: steps.gate.outputs.ready == 'true'
+        run: python -m pip install --quiet --disable-pip-version-check "requests>=2.31" "duckdb>=0.10" "apscheduler>=3.10"
+
+      - name: Run sync
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          if [ -n "${{ inputs.symbols }}" ]; then
+            python -m quantlab sync --symbols "${{ inputs.symbols }}"
+          else
+            python -m quantlab sync --full
+          fi
+          python -m quantlab status | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload database artifact
+        if: steps.gate.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantlab-duckdb
+          path: quantlab.duckdb
+          retention-days: 30
+          if-no-files-found: warn
