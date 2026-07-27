@@ -86,11 +86,15 @@ jobs:
           run python scripts/refresh_sectors.py
           run python scripts/refresh_technofunda.py --mcap-floor 5 --screen-pages 250
           run python scripts/refresh_magicformula.py --screen-pages 250
+          run python scripts/refresh_demergers.py
+          run python scripts/refresh_marketmood.py
           # 1) keep the top names fresh (re-bake today's data)
           run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
           #    each daily run bakes more new stocks until every listed name is covered
           run python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 90
+          # banking heatmaps assemble from the bundles baked just above
+          run python scripts/refresh_banking.py
           run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           {

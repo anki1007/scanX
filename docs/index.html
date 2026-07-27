@@ -92,6 +92,7 @@
       <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
       <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
       <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
       <div class="grpL">Intrinsic Value</div>
     <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
     <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
@@ -101,8 +102,10 @@
       <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
       <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
           <div class="grpL">Market Pulse</div>
+      <a class="nav-i" href="marketmood.html"><span class="ic">🌡️</span><span>Market Mood</span></a>
       <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
       <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i" href="banking.html"><span class="ic">🏛️</span><span>Banking Data</span></a>
       <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
       <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
       <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
@@ -180,6 +183,7 @@ const COLS = [
   {k:'pead_score', t:'PEAD', kind:'badge'},
   {k:'ltp', t:'LTP', kind:'ltp'},
   {k:'pct_change', t:'% Chg', kind:'pct'},
+  {k:'drift', t:'Since Screened', kind:'pct'},
   {k:'result_date', t:'Result Date', kind:'date'},
   {k:'pe', t:'Fwd PE', kind:'num'},
   {k:'sales_yoy', t:'Sales YoY', kind:'pct'},
@@ -199,6 +203,13 @@ function pctCell(v){
   if(v===null||v===undefined) return '<span class="na">—</span>';
   const c = v>0?'pos':(v<0?'neg':'');
   return `<span class="${c}">${v>0?'+':''}${v}%</span>`;
+}
+/* post-earnings drift proxy: return from the price captured when the result
+   was screened (crawl shortly after the filing) to the latest LTP */
+function calcDrift(){
+  DATA.forEach(d=>{
+    d.drift=(d.ltp!=null&&d.last_price)?+(((d.ltp-d.last_price)/d.last_price)*100).toFixed(2):null;
+  });
 }
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
@@ -263,6 +274,7 @@ async function load(){
       fetch('data/meta.json?t='+t).then(r=>r.json()).catch(()=>({}))
     ]);
     DATA=d; META=m;
+    calcDrift();
     f('kTime').innerHTML = (staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
     f('src').textContent = 'source: '+(m.source||'—')+(m.prices?(' · '+m.prices):'');
     render();
@@ -293,7 +305,7 @@ async function livePoll(){
       let n=0;
       DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()];
         if(x){ if(x.ltp!=null)d.ltp=x.ltp; if(x.pct!=null)d.pct_change=x.pct; n++; } });
-      if(n){ render(); f('src').textContent='source: '+(META.source||'—')+' · ● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
+      if(n){ calcDrift(); render(); f('src').textContent='source: '+(META.source||'—')+' · ● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
     }
   }catch(e){}
   liveSchedule(60000);

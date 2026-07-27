@@ -126,6 +126,9 @@ echo [scanX] Refreshing all boards from Screener / NSE / BSE (a few minutes) ...
 "%PYEXE%" scripts\refresh_sectors.py
 "%PYEXE%" scripts\refresh_technofunda.py --mcap-floor 5 --screen-pages 250
 "%PYEXE%" scripts\refresh_magicformula.py --screen-pages 250
+"%PYEXE%" scripts\refresh_demergers.py
+"%PYEXE%" scripts\refresh_marketmood.py
+"%PYEXE%" scripts\refresh_banking.py
 "%PYEXE%" scripts\refresh_iv.py --per-sector 30
 echo [scanX] Board refresh complete.
 exit /b 0

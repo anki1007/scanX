@@ -3,33 +3,49 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>scanX · Special Situations</title>
+<title>scanX · Demerger Tracking</title>
 <style>
   :root{--bg:#0c111d;--panel:#141b2d;--panel2:#1b2438;--line:#243049;--text:#e6edf7;
-    --muted:#8b9bb4;--teal:#2dd4bf;--teal2:#5eead4;--green:#34d399;--red:#f87171;--amber:#fbbf24;--chip:#0f1726;}
+    --muted:#8b9bb4;--teal:#2dd4bf;--teal2:#5eead4;--green:#34d399;--red:#f87171;--amber:#fbbf24;
+    --purple:#a78bfa;--chip:#0f1726;}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
   header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
-  .logo{font-size:20px;font-weight:800;color:var(--teal)}.logo small{display:block;font-size:11px;color:var(--muted);font-weight:500}
   .kpis{display:flex;gap:28px;margin-left:auto;text-align:right}
   .kpi .v{font-size:20px;font-weight:800}.kpi .v.teal{color:var(--teal)}
   .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-  nav{display:flex;gap:18px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
-  nav a,nav span{font-size:13px;color:var(--muted)}nav .active{color:var(--teal);font-weight:700}
-  .bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:14px 20px}
+  .bar{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding:14px 20px 4px}
   .bar .fld{display:flex;flex-direction:column;gap:3px}.bar label{font-size:11px;color:var(--muted)}
   input,select{background:var(--chip);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px}
+  .tiles{display:flex;gap:12px;flex-wrap:wrap;padding:10px 20px 4px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:120px}
+  .tile .n{font-size:20px;font-weight:800}.tile .t{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .tile.s0{border-left:3px solid var(--muted)}.tile.s0 .n{color:var(--muted)}
+  .tile.s1{border-left:3px solid var(--amber)}.tile.s1 .n{color:var(--amber)}
+  .tile.s2{border-left:3px solid var(--purple)}.tile.s2 .n{color:var(--purple)}
+  .tile.s3{border-left:3px solid var(--teal)}.tile.s3 .n{color:var(--teal)}
+  .tile.s4{border-left:3px solid var(--green)}.tile.s4 .n{color:var(--green)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 20px 8px}
+  .chipbtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+       border-radius:20px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:12px}
+  .chipbtn.on{color:var(--teal);border-color:var(--teal);background:var(--panel)}
   .tablebox{margin:0 20px 10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
   table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
-  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
-  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
-  td.snip{white-space:normal;max-width:420px;color:var(--muted);font-size:12px;text-align:left}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{position:sticky;left:0;background:var(--panel)}
+  td.snip{white-space:normal;max-width:460px;color:var(--muted);font-size:12px}
   thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
   thead th:hover{color:var(--teal)}tbody tr:hover{background:#10182a}
   th.sorted::after{content:" \25BC";font-size:9px}th.sorted.asc::after{content:" \25B2"}
-  .pos{color:var(--green)}.neg{color:var(--red)}.na{color:var(--muted)}
-  .tag{display:inline-block;background:rgba(45,212,191,.14);color:var(--teal2);font-weight:700;border-radius:20px;padding:2px 9px;font-size:12px}
+  .na{color:var(--muted)}
+  .co{font-weight:700}.co small{display:block;font-weight:500;font-size:10px;color:var(--muted)}
+  .pill{display:inline-block;font-weight:800;border-radius:20px;padding:3px 11px;font-size:11px;letter-spacing:.02em}
+  .pill.s0{background:rgba(139,155,180,.16);color:var(--muted)}
+  .pill.s1{background:rgba(251,191,36,.15);color:var(--amber)}
+  .pill.s2{background:rgba(167,139,250,.16);color:var(--purple)}
+  .pill.s3{background:rgba(45,212,191,.14);color:var(--teal2)}
+  .pill.s4{background:rgba(52,211,153,.15);color:var(--green)}
   .src{font-size:11px;color:var(--muted);padding:0 20px 22px}
   .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px;animation:p 2s infinite}@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
 
@@ -60,8 +76,8 @@
       <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
       <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
       <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
-      <a class="nav-i active" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
-      <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <a class="nav-i active" href="demergers.html"><span class="ic">🧩</span><span>Demergers</span></a>
       <div class="grpL">Intrinsic Value</div>
     <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
     <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
@@ -82,86 +98,94 @@
   <div class="content">
 
 <header>
-  <div class="ptitle">Special Situations</div>
+  <div class="ptitle">Demerger Tracking</div>
   <div class="kpis">
-    <div class="kpi"><div class="v" id="kAll">–</div><div class="l">Situations</div></div>
+    <div class="kpi"><div class="v" id="kAll">–</div><div class="l">Companies</div></div>
     <div class="kpi"><div class="v teal" id="kShown">–</div><div class="l">Shown</div></div>
     <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (daily)</div></div>
   </div>
 </header>
+<div class="src" style="padding:10px 20px 0">Each demerger tracked through its pipeline: Board Approval → NCLT Approval → Record Date → Listing (Screener full-text-search filings).</div>
+<div class="tiles" id="tiles"></div>
+<div class="chips" id="chips"></div>
 <div class="bar">
-  <div class="fld"><label>Search company</label><input id="q" placeholder="name…" style="width:200px"></div>
-  <div class="fld"><label>Category</label><select id="cat"><option value="">All</option>
-    <option>Open Offer</option><option>Delisting</option><option>Demerger</option>
-    <option>Scheme/Arrangement</option><option>NCLT</option><option>Warrant</option><option>Preferential</option></select></div>
+  <div class="fld"><label>Search company / headline</label><input id="q" placeholder="name…" style="width:240px"></div>
 </div>
 
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
 <div class="src" id="src">source: –</div>
 
 <script>
-const COLS = [
-  {k:'name', t:'Company', kind:'co'},
-  {k:'category', t:'Situation', kind:'tag'},
-  {k:'date', t:'Date', kind:'txt'},
-  {k:'ltp', t:'CMP', kind:'rs'},
-  {k:'pct_change', t:'% Chg', kind:'pct'},
-  {k:'market_cap', t:'Market Cap', kind:'cr'},
-  {k:'sales', t:'Sales (Qtr)', kind:'cr'},
-  {k:'opm', t:'OPM %', kind:'opm'},
-  {k:'np_latest_q', t:'NP Latest', kind:'num'},
-  {k:'eps_latest_q', t:'EPS Latest', kind:'num'},
-  {k:'np_growth_qoq', t:'NP Growth %', kind:'pct'},
-  {k:'headline', t:'Announcement', kind:'snip'},
+const STAGES=['ANNOUNCED','BOARD_APPROVED','NCLT','RECORD_DATE','LISTED'];
+const SLAB={ANNOUNCED:'Announced',BOARD_APPROVED:'Board Approved',NCLT:'NCLT Approval',RECORD_DATE:'Record Date',LISTED:'Listed'};
+const COLS=[
+  {k:'name',t:'Company',kind:'co'},
+  {k:'stage',t:'Stage',kind:'stage'},
+  {k:'stage_date',t:'Stage Date',kind:'txt'},
+  {k:'headline',t:'Latest Filing',kind:'snip'},
+  {k:'code',t:'Fundamentals',kind:'link'},
 ];
-let DATA=[], META={}, sort={k:'date', dir:-1};
+let DATA=[],META={},FILTER='',sort={k:'stage',dir:-1};
 const f=id=>document.getElementById(id);
-const rs=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2});
-const cr=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr';
-const pctv=v=>v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${v}%</span>`;
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
-function cell(c,r){const v=r[c.k];switch(c.kind){
-  case 'co': return `<td><a href="fundamental.html?code=${encodeURIComponent(r.code)}">${esc(r.name||r.code)}</a></td>`;
-  case 'tag': return `<td><span class="tag">${esc(v||'Special')}</span></td>`;
-  case 'rs': return `<td>${rs(v)}</td>`;
-  case 'cr': return `<td>${cr(v)}</td>`;
-  case 'pct': return `<td>${pctv(v)}</td>`;
-  case 'opm': return `<td>${v==null?'<span class="na">—</span>':v+'%'}</td>`;
-  case 'snip': return `<td class="snip">${v?esc(v):'<span class="na">—</span>'}</td>`;
-  case 'txt': return `<td>${v?esc(v):'<span class="na">—</span>'}</td>`;
-  default: return `<td>${v==null?'<span class="na">—</span>':esc(v)}</td>`;}}
+const rank=s=>STAGES.indexOf(s);
+const latest=r=>(r.headlines&&r.headlines.length)?r.headlines[0]:null;
+function pill(s){const i=Math.max(rank(s),0);return `<span class="pill s${i}">${esc(SLAB[s]||s||'—')}</span>`;}
+function cell(c,r){switch(c.kind){
+  case 'co': return `<td class="co">${esc(r.name||r.code)}<small>${esc(r.code)}</small></td>`;
+  case 'stage': return `<td>${pill(r.stage)}</td>`;
+  case 'snip': {const h=latest(r);if(!h)return '<td class="snip"><span class="na">—</span></td>';
+    const inner=(h.date?`<span class="na">${esc(h.date)} · </span>`:'')+esc(h.text);
+    return `<td class="snip">${h.url?`<a href="${esc(h.url)}" target="_blank" rel="noopener">${inner}</a>`:inner}</td>`;}
+  case 'link': return `<td><a href="fundamental.html?code=${encodeURIComponent(r.code)}">Open →</a></td>`;
+  default: {const v=r[c.k];return `<td>${v?esc(v):'<span class="na">—</span>'}</td>`;}}}
+function val(r,k){
+  if(k==='stage')return rank(r.stage);
+  if(k==='headline'){const h=latest(r);return h?(h.text||''):'';}
+  return r[k]==null?'':r[k];}
 function rows(){
-  const q=f('q').value.trim().toLowerCase(), ct=f('cat').value;
+  const q=f('q').value.trim().toLowerCase();
   let r=DATA.slice();
-  if(q) r=r.filter(x=>(x.name||'').toLowerCase().includes(q));
-  if(ct) r=r.filter(x=>x.category===ct);
-  r.sort((a,b)=>{let x=a[sort.k],y=b[sort.k];if(x==null)x='';if(y==null)y='';return typeof x==='string'?sort.dir*x.localeCompare(y):sort.dir*(x-y);});
-  return r;
-}
+  if(FILTER)r=r.filter(x=>x.stage===FILTER);
+  if(q)r=r.filter(x=>{const h=latest(x);return ((x.name||'')+' '+(x.code||'')+' '+(h?h.text:'')).toLowerCase().includes(q);});
+  r.sort((a,b)=>{let x=val(a,sort.k),y=val(b,sort.k);
+    let d=typeof x==='string'?sort.dir*x.localeCompare(y):sort.dir*(x-y);
+    if(d===0)d=String(b.stage_date||'').localeCompare(String(a.stage_date||''));
+    return d;});
+  return r;}
+function tiles(){
+  const n=s=>DATA.filter(x=>x.stage===s).length;
+  f('tiles').innerHTML=STAGES.map((s,i)=>`<div class="tile s${i}"><div class="n">${n(s)}</div><div class="t">${esc(SLAB[s])}</div></div>`).join('');}
+function chips(){
+  const all=['',...STAGES];
+  f('chips').innerHTML=all.map(s=>`<button class="chipbtn${FILTER===s?' on':''}" data-s="${esc(s)}">${s?esc(SLAB[s]):'All'}</button>`).join('');
+  f('chips').querySelectorAll('.chipbtn').forEach(b=>b.onclick=()=>{FILTER=b.dataset.s;render();});}
 function render(){
-  const rs2=rows();
+  const rs=rows();
   f('head').innerHTML=COLS.map(c=>{const cls=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';return `<th class="${cls}" data-k="${c.k}">${c.t}</th>`;}).join('');
   f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sort.k===k)sort.dir*=-1;else{sort.k=k;sort.dir=-1;}render();});
-  f('body').innerHTML=rs2.map(x=>'<tr>'+COLS.map(c=>cell(c,x)).join('')+'</tr>').join('')
-    || `<tr><td colspan="${COLS.length}" class="na" style="padding:18px">No special situations yet — once scanX.bat runs the Screener search they appear here.</td></tr>`;
-  f('kAll').textContent=DATA.length; f('kShown').textContent=rs2.length;
-}
+  f('body').innerHTML=rs.map(x=>'<tr>'+COLS.map(c=>cell(c,x)).join('')+'</tr>').join('')
+    || `<tr><td colspan="${COLS.length}" class="na" style="padding:18px">No demerger data yet — builds in the daily cloud refresh.</td></tr>`;
+  f('kAll').textContent=DATA.length; f('kShown').textContent=rs.length;
+  tiles(); chips();}
 async function load(){
   try{
     const t=Date.now();
     const [d,m]=await Promise.all([
-      fetch('data/special.json?t='+t).then(r=>r.json()).catch(()=>[]),
-      fetch('data/special_meta.json?t='+t).then(r=>r.json()).catch(()=>({})),
+      fetch('data/demergers.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}),
+      fetch('data/demergers_meta.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).catch(()=>({})),
     ]);
-    DATA=d||[]; META=m||{};
-    f('kTime').innerHTML=(staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
-    f('src').textContent='source: '+(m.source||'Screener full-text-search')+(m.prices?(' · '+m.prices):'');
+    DATA=Array.isArray(d)?d:[]; META=m||{};
+    f('kTime').innerHTML=(staleChip(META.generated_at_ist)||'<span class="dot"></span>')+esc(META.generated_at_ist||'live');
+    f('src').textContent='source: '+(META.source||'Screener full-text-search');
     render();
-  }catch(e){ f('src').textContent='data load error: '+e; }
-}
-['q','cat'].forEach(id=>f(id).addEventListener('input',render));
-load(); setInterval(load,60000);
+  }catch(e){
+    DATA=[];render();
+    f('src').textContent='No demerger data yet — builds in the daily cloud refresh.';
+  }}
+f('q').addEventListener('input',render);
+load(); setInterval(load,300000);
 </script>
   </div>
 </div>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>scanX · Market Mood</title>
+<script src="vendor/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --line:#243049;
+    --text:#e6edf7; --muted:#8b9bb4; --teal:#2dd4bf; --teal2:#5eead4;
+    --green:#34d399; --red:#f87171; --amber:#fbbf24; --chip:#0f1726;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none} a:hover{text-decoration:underline}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;
+         border-bottom:1px solid var(--line);background:var(--panel)}
+  .logo{font-size:20px;font-weight:800;color:var(--teal)}
+  .kpis{display:flex;gap:28px;margin-left:auto;text-align:right}
+  .kpi .v{font-size:20px;font-weight:800}.kpi .v.teal{color:var(--teal)}
+  .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .wrap{padding:18px 22px;max-width:1320px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+  .grow{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:14px;margin-bottom:14px}
+  @media(max-width:900px){.grow{grid-template-columns:1fr}}
+  .grow .tile{margin-bottom:0}
+  .score{font-size:46px;font-weight:800;line-height:1.05}
+  .mood{font-size:15px;font-weight:800;border-radius:8px;padding:4px 12px;display:inline-block}
+  .chipb{font-size:11px;font-weight:800;border-radius:20px;padding:3px 10px;display:inline-block;letter-spacing:.03em}
+  .Bull{background:rgba(52,211,153,.16);color:var(--green)}
+  .Dull{background:rgba(251,191,36,.16);color:var(--amber)}
+  .Bear{background:rgba(248,113,113,.16);color:var(--red)}
+  .meter{height:10px;background:var(--chip);border-radius:6px;position:relative;margin:14px 0 4px;overflow:hidden}
+  .meter .fill{height:100%;border-radius:6px}
+  .mlbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
+  .tlab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+  .chartbox{height:250px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:14px}
+  .tiles .tile{margin-bottom:0}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;font-size:13px}
+  .stat .k{color:var(--muted)} .stat .v{font-weight:800;font-size:15px}
+  .tablebox{margin:0 0 14px;background:var(--panel);border:1px solid var(--line);
+            border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+  thead th{position:sticky;top:0;background:var(--panel2);color:var(--muted);
+           font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  tbody tr:hover{background:#10182a}
+  .pos{color:var(--green)} .neg{color:var(--red)} .na{color:var(--muted)}
+  .fbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:7px;
+        padding:5px 11px;cursor:pointer;font-size:12px;font-weight:600}
+  .fbtn.on{border-color:var(--teal);color:var(--teal)}
+  .src{font-size:11px;color:var(--muted);padding:0 0 18px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+       margin-right:5px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+
+  /* ---------- shared left nav rail ---------- */
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);
+       padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+         color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+      <div class="brand">scanX<small>NSE / BSE terminal</small></div>
+      <div class="grpL">Screens</div>
+      <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+      <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+      <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+      <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+      <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+      <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+      <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+      <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
+      <div class="grpL">Intrinsic Value</div>
+      <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+      <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+      <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+      <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+      <div class="grpL">Market Pulse</div>
+      <a class="nav-i active" href="marketmood.html"><span class="ic">🌡️</span><span>Market Mood</span></a>
+      <a class="nav-i" href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i" href="banking.html"><span class="ic">🏛️</span><span>Banking Data</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+      <div class="grpL">Tools</div>
+      <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+      <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+    </aside>
+  <div class="content">
+<header>
+  <div class="ptitle">🌡️ Market Mood</div>
+  <div class="kpis">
+    <div class="kpi"><div class="v teal" id="kScore">–</div><div class="l">Mood Score</div></div>
+    <div class="kpi"><div class="v" id="kAdv">–</div><div class="l">Advances</div></div>
+    <div class="kpi"><div class="v" id="kDec">–</div><div class="l">Declines</div></div>
+    <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (auto 5m)</div></div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="grow">
+    <div class="tile" id="gauge"><div class="empty">Loading…</div></div>
+    <div class="tile">
+      <div class="tlab">Mood score history (50 = neutral)</div>
+      <div class="chartbox"><canvas id="hchart"></canvas></div>
+    </div>
+  </div>
+  <div class="tiles" id="tiles"></div>
+  <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
+  <div style="margin:-2px 0 14px"><button class="fbtn" id="ball" style="display:none">Show all</button></div>
+  <div class="src" id="src">Composite momentum of the top-500 breadth universe: 0.4 × % above 50-DMA + 0.3 × % above 200-DMA + 0.3 × today&#39;s avg move. Bands: &ge;75 Ex Strong · &ge;50 Strong · &ge;25 Weak · &lt;25 Ex Weak. Bull &ge;60 · Dull 40&ndash;60 · Bear &lt;40. Builds daily via <code>refresh_marketmood.py</code>.</div>
+</div>
+  </div>
+</div>
+<script>
+const f=id=>document.getElementById(id);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
+const num=v=>(v===null||v===undefined||v==='')?'—':Number(v).toLocaleString('en-IN');
+const scoreColor=s=>s>=60?'var(--green)':(s<40?'var(--red)':'var(--amber)');
+const moodOf=s=>s>=60?'Bull':(s<40?'Bear':'Dull');
+const bandChip=l=>{const c=l==='Ex Strong'||l==='Strong'?'Bull':(l==='Weak'?'Dull':'Bear');return '<span class="chipb '+c+'">'+esc(l)+'</span>';};
+
+let HIST=[],LATEST=null,META={},showAll=false;
+
+function renderGauge(){
+  const s=Number(LATEST.score)||0, m=moodOf(s), d=LATEST.dma||{}, b=LATEST.breadth||{};
+  f('gauge').innerHTML=
+    '<div class="tlab">Composite mood · '+esc(LATEST.date)+'</div>'
+    +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+    +'<span class="score" style="color:'+scoreColor(s)+'">'+esc(s.toFixed(1))+'</span>'
+    +'<span><span class="mood '+m+'">'+m+'</span><br>'+bandChip(LATEST.label)+'</span></div>'
+    +'<div class="meter"><div class="fill" style="width:'+Math.max(0,Math.min(100,s))+'%;background:'+scoreColor(s)+'"></div></div>'
+    +'<div class="mlbl"><span>0 · Ex Weak</span><span>25</span><span>50</span><span>75</span><span>Ex Strong · 100</span></div>'
+    +'<div style="margin-top:12px;font-size:12px;color:var(--muted)">'
+    +num(b.up)+' up / '+num(b.down)+' down of '+num(b.n)+' stocks · avg '+esc(b.avg_pct)+'% · '
+    +num(LATEST.resolved||d.n)+' of '+num(LATEST.universe||b.n)+' tickers resolved</div>';
+}
+
+function renderKpis(){
+  const b=LATEST.breadth||{};
+  f('kScore').textContent=LATEST.score!=null?Number(LATEST.score).toFixed(1):'–';
+  f('kScore').style.color=scoreColor(Number(LATEST.score)||0);
+  f('kAdv').textContent=num(b.up); f('kAdv').style.color='var(--green)';
+  f('kDec').textContent=num(b.down); f('kDec').style.color='var(--red)';
+  const ts=META.generated_at_ist||'';
+  f('kTime').innerHTML=(staleChip(ts)||'<span class="dot"></span>')+esc(ts||LATEST.date);
+}
+
+function statRow(k,v,cls){return '<div class="stat"><span class="k">'+esc(k)+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>';}
+function renderTiles(){
+  const d=LATEST.dma||{};
+  const pct=v=>v==null?'<span class="na">—</span>':esc(v)+'%';
+  f('tiles').innerHTML=
+    '<div class="tile"><div class="tlab">Below moving average</div>'
+      +statRow('Below 20 DMA',pct(d.pct_below_20dma))
+      +statRow('Below 50 DMA',pct(d.pct_below_50dma))
+      +statRow('Below 200 DMA',pct(d.pct_below_200dma))+'</div>'
+    +'<div class="tile"><div class="tlab">52-week range (within 5%)</div>'
+      +statRow('Near 52w high',num(d.near_52w_high),'pos')
+      +statRow('Near 52w low',num(d.near_52w_low),'neg')
+      +statRow('Tracked',num(d.n))+'</div>'
+    +'<div class="tile"><div class="tlab">RSI-14 extremes</div>'
+      +statRow('Overbought (RSI > 70)',num(d.overbought),'pos')
+      +statRow('Oversold (RSI < 30)',num(d.oversold),'neg')
+      +statRow('Neutral',num(d.n!=null?d.n-(d.overbought||0)-(d.oversold||0):null))+'</div>';
+}
+
+const COLS=['Date','Score','Mood','Up','Down','&gt;3%','&lt;-3%','&gt;5%','&lt;-5%','&gt;10%','&lt;-10%','Avg %'];
+function rowHtml(h){
+  const b=h.breadth||{}, s=Number(h.score)||0;
+  const cnt=(v,cls)=>'<td class="'+(v?cls:'na')+'">'+num(v)+'</td>';
+  const avg=b.avg_pct==null?'<td class="na">—</td>'
+    :'<td class="'+(b.avg_pct>0?'pos':(b.avg_pct<0?'neg':''))+'">'+esc((b.avg_pct>0?'+':'')+b.avg_pct)+'</td>';
+  return '<tr><td>'+esc(h.date)+'</td>'
+    +'<td><b style="color:'+scoreColor(s)+'">'+esc(s.toFixed(1))+'</b></td>'
+    +'<td>'+bandChip(h.label)+'</td>'
+    +cnt(b.up,'pos')+cnt(b.down,'neg')
+    +cnt(b.up3,'pos')+cnt(b.down3,'neg')
+    +cnt(b.up5,'pos')+cnt(b.down5,'neg')
+    +cnt(b.up10,'pos')+cnt(b.down10,'neg')+avg+'</tr>';
+}
+function renderTable(){
+  f('head').innerHTML=COLS.map(c=>'<th>'+c+'</th>').join('');
+  const rows=HIST.slice().reverse();
+  const shown=showAll?rows:rows.slice(0,15);
+  f('body').innerHTML=shown.map(rowHtml).join('')
+    ||'<tr><td colspan="12" class="na" style="padding:18px">No breadth history yet.</td></tr>';
+  const btn=f('ball');
+  if(rows.length>15){btn.style.display='inline-block';btn.textContent=showAll?'Show last 15':'Show all '+rows.length+' days';btn.className='fbtn'+(showAll?' on':'');}
+  else btn.style.display='none';
+}
+f('ball').onclick=()=>{showAll=!showAll;renderTable();};
+
+let moodChart=null;
+function drawHistory(hist){
+  const el=f('hchart'); if(!el||typeof Chart==='undefined'||!hist.length) return;
+  if(moodChart){moodChart.destroy();moodChart=null;}
+  moodChart=new Chart(el,{type:'line',data:{labels:hist.map(h=>h.date),
+    datasets:[{label:'Mood score',data:hist.map(h=>h.score),borderColor:'#2dd4bf',
+      backgroundColor:'rgba(45,212,191,.10)',tension:.3,pointRadius:2,fill:true},
+     {label:'Neutral 50',data:hist.map(()=>50),borderColor:'#8b9bb4',borderDash:[6,4],
+      pointRadius:0,borderWidth:1,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#8b9bb4',font:{size:11}}}},
+      scales:{x:{ticks:{color:'#8b9bb4',font:{size:10},maxTicksLimit:12},grid:{color:'#1b2438'}},
+        y:{min:0,max:100,ticks:{color:'#8b9bb4',font:{size:10}},grid:{color:'#1b2438'}}}}});
+}
+
+async function load(){
+  try{
+    const t=Date.now();
+    const [d,meta]=await Promise.all([
+      fetch('data/marketmood.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}),
+      fetch('data/marketmood_meta.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).catch(()=>({}))]);
+    HIST=(d.history||[]).filter(h=>h&&h.date);
+    LATEST=d.latest||HIST[HIST.length-1];
+    META=meta||{};
+    if(!LATEST) throw new Error('empty');
+    renderKpis();renderGauge();renderTiles();renderTable();drawHistory(HIST);
+  }catch(e){
+    f('gauge').innerHTML='<div class="empty">No Market Mood data yet — the board builds in the daily cloud refresh (<code>refresh_marketmood.py</code>).</div>';
+  }
+}
+load();setInterval(load,300000);
+</script>
+</body>
+</html>
