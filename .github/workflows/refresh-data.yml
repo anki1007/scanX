@@ -49,6 +49,12 @@ jobs:
       # into docs/, never sent to a browser, and no runtime endpoint uses it —
       # the site only ever serves the pre-baked result.
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      # Read-only fundamentals token. Two steps here need it: the fundamentals
+      # bake (current ratio + D/E proxy + peer ratios, which Screener's compact
+      # statements cannot produce) and the wide-quotes pass. Without it both
+      # silently fall back — which is exactly why the health panel kept showing
+      # "n/a" after the ratio code shipped.
+      UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN: ${{ secrets.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 

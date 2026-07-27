@@ -79,6 +79,14 @@
   .tchip .m{font-size:12px;color:var(--text);font-weight:600}
   .tchip .s{font-size:12px;margin-top:2px}
   .tchip .s .ct{color:var(--muted);font-size:11px}
+  /* financial-health cards carry sentences, not one-word labels — give them room */
+  .trend.health{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .trend.health .tchip{padding:13px 15px}
+  .trend.health .tchip .m{font-size:14.5px;font-weight:700;display:flex;
+        align-items:center;gap:8px;flex-wrap:wrap}
+  .trend.health .tchip .s{font-size:13.5px;margin-top:6px}
+  .trend.health .tchip .s .ct{font-size:13.5px;line-height:1.5}
+  .trend.health .pill{font-size:12px;padding:3px 9px}
   .pill{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px}
   .pill.up{background:rgba(52,211,153,.15);color:var(--green)}
   .pill.dn{background:rgba(248,113,113,.15);color:var(--red)}
@@ -454,10 +462,10 @@ function healthSection(a){
   const pr=h.peers||{};
   const pchips=PEER_ROW.map(r=>peerChip(r[1],pr[r[0]])).join('');
   const peers=pchips?`<p class="psub" style="margin:16px 0 6px;color:var(--text)">Valuation &amp; returns vs sector</p>
-    <div class="trend">${pchips}</div>`:'';
+    <div class="trend health">${pchips}</div>`:'';
   return `<div class="sec"><h3>Financial health</h3><div class="panel">
     <p class="psub">Cash-backing of profits, liquidity, and capex-completion signal — each tagged +/−/neutral</p>
-    <div class="trend">${chips}</div>${peers}</div></div>`;
+    <div class="trend health">${chips}</div>${peers}</div></div>`;
 }
 
 /* ---------------- what management said (grounded facts from the filings) ----------------
