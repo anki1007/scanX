@@ -383,6 +383,7 @@ function healthSection(a){
   const h=a.health; if(!h) return '';
   const chips=[healthChip('Current Ratio',h.current_ratio),
                healthChip('OCF / Net Profit',h.ocf_np),
+               healthChip('Debt / Equity',h.debt_equity),
                healthChip('CWIP trend (capex)',h.cwip)].join('');
   return `<div class="sec"><h3>Financial health</h3><div class="panel">
     <p class="psub">Cash-backing of profits, liquidity, and capex-completion signal — each tagged +/−/neutral</p>

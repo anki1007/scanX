@@ -71,6 +71,37 @@ def test_current_ratio_below_one_is_negative():
     assert h["current_ratio"]["bias"] == "negative"
 
 
+def test_debt_equity_conservative_is_positive():
+    # Smart-Ratios doc: D/E < 0.30 ideal
+    h = A.health_ratios(
+        _stmt({"Equity Capital": ["10", "10", "10"], "Reserves": ["90", "140", "190"],
+               "Borrowings": ["50", "40", "30"]}),
+        _stmt({}), _stmt({}),
+    )
+    assert h["debt_equity"]["value"] == 0.15
+    assert h["debt_equity"]["bias"] == "positive"
+
+
+def test_debt_equity_leverage_risk_is_negative():
+    h = A.health_ratios(
+        _stmt({"Equity Capital": ["10", "10", "10"], "Reserves": ["40", "40", "40"],
+               "Borrowings": ["30", "60", "120"]}),
+        _stmt({}), _stmt({}),
+    )
+    assert h["debt_equity"]["value"] == 2.4
+    assert h["debt_equity"]["bias"] == "negative"
+
+
+def test_debt_equity_negative_networth_flagged():
+    h = A.health_ratios(
+        _stmt({"Equity Capital": ["10", "10", "10"], "Reserves": ["-5", "-15", "-25"],
+               "Borrowings": ["30", "60", "120"]}),
+        _stmt({}), _stmt({}),
+    )
+    assert h["debt_equity"]["bias"] == "negative"
+    assert h["debt_equity"]["value"] is None
+
+
 def test_compact_view_is_honest_na():
     h = A.health_ratios(
         _stmt({"Other Assets": ["1", "2", "3"]}), _stmt({}), _stmt({}),

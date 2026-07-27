@@ -274,9 +274,10 @@ def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
     if got and got[2]:
         y, a, l = got
         v = round(a / l, 2)
-        bias = "positive" if v >= 1.5 else "neutral" if v >= 1.0 else "negative"
+        # Smart-Ratios doc Tier 2: ideal Current Ratio > 2
+        bias = "positive" if v >= 2.0 else "neutral" if v >= 1.0 else "negative"
         note = (f"{v}x ({y}): " +
-                ("comfortable short-term liquidity" if v >= 1.5 else
+                ("comfortable short-term liquidity" if v >= 2.0 else
                  "adequate but thin buffer" if v >= 1.0 else
                  "current liabilities exceed current assets"))
         out["current_ratio"] = {"value": v, "year": y, "bias": bias, "note": note}
@@ -304,6 +305,30 @@ def health_ratios(bs: dict, cf: dict, pl: dict) -> dict:
         out["ocf_np"] = {"value": v, "year": y, "bias": bias, "note": note}
     else:
         out["ocf_np"] = {"value": None, "bias": "na", "note": "cash-flow or P&L data missing"}
+
+    # Debt / Equity = Borrowings / (Equity Capital + Reserves).
+    # Smart-Ratios doc: < 0.30 is the multibagger ideal (Tier 2 / top-10 #7).
+    borrow = _stmt_map(bs, "Borrowings")
+    eqc = _stmt_map(bs, "Equity Capital")
+    resv = _stmt_map(bs, "Reserves")
+    nw = {y: eqc[y] + resv[y] for y in eqc
+          if y in resv and eqc[y] is not None and resv[y] is not None}
+    got = _latest_common(borrow, nw) if (borrow and nw) else None
+    if got is not None:
+        y, b, w = got
+        if w <= 0:
+            out["debt_equity"] = {"value": None, "year": y, "bias": "negative",
+                                  "note": f"net worth is non-positive in {y} — balance-sheet stress"}
+        else:
+            v = round(b / w, 2)
+            bias = "positive" if v <= 0.30 else "neutral" if v <= 1.0 else "negative"
+            note = (f"{v}x ({y}): " +
+                    ("conservatively financed" if v <= 0.30 else
+                     "moderate leverage" if v <= 1.0 else
+                     "debt exceeds net worth — leverage risk"))
+            out["debt_equity"] = {"value": v, "year": y, "bias": bias, "note": note}
+    else:
+        out["debt_equity"] = {"value": None, "bias": "na", "note": "balance-sheet data missing"}
 
     cwip = _stmt_map(bs, "CWIP")
     ta = _stmt_map(bs, "Total Assets")
