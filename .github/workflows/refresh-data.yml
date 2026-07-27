@@ -88,6 +88,7 @@ jobs:
           run python scripts/refresh_magicformula.py --screen-pages 250
           run python scripts/refresh_demergers.py
           run python scripts/refresh_marketmood.py
+          run python scripts/refresh_auto.py --years 2
           # 1) keep the top names fresh (re-bake today's data)
           run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
