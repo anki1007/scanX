@@ -237,6 +237,18 @@ def main():
 
     print(f"[docs] baked {done}, skipped {skipped}, no-facts {thin}, failed {fail} -> {out}")
 
+    # A handful of companies genuinely have nothing quotable. EVERY company
+    # yielding nothing means the pipeline is broken (on 2026-07-27 the whole
+    # Gemini model chain had been retired and this line read like normal
+    # output). Make that shout instead of blending in.
+    attempted = done + thin + fail
+    if attempted >= 5 and done == 0:
+        print(f"[docs] ERROR: {attempted} companies attempted and NOT ONE produced a "
+              f"grounded fact — the model chain or document fetch is broken, "
+              f"not the data. Check the 'model call failed' lines above.")
+        return 1
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

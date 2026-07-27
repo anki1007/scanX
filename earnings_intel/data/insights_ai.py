@@ -30,7 +30,7 @@ _ROOT = Path(__file__).resolve().parents[2]
 _SCREENER = "https://www.screener.in"
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-_DEFAULT_MODEL = "gemini-2.5-flash"
+_DEFAULT_MODEL = "gemini-3.6-flash"
 
 _PROMPT = """You extract OPERATIONAL KPIs from an Indian listed company's investor presentation or annual report.
 
@@ -243,15 +243,57 @@ def pdf_text(url: str, max_pages: int = 40, max_chars: int = 140000):
         return None, f"{type(e).__name__}: {e}"
 
 
-# Free-tier quotas are PER MODEL, so each fallback is a fresh bucket:
-# demand-spiked 2.5-flash -> 2.5-flash-lite -> 2.0-flash.
-_FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.0-flash"]
+# Free-tier quotas are PER MODEL, so each fallback is a fresh bucket. Google
+# also retires model ids on its own schedule (2.0-flash is gone; 2.5-flash is
+# closed to new keys), so the chain is newest-first and _discover_flash_model
+# below self-heals when every hardcoded id has rotted away.
+_FALLBACK_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]
 
 
 def _retryable(e: Exception) -> bool:
+    """Should we try the NEXT model in the chain?
+
+    Includes 404/NOT_FOUND: a retired or access-restricted model id must fall
+    through to the next candidate rather than abort the whole call.
+    """
     s = str(e)
     return any(x in s for x in ("503", "UNAVAILABLE", "429", "RESOURCE_EXHAUSTED",
-                                "overloaded", "high demand"))
+                                "overloaded", "high demand",
+                                "404", "NOT_FOUND", "no longer available",
+                                "is not found", "not supported"))
+
+
+_DISCOVERED: list = []
+
+
+def _discover_flash_model(client) -> list:
+    """Ask the API which models this key may actually use (cached per process).
+
+    Keeps the pipeline alive when every hardcoded id has been retired — the
+    exact failure that produced zero facts on 2026-07-27.
+    """
+    if _DISCOVERED:
+        return _DISCOVERED
+    try:
+        names = []
+        for m in client.models.list():
+            name = str(getattr(m, "name", "") or "").split("/")[-1]
+            actions = getattr(m, "supported_actions", None) or []
+            if not name or "gemini" not in name:
+                continue
+            if actions and "generateContent" not in actions:
+                continue
+            if any(x in name for x in ("embedding", "tts", "live", "image", "vision")):
+                continue
+            names.append(name)
+        # prefer flash (cheap/fast), newest first by the version in the id
+        names.sort(key=lambda n: ("flash" not in n, n), reverse=False)
+        _DISCOVERED.extend(names[:4])
+        if _DISCOVERED:
+            log.warning("Gemini: falling back to discovered models %s", _DISCOVERED)
+    except Exception as e:  # noqa: BLE001
+        log.warning("Gemini model discovery failed: %s", str(e)[:90])
+    return _DISCOVERED
 
 
 class GeminiBusy(RuntimeError):
@@ -278,6 +320,16 @@ def _gemini(prompt: str, key: str, model: str, json_mode: bool = True,
             if not _retryable(e):
                 raise
             log.warning("Gemini %s unavailable (%s) — trying fallback", m, str(e)[:80])
+    # every hardcoded id was retired or restricted — ask the API what this key
+    # can actually use, so a Google model retirement can't silently kill the bake
+    for m in _discover_flash_model(client):
+        try:
+            resp = client.models.generate_content(model=m, contents=prompt, config=cfg)
+            return resp.text or ""
+        except Exception as e:  # noqa: BLE001
+            last = e
+            if not _retryable(e):
+                raise
     raise GeminiBusy(
         "all Gemini models busy or out of free-tier quota right now — wait ~1 min "
         "and retry, or switch provider (OpenAI/Anthropic) with your own key in the "

@@ -129,8 +129,21 @@ class Vahan:
         self.timeout = timeout
         self.vs = ""
 
+    def _get(self, url: str, tries: int = 4):
+        """Vahan resets connections on datacenter IPs — back off and retry."""
+        last = None
+        for n in range(tries):
+            try:
+                return self.s.get(url, timeout=self.timeout)
+            except Exception as e:  # noqa: BLE001
+                last = e
+                wait = 3 * (n + 1)
+                print(f"[auto] fetch failed ({type(e).__name__}) — retry {n + 1}/{tries - 1} in {wait}s")
+                time.sleep(wait)
+        raise last  # type: ignore[misc]
+
     def open(self) -> None:
-        html = self.s.get(URL, timeout=self.timeout).text
+        html = self._get(URL).text
         m = re.search(r'name="javax\.faces\.ViewState"[^>]*value="([^"]+)"', html)
         if not m:
             raise RuntimeError("no ViewState — Vahan layout changed or the request was blocked")
@@ -148,11 +161,18 @@ class Vahan:
         }
         data.update(state)
         data.update(extra or {})
-        r = self.s.post(URL, data=data, timeout=self.timeout, headers={
-            "Faces-Request": "partial/ajax",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": URL,
-        })
+        headers = {"Faces-Request": "partial/ajax",
+                   "X-Requested-With": "XMLHttpRequest", "Referer": URL}
+        r, last = None, None
+        for n in range(3):
+            try:
+                r = self.s.post(URL, data=data, timeout=self.timeout, headers=headers)
+                break
+            except Exception as e:  # noqa: BLE001
+                last = e
+                time.sleep(3 * (n + 1))
+        if r is None:
+            raise last  # type: ignore[misc]
         nvs = re.search(r'ViewState:0"><!\[CDATA\[(.*?)\]\]>', r.text, re.S)
         if nvs:
             self.vs = nvs.group(1)
