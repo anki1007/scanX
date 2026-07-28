@@ -1,7 +1,7 @@
 {
- "generated_at_ist": "2026-07-28 14:46:32 IST",
+ "generated_at_ist": "2026-07-28 20:16:45 IST",
  "source": "quotes.json breadth + Yahoo daily closes (yfinance)",
  "universe": 517,
- "resolved": 514,
+ "resolved": 513,
  "history_days": 2
 }
