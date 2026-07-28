@@ -89,6 +89,53 @@ def _with_upstox_health(fund: dict, code: str) -> dict:
     return extra
 
 
+def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
+    """Add Upstox ratios to bundles that already exist, without re-scraping Screener.
+
+    A full bake skips any bundle already baked today, so bundles written before
+    the ratio feature existed would never GAIN a current ratio — the whole
+    universe would sit at "n/a" indefinitely. This pass rewrites just the health
+    block from one cheap pair of API calls per company, so coverage catches up
+    over a few runs instead of never.
+    """
+    done = skipped = fail = 0
+    start = time.time()
+    for i, code in enumerate(codes, 1):
+        if max_minutes and (time.time() - start) > max_minutes * 60:
+            print(f"[fund] ratios: budget {max_minutes:.0f}min reached at {i}/{len(codes)}")
+            break
+        bf = out / f"{code}.json"
+        if not bf.exists():
+            continue
+        try:
+            bundle = json.loads(bf.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            fail += 1
+            continue
+        # already carries ratios from today's run
+        if bundle.get("upstox_ratios") and bundle.get("ratios_at") == today:
+            skipped += 1
+            continue
+        fund = bundle.get("fundamental") or {}
+        ratios = _with_upstox_health(fund, code)
+        if not ratios:
+            fail += 1
+            continue
+        bundle["fundamental"] = fund
+        bundle["upstox_ratios"] = ratios
+        bundle["ratios_at"] = today
+        try:
+            _atomic(bf, json.dumps(bundle, separators=(",", ":")))
+            done += 1
+            if i <= 5 or i % 50 == 0:
+                cr = ((fund.get("analysis") or {}).get("health") or {}).get("current_ratio") or {}
+                print(f"  [{i}/{len(codes)}] {code}: current ratio {cr.get('value')}")
+        except Exception:  # noqa: BLE001
+            fail += 1
+    print(f"[fund] ratios backfill: updated {done}, already-fresh {skipped}, unavailable {fail}")
+    return 0
+
+
 def _read_board(path):
     """Read the board JSON, recovering from a truncated/null-padded concurrent write."""
     try:
@@ -150,6 +197,9 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "docs" / "data" / "fundamental"))
     ap.add_argument("--max-minutes", type=float, default=0,
                     help="stop baking after N minutes (0=no limit) so the cloud commits incrementally")
+    ap.add_argument("--ratios-only", action="store_true",
+                    help="refresh ONLY the Upstox ratio/health block of bundles that already exist "
+                         "(no Screener re-scrape) — backfills current ratio across the universe")
     args = ap.parse_args()
 
     board = _read_board(Path(args.board))
@@ -221,6 +271,9 @@ def main():
     done, fail, skipped = 0, 0, 0
     today = time.strftime("%Y-%m-%d")
     _bake_start = time.time()
+
+    if args.ratios_only:
+        return _backfill_ratios(out, codes, today, args.max_minutes)
     for i, code in enumerate(codes, 1):
         if args.max_minutes and (time.time() - _bake_start) > args.max_minutes * 60:
             print(f'[fund] time budget {args.max_minutes:.0f}min reached at {i}/{len(codes)} - committing what is baked'); break
