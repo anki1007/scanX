@@ -350,3 +350,41 @@ def test_fetch_ratios_returns_empty_on_malformed_payloads(tmp_path):
     client = StubClient(key_ratios={"status": "success", "data": "garbage"},
                         balance_sheet={"status": "error"})
     assert R.fetch_ratios(ISIN, settings=_settings(tmp_path), client=client) == {}
+
+
+# --------------------------------------------------- phantom period regression
+def test_envelope_keys_are_not_treated_as_periods():
+    """Upstox mixes envelope keys into statement rows.
+
+    Treating every non-'particular' key as a period let "history" through as a
+    phantom column whose value then won the latest-period pick: SUMICHEM
+    published a 3.44 current ratio against Screener's own 2.55.
+    """
+    payload = {"data": {"full_statement": [
+        {"particular": "Current Assets", "history": 3340.15,
+         "Mar 2026": 2421.0, "Mar 2025": 2100.0},
+        {"particular": "Current Liabilities", "history": 969.81,
+         "Mar 2026": 949.0, "Mar 2025": 900.0},
+    ]}}
+    cr = R.ratios_from_balance_sheet(payload)["current_ratio"]
+    assert cr["period"] == "Mar 2026"
+    assert round(cr["value"], 2) == 2.55       # Screener shows 2.55
+    assert cr["inputs"] == {"current_assets": 2421.0, "current_liabilities": 949.0}
+
+
+def test_is_period_accepts_real_labels_and_rejects_furniture():
+    for good in ("Mar 2026", "Mar-26", "March 2026", "2026-03-31",
+                 "31/03/2026", "2026", "FY2026", "FY 2025-26"):
+        assert R._is_period(good), good
+    for junk in ("history", "particular", "type", "units_in", "change",
+                 "section", "total_asset", "", "notes"):
+        assert not R._is_period(junk), junk
+
+
+def test_statement_with_no_recognisable_period_yields_nothing():
+    """Better an honest absence than a number from a furniture column."""
+    payload = {"data": {"full_statement": [
+        {"particular": "Current Assets", "history": 100.0},
+        {"particular": "Current Liabilities", "history": 50.0},
+    ]}}
+    assert "current_ratio" not in R.ratios_from_balance_sheet(payload)

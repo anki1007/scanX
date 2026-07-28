@@ -183,6 +183,30 @@ def ratios_from_key_ratios(payload: dict) -> dict:
 # ---------------------------------------------------------------------------
 # balance-sheet derived ratios
 # ---------------------------------------------------------------------------
+def _is_period(key: str) -> bool:
+    """Is this row key a reporting period rather than payload furniture?
+
+    Upstox mixes envelope keys into the statement rows, and treating every
+    non-``particular`` key as a period let one of them ("history") through as a
+    phantom column. A period is a date the sorter can actually rank: an ISO
+    date, dd/mm/yyyy, a month-and-year label ("Mar 2026"), a bare year, or an
+    FY label. Anything else is furniture and is ignored.
+    """
+    text = str(key or "").strip()
+    if not text or text.lower() in {"particular", "history", "type", "units_in",
+                                    "change", "section", "label", "name"}:
+        return False
+    if _ISO_RE.match(text) or _DMY_RE.match(text):
+        return True
+    if re.fullmatch(r"(?:FY\s*)?(?:19|20)\d{2}(?:\s*-\s*\d{2,4})?", text, re.I):
+        return True
+    # "Mar 2026", "Mar-26", "March 2026"
+    alpha = _ALPHA_RE.search(text)
+    if alpha and _MONTHS.get(alpha.group()[:3].lower()) is not None:
+        return bool(re.search(r"\d{2,4}", text))
+    return False
+
+
 def _period_sort_key(period: str) -> tuple[int, int, int, int]:
     """Sortable ``(parsed, year, month, day)``; unparseable periods sort oldest."""
     text = str(period or "").strip()
@@ -216,8 +240,11 @@ def _period_sort_key(period: str) -> tuple[int, int, int, int]:
 def _statement_index(full_statement: Any) -> dict[str, dict[str, float]]:
     """``full_statement`` rows -> ``{normalized particular: {period: value}}``.
 
-    Period columns are discovered generically: every key on a row that is not
-    ``particular`` is treated as a period label.
+    Only keys that LOOK like a period are treated as one. Accepting every
+    non-``particular`` key let envelope keys such as ``history`` through as a
+    fake period, and because it sorted above the real dates it won the
+    "latest period" pick — SUMICHEM reported a 3.44 current ratio against
+    Screener's 2.55 purely from that phantom column.
     """
     index: dict[str, dict[str, float]] = {}
     if not isinstance(full_statement, list):
@@ -235,12 +262,21 @@ def _statement_index(full_statement: Any) -> dict[str, dict[str, float]]:
         bucket = index.setdefault(label, {})
         for key, value in row.items():
             period = str(key).strip()
-            if not period or period.lower() == "particular":
+            if not period or not _is_period(period):
                 continue
             number = _to_number(value)
             if number is None:
                 continue
             bucket.setdefault(period, number)
+    if not any(index.values()):
+        # No row yielded a period we recognise. Name the keys we saw so the
+        # real payload shape shows up in the log instead of being guessed at.
+        seen: list[str] = []
+        for row in full_statement[:3]:
+            if isinstance(row, Mapping):
+                seen.extend(str(k) for k in row.keys())
+        log.warning("balance-sheet: no period columns recognised; row keys seen: %s",
+                    sorted(set(seen))[:12])
     return index
 
 

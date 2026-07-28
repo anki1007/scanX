@@ -38,6 +38,10 @@ from earnings_intel.data import sectorlookup as sl
 
 _SESSION = ROOT / "screener_session.json"
 
+# Bump when the ratio maths changes, so --ratios-only recomputes bundles that
+# already carry ratios instead of skipping them as "fresh".
+RATIOS_VERSION = 2
+
 # Upstox key ratios + balance-sheet fill-ins for the health panel. Entirely
 # optional: probed ONCE, and with no token configured the whole feature stays
 # off so a token-less bake costs nothing and looks exactly like it always has.
@@ -112,8 +116,12 @@ def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
         except Exception:  # noqa: BLE001
             fail += 1
             continue
-        # already carries ratios from today's run
-        if bundle.get("upstox_ratios") and bundle.get("ratios_at") == today:
+        # Already carries ratios from today's run of THIS version. The version
+        # stamp matters: the first backfill stored a current ratio computed
+        # from a phantom period column, and without it those wrong values would
+        # persist until the date rolled over.
+        if (bundle.get("upstox_ratios") and bundle.get("ratios_at") == today
+                and bundle.get("ratios_v") == RATIOS_VERSION):
             skipped += 1
             continue
         fund = bundle.get("fundamental") or {}
@@ -124,6 +132,7 @@ def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
         bundle["fundamental"] = fund
         bundle["upstox_ratios"] = ratios
         bundle["ratios_at"] = today
+        bundle["ratios_v"] = RATIOS_VERSION
         try:
             _atomic(bf, json.dumps(bundle, separators=(",", ":")))
             done += 1
