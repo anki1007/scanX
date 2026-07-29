@@ -66,3 +66,38 @@ def test_auto_dcf_end_to_end():
     assert a["inputs"]["growth"] == 18.0          # 5Y CAGR capped at 18
     assert a["inputs"]["terminal_multiple"] == 12.8  # Gordon (1+tg)/(r-tg)
     assert a["margin_of_safety"] is not None
+
+
+# ------------------------------------------------ peer bias, negative readings
+def test_a_negative_multiple_is_not_a_cheap_one():
+    """125 companies shipped labelled 'positive' on readings like P/E -6.7
+    against a sector 34.2. P/E, P/B and EV/EBITDA go negative when earnings,
+    book value or EBITDA are negative — the company is losing money — and a
+    naive "lower is better" reads that loss as the cheapest stock on the board."""
+    from earnings_intel.data.analytics import _peer_bias
+    assert _peer_bias(-6.7, 34.19, True) == "na"        # P/E, loss-making
+    assert _peer_bias(-0.26, 3.01, True) == "na"        # P/B, negative book value
+    assert _peer_bias(-43.62, 35.25, True) == "na"      # EV/EBITDA, negative EBITDA
+
+
+def test_a_negative_sector_benchmark_is_not_comparable():
+    """969 companies carried one — SUMICHEM's sector EV/EBITDA came as -41.5x."""
+    from earnings_intel.data.analytics import _peer_bias
+    assert _peer_bias(32.34, -41.5, True) == "na"      # EV/EBITDA: meaningless
+    # ...but only where "cheaper is better". A negative sector ROE says the
+    # SECTOR is loss-making, and a positive reading genuinely does beat it —
+    # suppressing that would throw away real information.
+    assert _peer_bias(5.96, -5.78, False) == "positive"
+
+
+def test_a_negative_higher_is_better_ratio_is_still_BAD_not_hidden():
+    """ROCE/ROE going negative is real information and must not be suppressed."""
+    from earnings_intel.data.analytics import _peer_bias
+    assert _peer_bias(-4.74, 10.76, False) == "negative"
+
+
+def test_genuine_comparisons_are_untouched():
+    from earnings_intel.data.analytics import _peer_bias
+    assert _peer_bias(28.25, 33.04, True) == "positive"
+    assert _peer_bias(47.5, 33.04, True) == "negative"
+    assert _peer_bias(33.0, 33.04, True) == "neutral"

@@ -282,9 +282,28 @@ def _fnum(x) -> Optional[float]:
 
 def _peer_bias(value: Optional[float], sector: Optional[float], lower_is_better: bool) -> str:
     """'positive' beats the sector, 'negative' trails it, 'neutral' inside the
-    +/-10% band, 'na' with no benchmark to compare against."""
+    +/-10% band, 'na' when the comparison cannot be made at all.
+
+    Two guards, both found by auditing what shipped. P/E, P/B and EV/EBITDA go
+    NEGATIVE when earnings, book value or EBITDA are negative — the company is
+    losing money — and a naive "lower is better" then reads that loss as the
+    cheapest valuation on the board: 125 companies were labelled 'positive' on
+    readings like P/E -6.7 against a sector 34.2. A negative multiple is not a
+    cheap multiple, it is an undefined one.
+
+    Separately, 969 companies carried a NEGATIVE sector benchmark (SUMICHEM's
+    sector EV/EBITDA came through as -41.5x). "My EV/EBITDA of 32 beats the
+    sector's -41.5" means nothing, so those go 'na' too — but ONLY for the
+    lower-is-better ratios. For ROE/ROCE/ROA a negative sector average is real
+    information: it says the sector is loss-making, and a positive reading
+    genuinely does outperform it.
+    """
     if value is None or sector is None:
         return "na"
+    if lower_is_better and value < 0:
+        return "na"          # loss-making: the multiple has no valuation meaning
+    if lower_is_better and sector < 0:
+        return "na"          # unusable benchmark for a "cheaper is better" ratio
     if abs(value - sector) <= abs(sector) * PEER_BAND:
         return "neutral"
     better = value < sector if lower_is_better else value > sector

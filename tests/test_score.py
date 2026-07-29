@@ -129,3 +129,26 @@ def test_garbage_never_raises():
     for junk in (None, [], "nope", {"fundamental": "bad"}, {"signal": 7}):
         out = analysis_score(junk)          # type: ignore[arg-type]
         assert "score" in out
+
+
+def test_a_negative_upstox_ratio_falls_through_to_screener():
+    """Audit finding: a loss-making company can carry an Upstox P/E of -3033
+    while Screener reports a usable 39.7. `a or b` keeps -3033 because it is
+    truthy, the `pe > 0` guard then rejects it, and the company silently loses
+    its entire Valuation component despite a good P/E being right there."""
+    b = {"fundamental": {"overview": {"Stock P/E": "39.7"},
+                         "analysis": {"health": {"peers": {
+                             "pe": {"value": -3033.33, "sector": 22.2}}}}}}
+    val = [c for c in analysis_score(b)["components"] if c["key"] == "valuation"]
+    assert val, "valuation must survive a junk Upstox reading"
+    assert "39.7" in val[0]["note"]
+    assert "-3033" not in val[0]["note"]
+
+
+def test_a_negative_book_value_does_not_become_a_cheap_pb():
+    b = {"fundamental": {"overview": {"Book Value": "-50"},
+                         "analysis": {"health": {"peers": {
+                             "pb": {"value": -0.26, "sector": 3.01},
+                             "pe": {"value": 20.0, "sector": 30.0}}}}}}
+    note = [c for c in analysis_score(b)["components"] if c["key"] == "valuation"][0]["note"]
+    assert "P/B" not in note          # no usable P/B on either side

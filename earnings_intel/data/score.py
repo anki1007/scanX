@@ -63,6 +63,20 @@ def _num(value: Any) -> float | None:
     return -out if neg and out > 0 else out
 
 
+def _positive(*candidates: Any) -> float | None:
+    """First candidate that parses to a number GREATER THAN ZERO. PURE.
+
+    Valuation multiples are only meaningful when positive: a negative P/E, P/B
+    or EV/EBITDA means negative earnings, book value or EBITDA, not a bargain.
+    Plain ``a or b`` cannot express this because -3033 is truthy.
+    """
+    for c in candidates:
+        v = _num(c)
+        if v is not None and v > 0:
+            return v
+    return None
+
+
 def _band(value: float, lo: float, hi: float, *, invert: bool = False) -> float:
     """Map value onto 0-10 between lo and hi, clamped."""
     if hi == lo:
@@ -86,7 +100,12 @@ def _valuation(fund: Mapping, health: Mapping) -> dict | None:
     """Cheap or dear — versus the sector, and versus intrinsic value."""
     parts, notes = [], []
     peers = _dig(health, "peers") or {}
-    pe = _num(_dig(peers, "pe", "value")) or _num(_dig(fund, "overview", "Stock P/E"))
+    # First POSITIVE reading wins, not merely the first non-None. A loss-making
+    # company can carry an Upstox P/E of -3033 while Screener reports a usable
+    # 39.7; `a or b` keeps -3033 (it is truthy), the `pe > 0` guard below then
+    # rejects it, and the company silently loses its whole Valuation component
+    # despite having a perfectly good P/E available.
+    pe = _positive(_dig(peers, "pe", "value"), _dig(fund, "overview", "Stock P/E"))
     pe_sector = _num(_dig(peers, "pe", "sector"))
     if pe is not None and pe > 0:
         if pe_sector and pe_sector > 0:
@@ -100,7 +119,7 @@ def _valuation(fund: Mapping, health: Mapping) -> dict | None:
     if mos is not None:
         parts.append(_band(mos, -60, 40))
         notes.append(f"DCF margin of safety {mos:g}%")
-    pb = _num(_dig(peers, "pb", "value")) or _num(_dig(fund, "overview", "Book Value"))
+    pb = _positive(_dig(peers, "pb", "value"), _dig(fund, "overview", "Book Value"))
     pb_sector = _num(_dig(peers, "pb", "sector"))
     if pb is not None and pb_sector and pb_sector > 0 and pb > 0:
         parts.append(_band(pb / pb_sector, 2.0, 0.5))
