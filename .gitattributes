@@ -1,0 +1,9 @@
+# Shell scripts run on the ubuntu-latest runner. A CRLF line ending there fails
+# with `$'\r': command not found`, which would take the daily data refresh down
+# on a whitespace character. This is developed on Windows, where core.autocrlf
+# would otherwise decide the answer per-machine — pin it instead.
+*.sh text eol=lf
+
+# Same reasoning for anything else the runner executes or parses as text.
+*.yml text eol=lf
+*.yaml text eol=lf
