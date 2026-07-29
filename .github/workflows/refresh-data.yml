@@ -119,6 +119,14 @@ jobs:
           run python scripts/refresh_quotes.py --wide
           # concall / PPT / annual-report analysis, grounded in verbatim quotes
           run python scripts/refresh_docinsights.py --top 100 --skip-existing --max-minutes 25
+          # bull vs bear debate — the only per-company priced board, so it stays
+          # capped and skips anything already debated today
+          run python scripts/refresh_debate.py --top 100 --rounds 3 --max-minutes 25
+          # 2) EXTEND debate coverage past the board into every baked company,
+          #    a time-boxed slice per day. --skip-any never pays twice for a
+          #    company already argued, so this walks the universe once and then
+          #    costs nothing but the new listings.
+          run python scripts/refresh_debate.py --skip-any --top 6000 --rounds 2 --max-minutes 30
           run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           {

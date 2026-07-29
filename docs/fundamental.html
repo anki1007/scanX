@@ -113,6 +113,23 @@
   /* SWOT — 2x2 quadrant built by earnings_intel/data/swot.py at bake time.
      One column under 900px (see the media query below). */
   .swv{margin-bottom:12px;font-size:13px;line-height:1.55}
+  /* Bull vs bear debate — pre-baked by scripts/refresh_debate.py. The button
+     reveals it; nothing calls a model from the browser. */
+  .dbtn{background:var(--panel2);border:1px solid var(--teal);color:var(--teal);
+        border-radius:9px;padding:9px 16px;cursor:pointer;font-weight:700;font-size:13px}
+  .dbtn:hover{background:rgba(45,212,191,.12)}
+  .dturn{border-left:3px solid var(--line);padding:10px 0 10px 14px;margin:12px 0}
+  .dturn.bull{border-left-color:var(--green)}
+  .dturn.bear{border-left-color:var(--red)}
+  .dturn .dh{font-size:12.5px;font-weight:800;letter-spacing:.04em;margin-bottom:5px}
+  .dturn.bull .dh{color:var(--green)} .dturn.bear .dh{color:var(--red)}
+  .dturn .dt{font-size:13.5px;line-height:1.6}
+  .dcite{display:inline-block;font-size:10.5px;font-weight:700;color:var(--teal);
+         background:rgba(45,212,191,.12);border-radius:5px;padding:1px 5px;margin:0 2px}
+  .dsc{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:10px}
+  .devi{margin-top:12px}
+  .devi li{font-size:12.5px;margin:4px 0;color:var(--muted)}
+  .devi b{color:var(--text)}
   /* Analysis score — gauge + component bars (earnings_intel/data/score.py) */
   .scwrap{display:grid;grid-template-columns:210px 1fr;gap:18px;align-items:center}
   .gauge{position:relative;width:190px;height:190px;margin:0 auto}
@@ -529,6 +546,78 @@ function swotItem(p){
   return `<li class="switem"><div class="swp"><span class="swt">${esc(p.point)}</span>${swotDots(p.weight)}</div>`
     +(p.evidence?`<div class="swe">${esc(p.evidence)}</div>`:'')+`</li>`;
 }
+/* ---------------- bull vs bear debate ----------------
+   Pre-baked to data/debate/<CODE>.json during the bake. The button only reveals
+   it: the site is static and never calls a model from the browser. */
+let DEBATE=null;
+function citeHtml(t){                     /* [E7] -> chip; everything else escaped */
+  return esc(t).replace(/\[(E\d+)\]/g, function(m,id){ return '<span class="dcite">'+id+'</span>'; });
+}
+function debateHtml(d){
+  const turns=(d&&d.debate&&d.debate.rounds)||[];
+  if(!turns.length) return '<div class="empty">This debate produced no grounded turns.</div>';
+  const body=turns.map(function(t){
+    const side=(t.side==='bull')?'bull':'bear';
+    const icon=side==='bull'?'\u{1F402}':'\u{1F43B}';
+    return '<div class="dturn '+side+'"><div class="dh">'+icon+' '+esc(side.toUpperCase())+
+      ' \u2014 Round '+esc(String(t.round||''))+'</div><div class="dt">'+
+      citeHtml(t.text||'')+'</div></div>';
+  }).join('');
+  const sc=(d.debate&&d.debate.scorecard)||{}, m=d._meta||{}, bits=[];
+  if(sc.coverage_pct!=null) bits.push('evidence used '+esc(String(sc.coverage_pct))+'%');
+  if(sc.evidence_edge) bits.push('edge: '+esc(String(sc.evidence_edge)));
+  if(m.evidence_items!=null) bits.push(esc(String(m.evidence_items))+' evidence items');
+  if(m.cites_invalid) bits.push(esc(String(m.cites_invalid))+' invented citation(s) stripped');
+  if(m.model) bits.push('model '+esc(String(m.model)));
+  const ev=(d.evidence||[]).slice(0,8).map(function(e){
+    return '<li><b>['+esc(e.id||'')+']</b> '+esc(e.fact||'')+
+      (e.value?' \u2014 '+esc(String(e.value)):'')+' <i>'+esc(e.source||'')+'</i></li>';
+  }).join('');
+  return body+'<div class="dsc">'+bits.map(function(b){return '<span>'+b+'</span>';}).join('')+'</div>'+
+    (ev?'<details class="devi"><summary>Evidence both sides argued from</summary><ul>'+ev+'</ul></details>':'');
+}
+// Which companies actually have a baked debate. Checked before the fetch so an
+// un-debated company reports honestly instead of firing a 404 on every view.
+// A missing index (older deploy) is NOT treated as "no debate" \u2014 we fall through
+// to the direct fetch, because being wrong in that direction hides real data.
+let DEBATE_INDEX=null;
+async function debateIndex(){
+  if(DEBATE_INDEX!==null) return DEBATE_INDEX;
+  try{
+    const r=await fetch('data/debate/index.json?t='+Date.now());
+    if(!r.ok) throw 0;
+    const j=await r.json();
+    DEBATE_INDEX=new Set((j.codes||[]).map(x=>String(x.code||'').toUpperCase()));
+  }catch(e){ DEBATE_INDEX=false; }
+  return DEBATE_INDEX;
+}
+function noDebateHtml(){
+  return '<div class="empty">No debate baked for this company yet \u2014 the bull/bear debate is '+
+    'generated server-side and published with the daily refresh, which extends coverage a slice '+
+    'at a time until every listed company has one.</div>';
+}
+async function loadDebate(code){
+  const host=f('debateBody'); if(!host) return;
+  host.innerHTML='<div class="empty"><span class="spin"></span> &nbsp;Loading debate\u2026</div>';
+  const idx=await debateIndex();
+  if(idx && !idx.has(String(code).toUpperCase())){ host.innerHTML=noDebateHtml(); return; }
+  try{
+    const r=await fetch('data/debate/'+encodeURIComponent(code)+'.json?t='+Date.now());
+    if(!r.ok) throw 0;
+    DEBATE=await r.json();
+    host.innerHTML=debateHtml(DEBATE);
+  }catch(e){
+    host.innerHTML=noDebateHtml();
+  }
+}
+function debateSection(code){
+  if(!code) return '';
+  return '<div class="sec sec-collapsed"><h3>Bull vs bear debate</h3><div class="panel">'+
+    '<p class="psub">Two agents argue the same stock from a fixed pack of evidence drawn from this '+
+    'page. Every claim must cite an item; invented citations are stripped before publishing.</p>'+
+    '<button class="dbtn" id="runDebate">\u26A1 Run Debate</button>'+
+    '<div id="debateBody" style="margin-top:14px"></div></div></div>';
+}
 function scoreColour(v){ return v>=7.5?'var(--green)':v>=6?'var(--teal)':v>=4.5?'var(--amber)':'var(--red)'; }
 function scoreSection(sc){
   if(!sc||sc.score==null) return '';
@@ -725,6 +814,7 @@ function render(d,swot,score){
     <div id="verdict" class="sec"></div>
     ${scoreSection(scr)}
     ${swotSection(sw)}
+    ${debateSection(d.code)}
     <div class="sec"><h3>Overview</h3><div class="cards">${cards}</div></div>
     ${latest?`<div class="sec"><h3>Latest results</h3>${latest}</div>`:''}
     ${d.analysis?dcfSection(d.analysis):''}
@@ -739,6 +829,8 @@ function render(d,swot,score){
     <div id="priceSec" class="sec"><h3>Returns &amp; risk</h3><div class="empty"><span class="spin"></span> &nbsp;Loading price history…</div></div>
     ${pc}`;
   f('hint').style.display='none';
+  const rb=f('runDebate');
+  if(rb) rb.onclick=function(){ rb.disabled=true; loadDebate(d.code); };
   drawCharts(d);
   overlayLivePrice(d.code);
 }

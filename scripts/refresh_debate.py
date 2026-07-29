@@ -24,6 +24,7 @@ verbatim quotes this repo already stands behind.
     python scripts/refresh_debate.py --top 25 --rounds 2
     python scripts/refresh_debate.py --codes TATAMOTORS,LT --top 0 --force
     python scripts/refresh_debate.py --max-minutes 40      # cloud: commit incrementally
+    python scripts/refresh_debate.py --skip-any --top 6000 --max-minutes 30   # coverage pass
 
 THIS IS THE ONLY LLM-PRICED BOARD, so the defaults are the cheap ones: the top
 100 only, and any company already debated TODAY is skipped (pass --force to pay
@@ -116,9 +117,18 @@ def _baked_on(path):
         return ""
 
 
-def _skip_baked(path, today, enabled=True):
-    """Skip decision: already debated today, per the file's own stamp. PURE."""
-    return bool(enabled) and Path(path).exists() and _baked_on(path) == today
+def _skip_baked(path, today, enabled=True, any_existing=False):
+    """Skip decision for one code. PURE.
+
+    Two modes, because this board has two jobs. The daily job KEEPS the top names
+    current, so "already debated today" is the right skip. The coverage job walks
+    the rest of the universe a slice at a time and must never pay twice for a
+    company it already argued, whatever day that was — that is ``any_existing``.
+    """
+    p = Path(path)
+    if any_existing:
+        return p.exists() and bool(_baked_on(p))
+    return bool(enabled) and p.exists() and _baked_on(p) == today
 
 
 def _sid():
@@ -173,6 +183,54 @@ def universe(board, top=100, codes=""):
             seen.add(c)
             out.append(c)
     return out, by_code
+
+
+def extend_universe(codes, fdir, cap):
+    """Append on-disk fundamental codes until `cap`, keeping order. PURE.
+
+    The board (technofunda.json) only ranks a few hundred names, but the site
+    publishes a bundle for every listed company — so "debate the whole platform"
+    cannot be expressed as a bigger --top against the board alone. This walks
+    docs/data/fundamental/*.json, which IS the platform's universe, and appends
+    whatever the board never ranked.
+    """
+    out = list(codes or [])
+    seen = set(out)
+    cap = max(0, int(cap or 0))
+    if len(out) >= cap:
+        return out
+    try:
+        paths = sorted(Path(fdir).glob("*.json"))
+    except Exception:  # noqa: BLE001
+        return out
+    for path in paths:
+        if len(out) >= cap:
+            break
+        code = path.stem.strip().upper()
+        if code and code != "INDEX" and code not in seen:
+            seen.add(code)
+            out.append(code)
+    return out
+
+
+def write_index(out_dir):
+    """docs/data/debate/index.json — which codes have a debate, from what is ON DISK.
+
+    The page fetches this first, so a company with no debate shows the honest
+    empty state instead of firing a 404 on every view. Built by globbing rather
+    than from this run's counters, so a partial run (time budget hit) still
+    publishes an index that matches reality.
+    """
+    d = Path(out_dir)
+    rows = []
+    for path in sorted(d.glob("*.json")):
+        if path.stem == "index":
+            continue
+        rows.append({"code": path.stem, "generated_at": _baked_on(path)})
+    _atomic(d / "index.json", json.dumps(
+        {"generated_at": time.strftime("%Y-%m-%d"), "count": len(rows), "codes": rows},
+        separators=(",", ":")))
+    return len(rows)
 
 
 def board_field(rows, code, field):
@@ -416,6 +474,9 @@ def main():
                     help="skip codes already debated today (DEFAULT ON; stamp read from the file)")
     ap.add_argument("--force", dest="skip_existing", action="store_false",
                     help="re-debate codes already done today — this costs tokens again")
+    ap.add_argument("--skip-any", dest="skip_any", action="store_true",
+                    help="coverage pass: extend the universe past the board into every "
+                         "baked company and skip anything ALREADY debated on any day")
     ap.add_argument("--board", default=str(ROOT / "docs" / "data" / "technofunda.json"))
     ap.add_argument("--fundamental", default=str(ROOT / "docs" / "data" / "fundamental"))
     ap.add_argument("--docs", default=str(ROOT / "docs" / "data" / "docs"))
@@ -432,6 +493,8 @@ def main():
         return 0
 
     codes, rows = universe(_read_board(Path(args.board)), args.top, args.codes)
+    if args.skip_any:
+        codes = extend_universe(codes, Path(args.fundamental), args.top)
     if args.limit:
         codes = codes[:args.limit]
     if not codes:
@@ -461,7 +524,7 @@ def main():
             print(f"[debate] time budget {args.max_minutes:.0f}min reached at "
                   f"{i}/{len(codes)} — committing what is baked"); break
         bf = out / f"{code}.json"
-        if _skip_baked(bf, today, args.skip_existing):
+        if _skip_baked(bf, today, args.skip_existing, args.skip_any):
             skipped += 1; continue
         bundle = company_bundle(_read_json(fdir / f"{code}.json"), code,
                                 board_field(rows, code, "name"))
@@ -498,8 +561,9 @@ def main():
         time.sleep(0.15)
 
     mins = (time.time() - start) / 60.0
+    covered = write_index(out)
     print(f"[debate] baked {done}, skipped {skipped}, no-debate {thin}, no-bundle {nobundle}, "
-          f"failed {fail} in {mins:.1f}min -> {out}")
+          f"failed {fail} in {mins:.1f}min -> {out} ({covered} companies have a debate)")
     if nobundle and not _sid():
         print("[debate] tip: the missing companies have no docs/data/fundamental/<CODE>.json — "
               "run scripts/refresh_fundamentals.py first (SCREENER_SESSIONID is not set either)")

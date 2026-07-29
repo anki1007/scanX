@@ -23,6 +23,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import refresh_debate as rd            # noqa: E402
 
+
+def baked(out):
+    """Debate files written, excluding the coverage index the bake also publishes."""
+    return sorted(p.stem for p in Path(out).glob("*.json") if p.stem != "index")
+
+
 BOARD = [
     {"code": "AAA", "name": "Alpha Ltd", "composite": 51, "sector": "Chemicals"},
     {"code": "BBB", "name": "Beta Ltd", "composite": 78, "sector": "Healthcare"},
@@ -461,7 +467,10 @@ def _bake(monkeypatch, tmp_path, *, board=BOARD, run=None, pack=None, argv=(),
 def test_bake_writes_one_file_per_company(monkeypatch, tmp_path):
     rc, out = _bake(monkeypatch, tmp_path)
     assert rc == 0
-    assert sorted(p.stem for p in out.glob("*.json")) == ["AAA", "BBB", "CCC"]
+    assert baked(out) == ["AAA", "BBB", "CCC"]
+    # the bake also publishes the coverage index the page reads before fetching
+    idx = json.loads((out / "index.json").read_text())
+    assert idx["count"] == 3 and {r["code"] for r in idx["codes"]} == {"AAA", "BBB", "CCC"}
     b = json.loads((out / "BBB.json").read_text(encoding="utf-8"))
     assert b["code"] == "BBB" and b["name"] == "BBB Ltd"
     assert b["debate"]["verdict"] == "bull edges it"
@@ -508,7 +517,7 @@ def test_bake_skips_companies_already_debated_today_by_default(monkeypatch, tmp_
     rc, out = _bake(monkeypatch, tmp_path,
                     run=lambda b, **kw: calls.append(b["code"]) or _result())
     assert calls == [] and rc == 0                       # every file already stamped today
-    assert len(list(out.glob("*.json"))) == 3
+    assert len(baked(out)) == 3
 
 
 def test_force_re_debates_what_was_already_baked_today(monkeypatch, tmp_path):
@@ -537,7 +546,7 @@ def test_bake_never_overwrites_a_good_debate_with_an_empty_one(monkeypatch, tmp_
                     run=lambda b, **kw: {"rounds": [], "error": "model call failed"})
     assert rc == 0                                       # only 3 attempted — under the guard
     assert (out / "AAA.json").read_text(encoding="utf-8") == good
-    assert len(list(out.glob("*.json"))) == 3            # yesterday's three all survive
+    assert len(baked(out)) == 3                          # yesterday's three all survive
 
 
 def test_bake_skips_companies_with_no_fundamental_bundle(monkeypatch, tmp_path):
@@ -545,7 +554,7 @@ def test_bake_skips_companies_with_no_fundamental_bundle(monkeypatch, tmp_path):
     rc, out = _bake(monkeypatch, tmp_path, fundamentals=("BBB",),
                     run=lambda b, **kw: calls.append(b["code"]) or _result())
     assert calls == ["BBB"]                              # never pays for an evidence-free debate
-    assert [p.stem for p in out.glob("*.json")] == ["BBB"]
+    assert baked(out) == ["BBB"]
     assert rc == 0                                       # not attempted != failed
 
 
@@ -556,7 +565,7 @@ def test_bake_exits_non_zero_when_the_whole_model_chain_is_down(monkeypatch, tmp
     rc, out = _bake(monkeypatch, tmp_path, board=board, fundamentals=codes,
                     run=lambda b, **kw: {"error": "no credentialled provider answered"})
     assert rc == 1
-    assert list(out.glob("*.json")) == []
+    assert baked(out) == []
 
 
 def test_bake_exits_non_zero_when_every_company_raises(monkeypatch, tmp_path):
@@ -573,7 +582,7 @@ def test_bake_exits_non_zero_when_every_company_raises(monkeypatch, tmp_path):
 def test_a_few_quiet_companies_do_not_fail_the_bake(monkeypatch, tmp_path):
     """Under 5 attempts, empty is 'nothing to say' — that must stay exit 0."""
     rc, out = _bake(monkeypatch, tmp_path, run=lambda b, **kw: {"rounds": []})
-    assert rc == 0 and list(out.glob("*.json")) == []
+    assert rc == 0 and baked(out) == []
 
 
 def test_one_success_among_failures_is_not_an_outage(monkeypatch, tmp_path):
@@ -586,7 +595,7 @@ def test_one_success_among_failures_is_not_an_outage(monkeypatch, tmp_path):
         raise RuntimeError("HTTP 429")
 
     rc, out = _bake(monkeypatch, tmp_path, board=board, fundamentals=codes, run=run)
-    assert rc == 0 and [p.stem for p in out.glob("*.json")] == ["C5"]
+    assert rc == 0 and baked(out) == ["C5"]
 
 
 def test_bake_exits_zero_and_calls_nothing_without_llm_credentials(monkeypatch, tmp_path):
@@ -632,4 +641,67 @@ def test_bake_stops_at_the_time_budget(monkeypatch, tmp_path):
     rc, out = _bake(monkeypatch, tmp_path, board=board, fundamentals=codes,
                     argv=["--max-minutes", "3"], run=slow)
     assert rc == 0
-    assert len(list(out.glob("*.json"))) == 2            # stopped once past 3 minutes
+    assert len(baked(out)) == 2                          # stopped once past 3 minutes
+
+
+# ------------------------------------------------- coverage pass (--skip-any)
+def test_extend_universe_appends_on_disk_codes_the_board_never_ranked(tmp_path):
+    """The board ranks a few hundred names; the platform publishes thousands."""
+    for c in ("AAA", "BBB", "CCC", "ZZZ"):
+        (tmp_path / f"{c}.json").write_text("{}")
+    out = rd.extend_universe(["BBB"], tmp_path, 3)
+    assert out[0] == "BBB"                      # board order preserved first
+    assert set(out) == {"BBB", "AAA", "CCC"}    # then disk, deduped, capped
+
+
+def test_extend_universe_never_debates_the_index_file(tmp_path):
+    (tmp_path / "index.json").write_text("{}")
+    (tmp_path / "TCS.json").write_text("{}")
+    assert rd.extend_universe([], tmp_path, 50) == ["TCS"]
+
+
+def test_extend_universe_respects_the_cap_and_a_missing_directory(tmp_path):
+    for c in ("A", "B", "C"):
+        (tmp_path / f"{c}.json").write_text("{}")
+    assert len(rd.extend_universe(["X"], tmp_path, 2)) == 2
+    assert rd.extend_universe(["X"], tmp_path, 0) == ["X"]
+    assert rd.extend_universe(["X"], tmp_path / "nope", 9) == ["X"]
+
+
+def test_skip_any_skips_a_debate_from_ANY_day_not_just_today(tmp_path):
+    """The coverage pass must never pay twice for a company it already argued."""
+    f = tmp_path / "OLD.json"
+    f.write_text('{"code":"OLD","generated_at":"2026-01-04","debate":{}}')
+    assert rd._skip_baked(f, "2026-07-29", True, False) is False   # daily: re-bake
+    assert rd._skip_baked(f, "2026-07-29", True, True) is True     # coverage: skip
+
+
+def test_skip_any_still_bakes_a_company_with_no_file_or_no_stamp(tmp_path):
+    assert rd._skip_baked(tmp_path / "MISSING.json", "2026-07-29", True, True) is False
+    junk = tmp_path / "JUNK.json"
+    junk.write_text('{"code":"JUNK"}')          # legacy file, no stamp -> bake once
+    assert rd._skip_baked(junk, "2026-07-29", True, True) is False
+
+
+def test_write_index_lists_what_is_on_disk_with_each_stamp(tmp_path):
+    (tmp_path / "TCS.json").write_text('{"code":"TCS","generated_at":"2026-07-29","debate":{}}')
+    (tmp_path / "LT.json").write_text('{"code":"LT","generated_at":"2026-07-28","debate":{}}')
+    n = rd.write_index(tmp_path)
+    idx = json.loads((tmp_path / "index.json").read_text())
+    assert n == idx["count"] == 2
+    assert {r["code"]: r["generated_at"] for r in idx["codes"]} == {
+        "TCS": "2026-07-29", "LT": "2026-07-28"}
+
+
+def test_write_index_never_lists_itself_and_survives_a_rerun(tmp_path):
+    (tmp_path / "TCS.json").write_text('{"code":"TCS","generated_at":"2026-07-29","debate":{}}')
+    rd.write_index(tmp_path)
+    rd.write_index(tmp_path)                    # index.json now exists on disk
+    idx = json.loads((tmp_path / "index.json").read_text())
+    assert [r["code"] for r in idx["codes"]] == ["TCS"]
+    assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_write_index_on_an_empty_directory_is_an_honest_zero(tmp_path):
+    assert rd.write_index(tmp_path) == 0
+    assert json.loads((tmp_path / "index.json").read_text())["codes"] == []
