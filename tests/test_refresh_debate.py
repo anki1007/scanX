@@ -705,3 +705,65 @@ def test_write_index_never_lists_itself_and_survives_a_rerun(tmp_path):
 def test_write_index_on_an_empty_directory_is_an_honest_zero(tmp_path):
     assert rd.write_index(tmp_path) == 0
     assert json.loads((tmp_path / "index.json").read_text())["codes"] == []
+
+
+# ------------------------------- quota vs outage (is the daily build red?)
+@pytest.mark.parametrize("text", [
+    "429 RESOURCE_EXHAUSTED. {'error': {'message': 'You exceeded your current quota'}}",
+    "503 UNAVAILABLE. This model is currently overloaded",
+    "GeminiBusy: all Gemini models busy or out of free-tier quota right now",
+    "rate limit exceeded", "Too Many Requests", "RESOURCE_EXHAUSTED",
+])
+def test_provider_backpressure_is_recognised(text):
+    assert rd._is_quota(text) is True
+
+
+@pytest.mark.parametrize("text", [
+    "FAIL 504293: KeyError",          # BSE code CONTAINING 429 — must not match
+    "FAIL 150322: ValueError",        # ...containing 503
+    "KeyError: evidence pack malformed",
+    "AttributeError: business segment missing",   # 'busy' inside a word
+    "", None,
+])
+def test_a_real_crash_is_never_mistaken_for_backpressure(text):
+    """The dangerous direction: a bug reclassified as 'provider busy' hides an outage."""
+    assert rd._is_quota(text) is False
+
+
+def test_quota_regex_carries_no_control_bytes():
+    """A word boundary written through a non-raw string becomes 0x08 and matches nothing.
+
+    That is exactly how this pattern first shipped: the 429/503 alternatives were
+    surrounded by literal backspaces, so a plain quota wall never matched them.
+    """
+    assert "\x08" not in rd._QUOTA_RE.pattern
+    assert rd._is_quota("plain 429 wall") and rd._is_quota("plain 503 wall")
+
+
+def test_zero_verdict_is_ok_while_anything_got_baked():
+    assert rd._zero_verdict(done=1, attempted=9, busy=8, covered=0) == "ok"
+
+
+def test_zero_verdict_is_ok_below_the_sample_floor():
+    """Two quiet companies prove nothing — do not diagnose an outage from noise."""
+    assert rd._zero_verdict(done=0, attempted=2, busy=2, covered=100) == "ok"
+
+
+def test_quota_wall_with_debates_already_live_is_transient_not_red():
+    """The Vahan precedent: red every day for a self-clearing condition is ignored."""
+    assert rd._zero_verdict(done=0, attempted=20, busy=20, covered=430) == "transient"
+
+
+def test_quota_wall_with_nothing_ever_baked_is_an_outage():
+    """Nothing is live, so exiting 0 would publish silence as success."""
+    assert rd._zero_verdict(done=0, attempted=20, busy=20, covered=0) == "outage"
+
+
+def test_a_broken_chain_is_an_outage_even_though_debates_exist():
+    assert rd._zero_verdict(done=0, attempted=20, busy=0, covered=430) == "outage"
+
+
+def test_minority_backpressure_among_real_failures_is_an_outage():
+    """One rate-limited company among four crashes is a bug, not a busy provider."""
+    assert rd._zero_verdict(done=0, attempted=20, busy=4, covered=430) == "outage"
+    assert rd._zero_verdict(done=0, attempted=20, busy=10, covered=430) == "transient"

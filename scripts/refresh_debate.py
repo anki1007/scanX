@@ -131,6 +131,52 @@ def _skip_baked(path, today, enabled=True, any_existing=False):
     return bool(enabled) and p.exists() and _baked_on(p) == today
 
 
+# Provider signatures for "you are rate-limited / out of quota / we are overloaded".
+# Matched on the TEXT because every provider wraps these differently and the
+# adapter deliberately raises a plain RuntimeError (GeminiBusy) rather than a
+# provider-specific type the scripts would have to import.
+# The digit guards on the status codes are load-bearing: this repo uses BSE
+# numeric codes as company codes (506597, 530477, ...) and that text reaches
+# this function inside error strings, so an unanchored "429" matches inside
+# 504293 and reclassifies a real crash as "the provider is just busy" -- the
+# exact direction of error that hides an outage. A word boundary cannot be used
+# here: written through a non-raw string it becomes a literal backspace (0x08),
+# and the alternative then matches nothing at all (which is how it shipped).
+_QUOTA_RE = re.compile(
+    r"geminibusy|resource_exhausted|rate.?limit|quota|too many requests|overload"
+    r"|(?<![0-9])(?:429|503)(?![0-9])|unavailable|(?<![a-z])busy(?![a-z])", re.I)
+
+
+def _is_quota(text):
+    """Does this failure mean 'try again later' rather than 'this is broken'? PURE."""
+    return bool(_QUOTA_RE.search(str(text or "")))
+
+
+def _zero_verdict(done, attempted, busy, covered, floor=5):
+    """Nothing baked — is the daily build red? PURE.
+
+    Three outcomes, because "zero debates today" has two very different causes
+    and only one of them is worth waking someone up for:
+
+      "ok"        too few attempts to conclude anything, or work got done
+      "transient" the provider hit its quota/overload ceiling AND companies
+                  already have debates on disk, so the site is still serving.
+                  Going red daily for a condition that clears on its own trains
+                  the operator to ignore red — the same reason the Vahan crawl
+                  exits 0 when it is IP-blocked but has prior data.
+      "outage"    anything else: a broken chain, or a quota wall with NOTHING
+                  ever baked (nothing is live, so silence would hide it).
+
+    A quota wall must still go red when it is the MINORITY explanation — one
+    rate-limited company among four real crashes is a bug, not a busy provider.
+    """
+    if done or attempted < floor:
+        return "ok"
+    if busy * 2 >= attempted and covered:
+        return "transient"
+    return "outage"
+
+
 def _sid():
     sid = os.environ.get("SCREENER_SESSIONID")
     if not sid and _SESSION.exists():
@@ -512,7 +558,7 @@ def main():
     fdir, ddir = Path(args.fundamental), Path(args.docs)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     today = time.strftime("%Y-%m-%d")
-    done = fail = skipped = thin = nobundle = 0
+    done = fail = skipped = thin = nobundle = busy = 0
     start = time.time()
     print(f"[debate] {len(codes)} companies, {args.rounds} rounds, provider "
           f"{args.provider or providers[0]} (credentialled: {', '.join(providers)})"
@@ -547,6 +593,8 @@ def main():
             if not b["_meta"]["points"]:
                 # never publish an empty debate over a good one — keep last good
                 thin += 1
+                if _is_quota(b["_meta"]["note"]):
+                    busy += 1
                 print(f"  [{i}/{len(codes)}] no debate for {code}"
                       f"{': ' + b['_meta']['note'][:70] if b['_meta']['note'] else ''}")
                 continue
@@ -557,24 +605,38 @@ def main():
                   f"{took:.1f}s — {done} baked / {spent:.1f}min spent")
         except Exception as e:  # noqa: BLE001
             fail += 1
+            if _is_quota(f"{type(e).__name__} {e}"):
+                busy += 1
             print(f"  [{i}/{len(codes)}] FAIL {code}: {type(e).__name__}")
         time.sleep(0.15)
 
     mins = (time.time() - start) / 60.0
     covered = write_index(out)
     print(f"[debate] baked {done}, skipped {skipped}, no-debate {thin}, no-bundle {nobundle}, "
-          f"failed {fail} in {mins:.1f}min -> {out} ({covered} companies have a debate)")
+          f"failed {fail}{f' ({busy} rate-limited/out of quota)' if busy else ''} in "
+          f"{mins:.1f}min -> {out} ({covered} companies have a debate)")
     if nobundle and not _sid():
         print("[debate] tip: the missing companies have no docs/data/fundamental/<CODE>.json — "
               "run scripts/refresh_fundamentals.py first (SCREENER_SESSIONID is not set either)")
 
     # A handful of companies genuinely produce nothing. EVERY company producing
-    # nothing means the model chain is down, and that must shout rather than read
-    # like "no company had anything to argue about".
+    # nothing means something is wrong upstream — but WHICH thing decides whether
+    # the daily build should go red. See _zero_verdict.
     attempted = done + thin + fail
-    if attempted >= 5 and done == 0:
+    verdict = _zero_verdict(done, attempted, busy, covered)
+    if verdict == "transient":
+        print(f"[debate] WARNING: {attempted} companies attempted and NOT ONE produced a "
+              f"debate — {busy} hit the provider's quota/overload ceiling. This is the free "
+              f"tier's daily cap, not a code fault: {covered} companies already have a debate "
+              f"and stay live on the site. Exiting 0 so the daily build is not red every day "
+              f"for a condition that clears on its own — raise the quota or add a second "
+              f"provider key to bake more per run.")
+        return 0
+    if verdict == "outage":
+        why = ("the provider is refusing every request AND no company has ever been debated"
+               if busy else "the model chain is broken, not the data")
         print(f"[debate] ERROR: {attempted} companies attempted and NOT ONE produced a "
-              f"debate — the model chain is broken, not the data. Check the failures above.")
+              f"debate — {why}. Check the failures above.")
         return 1
     return 0
 
