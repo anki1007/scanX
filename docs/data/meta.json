@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-28T20:05:40+05:30",
-  "generated_at_ist": "2026-07-28 20:05:40 IST",
+  "generated_at": "2026-07-29T20:01:06+05:30",
+  "generated_at_ist": "2026-07-29 20:01:06 IST",
   "source": "screener.in (saved session)",
-  "prices": "NseBseProvider LTP 14/25",
+  "prices": "NseBseProvider LTP 6/25",
   "total": 25,
-  "high": 13,
-  "growth_gate": 1
+  "high": 21,
+  "growth_gate": 8
 }

@@ -98,12 +98,6 @@
         "stage": "LISTED",
         "text": "Announcement under Regulation 30 (LODR)-Analyst / Investor Meet - Outcome Disclosure Requirements) Regulations, 2015 dated 29.05.2026 \n\n\n\nFY26 earnings call: crossed \u20b91,000 crore sales, filed sugar demerger , guided 60 Announcement -\n    \n    02 May 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=926ee32b-fc32-47de-9008-79e6f3fc4226.pdf"
-      },
-      {
-        "date": "28 Apr 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)- Scheme of Arrangement Scheme of Arrangement and Demerger between Piccadily Agro Industries Limited (\" Demerged Announcement -\n    \n    28 Apr 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8dba6b3d-8047-4e81-ad26-e695343ff853.pdf"
       }
     ]
   },
@@ -572,6 +566,12 @@
     "stage_date": "2026-07-22",
     "headlines": [
       {
+        "date": "29 Jul 2026",
+        "stage": "ANNOUNCED",
+        "text": "Mr. Tarun Sawhney Has Ceased To Be A Key Managerial Personnel. revised Tarun Sawhney remuneration, appointed Vivek Viswanathan, and noted TPTL demerger effective July 28, 2026 Announcement -\n    \n    29 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=dc4df4bd-baac-4dc0-a7e6-568dbe7cabce.pdf"
+      },
+      {
         "date": "14 Jul 2026",
         "stage": "RECORD_DATE",
         "text": "Intimation Under Regulation 30 & 42 Of The SEBI (LODR) Regulations, 2015 About Fixation Of Wednesday, July 22, 2026 As The Demerger Record Date Pursuant To The Scheme Intimation Under Regulation 30 & 42 Of The SEBI (LODR) Regulations, 2015 About Fixation Of Wednesday, July 22, 2026 As The Demerger R",
@@ -836,6 +836,20 @@
     ]
   },
   {
+    "code": "EFCIL",
+    "name": "EFC (I) Ltd",
+    "stage": "NCLT",
+    "stage_date": "2026-07-29",
+    "headlines": [
+      {
+        "date": "29 Jul 2026",
+        "stage": "NCLT",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)-Scheme of Arrangement\n\nIntimation for Scheme of arrangement ( Demerger ) is attached.\n\nBoard approved demerger Announcement -\n    \n    29 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=742e1a0c-d886-44db-b3a7-2e4968f57919.pdf"
+      }
+    ]
+  },
+  {
     "code": "KITEX",
     "name": "Kitex Garments Ltd",
     "stage": "NCLT",
@@ -1040,12 +1054,6 @@
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7b214213-126e-48cc-8bbc-c292dfd9c976.pdf"
       },
       {
-        "date": "25 Apr 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement requisite approval On the Scheme of Arrangement for Demerger amongst K M Sugar Mills Limited ( Demerged Company/The Company ) and  K M Spirit and Announcement -\n    \n    25 Apr 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8caaa77a-1e08-40a2-8f77-23f13d1be759.pdf"
-      },
-      {
         "date": "27 Mar 2026",
         "stage": "NCLT",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)-Scheme of Arrangement NCLT order First Motion Demerger : KM Sugar to hive off distillery into KM Spirits Announcement -\n    \n    27 Mar 2026",
@@ -1102,20 +1110,6 @@
     ]
   },
   {
-    "code": "ASTRAL",
-    "name": "Astral Ltd",
-    "stage": "BOARD_APPROVED",
-    "stage_date": "2026-06-25",
-    "headlines": [
-      {
-        "date": "25 Jun 2026",
-        "stage": "BOARD_APPROVED",
-        "text": "Announcement under Regulation 30 (LODR)-Restructuring Announcement under Regulation 30 (LODR)-Restructuring\n\nRegulation 30 Approval of Composite scheme of Arrangement Board approved 1:1 demerger of Announcement -\n    \n    25 Jun 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=3632595a-8f6c-4c01-ba41-5209be5bf839.pdf"
-      }
-    ]
-  },
-  {
     "code": "HEALTHX",
     "name": "Health X Platform Ltd",
     "stage": "BOARD_APPROVED",
@@ -1160,6 +1154,20 @@
         "stage": "BOARD_APPROVED",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement respective shareholders/Creditors.\n\nBoard approved merger of RPPL and demerger of GIPL unit into GSP, appointed date 1 April 2026 Announcement -\n    \n    02 Jul 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7f120176-b617-4346-80ff-ac16862fecb5.pdf"
+      }
+    ]
+  },
+  {
+    "code": "ASTRAL",
+    "name": "Astral Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-07-29",
+    "headlines": [
+      {
+        "date": "29 Jul 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement under Regulation 30 (LODR)-Restructuring chemical business demerger deferred until it achieves scale Announcement -\n    \n    29 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e4c26815-e97d-481b-9819-d6fda42753a5.pdf"
       }
     ]
   },
