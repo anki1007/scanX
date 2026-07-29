@@ -356,6 +356,15 @@ def main():
     _bake_start = time.time()
 
     if args.ratios_only:
+        # A backfill must cover what is ON DISK, not just what is on today's
+        # boards: 110 bundles had dropped off every board and would otherwise
+        # never gain a SWOT. Board order first (most-looked-at names win the
+        # time budget), then every remaining bundle.
+        seen_codes = set(codes)
+        for p in sorted(out.glob("*.json")):
+            if p.stem != "index" and p.stem not in seen_codes:
+                seen_codes.add(p.stem)
+                codes.append(p.stem)
         return _backfill_ratios(out, codes, today, args.max_minutes)
     for i, code in enumerate(codes, 1):
         if args.max_minutes and (time.time() - _bake_start) > args.max_minutes * 60:
