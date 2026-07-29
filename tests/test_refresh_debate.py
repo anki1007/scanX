@@ -767,3 +767,34 @@ def test_minority_backpressure_among_real_failures_is_an_outage():
     """One rate-limited company among four crashes is a bug, not a busy provider."""
     assert rd._zero_verdict(done=0, attempted=20, busy=4, covered=430) == "outage"
     assert rd._zero_verdict(done=0, attempted=20, busy=10, covered=430) == "transient"
+
+
+def test_a_quota_wall_actually_reaches_is_quota_end_to_end():
+    """Contract across llm -> debate -> refresh_debate. If any link stops carrying
+    the provider's error text, `busy` never increments and the whole transient
+    branch becomes dead code that silently reverts to red-every-day.
+
+    Uses the REAL debate module with a provider that raises, rather than a stub,
+    because the thing under test is precisely how the error survives three hops.
+    """
+    from earnings_intel.data import debate as db
+
+    def dead_provider(prompt, **kw):
+        raise RuntimeError("GeminiBusy: all Gemini models busy or out of free-tier "
+                           "quota right now. Last error: 429 RESOURCE_EXHAUSTED")
+
+    bundle = {"code": "TESTCO", "name": "Test Co",
+              "overview": {"Stock P/E": "46.5"},
+              "growth": {"Compounded Sales Growth": {"5 Years": "18%"}},
+              "analysis": {"health": {"debt_equity": {"value": 0.2},
+                                      "current_ratio": {"value": 2.1}}},
+              "prices": {}, "signal": {}, "upstox_ratios": {}}
+    ev = db.evidence_pack(bundle, filings=None, sector=None)
+    res = db.run_debate(bundle, filings=None, sector=None, rounds=2,
+                        complete=dead_provider)
+    b = rd.build_bundle("TESTCO", "Test Co", res, sector=None, evidence=ev,
+                        rounds=2, today="2026-07-29")
+
+    assert b["_meta"]["points"] == 0            # nothing published over the last good one
+    assert rd._is_quota(b["_meta"]["note"])     # ...and it is classified as backpressure
+    assert rd._zero_verdict(done=0, attempted=10, busy=10, covered=5) == "transient"
