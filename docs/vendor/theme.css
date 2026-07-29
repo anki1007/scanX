@@ -1,0 +1,203 @@
+/* scanX themes — ONE source of truth for the palette.
+ *
+ * The palette used to be copy-pasted into a :root block in all 22 pages, in
+ * three quietly divergent variants (fpi.html had grown its own --accent/--pos/
+ * --neg names, demergers/fundamental had --purple). Adding a theme meant 22
+ * edits that drift apart again on the next one, so the blocks are replaced by
+ * this file and every page links it.
+ *
+ * Themes: default dark, emerald-blue, emerald-green, light-beige.
+ * Switch with data-theme on <html>; vendor/theme.js persists the choice.
+ *
+ * CONTRAST. Every text/background pair below is measured against WCAG 2.1,
+ * not eyeballed. Body text clears AAA (7.0) on the dark themes and AA (4.5)
+ * everywhere; --muted was #8b9bb4 (5.76 on --bg), which passes AA on paper but
+ * sits under 4.5 the moment any opacity is applied — 0.8 took it to 4.02. It is
+ * now materially lighter on every theme.
+ *
+ * Borders are a deliberate exception: WCAG's 3.0 non-text rule covers controls
+ * that carry meaning, not decorative rules, so --line is tuned for visibility
+ * rather than to a threshold it was never bound by.
+ */
+
+/* ---------------------------------------------------------------- default dark */
+:root,
+:root[data-theme="dark"] {
+  --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --chip:#0f1726;
+  --line:#33456a;
+  --text:#eef3fa; --muted:#a8b8d0;
+  --teal:#2dd4bf; --teal2:#5eead4;
+  --green:#4ade80; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
+
+  /* aliases so fpi.html's names keep working from the same palette */
+  --accent:var(--teal); --accent-2:var(--teal2);
+  --border:var(--line); --grid:var(--line);
+  --pos:var(--green); --neg:var(--red); --warn:var(--amber);
+  --pos-soft:rgba(74,222,128,.15); --neg-soft:rgba(252,165,165,.15);
+}
+
+/* ---------------------------------------------------------------- emerald blue */
+:root[data-theme="emerald-blue"] {
+  --bg:#071626; --panel:#0d2135; --panel2:#132c44; --chip:#0a1c2e;
+  --line:#2b5a7d;
+  --text:#eaf4fb; --muted:#a3c2d8;
+  --teal:#34d399; --teal2:#6ee7b7;
+  --green:#6ee7b7; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
+
+  --accent:var(--teal); --accent-2:var(--teal2);
+  --border:var(--line); --grid:var(--line);
+  --pos:var(--green); --neg:var(--red); --warn:var(--amber);
+  --pos-soft:rgba(110,231,183,.15); --neg-soft:rgba(252,165,165,.15);
+}
+
+/* --------------------------------------------------------------- emerald green */
+:root[data-theme="emerald-green"] {
+  --bg:#06140f; --panel:#0c2018; --panel2:#122c21; --chip:#081a13;
+  --line:#2a6349;
+  --text:#ecf7f1; --muted:#a5c9b6;
+  --teal:#5eead4; --teal2:#99f6e4;
+  --green:#6ee7b7; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
+
+  --accent:var(--teal); --accent-2:var(--teal2);
+  --border:var(--line); --grid:var(--line);
+  --pos:var(--green); --neg:var(--red); --warn:var(--amber);
+  --pos-soft:rgba(110,231,183,.15); --neg-soft:rgba(252,165,165,.15);
+}
+
+/* ----------------------------------------------------------------- light beige */
+/* The only LIGHT theme, so the semantic colours are darkened rather than reused:
+ * the same #4ade80 that reads well on near-black is invisible on cream. */
+:root[data-theme="light-beige"] {
+  --bg:#f4efe4; --panel:#fbf8f1; --panel2:#ece4d3; --chip:#e6ddc9;
+  --line:#a89877;
+  --text:#1b1811; --muted:#4a4437;
+  /* teal2 is the LINK colour (a{color:var(--teal2)}). #00786a measured 3.99
+   * on --chip -- below AA -- which the contrast test caught. #014a41 clears
+   * AAA on every surface. On the dark themes teal2 is the LIGHTER of the
+   * pair; on a light background it has to be the darker one. */
+  --teal:#00564b; --teal2:#014a41;
+  --green:#14532d; --red:#8f1d1d; --amber:#7a4a00; --purple:#5b21b6;
+
+  --accent:var(--teal); --accent-2:var(--teal2);
+  --border:var(--line); --grid:var(--line);
+  --pos:var(--green); --neg:var(--red); --warn:var(--amber);
+  --pos-soft:rgba(20,83,45,.12); --neg-soft:rgba(143,29,29,.12);
+}
+
+/* ------------------------------------------------------------- legibility floor
+ * 176 declarations across the pages set text below 12px — 11px x102, 10px x54,
+ * 9px x13 — which is the main reason small labels read as faint regardless of
+ * colour. Rather than rewrite every rule, the floor is enforced here and can be
+ * tuned in one place. Applied with a class on <html> so it is opt-out-able.
+ */
+:root {
+  --fs-floor:12.5px;
+  --fs-floor-sm:13px;
+}
+/* No hand-written selector list here on purpose. The obvious rule --
+ *   .t-legible .sub{font-size:max(var(--fs-floor),1em)}
+ * -- is wrong twice over: 1em resolves against the PARENT, so a 10px label
+ * inside 14px body text jumps to 14px rather than to the floor; and guessing
+ * class names reached maybe a third of the offenders. The precise overrides
+ * are generated from the page stylesheets at the bottom of this file.
+ */
+/* Opacity below .85 pushes --muted under the AA threshold on every theme, so
+ * faded text is lifted instead of dimmed. Decorative non-text keeps its own. */
+.t-legible .sub, .t-legible .psub, .t-legible .muted, .t-legible .note {
+  opacity: 1;
+  color: var(--muted);
+}
+
+/* Respect a reader who has asked for more contrast at the OS level. */
+@media (prefers-contrast: more) {
+  :root { --muted:var(--text); --line:var(--text); }
+}
+
+/* ---- generated: lift every rule that sets text under 12.5px ----
+ * 81 selectors across the pages set 9-12px text. Guessing at class
+ * names missed most of them, so these are extracted from the page
+ * stylesheets themselves. Regenerate with scripts/gen_legible_css.py
+ * after adding new pages. Emoji icons (.ic) are excluded: they carry
+ * their own glyph colour and enlarging them just breaks the nav grid.
+ */
+.t-legible .ac .c{font-size:12.5px}
+.t-legible .badge{font-size:12.5px}
+.t-legible .bar .bl{font-size:12.5px}
+.t-legible .bar label{font-size:12.5px}
+.t-legible .bcf-l{font-size:12.5px}
+.t-legible .bcf-n{font-size:12.5px}
+.t-legible .bcprin{font-size:12.5px}
+.t-legible .bcrisk{font-size:12.5px}
+.t-legible .blkh span{font-size:12.5px}
+.t-legible .card .l{font-size:12.5px}
+.t-legible .chev{font-size:12.5px}
+.t-legible .chip{font-size:12.5px}
+.t-legible .chipBtn{font-size:12.5px}
+.t-legible .chipb{font-size:12.5px}
+.t-legible .chipbtn{font-size:12.5px}
+.t-legible .cnote{font-size:12.5px}
+.t-legible .co small{font-size:12.5px}
+.t-legible .dcite{font-size:12.5px}
+.t-legible .desc{font-size:12.5px}
+.t-legible .dis{font-size:12.5px}
+.t-legible .fact .fs{font-size:12.5px}
+.t-legible .fbtn{font-size:12.5px}
+.t-legible .filters .pill{font-size:12.5px}
+.t-legible .filters label{font-size:12.5px}
+.t-legible .fld label{font-size:12.5px}
+.t-legible .gauge .gv span{font-size:12.5px}
+.t-legible .grpTag{font-size:12.5px}
+.t-legible .heat td{font-size:12.5px}
+.t-legible .heat th{font-size:12.5px}
+.t-legible .hint{font-size:12.5px}
+.t-legible .insbtn{font-size:12.5px}
+.t-legible .kpi .delta{font-size:12.5px}
+.t-legible .kpi .l{font-size:12.5px}
+.t-legible .kpi .label{font-size:12.5px}
+.t-legible .kpi .sub{font-size:12.5px}
+.t-legible .leg{font-size:12.5px}
+.t-legible .legend{font-size:12.5px}
+.t-legible .logo small{font-size:12.5px}
+.t-legible .lst{font-size:12.5px}
+.t-legible .mlbl{font-size:12.5px}
+.t-legible .nav .brand small{font-size:12.5px}
+.t-legible .nav .grpL{font-size:12.5px}
+.t-legible .navrail .brand small{font-size:12.5px}
+.t-legible .navrail .grpL{font-size:12.5px}
+.t-legible .note{font-size:12.5px}
+.t-legible .panel .psub{font-size:12.5px}
+.t-legible .panel h3 .small{font-size:12.5px}
+.t-legible .pill{font-size:12.5px}
+.t-legible .rc{font-size:12.5px}
+.t-legible .schip{font-size:12.5px}
+.t-legible .sect{font-size:12.5px}
+.t-legible .sgn{font-size:12.5px}
+.t-legible .shift{font-size:12.5px}
+.t-legible .sidebar h3{font-size:12.5px}
+.t-legible .snm{font-size:12.5px}
+.t-legible .src{font-size:12.5px}
+.t-legible .stat .l{font-size:12.5px}
+.t-legible .sw .swn{font-size:12.5px}
+.t-legible .swe{font-size:12.5px}
+.t-legible .tag{font-size:12.5px}
+.t-legible .tchip .m{font-size:12.5px}
+.t-legible .tchip .s{font-size:12.5px}
+.t-legible .tchip .s .ct{font-size:12.5px}
+.t-legible .tile .t{font-size:12.5px}
+.t-legible .tlab{font-size:12.5px}
+.t-legible .toggle{font-size:12.5px}
+.t-legible .trend.health .pill{font-size:12.5px}
+.t-legible .vdis{font-size:12.5px}
+.t-legible .vmeta{font-size:12.5px}
+.t-legible .whygrid .ev{font-size:12.5px}
+.t-legible .yb .y{font-size:12.5px}
+.t-legible footer{font-size:12.5px}
+.t-legible header .meta{font-size:12.5px}
+.t-legible header .sub{font-size:12.5px}
+.t-legible label{font-size:12.5px}
+.t-legible table.heatmap{font-size:12.5px}
+.t-legible td.snip{font-size:12.5px}
+.t-legible th.sorted::after{font-size:12.5px}
+.t-legible thead th{font-size:12.5px}
+.t-legible tr.sub td{font-size:12.5px}
+.t-legible tr.sub td.lab{font-size:12.5px}
