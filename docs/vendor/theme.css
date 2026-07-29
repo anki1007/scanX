@@ -108,6 +108,16 @@
   color: var(--muted);
 }
 
+/* The scanX wordmark is the way home. It used to be a <div>, so from any of the
+ * other 21 pages the ONLY link back to the board was the "PEAD Board" nav item
+ * -- which sits inside a nav group that collapses by default, so it was hidden.
+ * These rules stop the generic a{} styling from underlining the wordmark and
+ * give it a visible hover/focus affordance instead. */
+.brand{display:block;text-decoration:none}
+.brand:hover{text-decoration:none;filter:brightness(1.18)}
+.brand:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:7px}
+.brand small{pointer-events:none}
+
 /* Respect a reader who has asked for more contrast at the OS level. */
 @media (prefers-contrast: more) {
   :root { --muted:var(--text); --line:var(--text); }

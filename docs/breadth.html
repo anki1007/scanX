@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · Market Breadth</title>
+<link rel="stylesheet" href="vendor/theme.css">
+  <script src="vendor/theme.js"></script>
+  <style>
+*{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  .nav{width:224px;flex:0 0 224px;background:var(--panel);border-right:1px solid var(--line);
+       padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav-i{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;color:var(--muted)}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .ic{font-size:15px;width:18px;text-align:center}
+  main{flex:1;min-width:0;padding:20px 22px 60px}
+  h1{margin:0 0 3px;font-size:23px;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:12px;margin-bottom:16px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px;margin-bottom:18px}
+  .panel h3{margin:0 0 3px;font-size:15px}
+  .panel .psub{color:var(--muted);font-size:11px;margin:0 0 12px}
+
+  /* ---- breadth core ---- */
+  .core{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:18px}
+  @media(max-width:900px){.core{grid-template-columns:1fr}}
+  .stage{position:relative;background:var(--chip);border:1px solid var(--line);
+         border-radius:12px;overflow:hidden;min-height:400px}
+  #field{display:block;width:100%;height:440px}
+  .ovl{position:absolute;left:0;right:0;bottom:14px;text-align:center;pointer-events:none}
+  .ovl .big{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1}
+  .ovl .cap{font-size:12px;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;margin-top:5px}
+  .legend{position:absolute;top:12px;left:14px;display:flex;gap:14px;font-size:12px;color:var(--muted)}
+  .legend b{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 12px}
+  .kpi .l{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+  .kpi .v{font-size:20px;font-weight:700}
+  .kpi.wide{grid-column:1/-1}
+  .bar{height:9px;border-radius:5px;background:var(--neg-soft);overflow:hidden;margin-top:7px}
+  .bar i{display:block;height:100%;background:var(--green)}
+
+  /* ---- sector columns ---- */
+  .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
+  .sec{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+  .sec header{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:3px}
+  .sec h4{margin:0;font-size:13.5px;font-weight:700;line-height:1.25}
+  .sec .pct{font-size:15px;font-weight:800;white-space:nowrap}
+  .sec .meta{font-size:12px;color:var(--muted);margin-bottom:9px}
+  .sbar{height:7px;border-radius:4px;background:var(--neg-soft);overflow:hidden;margin-bottom:11px}
+  .sbar i{display:block;height:100%;background:var(--green)}
+  .mv{display:flex;justify-content:space-between;gap:8px;padding:4px 0;font-size:12.5px;
+      border-top:1px solid var(--line)}
+  .mv:first-of-type{border-top:0}
+  .mv a{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mv .p{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+  .up{color:var(--green)} .dn{color:var(--red)}
+  .mvh{font-size:12px;color:var(--muted);margin:10px 0 3px;letter-spacing:.05em;text-transform:uppercase}
+  .empty{color:var(--muted);padding:22px;text-align:center}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+        border-top-color:var(--teal);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .dis{font-size:11px;color:var(--muted);margin-top:14px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="brand" href="index.html" title="Back to the PEAD board (home)">scanX<small>NSE / BSE terminal</small></a>
+    <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+    <a class="nav-i active" href="breadth.html"><span class="ic">🌐</span><span>Market Breadth</span></a>
+    <a class="nav-i" href="marketmood.html"><span class="ic">🌡️</span><span>Market Mood</span></a>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+  </nav>
+
+  <main>
+    <h1>Market Breadth</h1>
+    <div class="sub" id="stamp"><span class="spin"></span> loading…</div>
+
+    <div class="panel">
+      <h3>Live breadth field</h3>
+      <p class="psub">One particle per stock. Advancing names are pulled toward the core and
+        declining names pushed outward, so the shape and the number say the same thing.
+        Hover a particle for its code and move; click to open the company.</p>
+      <div class="core">
+        <div class="stage">
+          <canvas id="field" aria-label="3D market breadth particle field"></canvas>
+          <div class="legend">
+            <span><b style="background:var(--green)"></b>advancing</span>
+            <span><b style="background:var(--red)"></b>declining</span>
+          </div>
+          <div class="ovl">
+            <div class="big" id="bigPct">—</div>
+            <div class="cap" id="bigCap">market core</div>
+          </div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Sectors and their top movers</h3>
+      <p class="psub">Breadth is computed per sector from the same daily closes, so a sector
+        reading green here means most of its constituents advanced — not that its index did.</p>
+      <div class="cols" id="cols"><div class="empty"><span class="spin"></span> building…</div></div>
+    </div>
+
+    <p class="dis">Rules-based screen for research/education only — not personalized investment
+      advice. Breadth is computed from the latest daily closes scanX has on disk; it is not a
+      live intraday tick.</p>
+  </main>
+</div>
+
+<script src="vendor/nav.js"></script>
+<script src="vendor/breadth3d.js"></script>
+<script>
+var $ = function (id) { return document.getElementById(id); };
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function pctTxt(v){ return (v>=0?"+":"") + v.toFixed(2) + "%"; }
+
+async function j(path){
+  var r = await fetch(path + "?t=" + Date.now());
+  if(!r.ok) throw new Error(path + " " + r.status);
+  return r.json();
+}
+
+(async function(){
+  var mood, secs, quotes;
+  try {
+    var got = await Promise.all([
+      j("data/marketmood.json").catch(function(){ return null; }),
+      j("data/sector_stocks.json"),
+      j("data/quotes_wide.json")
+    ]);
+    mood = got[0]; secs = got[1]; quotes = got[2];
+  } catch (e) {
+    $("stamp").textContent = "Could not load the breadth data (" + e.message + ").";
+    $("cols").innerHTML = '<div class="empty">No data on disk yet — the daily refresh publishes it.</div>';
+    return;
+  }
+
+  var q = (quotes && quotes.quotes) || {};
+  var sectors = (secs && secs.sectors) || {};
+
+  // Build the particle universe from the sector constituents joined to today's
+  // closes. Using the join rather than quotes alone keeps every particle
+  // attributable to a sector, which is what the columns below break down.
+  var stocks = [], seen = {};
+  Object.keys(sectors).forEach(function(name){
+    (sectors[name] || []).forEach(function(s){
+      var quote = q[s.code];
+      if (!quote || typeof quote.pct !== "number" || seen[s.code]) return;
+      seen[s.code] = 1;
+      stocks.push({ code:s.code, name:s.name, pct:quote.pct, mcap:s.mcap, sector:name });
+    });
+  });
+
+  var up = stocks.filter(function(s){ return s.pct > 0; }).length;
+  var dn = stocks.filter(function(s){ return s.pct < 0; }).length;
+  var flat = stocks.length - up - dn;
+  var advPct = stocks.length ? (100 * up / stocks.length) : 0;
+
+  $("stamp").textContent = "Daily closes for " + stocks.length.toLocaleString("en-IN") +
+    " stocks across " + Object.keys(sectors).length + " sectors" +
+    (quotes.date ? " · " + quotes.date : "") + (quotes.ist ? " · " + quotes.ist : "");
+
+  $("bigPct").textContent = advPct.toFixed(0) + "%";
+  $("bigPct").style.color = advPct >= 50 ? "var(--green)" : "var(--red)";
+  $("bigCap").textContent = "of universe advancing";
+
+  var breadth = (mood && mood.latest && mood.latest.breadth) || {};
+  var dma = (mood && mood.latest && mood.latest.dma) || {};
+  var avg = stocks.length
+    ? stocks.reduce(function(a,s){ return a + s.pct; }, 0) / stocks.length : 0;
+
+  function kpi(label, value, colour, extra){
+    return '<div class="kpi' + (extra ? " " + extra : "") + '"><span class="l">' +
+      esc(label) + '</span><span class="v"' +
+      (colour ? ' style="color:' + colour + '"' : "") + '>' + esc(value) + "</span></div>";
+  }
+  var html = "";
+  html += '<div class="kpi wide"><span class="l">Advancing vs declining</span><span class="v">' +
+    up.toLocaleString("en-IN") + " <span style='color:var(--muted);font-size:14px'>vs</span> " +
+    dn.toLocaleString("en-IN") + '</span><div class="bar"><i style="width:' +
+    advPct.toFixed(1) + '%"></i></div></div>';
+  html += kpi("Average move", pctTxt(avg), avg >= 0 ? "var(--green)" : "var(--red)");
+  html += kpi("Unchanged", flat.toLocaleString("en-IN"));
+  if (mood && mood.latest) {
+    html += kpi("Mood score", mood.latest.score + " / 100",
+                mood.latest.score >= 50 ? "var(--green)" : "var(--red)");
+    html += kpi("Mood label", mood.latest.label || "—");
+  }
+  if (breadth.up5 != null) html += kpi("Up over 5%", breadth.up5, "var(--green)");
+  if (breadth.down5 != null) html += kpi("Down over 5%", breadth.down5, "var(--red)");
+  if (dma.near_52w_high != null) html += kpi("Near 52w high", dma.near_52w_high, "var(--green)");
+  if (dma.near_52w_low != null) html += kpi("Near 52w low", dma.near_52w_low, "var(--red)");
+  $("kpis").innerHTML = html;
+
+  if (window.Breadth3D) {
+    window.Breadth3D.mount($("field"), {
+      stocks: stocks, max: 560,
+      onPick: function(p){ location.href = "fundamental.html?code=" + encodeURIComponent(p.code); }
+    });
+  }
+
+  // ---- sector columns, strongest breadth first
+  var rows = Object.keys(sectors).map(function(name){
+    var list = (sectors[name] || []).map(function(s){
+      var quote = q[s.code];
+      return quote && typeof quote.pct === "number"
+        ? { code:s.code, name:s.name, pct:quote.pct } : null;
+    }).filter(Boolean);
+    list.sort(function(a,b){ return b.pct - a.pct; });
+    var u = list.filter(function(s){ return s.pct > 0; }).length;
+    return { name:name, list:list, up:u, n:list.length,
+             pct: list.length ? 100 * u / list.length : 0 };
+  }).filter(function(r){ return r.n >= 3; });
+  rows.sort(function(a,b){ return b.pct - a.pct; });
+
+  function mover(s){
+    return '<div class="mv"><a href="fundamental.html?code=' + encodeURIComponent(s.code) +
+      '" title="' + esc(s.name || s.code) + '">' + esc(s.name || s.code) +
+      '</a><span class="p ' + (s.pct >= 0 ? "up" : "dn") + '">' + pctTxt(s.pct) + "</span></div>";
+  }
+
+  $("cols").innerHTML = rows.map(function(r){
+    var gain = r.list.slice(0, 4);
+    var lose = r.list.slice(-4).reverse().filter(function(s){ return gain.indexOf(s) < 0; });
+    return '<div class="sec"><header><h4>' + esc(r.name) + '</h4><span class="pct" style="color:' +
+      (r.pct >= 50 ? "var(--green)" : "var(--red)") + '">' + r.pct.toFixed(0) + '%</span></header>' +
+      '<div class="meta">' + r.up + " of " + r.n + ' advancing</div>' +
+      '<div class="sbar"><i style="width:' + r.pct.toFixed(1) + '%"></i></div>' +
+      '<div class="mvh">Top gainers</div>' + gain.map(mover).join("") +
+      (lose.length ? '<div class="mvh">Top losers</div>' + lose.map(mover).join("") : "") +
+      "</div>";
+  }).join("") || '<div class="empty">No sector had enough priced constituents today.</div>';
+})();
+</script>
+<script src="vendor/sections.js"></script>
+</body>
+</html>
