@@ -13,6 +13,12 @@ statements cannot produce (current ratio, a debt/equity proxy) plus the six
 key ratios against their sector benchmark. Without a token nothing is fetched
 and the bundle is byte-for-byte what it has always been.
 
+Every bundle also carries "swot" — the deterministic, evidence-backed SWOT that
+earnings_intel.data.swot builds from the bundle itself plus, when available, the
+sector tailwind row and the grounded filing facts in docs/data/docs/<CODE>.json.
+It costs no network call and no API key, so --ratios-only backfills it onto the
+bundles that already exist instead of waiting for a Screener re-scrape.
+
     python scripts/refresh_fundamentals.py                 # top 120
     python scripts/refresh_fundamentals.py --top 200
     python scripts/refresh_fundamentals.py --limit 3       # quick test
@@ -35,12 +41,19 @@ from earnings_intel.data import company as co        # noqa: E402
 from earnings_intel.data import pricehist as ph       # noqa: E402
 from earnings_intel.data import signal as sg          # noqa: E402
 from earnings_intel.data import sectorlookup as sl
+from earnings_intel.data import swot as sw            # noqa: E402
+from earnings_intel.data import score as sc           # noqa: E402
 
 _SESSION = ROOT / "screener_session.json"
 
+# Grounded filing facts (refresh_docinsights.py). Only a slice of the universe
+# is baked, so a missing file is routine and simply means fewer SWOT points.
+DOCS_DIR = ROOT / "docs" / "data" / "docs"
+
 # Bump when the ratio maths changes, so --ratios-only recomputes bundles that
-# already carry ratios instead of skipping them as "fresh".
-RATIOS_VERSION = 2
+# already carry ratios instead of skipping them as "fresh". v3 added the
+# SWOT block and v4 the analysis score, so every bundle is revisited once more.
+RATIOS_VERSION = 4
 
 # Upstox key ratios + balance-sheet fill-ins for the health panel. Entirely
 # optional: probed ONCE, and with no token configured the whole feature stays
@@ -93,6 +106,52 @@ def _with_upstox_health(fund: dict, code: str) -> dict:
     return extra
 
 
+def _filings_for(code: str) -> dict:
+    """Grounded filing facts for one code — {} when nothing is baked for it.
+
+    Only ~100 companies have a docs/data/docs/<CODE>.json, so an absent file is
+    the normal case and must cost nothing: the SWOT simply loses its filing
+    rules. swot.build_swot reads ``filings["analysis"]``, so a bare analysis
+    block is accepted too and wrapped back into that shape.
+    """
+    try:
+        p = DOCS_DIR / f"{code}.json"
+        if not p.exists():
+            return {}
+        doc = json.loads(p.read_text(encoding="utf-8", errors="replace"))
+    except Exception:  # noqa: BLE001 - IO boundary; a filing file must never fail a bake
+        return {}
+    if not isinstance(doc, dict):
+        return {}
+    return doc if isinstance(doc.get("analysis"), dict) else {"analysis": doc}
+
+
+def _attach_swot(bundle: dict, code: str, sec=None) -> bool:
+    """Compute bundle["swot"]; True when it landed.
+
+    Deterministic and offline — no key, no network — but it must still never be
+    the reason a company drops out of the bake, so every failure degrades to a
+    bundle without a "swot" key (which fundamental.html renders as nothing).
+    """
+    try:
+        fund = bundle.get("fundamental")
+        if sec is None:
+            # a malformed fundamental block still deserves a (thin) SWOT rather
+            # than none, so the name lookup must not assume the shape
+            sec = sl.sector_for(code, fund.get("name") if isinstance(fund, dict) else None)
+        bundle["swot"] = sw.build_swot(bundle, sector=sec or None,
+                                       filings=_filings_for(code) or None)
+        # the score reads the SWOT, so it is computed here and shares its fate
+        bundle["score"] = sc.analysis_score(bundle, swot=bundle["swot"],
+                                            sector=sec or None)
+        return True
+    except Exception as e:  # noqa: BLE001 - a SWOT must never break a bake
+        print(f"  swot skipped for {code}: {type(e).__name__}")
+        bundle.pop("swot", None)
+        bundle.pop("score", None)
+        return False
+
+
 def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
     """Add Upstox ratios to bundles that already exist, without re-scraping Screener.
 
@@ -101,8 +160,13 @@ def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
     universe would sit at "n/a" indefinitely. This pass rewrites just the health
     block from one cheap pair of API calls per company, so coverage catches up
     over a few runs instead of never.
+
+    The SWOT rides along here for the same reason: it is derived entirely from
+    what the bundle already holds, so the ~5,400 bundles baked before the engine
+    existed gain it from this pass alone. It needs no token, so a bundle whose
+    ratios are unavailable is still rewritten when its SWOT computed.
     """
-    done = skipped = fail = 0
+    done = skipped = fail = swotted = noratio = 0
     start = time.time()
     for i, code in enumerate(codes, 1):
         if max_minutes and (time.time() - start) > max_minutes * 60:
@@ -116,32 +180,42 @@ def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
         except Exception:  # noqa: BLE001
             fail += 1
             continue
-        # Already carries ratios from today's run of THIS version. The version
-        # stamp matters: the first backfill stored a current ratio computed
-        # from a phantom period column, and without it those wrong values would
-        # persist until the date rolled over.
-        if (bundle.get("upstox_ratios") and bundle.get("ratios_at") == today
+        # Already carries ratios AND a SWOT from today's run of THIS version.
+        # The version stamp matters: the first backfill stored a current ratio
+        # computed from a phantom period column, and without it those wrong
+        # values would persist until the date rolled over.
+        if (bundle.get("swot") and bundle.get("upstox_ratios")
+                and bundle.get("ratios_at") == today
                 and bundle.get("ratios_v") == RATIOS_VERSION):
             skipped += 1
             continue
         fund = bundle.get("fundamental") or {}
         ratios = _with_upstox_health(fund, code)
+        # SWOT after the health merge, so it sees the ratios this pass just added
+        got_swot = _attach_swot(bundle, code)
         if not ratios:
-            fail += 1
-            continue
+            noratio += 1
+            if not got_swot:
+                fail += 1
+                continue
         bundle["fundamental"] = fund
-        bundle["upstox_ratios"] = ratios
-        bundle["ratios_at"] = today
-        bundle["ratios_v"] = RATIOS_VERSION
+        if ratios:
+            bundle["upstox_ratios"] = ratios
+            bundle["ratios_at"] = today
+            bundle["ratios_v"] = RATIOS_VERSION
         try:
             _atomic(bf, json.dumps(bundle, separators=(",", ":")))
             done += 1
+            swotted += 1 if got_swot else 0
             if i <= 5 or i % 50 == 0:
                 cr = ((fund.get("analysis") or {}).get("health") or {}).get("current_ratio") or {}
-                print(f"  [{i}/{len(codes)}] {code}: current ratio {cr.get('value')}")
+                sc = (bundle.get("swot") or {}).get("score") or {}
+                print(f"  [{i}/{len(codes)}] {code}: current ratio {cr.get('value')}"
+                      f"  swot S{sc.get('s')}/W{sc.get('w')}/O{sc.get('o')}/T{sc.get('t')}")
         except Exception:  # noqa: BLE001
             fail += 1
-    print(f"[fund] ratios backfill: updated {done}, already-fresh {skipped}, unavailable {fail}")
+    print(f"[fund] ratios backfill: rewrote {done} (swot {swotted}), already-fresh {skipped}, "
+          f"no ratios {noratio}, failed {fail}")
     return 0
 
 
@@ -303,6 +377,7 @@ def main():
                       "prices": price, "signal": sigv}
             if ratios:
                 bundle["upstox_ratios"] = ratios
+            _attach_swot(bundle, code, sec)
             _atomic(out / f"{code}.json", json.dumps(bundle, separators=(",", ":")))
             done += 1
             if i <= 8 or i % 25 == 0:

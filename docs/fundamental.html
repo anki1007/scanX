@@ -110,13 +110,57 @@
   .pc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .pc ul{margin:6px 0 0;padding-left:18px}.pc li{margin:4px 0;font-size:13px}
   .pc .pros h3{color:var(--green)}.pc .cons h3{color:var(--red)}
+  /* SWOT — 2x2 quadrant built by earnings_intel/data/swot.py at bake time.
+     One column under 900px (see the media query below). */
+  .swv{margin-bottom:12px;font-size:13px;line-height:1.55}
+  /* Analysis score — gauge + component bars (earnings_intel/data/score.py) */
+  .scwrap{display:grid;grid-template-columns:210px 1fr;gap:18px;align-items:center}
+  .gauge{position:relative;width:190px;height:190px;margin:0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .gv{position:absolute;inset:0;display:flex;flex-direction:column;
+       align-items:center;justify-content:center;text-align:center}
+  .gauge .gv b{font-size:40px;font-weight:800;line-height:1}
+  .gauge .gv span{font-size:10px;color:var(--muted);letter-spacing:.09em;
+       text-transform:uppercase;margin-top:5px}
+  .cbar{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;margin:9px 0}
+  .cbar .cl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .cbar .ct{height:9px;background:var(--chip);border-radius:6px;overflow:hidden}
+  .cbar .ct i{display:block;height:100%;border-radius:6px}
+  .cbar .cn{font-size:13px;font-weight:700;text-align:right}
+  .cnote{font-size:11.5px;color:var(--muted);margin:-4px 0 8px 160px}
+  .rf{margin-top:12px}
+  .rf li{font-size:12.5px;margin:4px 0;color:var(--amber)}
+  .whygrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .whygrid li{font-size:13px;margin:6px 0}
+  .whygrid .ev{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+  @media(max-width:900px){.scwrap,.whygrid{grid-template-columns:1fr}.cnote{margin-left:0}}
+  .swotgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .panel.sw{border-top-width:3px}
+  .panel.sw-s{border-top-color:var(--green)}
+  .panel.sw-w{border-top-color:var(--red)}
+  .panel.sw-o{border-top-color:var(--teal)}
+  .panel.sw-t{border-top-color:var(--amber)}
+  .sw .ph{display:flex;align-items:baseline;gap:8px}
+  .sw-s .ph{color:var(--green)}.sw-w .ph{color:var(--red)}
+  .sw-o .ph{color:var(--teal)}.sw-t .ph{color:var(--amber)}
+  .sw .swn{margin-left:auto;font-size:11px;font-weight:600;color:var(--muted)}
+  .swlist{list-style:none;margin:2px 0 0;padding:0}
+  .switem{padding:10px 0;border-top:1px solid var(--line)}
+  .swlist .switem:first-child{border-top:none}
+  .swp{display:flex;gap:10px;align-items:flex-start;font-size:13px;font-weight:600;line-height:1.5}
+  .swp .swt{min-width:0;flex:1 1 auto}
+  .swe{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:5px}
+  .swdots{flex:0 0 auto;display:inline-flex;gap:3px;margin-top:6px}
+  .swdots i{width:5px;height:5px;border-radius:50%;background:var(--line)}
+  .sw-s .swdots i.on{background:var(--green)}.sw-w .swdots i.on{background:var(--red)}
+  .sw-o .swdots i.on{background:var(--teal)}.sw-t .swdots i.on{background:var(--amber)}
   .empty{padding:48px;text-align:center;color:var(--muted)}
   .chip{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:6px}
   .chip.pos{background:rgba(52,211,153,.15);color:var(--green)}.chip.neg{background:rgba(248,113,113,.15);color:var(--red)}
   .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);
         border-top-color:var(--teal);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px}
   @keyframes sp{to{transform:rotate(360deg)}}
-  @media(max-width:900px){.two,.pc{grid-template-columns:1fr}}
+  @media(max-width:900px){.two,.pc,.swotgrid{grid-template-columns:1fr}}
   .verdict{border-radius:14px;padding:16px 18px;border:1px solid var(--line);background:var(--panel)}
   .verdict.BUY{border-color:rgba(52,211,153,.5)}
   .verdict.SELL{border-color:rgba(248,113,113,.5)}
@@ -348,7 +392,7 @@ async function load(code){
       +'<div class="hint" style="margin-top:10px">Tip: launch the desktop terminal (<b>scanX.bat</b>) for live lookup of any listed stock, or widen the nightly bake with <code>refresh_fundamentals.py --top 5000</code>.</div></div>';
     return;
   }
-  render(d);
+  render(d, bundle && bundle.swot, bundle && bundle.score);
   loadSignal(code, bundle && bundle.signal);
   loadPrices(code, bundle && bundle.prices);
   loadDocs(code);
@@ -468,6 +512,85 @@ function healthSection(a){
     <div class="trend health">${chips}</div>${peers}</div></div>`;
 }
 
+/* ---------------- SWOT (baked, rule-based) ----------------
+   bundle.swot is written by scripts/refresh_fundamentals.py from
+   earnings_intel/data/swot.py — four quadrants of {point, evidence, metric,
+   weight}, plus score + verdict. Bundles baked before the engine existed have
+   no swot at all, so a missing block must render NOTHING — not an empty box. */
+const SWOT_Q=[['strengths','Strengths','s'],['weaknesses','Weaknesses','w'],
+              ['opportunities','Opportunities','o'],['threats','Threats','t']];
+function swotDots(w){
+  const n=Math.max(1,Math.min(3,Math.round(Number(w))||1));
+  let d=''; for(let i=1;i<=3;i++) d+=`<i class="${i<=n?'on':''}"></i>`;
+  return `<span class="swdots" title="weight ${n} of 3">${d}</span>`;
+}
+function swotItem(p){
+  if(!p||!p.point) return '';
+  return `<li class="switem"><div class="swp"><span class="swt">${esc(p.point)}</span>${swotDots(p.weight)}</div>`
+    +(p.evidence?`<div class="swe">${esc(p.evidence)}</div>`:'')+`</li>`;
+}
+function scoreColour(v){ return v>=7.5?'var(--green)':v>=6?'var(--teal)':v>=4.5?'var(--amber)':'var(--red)'; }
+function scoreSection(sc){
+  if(!sc||sc.score==null) return '';
+  const v=Number(sc.score), col=scoreColour(v);
+  const C=2*Math.PI*80, off=C*(1-Math.max(0,Math.min(10,v))/10);
+  const bars=(sc.components||[]).map(c=>{
+    const cv=Number(c.score)||0;
+    return `<div class="cbar"><div class="cl">${esc(c.label)}</div>
+      <div class="ct"><i style="width:${(cv*10).toFixed(0)}%;background:${scoreColour(cv)}"></i></div>
+      <div class="cn" style="color:${scoreColour(cv)}">${cv.toFixed(1)}</div></div>
+      ${c.note?`<div class="cnote">${esc(c.note)}</div>`:''}`;
+  }).join('');
+  const flags=((sc.red_flags||{}).reasons||[]);
+  const pen=Number((sc.red_flags||{}).penalty||0);
+  const rf=flags.length?`<div class="rf"><b style="font-size:12.5px">Red flags
+      ${pen?`<span class="pill dn">-${pen.toFixed(1)}</span>`:''}</b>
+      <ul>${flags.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div>`:'';
+  const li=a=>(a||[]).map(w=>`<li>${esc(w.point)}<span class="ev">${esc(w.evidence||'')}</span></li>`).join('');
+  const why=(sc.why_invest||[]).length||(sc.why_not||[]).length
+    ? `<div class="whygrid">
+         <div class="panel"><p class="ph" style="color:var(--green)">Why you might invest</p>
+           <ul>${li(sc.why_invest)}</ul></div>
+         <div class="panel"><p class="ph" style="color:var(--red)">Why you might not</p>
+           <ul>${li(sc.why_not)}</ul></div></div>` : '';
+  const miss=(sc.components_missing||[]).length
+    ? `<p class="psub" style="margin-top:10px">Scored over the components with data; no input for:
+         ${esc((sc.components_missing||[]).join(', '))}.</p>` : '';
+  return `<div class="sec"><h3>Verdict — analysis score</h3><div class="panel">
+    <div class="scwrap">
+      <div class="gauge">
+        <svg width="190" height="190" viewBox="0 0 190 190">
+          <circle cx="95" cy="95" r="80" fill="none" stroke="var(--chip)" stroke-width="13"/>
+          <circle cx="95" cy="95" r="80" fill="none" stroke="${col}" stroke-width="13"
+                  stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}"
+                  stroke-dashoffset="${off.toFixed(1)}"/>
+        </svg>
+        <div class="gv"><b style="color:${col}">${v.toFixed(1)}</b><span>Analysis / 10</span></div>
+      </div>
+      <div><p class="ph" style="font-size:15px;color:${col}">${esc(sc.label||'')}</p>
+        ${bars}${rf}${miss}</div>
+    </div>${why}</div></div>`;
+}
+function swotSection(sw){
+  if(!sw) return '';
+  const sc=sw.score||{};
+  let total=0;
+  const cells=SWOT_Q.map(q=>{
+    const items=(sw[q[0]]||[]).filter(p=>p&&p.point); total+=items.length;
+    const li=items.map(swotItem).join('')
+      ||'<li class="switem"><div class="swp"><span class="swt na">Nothing flagged.</span></div></li>';
+    const n=sc[q[2]]!=null?`${items.length} · weight ${sc[q[2]]}`:String(items.length);   // escaped once, below
+    return `<div class="panel sw sw-${q[2]}"><p class="ph">${esc(q[1])}<span class="swn">${esc(n)}</span></p>
+      <ul class="swlist">${li}</ul></div>`;
+  }).join('');
+  if(!total) return '';                            // nothing to say -> say nothing
+  return `<div class="sec"><h3>SWOT analysis</h3>
+    ${sw.verdict?`<div class="banner n swv">${esc(sw.verdict)}</div>`:''}
+    <div class="swotgrid">${cells}</div>
+    <div class="hint">Rule-based, not written by a model — every point names the exact datum
+      it came from, and a rule stays silent when its datum is missing. Dots = weight (3 = decisive).</div></div>`;
+}
+
 /* ---------------- what management said (grounded facts from the filings) ----------------
    Baked by scripts/refresh_docinsights.py to data/docs/<CODE>.json: every claim
    carries the verbatim sentence it came from. Only a slice of the universe is
@@ -552,8 +675,10 @@ function drawCharts(d){
 /* ---------------- render fundamentals ---------------- */
 
 
-function render(d){
+function render(d,swot,score){
   if(d&&d.name){ try{ f('q').value=d.name; }catch(e){} }
+  const sw=swot||(d&&d.swot)||null;
+  const scr=score||(d&&d.score)||null;   // baked bundle carries it; live API does not      // baked bundle carries it; the live API doesn't
   const ov=d.overview||{}, gr=d.growth||{}, q=d.quarters||{};
   const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
   const keys=order.filter(k=>ov[k]!=null).concat(Object.keys(ov).filter(k=>!order.includes(k)));
@@ -598,6 +723,8 @@ function render(d){
   f('out').innerHTML=`
     <div class="stitle"><h2>${esc(d.name)}</h2><span class="px" id="pxNow">${esc(ov['Current Price']||'')}</span></div>
     <div id="verdict" class="sec"></div>
+    ${scoreSection(scr)}
+    ${swotSection(sw)}
     <div class="sec"><h3>Overview</h3><div class="cards">${cards}</div></div>
     ${latest?`<div class="sec"><h3>Latest results</h3>${latest}</div>`:''}
     ${d.analysis?dcfSection(d.analysis):''}
@@ -708,5 +835,6 @@ async function loadSignal(code, preV){
 })();
 </script>
 <script src="vendor/nav.js"></script>
+<script src="vendor/sections.js"></script>
 </body>
 </html>
