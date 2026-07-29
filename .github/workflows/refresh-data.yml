@@ -74,13 +74,12 @@ jobs:
       - name: Screener login
         run: python scripts/screener_login.py
 
-      - name: Refresh boards
-        id: refresh
+      # The shared failure-tracking helper. Sourced by BOTH refresh steps so a
+      # slow source never kills the run and every failure still turns it red at
+      # the end, AFTER the good data has been committed.
+      - name: Write the run helper
         run: |
-          # one slow source must not kill the whole refresh, but every failure
-          # must be VISIBLE: track failures, publish a summary, and let the
-          # final step turn the run red AFTER the good data has been committed.
-          set +e
+          cat > "$RUNNER_TEMP/runner.sh" <<'SH'
           FAILED=""
           run() {
             echo "::group::$*"
@@ -88,6 +87,16 @@ jobs:
             echo "::endgroup::"
             if [ $rc -ne 0 ]; then FAILED="$FAILED $2"; echo "::warning::$2 failed (rc=$rc)"; fi
           }
+          SH
+
+      # ---------------------------------------------------------------- phase 1
+      # Deterministic boards: no API key, no per-company price, and the data the
+      # site cannot do without. Committed BEFORE anything expensive runs.
+      - name: Refresh boards
+        id: refresh
+        run: |
+          set +e
+          . "$RUNNER_TEMP/runner.sh"
           run python scripts/refresh_scanx.py --pages 8
           run python scripts/refresh_orders.py --months 3
           run python scripts/refresh_buybacks.py --months 12
@@ -117,45 +126,55 @@ jobs:
           # covers ~500 board names, so without this ~90% of company pages fall
           # back to the price frozen into their bundle at bake time
           run python scripts/refresh_quotes.py --wide
+          run python scripts/refresh_iv.py --per-sector 30
+          echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit & push board data
+        run: |
+          bash scripts/ci_commit.sh "data: cloud refresh"
+
+      # ---------------------------------------------------------------- phase 2
+      # LLM-priced boards, deliberately LAST and committed separately. These
+      # consume a fixed 80 minutes of time budget between them, which is most of
+      # the job's remaining headroom — so if a slow Screener day pushes the run
+      # into the 200-minute job timeout, it dies HERE, after phase 1 is already
+      # committed and live. Before this split a timeout threw away every board.
+      - name: Refresh AI boards
+        id: ai
+        run: |
+          set +e
+          . "$RUNNER_TEMP/runner.sh"
           # concall / PPT / annual-report analysis, grounded in verbatim quotes
           run python scripts/refresh_docinsights.py --top 100 --skip-existing --max-minutes 25
           # bull vs bear debate — the only per-company priced board, so it stays
           # capped and skips anything already debated today
           run python scripts/refresh_debate.py --top 100 --rounds 3 --max-minutes 25
-          # 2) EXTEND debate coverage past the board into every baked company,
-          #    a time-boxed slice per day. --skip-any never pays twice for a
-          #    company already argued, so this walks the universe once and then
-          #    costs nothing but the new listings.
+          # EXTEND debate coverage past the board into every baked company, a
+          # time-boxed slice per day. --skip-any never pays twice for a company
+          # already argued, so this walks the universe once and then costs
+          # nothing but the new listings.
           run python scripts/refresh_debate.py --skip-any --top 6000 --rounds 2 --max-minutes 30
-          run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
-          {
-            echo "## scanX refresh summary"
-            if [ -n "$FAILED" ]; then echo "Failed:${FAILED}"; else echo "All refresh steps succeeded"; fi
-          } >> "$GITHUB_STEP_SUMMARY"
           exit 0
 
-      - name: Commit & push data
+      - name: Commit & push AI data
+        if: always()
         run: |
-          git config user.name  "scanx-bot"
-          git config user.email "scanx@users.noreply.github.com"
-          git add -A docs FPI 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "no data changes"; exit 0
-          fi
-          git commit -m "data: cloud refresh $(date -u +%FT%TZ)"
-          # push with retry; works on a detached HEAD; on a race with another
-          # publisher, rebase keeping OUR freshly generated data (-X theirs)
-          n=0
-          until git push origin HEAD:main; do
-            n=$((n+1)); [ "$n" -gt 3 ] && { echo "push failed after retries"; exit 1; }
-            git fetch origin main
-            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
-          done
+          bash scripts/ci_commit.sh "data: AI boards"
+
+      - name: Publish the run summary
+        if: always()
+        run: |
+          {
+            echo "## scanX refresh summary"
+            F="${{ steps.refresh.outputs.failed }}${{ steps.ai.outputs.failed }}"
+            if [ -n "$F" ]; then echo "Failed:$F"; else echo "All refresh steps succeeded"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Surface board failures
-        if: steps.refresh.outputs.failed != ''
+        if: steps.refresh.outputs.failed != '' || steps.ai.outputs.failed != ''
         run: |
-          echo "These refresh steps failed:${{ steps.refresh.outputs.failed }}"
+          echo "These refresh steps failed:${{ steps.refresh.outputs.failed }}${{ steps.ai.outputs.failed }}"
           echo "Good data from the surviving steps was still committed above."
           exit 1

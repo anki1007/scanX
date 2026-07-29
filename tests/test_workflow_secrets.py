@@ -19,6 +19,11 @@ WF = ROOT / ".github" / "workflows"
 NEEDS = {
     "refresh_fundamentals.py": {"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"},
     "refresh_docinsights.py": {"GEMINI_API_KEY"},
+    # refresh_debate.py accepts ANY credentialled provider, but Gemini is the only
+    # one this workflow exports — and with none set the script prints "no LLM
+    # credentials configured" and exits 0. Green, silent, and no debates: the
+    # precise failure shape this file exists to make impossible.
+    "refresh_debate.py": {"GEMINI_API_KEY"},
     "refresh_quotes.py --wide": {"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"},
     "screener_login.py": {"SCREENER_EMAIL", "SCREENER_PASSWORD"},
 }
