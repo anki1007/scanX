@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · STDRL Scanner</title>
+<link rel="stylesheet" href="vendor/theme.css">
+  <script src="vendor/theme.js"></script>
+  <style>
+*{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{display:flex;min-height:100vh}
+  .nav{width:224px;flex:0 0 224px;background:var(--panel);border-right:1px solid var(--line);
+       padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav-i{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;color:var(--muted)}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .ic{font-size:15px;width:18px;text-align:center}
+  main{flex:1;min-width:0;padding:20px 22px 60px}
+  h1{margin:0 0 3px;font-size:23px;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:12px;margin-bottom:16px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px;margin-bottom:18px}
+  .panel h3{margin:0 0 3px;font-size:15px}
+  .panel .psub{color:var(--muted);font-size:11px;margin:0 0 12px}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:11px;margin-bottom:4px}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+  .kpi.best{border-color:var(--accent)}
+  .kpi .l{display:block;font-size:12.5px;color:var(--muted);margin-bottom:3px}
+  .kpi .v{font-size:22px;font-weight:800}
+
+  .tscroll{overflow-x:auto}
+  table.ag{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
+  table.ag th,table.ag td{padding:8px 10px;text-align:right;white-space:nowrap;
+    border-bottom:1px solid var(--line)}
+  table.ag th{color:var(--muted);font-weight:600}
+  table.ag th:first-child,table.ag td:first-child{text-align:left}
+  table.ag tbody tr:hover{background:var(--panel2)}
+  table.ag tr.top td{color:var(--green);font-weight:700}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+  .curve{width:100%;height:320px;display:block}
+  .lgd{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);margin-top:8px}
+  .lgd b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+  .empty{color:var(--muted);padding:24px;text-align:center}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+        border-top-color:var(--teal);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .note{font-size:12.5px;color:var(--evidence,var(--muted));margin-top:10px;line-height:1.55}
+  .dis{font-size:11px;color:var(--muted);margin-top:14px}
+  code{background:var(--chip);padding:1px 5px;border-radius:4px;font-size:12px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="brand" href="index.html" title="Back to the PEAD board (home)">scanX<small>NSE / BSE terminal</small></a>
+    <a class="nav-i nav-top" href="index.html"><span class="ic">🏠</span><span>Home</span></a>
+    <a class="nav-i nav-top" href="breadth.html"><span class="ic">🌐</span><span>Market Breadth</span></a>
+    <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+    <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+    <a class="nav-i active" href="stdrl.html"><span class="ic">🤖</span><span>STDRL Scanner</span></a>
+  </nav>
+
+  <main>
+    <h1>STDRL Scanner</h1>
+    <div class="sub" id="stamp"><span class="spin"></span> loading…</div>
+
+    <div class="panel">
+      <h3>Agent comparison</h3>
+      <p class="psub">Deep reinforcement-learning agents trained on a basket of NSE/BSE names and
+        ranked on risk-adjusted return. Training runs offline; this page shows the baked result.</p>
+      <div class="kpis" id="kpis"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Performance</h3>
+      <p class="psub">Ranked by Sharpe, then CAGR. An agent whose Sharpe could not be computed
+        sorts last rather than counting as zero — unknown is not neutral.</p>
+      <div class="tscroll"><table class="ag" id="tbl"></table></div>
+      <div class="note" id="method"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Equity curves</h3>
+      <p class="psub">Net worth per agent over the evaluation window, from a common starting balance.</p>
+      <svg class="curve" id="curve" role="img" aria-label="Agent equity curves"></svg>
+      <div class="lgd" id="lgd"></div>
+    </div>
+
+    <p class="dis">Rules-based research tool for education only — not personalized investment advice,
+      and emphatically not a trading system. Back-tested agent performance on historical bars says
+      nothing reliable about future returns.</p>
+  </main>
+</div>
+
+<script src="vendor/nav.js"></script>
+<script>
+var $ = function (id) { return document.getElementById(id); };
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function num(v, d){ return (v==null||isNaN(v)) ? "—" : Number(v).toFixed(d==null?2:d); }
+function signed(v){
+  if (v==null||isNaN(v)) return '<span>—</span>';
+  return '<span class="'+(v>=0?'pos':'neg')+'">'+(v>=0?'+':'')+Number(v).toFixed(2)+'%</span>';
+}
+var PALETTE = ["var(--teal)","var(--amber)","var(--purple)","var(--green)","var(--red)","var(--teal2)"];
+
+(async function(){
+  var d;
+  try {
+    var r = await fetch("data/stdrl.json?t=" + Date.now());
+    if (!r.ok) throw new Error("not baked yet");
+    d = await r.json();
+  } catch (e) {
+    $("stamp").textContent = "No STDRL run published yet.";
+    $("kpis").innerHTML = '<div class="empty">Training runs offline and publishes ' +
+      'data/stdrl.json. Run <code>python scripts/refresh_stdrl.py</code> to produce it.</div>';
+    $("tbl").innerHTML = ""; return;
+  }
+
+  var m = d.meta || {}, rows = d.agents || [];
+  $("stamp").textContent = (m.months ? m.months + " monthly bars across " : "") +
+    ((m.tickers||[]).length) + " tickers · " + (m.timesteps||0).toLocaleString("en-IN") +
+    " training steps · " + (d.generated_at || "");
+
+  var best = rows[0];
+  var k = "";
+  if (best) {
+    k += '<div class="kpi best"><span class="l">Best by Sharpe</span><span class="v" style="color:var(--accent)">' +
+         esc(best.agent) + '</span></div>';
+    k += '<div class="kpi"><span class="l">Sharpe</span><span class="v">' + num(best.sharpe, 2) + '</span></div>';
+    k += '<div class="kpi"><span class="l">Total return</span><span class="v" style="color:' +
+         ((best.total_return_pct||0) >= 0 ? 'var(--green)' : 'var(--red)') + '">' +
+         num(best.total_return_pct) + '%</span></div>';
+    k += '<div class="kpi"><span class="l">Max drawdown</span><span class="v" style="color:var(--red)">' +
+         num(best.max_drawdown_pct) + '%</span></div>';
+  }
+  k += '<div class="kpi"><span class="l">Transaction cost</span><span class="v">' +
+       num(m.cost_bps, 0) + ' bps</span></div>';
+  $("kpis").innerHTML = k;
+
+  $("tbl").innerHTML =
+    "<thead><tr><th>#</th><th>Agent</th><th>Sharpe</th><th>Sortino</th><th>Total return</th>" +
+    "<th>CAGR</th><th>Volatility</th><th>Max drawdown</th><th>Win rate</th></tr></thead><tbody>" +
+    rows.map(function(a, i){
+      return "<tr" + (i===0 ? ' class="top"' : "") + "><td>" + a.rank + "</td>" +
+        "<td>" + esc(a.agent) + "</td>" +
+        "<td>" + num(a.sharpe, 2) + "</td><td>" + num(a.sortino, 2) + "</td>" +
+        "<td>" + signed(a.total_return_pct) + "</td><td>" + signed(a.cagr_pct) + "</td>" +
+        "<td>" + num(a.volatility_pct) + "%</td>" +
+        "<td class='neg'>" + num(a.max_drawdown_pct) + "%</td>" +
+        "<td>" + num(a.win_rate_pct, 1) + "%</td></tr>";
+    }).join("") + "</tbody>";
+
+  $("method").innerHTML =
+    "Sharpe and Sortino are computed from period <b>returns</b> and annualised over " +
+    (m.periods_per_year || 12) + " " + (m.bar || "monthly") + " bars" +
+    (m.risk_free ? " against a " + (m.risk_free*100).toFixed(1) + "% risk-free rate" : "") +
+    ". Transaction costs of " + num(m.cost_bps, 0) + " bps are charged on both sides of every trade.";
+
+  // ---- equity curves, plain SVG (no chart library on this page)
+  var eq = d.equity || {}, names = rows.map(function(a){ return a.agent; })
+                                       .filter(function(n){ return (eq[n]||[]).length > 1; });
+  if (!names.length) { $("curve").innerHTML = ""; $("lgd").textContent = "No equity curves recorded."; return; }
+  var W = 900, H = 320, PAD = 42;
+  var maxLen = Math.max.apply(null, names.map(function(n){ return eq[n].length; }));
+  var all = names.reduce(function(a, n){ return a.concat(eq[n]); }, []);
+  var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+  if (hi === lo) hi = lo + 1;
+  var x = function(i){ return PAD + i * (W - PAD - 12) / Math.max(1, maxLen - 1); };
+  var y = function(v){ return H - PAD - (v - lo) * (H - PAD - 12) / (hi - lo); };
+
+  var svg = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="none"/>';
+  [0, 0.25, 0.5, 0.75, 1].forEach(function(f){
+    var v = lo + f * (hi - lo);
+    svg += '<line x1="' + PAD + '" y1="' + y(v) + '" x2="' + (W-12) + '" y2="' + y(v) +
+           '" stroke="var(--line)" stroke-width="1" opacity=".55"/>' +
+           '<text x="4" y="' + (y(v)+4) + '" fill="var(--muted)" font-size="11">' +
+           Math.round(v).toLocaleString("en-IN") + '</text>';
+  });
+  names.forEach(function(n, i){
+    var pts = eq[n].map(function(v, j){ return x(j) + "," + y(v); }).join(" ");
+    svg += '<polyline points="' + pts + '" fill="none" stroke="' + PALETTE[i % PALETTE.length] +
+           '" stroke-width="1.9" stroke-linejoin="round"/>';
+  });
+  var el = $("curve");
+  el.setAttribute("viewBox", "0 0 " + W + " " + H);
+  el.innerHTML = svg;
+  $("lgd").innerHTML = names.map(function(n, i){
+    return '<span><b style="background:' + PALETTE[i % PALETTE.length] + '"></b>' + esc(n) + '</span>';
+  }).join("");
+})();
+</script>
+<script src="vendor/sections.js"></script>
+</body>
+</html>
