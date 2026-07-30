@@ -124,21 +124,44 @@ def mood_label(score: float) -> str:
 
 
 def dma_stats(frames: dict) -> dict:
-    """Aggregate DMA / 52w / RSI breadth from {code: pandas.Series-of-closes}."""
+    """Aggregate DMA / 52w / RSI breadth from {code: pandas.Series-of-closes}.
+
+    The three DMA counts are independent, so "how many are above 20 AND 50 AND
+    200" cannot be derived from them afterwards -- a market can have 60% above
+    the 20 and 60% above the 200 with very few names above both. That
+    "above every moving average" figure is the one traders actually use to call
+    a trend intact, so it is counted here, per stock, in the same pass.
+
+    Its denominator is only the stocks that HAVE all three averages (>=200
+    bars). A name with 60 days of history is not "below its 200 DMA"; it has no
+    200 DMA, and folding it into the denominator would quietly understate the
+    reading every time a batch of new listings arrives.
+    """
     n20 = n50 = n200 = b20 = b50 = b200 = 0
     near_hi = near_lo = ob = osold = 0
+    n_all = above_all = below_all = 0
     for ser in frames.values():
         vals = ser.astype(float)
         last = float(vals.iloc[-1])
+        a20 = a50 = a200 = None
         if len(vals) >= 20:
             n20 += 1
-            b20 += last < float(vals.tail(20).mean())
+            a20 = last >= float(vals.tail(20).mean())
+            b20 += not a20
         if len(vals) >= 50:
             n50 += 1
-            b50 += last < float(vals.tail(50).mean())
+            a50 = last >= float(vals.tail(50).mean())
+            b50 += not a50
         if len(vals) >= 200:
             n200 += 1
-            b200 += last < float(vals.tail(200).mean())
+            a200 = last >= float(vals.tail(200).mean())
+            b200 += not a200
+        if a20 is not None and a50 is not None and a200 is not None:
+            n_all += 1
+            if a20 and a50 and a200:
+                above_all += 1
+            elif not a20 and not a50 and not a200:
+                below_all += 1
         win = vals.tail(252)
         hi, lo = float(win.max()), float(win.min())
         if hi > 0 and last >= hi * 0.95:
@@ -159,6 +182,15 @@ def dma_stats(frames: dict) -> dict:
             "pct_below_20dma": pct(b20, n20),
             "pct_below_50dma": pct(b50, n50),
             "pct_below_200dma": pct(b200, n200),
+            # published explicitly rather than left as 100-below: the counts have
+            # DIFFERENT denominators (n20 != n200 whenever young listings are in
+            # the universe), so subtracting in the UI would be subtly wrong
+            "pct_above_20dma": pct(n20 - b20, n20),
+            "pct_above_50dma": pct(n50 - b50, n50),
+            "pct_above_200dma": pct(n200 - b200, n200),
+            "n_all_dma": n_all,
+            "pct_above_all_dma": pct(above_all, n_all),
+            "pct_below_all_dma": pct(below_all, n_all),
             "near_52w_high": near_hi, "near_52w_low": near_lo,
             "overbought": ob, "oversold": osold}
 
@@ -265,6 +297,7 @@ def main() -> int:
         "history_days": len(hist),
     }, indent=1))
     print(f"[mood] {qdate} score {score} ({mood_label(score)}) | "
+          f"above all three DMA {dma['pct_above_all_dma']}% of {dma['n_all_dma']} | "
           f"below 20/50/200 DMA {dma['pct_below_20dma']}/{dma['pct_below_50dma']}/"
           f"{dma['pct_below_200dma']}% | 52w hi/lo {dma['near_52w_high']}/{dma['near_52w_low']} | "
           f"RSI ob/os {dma['overbought']}/{dma['oversold']} | history {len(hist)}d")

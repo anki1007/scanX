@@ -38,6 +38,12 @@
   .ovl .big{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1}
   .ovl .cap{font-size:12px;color:var(--muted);letter-spacing:.10em;text-transform:uppercase;margin-top:5px}
   .legend{position:absolute;top:12px;left:14px;display:flex;gap:14px;font-size:12px;color:var(--muted)}
+  .fctl{position:absolute;top:10px;right:12px;display:flex;gap:7px}
+  .fctl button{background:var(--panel);color:var(--text);border:1px solid var(--line);
+    border-radius:8px;padding:5px 10px;font:600 12px/1 inherit;cursor:pointer}
+  .fctl button:hover{border-color:var(--accent);color:var(--accent)}
+  .fctl button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  #field:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
   .legend b{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
   .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
   .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 12px}
@@ -46,6 +52,17 @@
   .kpi.wide{grid-column:1/-1}
   .bar{height:9px;border-radius:5px;background:var(--neg-soft);overflow:hidden;margin-top:7px}
   .bar i{display:block;height:100%;background:var(--green)}
+
+  /* ---- DMA participation ---- */
+  .dma{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+  .dcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .dcard.strict{border-color:var(--accent)}
+  .dcard .dl{font-size:12.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+  .dcard .dv{font-size:27px;font-weight:800;line-height:1.15;margin:5px 0 2px}
+  .dcard .dsplit{font-size:12.5px;color:var(--evidence,var(--muted))}
+  .dtrack{height:9px;border-radius:5px;background:var(--neg-soft);overflow:hidden;margin-top:9px}
+  .dtrack i{display:block;height:100%;background:var(--green)}
+  .dnote{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin-top:2px}
 
   /* ---- sector columns ---- */
   .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
@@ -90,7 +107,8 @@
       <h3>Live breadth field</h3>
       <p class="psub">One particle per stock. Advancing names are pulled toward the core and
         declining names pushed outward, so the shape and the number say the same thing.
-        Hover a particle for its code and move; click to open the company.</p>
+        <b>Drag to rotate, scroll to zoom, double-click to reset.</b> Hover a particle for its
+        code and move; click to open the company. Arrow keys and spacebar work too.</p>
       <div class="core">
         <div class="stage">
           <canvas id="field" aria-label="3D market breadth particle field"></canvas>
@@ -102,9 +120,22 @@
             <div class="big" id="bigPct">—</div>
             <div class="cap" id="bigCap">market core</div>
           </div>
+          <div class="fctl">
+            <button type="button" id="spinBtn" title="Start or stop the rotation (spacebar)">⏸ Spin</button>
+            <button type="button" id="resetBtn" title="Reset the view (double-click the field, or press 0)">⟲ Reset</button>
+          </div>
         </div>
         <div class="kpis" id="kpis"></div>
       </div>
+    </div>
+
+    <div class="panel">
+      <h3>Participation — stocks above and below their moving averages</h3>
+      <p class="psub" id="dmaSub">How much of the market is actually holding its trend.
+        The 20 DMA is the short leash, the 200 DMA is the long one; the share above
+        <em>all three</em> is the strictest reading and cannot be worked out from the other
+        three, so it is counted per stock at bake time.</p>
+      <div class="dma" id="dma"><div class="empty"><span class="spin"></span> loading…</div></div>
     </div>
 
     <div class="panel">
@@ -207,11 +238,74 @@ async function j(path){
   $("kpis").innerHTML = html;
 
   if (window.Breadth3D) {
-    window.Breadth3D.mount($("field"), {
+    var field = window.Breadth3D.mount($("field"), {
       stocks: stocks, max: 560,
       onPick: function(p){ location.href = "fundamental.html?code=" + encodeURIComponent(p.code); }
     });
+    var spinBtn = $("spinBtn"), resetBtn = $("resetBtn");
+    function paintSpin(){
+      var on = field.spinning();
+      spinBtn.textContent = (on ? "⏸" : "▶") + " Spin";
+      spinBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    // Auto-spin starts OFF when the OS asks for reduced motion, so the button
+    // has to report the real state rather than assume it is running.
+    paintSpin();
+    spinBtn.onclick = function(){ field.spin(); paintSpin(); };
+    resetBtn.onclick = function(){ field.reset(); };
   }
+
+  // ---- DMA participation
+  // The "above" percentages are published explicitly by the bake because the
+  // three counts have DIFFERENT denominators (a 60-day-old listing has a 20 DMA
+  // but no 200 DMA). Older bundles only carry pct_below_*, so fall back to
+  // 100-below for those rather than showing nothing.
+  function above(d, key){
+    var a = d["pct_above_" + key];
+    if (typeof a === "number") return a;
+    var b = d["pct_below_" + key];
+    return typeof b === "number" ? Math.round((100 - b) * 10) / 10 : null;
+  }
+  function dcard(label, pct, extra, strict){
+    if (pct == null) return "";
+    var col = pct >= 50 ? "var(--green)" : "var(--red)";
+    return '<div class="dcard' + (strict ? " strict" : "") + '">' +
+      '<div class="dl">' + esc(label) + '</div>' +
+      '<div class="dv" style="color:' + col + '">' + pct.toFixed(1) + '%</div>' +
+      '<div class="dsplit">' + esc(extra) + '</div>' +
+      '<div class="dtrack"><i style="width:' + Math.max(0, Math.min(100, pct)).toFixed(1) + '%"></i></div>' +
+      '</div>';
+  }
+  var dhtml = "";
+  if (Object.keys(dma).length) {
+    [["20dma","above 20 DMA"],["50dma","above 50 DMA"],["200dma","above 200 DMA"]]
+      .forEach(function(row){
+        var a = above(dma, row[0]);
+        if (a == null) return;
+        dhtml += dcard(row[1], a, (100 - a).toFixed(1) + "% below", false);
+      });
+    if (typeof dma.pct_above_all_dma === "number") {
+      dhtml += dcard("above ALL three", dma.pct_above_all_dma,
+        (dma.pct_below_all_dma != null ? dma.pct_below_all_dma.toFixed(1) + "% below all three"
+                                       : ""), true);
+    } else {
+      // Honest rather than blank: this figure needs a per-stock pass that the
+      // currently published file predates.
+      dhtml += '<div class="dcard strict"><div class="dl">above ALL three</div>' +
+        '<div class="dv" style="color:var(--muted);font-size:18px">pending</div>' +
+        '<div class="dsplit">counted per stock from the next daily refresh — it cannot ' +
+        'be derived from the three figures beside it</div></div>';
+    }
+    dhtml += '<div class="dnote">Measured on ' +
+      (dma.n_all_dma || dma.n || 0).toLocaleString("en-IN") +
+      ' stocks with enough price history for a 200-day average' +
+      (dma.n && dma.n !== dma.n_all_dma ? " (of " + dma.n.toLocaleString("en-IN") +
+        " in the moving-average universe)" : "") +
+      '. That is a smaller set than the ' + stocks.length.toLocaleString("en-IN") +
+      ' priced above, which needs only a close.</div>';
+  }
+  $("dma").innerHTML = dhtml ||
+    '<div class="empty">No moving-average breadth on disk yet — the daily refresh publishes it.</div>';
 
   // ---- sector columns, strongest breadth first
   var rows = Object.keys(sectors).map(function(name){

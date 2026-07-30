@@ -83,9 +83,25 @@
     opts = opts || {};
     var pts = build(opts.stocks || [], opts.max || 520);
     var ctx = canvas.getContext("2d");
-    var rot = 0, raf = 0, running = true, hoverIdx = -1;
+    var rotY = 0, rotX = -0.22, zoom = 1, raf = 0, running = true, hoverIdx = -1;
+    var velY = 0, velX = 0, dragging = false, moved = false, lastX = 0, lastY = 0;
     var reduced = global.matchMedia &&
                   global.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Auto-spin defaults ON and the choice PERSISTS; dragging always works.
+    //
+    // It first shipped as `!reduced`, i.e. off whenever the OS asks for reduced
+    // motion. Windows ships with animation effects off often enough that this
+    // left the field frozen for most people -- reported as "not animating". WCAG
+    // 2.2.2 asks that motion over five seconds be pausable, not that it never
+    // start; there is a visible Spin control and a keyboard shortcut, and the
+    // setting is remembered, so a reader who wants it still gets one click and
+    // never sees it move again.
+    var autoSpin = true;
+    try {
+        var pref = localStorage.getItem("scanx.breadth.spin");
+        if (pref === "off") autoSpin = false;
+        else if (pref === null && reduced) autoSpin = true;   // explicit request wins
+    } catch (e) { /* private mode */ }
     var dpr = Math.min(global.devicePixelRatio || 1, 2);
     var W = 0, H = 0, proj = [];
 
@@ -104,18 +120,22 @@
       ctx.clearRect(0, 0, W, H);
 
       var cx = W / 2, cy = H / 2;
-      var scale = Math.min(W, H) * 0.34;
-      var cos = Math.cos(rot), sin = Math.sin(rot);
-      var i, p, x, z, depth, k;
+      var scale = Math.min(W, H) * 0.34 * zoom;
+      var cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      var cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      var i, p, x, y, z, z1, depth, k;
 
       proj.length = 0;
       for (i = 0; i < pts.length; i++) {
         p = pts[i];
-        x = p.x * cos - p.z * sin;
-        z = p.x * sin + p.z * cos;
+        // yaw (drag left/right), then pitch (drag up/down)
+        x = p.x * cosY - p.z * sinY;
+        z1 = p.x * sinY + p.z * cosY;
+        y = p.y * cosX - z1 * sinX;
+        z = p.y * sinX + z1 * cosX;
         depth = 2.6 / (2.6 + z);          // perspective
         proj.push({
-          i: i, sx: cx + x * scale * depth, sy: cy + p.y * scale * depth,
+          i: i, sx: cx + x * scale * depth, sy: cy + y * scale * depth,
           d: depth, z: z, adv: p.adv, size: p.size, mag: p.mag
         });
       }
@@ -154,17 +174,33 @@
     }
 
     function frame() {
-      if (!running) return;
-      rot += 0.0016;
+      if (!running) { raf = 0; return; }
+      if (!dragging) {
+        // momentum from the last flick, decaying
+        rotY += velY; rotX += velX;
+        velY *= 0.94; velX *= 0.94;
+        if (Math.abs(velY) < 1e-4) velY = 0;
+        if (Math.abs(velX) < 1e-4) velX = 0;
+        if (autoSpin) rotY += 0.0016;
+      }
+      rotX = Math.max(-1.2, Math.min(1.2, rotX));   // never flip past the poles
       draw();
-      raf = global.requestAnimationFrame(frame);
+      // Keep the loop alive only while something is actually moving. With
+      // auto-spin off and no momentum left this settles to a static frame
+      // instead of burning a core redrawing an identical picture.
+      if (autoSpin || dragging || velY || velX) {
+        raf = global.requestAnimationFrame(frame);
+      } else {
+        raf = 0;
+      }
     }
 
     function start() {
-      if (running && raf) return;
       running = true;
-      if (reduced) { draw(); return; }
-      raf = global.requestAnimationFrame(frame);
+      if (!raf) raf = global.requestAnimationFrame(frame);
+    }
+    function kick() {            // ensure the loop is alive after an interaction
+      if (running && !raf) raf = global.requestAnimationFrame(frame);
     }
     function stop() {
       running = false;
@@ -172,7 +208,8 @@
     }
 
     resize();
-    if (reduced) draw(); else start();
+    draw();
+    start();
 
     var ro = global.ResizeObserver ? new ResizeObserver(function () {
       resize(); draw();
@@ -181,7 +218,10 @@
 
     // Do not burn a core animating something nobody is looking at.
     document.addEventListener("visibilitychange", function () {
-      if (document.hidden) stop(); else start();
+      // A hidden tab gets ZERO animation frames from the browser, so the loop is
+      // already effectively stopped; this just releases the pending handle and
+      // repaints once on return rather than showing a frame from minutes ago.
+      if (document.hidden) { stop(); } else { draw(); start(); }
     });
     if (global.IntersectionObserver) {
       new IntersectionObserver(function (es) {
@@ -189,28 +229,121 @@
       }, { threshold: 0.02 }).observe(canvas);
     }
 
-    canvas.addEventListener("mousemove", function (e) {
-      var r = canvas.getBoundingClientRect();
-      var mx = e.clientX - r.left, my = e.clientY - r.top, best = -1, bd = 144;
+    // ---------------------------------------------------------------- input
+    // Pointer events rather than mouse events so a touchscreen drags too.
+    canvas.style.touchAction = "none";
+    canvas.style.cursor = "grab";
+
+    function pick(mx, my) {
+      var best = -1, bd = 156;
       for (var i = 0; i < proj.length; i++) {
         var dx = proj[i].sx - mx, dy = proj[i].sy - my, d = dx * dx + dy * dy;
         if (d < bd) { bd = d; best = proj[i].i; }
       }
-      hoverIdx = best;
-      canvas.style.cursor = best >= 0 ? "pointer" : "default";
-      canvas.title = best >= 0
-        ? pts[best].code + "  " + (pts[best].pct >= 0 ? "+" : "") + pts[best].pct.toFixed(2) + "%"
-        : "";
-      if (reduced) draw();
-    });
-    canvas.addEventListener("mouseleave", function () {
-      hoverIdx = -1; canvas.title = "";
-    });
-    canvas.addEventListener("click", function () {
-      if (hoverIdx >= 0 && opts.onPick) opts.onPick(pts[hoverIdx]);
+      return best;
+    }
+
+    canvas.addEventListener("pointerdown", function (e) {
+      dragging = true; moved = false;
+      lastX = e.clientX; lastY = e.clientY;
+      velY = velX = 0;
+      canvas.style.cursor = "grabbing";
+      if (canvas.setPointerCapture) {
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      kick();
     });
 
-    return { stop: stop, start: start, count: pts.length };
+    canvas.addEventListener("pointermove", function (e) {
+      var r = canvas.getBoundingClientRect();
+      var mx = e.clientX - r.left, my = e.clientY - r.top;
+
+      if (dragging) {
+        var dx = e.clientX - lastX, dy = e.clientY - lastY;
+        if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
+        lastX = e.clientX; lastY = e.clientY;
+        rotY += dx * 0.0065;
+        rotX += dy * 0.0065;
+        velY = dx * 0.0065;              // carried into momentum on release
+        velX = dy * 0.0065;
+        kick();
+        return;
+      }
+
+      var best = pick(mx, my);
+      if (best !== hoverIdx) {
+        hoverIdx = best;
+        canvas.style.cursor = best >= 0 ? "pointer" : "grab";
+        canvas.title = best >= 0
+          ? pts[best].code + "  " + (pts[best].pct >= 0 ? "+" : "") + pts[best].pct.toFixed(2) + "%"
+          : "";
+        kick();                          // repaint so the hover highlight shows
+      }
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      canvas.style.cursor = hoverIdx >= 0 ? "pointer" : "grab";
+      if (canvas.releasePointerCapture && e && e.pointerId != null) {
+        try { canvas.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+      kick();                            // let the momentum play out
+    }
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+
+    canvas.addEventListener("pointerleave", function () {
+      hoverIdx = -1; canvas.title = "";
+      if (!dragging) canvas.style.cursor = "grab";
+      kick();
+    });
+
+    canvas.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      zoom *= e.deltaY < 0 ? 1.12 : 0.89;
+      zoom = Math.max(0.45, Math.min(3.2, zoom));
+      kick();
+    }, { passive: false });
+
+    canvas.addEventListener("click", function () {
+      // a drag that happens to end over a particle is not a click on it
+      if (!moved && hoverIdx >= 0 && opts.onPick) opts.onPick(pts[hoverIdx]);
+    });
+
+    canvas.addEventListener("dblclick", function () {
+      rotX = -0.22; rotY = 0; zoom = 1; velX = velY = 0; kick();
+    });
+
+    // Keyboard: the field is a control, so it must be reachable without a mouse.
+    canvas.tabIndex = 0;
+    canvas.addEventListener("keydown", function (e) {
+      var step = 0.12;
+      if (e.key === "ArrowLeft") rotY -= step;
+      else if (e.key === "ArrowRight") rotY += step;
+      else if (e.key === "ArrowUp") rotX -= step;
+      else if (e.key === "ArrowDown") rotX += step;
+      else if (e.key === "+" || e.key === "=") zoom = Math.min(3.2, zoom * 1.12);
+      else if (e.key === "-") zoom = Math.max(0.45, zoom * 0.89);
+      else if (e.key === " ") { autoSpin = !autoSpin; }
+      else if (e.key === "0") { rotX = -0.22; rotY = 0; zoom = 1; }
+      else return;
+      e.preventDefault();
+      kick();
+    });
+
+    return {
+      stop: stop, start: start, count: pts.length,
+      spin: function (on) {
+        autoSpin = (on === undefined) ? !autoSpin : !!on;
+        try { localStorage.setItem("scanx.breadth.spin", autoSpin ? "on" : "off"); }
+        catch (e) { /* private mode: the toggle still works, it just won't stick */ }
+        kick();
+        return autoSpin;
+      },
+      spinning: function () { return autoSpin; },
+      reset: function () { rotX = -0.22; rotY = 0; zoom = 1; velX = velY = 0; kick(); }
+    };
   }
 
   global.Breadth3D = { mount: mount, build: build };

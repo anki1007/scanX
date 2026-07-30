@@ -185,3 +185,76 @@ def test_nav_js_only_groups_items_after_a_heading():
     js = (DOCS / "vendor" / "nav.js").read_text(encoding="utf-8")
     assert re.search(r"else\s+if\s*\(\s*cur\s*&&", js), \
         "nav.js must only collect nav-i into a group once a heading has been seen"
+
+
+# ------------------------------------------------------- interaction contract
+def test_the_field_can_be_driven_by_hand():
+    """Reported as "not animating or cannot move using mouse".
+
+    Two causes. The engine had no drag at all — only a slow auto-rotation — and
+    that rotation was disabled whenever the OS asked for reduced motion, which
+    Windows sets by default often enough that most people saw a frozen picture.
+    """
+    js = ENGINE.read_text(encoding="utf-8")
+    for handler in ("pointerdown", "pointermove", "pointerup", "wheel", "keydown"):
+        assert handler in js, f"no {handler} handler — the field cannot be driven"
+    assert "setPointerCapture" in js, "a drag must survive leaving the canvas"
+    assert "touchAction" in js, "a touchscreen must be able to drag it too"
+
+
+def test_dragging_is_never_blocked_by_the_reduced_motion_preference():
+    """A rotation the user performs with their own hand is not motion imposed on
+    them. Only the AUTO spin may consult the preference."""
+    js = ENGINE.read_text(encoding="utf-8")
+    drag = js[js.index("pointermove"):js.index("pointermove") + 900]
+    assert "reduced" not in drag, "the drag path must not consult prefers-reduced-motion"
+
+
+def test_auto_spin_is_pausable_and_the_choice_persists():
+    """WCAG 2.2.2 asks that motion over five seconds be pausable, not that it
+    never start. So it starts, and one click stops it for good."""
+    js = ENGINE.read_text(encoding="utf-8")
+    assert "scanx.breadth.spin" in js, "the spin choice is not persisted"
+    assert "spin:" in js and "spinning:" in js, "no pause control is exposed"
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="spinBtn"' in html and 'id="resetBtn"' in html
+
+
+def test_a_drag_is_not_mistaken_for_a_click_on_a_particle():
+    """Releasing a drag over a particle must not navigate to that company."""
+    js = ENGINE.read_text(encoding="utf-8")
+    click = js[js.index('addEventListener("click"'):]
+    assert "!moved" in click[:260], "click handler does not exclude drags"
+
+
+def test_the_loop_settles_instead_of_redrawing_a_static_picture():
+    """With auto-spin off and no momentum left there is nothing to animate, and
+    holding a rAF loop open to redraw identical frames burns a core."""
+    js = ENGINE.read_text(encoding="utf-8")
+    assert re.search(r"if\s*\(\s*autoSpin\s*\|\|\s*dragging\s*\|\|\s*velY\s*\|\|\s*velX\s*\)", js)
+
+
+# ----------------------------------------------------------- DMA participation
+def test_above_all_dma_is_counted_per_stock_not_derived():
+    """It CANNOT be derived from the three independent figures: a market can be
+    75% above its 20 DMA and 33% above its 200 with only 33% above both. The
+    bake counts it in the same pass, per stock."""
+    src = (ROOT / "scripts" / "refresh_marketmood.py").read_text(encoding="utf-8")
+    assert "pct_above_all_dma" in src and "pct_below_all_dma" in src
+    assert "n_all_dma" in src, "the strict reading needs its own denominator"
+
+
+def test_the_above_percentages_are_published_not_subtracted():
+    """100-below is subtly wrong: the counts have different denominators, since a
+    60-day-old listing has a 20 DMA but no 200 DMA."""
+    src = (ROOT / "scripts" / "refresh_marketmood.py").read_text(encoding="utf-8")
+    for key in ("pct_above_20dma", "pct_above_50dma", "pct_above_200dma"):
+        assert key in src, f"{key} is not published by the bake"
+
+
+def test_the_page_degrades_when_the_new_dma_fields_are_absent():
+    """The published file predates these fields, so the page must still render
+    the three it does have rather than showing an empty panel."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'pct_above_' in html and 'pct_below_' in html
+    assert "pending" in html, "no honest placeholder for the not-yet-baked figure"
