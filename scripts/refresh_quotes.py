@@ -192,18 +192,31 @@ def _yf_quotes(codes: list, batch: int = 150) -> dict:
     for i in range(0, len(syms), batch):
         chunk = syms[i:i + batch]
         try:
-            df = yf.download(chunk, period="2d", interval="1d", auto_adjust=False,
+            # period="2d" was the bug behind the missing half of the universe.
+            # It returns at most two rows, and the code below needs two CONSECUTIVE
+            # closes -- which an illiquid BSE scrip does not have, because it did
+            # not trade yesterday. Result: BSE numeric codes priced 4 out of 2,457
+            # (0%) while NSE symbols priced 97%. A wider window costs the same one
+            # request and lets the last two ACTUAL trades be used, whenever they
+            # happened.
+            df = yf.download(chunk, period="1mo", interval="1d", auto_adjust=False,
                              progress=False, threads=True)
             close = df["Close"]
             if isinstance(close, pd.Series):
                 close = close.to_frame(name=chunk[0])
             for t in chunk:
                 if t in close.columns:
+                    # last two TRADED closes, not the last two calendar days
                     ser = close[t].dropna()
                     if len(ser) >= 2 and float(ser.iloc[-2]):
                         prev, last = float(ser.iloc[-2]), float(ser.iloc[-1])
                         out[tick[t]] = {"ltp": round(last, 2),
                                         "pct": round((last - prev) / prev * 100, 2)}
+                    elif len(ser) == 1:
+                        # traded once in the window: a price is still worth more
+                        # than nothing on the company page, but there is no honest
+                        # move to report, so pct is omitted rather than faked as 0
+                        out[tick[t]] = {"ltp": round(float(ser.iloc[-1]), 2)}
         except Exception as e:  # noqa: BLE001
             print(f"[quotes] yahoo batch {i // batch} failed: {type(e).__name__}")
         time.sleep(0.3)

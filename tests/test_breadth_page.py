@@ -258,3 +258,67 @@ def test_the_page_degrades_when_the_new_dma_fields_are_absent():
     html = PAGE.read_text(encoding="utf-8")
     assert 'pct_above_' in html and 'pct_below_' in html
     assert "pending" in html, "no honest placeholder for the not-yet-baked figure"
+
+
+# ------------------------------------------------------------ breadth calendar
+def test_the_calendar_sits_between_participation_and_sectors():
+    """Requested position: above Sectors, below Participation."""
+    html = PAGE.read_text(encoding="utf-8")
+    part = html.index("Participation \u2014 stocks above")
+    cal = html.index("Breadth calendar")
+    secs = html.index("Sectors and their top movers")
+    assert part < cal < secs, "the calendar is in the wrong place on the page"
+
+
+def test_the_calendar_is_collapsible_and_starts_shut():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="calToggle"' in html and 'id="calBody"' in html
+    assert 'aria-expanded="false"' in html, "it must start collapsed"
+    assert "hidden" in html.split('id="calBody"')[1][:40]
+    # reachable without a mouse
+    assert 'tabindex="0"' in html and "onkeydown" in html
+
+
+def test_the_calendar_shows_todays_session_before_the_bake_folds_it_in():
+    """marketmood keeps `latest` separate from `history`, so a naive read of
+    history alone would miss the session the rest of the page is describing."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert "mood.latest.date" in html and "hist.push(mood.latest)" in html
+
+
+def test_the_calendar_is_ordered_newest_first():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "localeCompare" in html and "b.date" in html
+
+
+# --------------------------------------------------- price coverage of the universe
+def test_the_quote_window_is_wide_enough_for_illiquid_scrips():
+    """period="2d" returns at most two rows and the caller needs two CONSECUTIVE
+    closes, which an illiquid BSE scrip does not have because it did not trade
+    yesterday. Measured effect: BSE numeric codes priced 4 of 2,457 (0%) while
+    NSE symbols priced 97%."""
+    # Strip comments first: the note explaining the fix quotes the old value, and
+    # a whole-file substring check reads that explanation as the bug itself.
+    # (Same trap caught the !important assertion in test_theme_contrast.)
+    src = (ROOT / "scripts" / "refresh_quotes.py").read_text(encoding="utf-8")
+    code = "\n".join(ln for ln in src.splitlines() if not ln.lstrip().startswith("#"))
+    assert 'period="2d"' not in code, "the 2-day window silently drops illiquid names"
+    assert 'period="1mo"' in code
+
+
+def test_a_single_traded_close_yields_a_price_but_no_invented_move():
+    """One close in the window is a real price and worth showing; a percentage
+    move needs two, and reporting 0% would be a fabrication."""
+    src = (ROOT / "scripts" / "refresh_quotes.py").read_text(encoding="utf-8")
+    tail = src[src.index("elif len(ser) == 1"):]
+    assert '"ltp"' in tail[:400] and '"pct"' not in tail[:400]
+
+
+def test_the_bse_instrument_master_is_configured():
+    """Screener identifies BSE-only listings by numeric scrip code, and 2,457 of
+    5,488 companies are such codes. With only the NSE master loaded they can
+    never resolve to an Upstox instrument key."""
+    cfg = (ROOT / "upstox_lab" / "config.py").read_text(encoding="utf-8")
+    assert "DEFAULT_BSE_INSTRUMENTS_URL" in cfg
+    assert "exchange/BSE.json.gz" in cfg
+    assert "bse_instruments_url" in cfg

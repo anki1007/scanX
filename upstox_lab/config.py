@@ -24,10 +24,20 @@ TOKEN_FILE_NAME = "upstox_lab_token.txt"
 #: Repository root (…/scanX).  upstox_lab/ lives directly under it.
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-#: Upstox NSE instruments master — used to resolve trading symbols to ISINs.
+#: Upstox instruments masters — used to resolve trading symbols to ISINs.
 #: Documented at https://upstox.com/developer/api-documentation/instruments/
+#:
+#: NSE alone is not enough for scanX. Screener identifies BSE-only listings by
+#: their numeric scrip code (500012, 544291, ...), and 2,457 of the 5,488
+#: companies on the platform are such codes. With only the NSE master loaded
+#: they can never resolve, so they fall through to the Yahoo path and the daily
+#: breadth universe stops at ~2,960 of 5,368 constituents. The BSE master keys
+#: those codes to the same ISINs the rest of the pipeline already uses.
 DEFAULT_INSTRUMENTS_URL = (
     "https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.gz"
+)
+DEFAULT_BSE_INSTRUMENTS_URL = (
+    "https://assets.upstox.com/market-quote/instruments/exchange/BSE.json.gz"
 )
 
 
@@ -100,6 +110,7 @@ class UpstoxLabSettings:
     #: symbols file (one symbol, "SYMBOL,ISIN" pair or JSON list per line).
     universe_source: str = "index"
     instruments_url: str = DEFAULT_INSTRUMENTS_URL
+    bse_instruments_url: str = DEFAULT_BSE_INSTRUMENTS_URL
     instruments_cache: Path = field(
         default_factory=lambda: REPO_ROOT / ".cache" / "upstox_lab" / "NSE.json.gz"
     )
@@ -128,6 +139,8 @@ class UpstoxLabSettings:
             include_standalone=_get_bool(e, "UPSTOX_LAB_INCLUDE_STANDALONE", False),
             universe_source=_get_str(e, "UPSTOX_LAB_UNIVERSE_SOURCE", "index"),
             instruments_url=_get_str(e, "UPSTOX_LAB_INSTRUMENTS_URL", DEFAULT_INSTRUMENTS_URL),
+            bse_instruments_url=_get_str(e, "UPSTOX_LAB_BSE_INSTRUMENTS_URL",
+                                         DEFAULT_BSE_INSTRUMENTS_URL),
             instruments_cache=Path(
                 _get_str(
                     e,

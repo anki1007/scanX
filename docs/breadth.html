@@ -64,6 +64,26 @@
   .dtrack i{display:block;height:100%;background:var(--green)}
   .dnote{grid-column:1/-1;font-size:12.5px;color:var(--muted);margin-top:2px}
 
+  /* ---- breadth calendar ---- */
+  .calh{cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px}
+  .calh:hover{color:var(--accent)}
+  .calh:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .cav{font-size:11px;transition:transform .15s ease;display:inline-block}
+  .calh[aria-expanded="true"] .cav{transform:rotate(90deg)}
+  .cacount{font-size:12.5px;color:var(--muted);font-weight:500}
+  .tscroll{overflow-x:auto}
+  table.cal{border-collapse:collapse;width:100%;min-width:660px;font-size:13px}
+  table.cal th,table.cal td{padding:7px 9px;text-align:right;white-space:nowrap;
+    border-bottom:1px solid var(--line)}
+  table.cal th{color:var(--muted);font-weight:600;text-align:right;
+    position:sticky;top:0;background:var(--panel)}
+  table.cal th:first-child,table.cal td:first-child{text-align:left}
+  table.cal tbody tr:hover{background:var(--panel2)}
+  table.cal .mini{display:inline-block;width:74px;height:7px;border-radius:4px;
+    background:var(--neg-soft);overflow:hidden;vertical-align:-1px}
+  table.cal .mini i{display:block;height:100%;background:var(--green)}
+  .lbl{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600}
+
   /* ---- sector columns ---- */
   .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:13px}
   .sec{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 13px}
@@ -136,6 +156,18 @@
         <em>all three</em> is the strictest reading and cannot be worked out from the other
         three, so it is counted per stock at bake time.</p>
       <div class="dma" id="dma"><div class="empty"><span class="spin"></span> loading…</div></div>
+    </div>
+
+    <div class="sec-wrap panel">
+      <h3 class="calh" id="calToggle" role="button" tabindex="0" aria-expanded="false"
+          aria-controls="calBody"><span class="cav">▸</span> Breadth calendar — day by day
+          <span class="cacount" id="calCount"></span></h3>
+      <div class="calbody" id="calBody" hidden>
+        <p class="psub">Every daily close scanX has kept, newest first. Breadth history is what
+          turns a number into a trend — 33% advancing means something different after a week
+          of 70% than after a week of 30%.</p>
+        <div class="tscroll"><table class="cal" id="calTable"></table></div>
+      </div>
     </div>
 
     <div class="panel">
@@ -306,6 +338,69 @@ async function j(path){
   }
   $("dma").innerHTML = dhtml ||
     '<div class="empty">No moving-average breadth on disk yet — the daily refresh publishes it.</div>';
+
+  // ---- breadth calendar (collapsible, newest first)
+  // marketmood.json keeps a rolling history; today's "latest" is appended so the
+  // table always has a row for the session on screen even before the next bake
+  // folds it into history.
+  var hist = (mood && Array.isArray(mood.history)) ? mood.history.slice() : [];
+  if (mood && mood.latest && !hist.some(function(h){ return h && h.date === mood.latest.date; })) {
+    hist.push(mood.latest);
+  }
+  hist = hist.filter(Boolean).sort(function(a,b){
+    return String(b.date||"").localeCompare(String(a.date||""));
+  });
+
+  function labelColour(l){
+    l = String(l||"").toLowerCase();
+    if (l.indexOf("ex weak") === 0) return "var(--red)";
+    if (l.indexOf("weak") === 0) return "var(--red)";
+    if (l.indexOf("strong") === 0) return "var(--green)";
+    return "var(--amber)";
+  }
+  if (hist.length) {
+    var head = "<thead><tr><th>Date</th><th>Advancing</th><th>Declining</th>" +
+      "<th>% advancing</th><th>Avg move</th><th>Up &gt;5%</th><th>Down &gt;5%</th>" +
+      "<th>Mood</th></tr></thead>";
+    var body = hist.map(function(h){
+      var b = h.breadth || {};
+      var n = (b.up || 0) + (b.down || 0) + (b.flat || 0);
+      var pc = n ? (100 * (b.up || 0) / n) : null;
+      return "<tr><td>" + esc(h.date || "") + "</td>" +
+        "<td style='color:var(--green)'>" + (b.up != null ? b.up.toLocaleString("en-IN") : "—") + "</td>" +
+        "<td style='color:var(--red)'>" + (b.down != null ? b.down.toLocaleString("en-IN") : "—") + "</td>" +
+        "<td>" + (pc == null ? "—" :
+          "<span class='mini'><i style='width:" + pc.toFixed(1) + "%'></i></span> " +
+          pc.toFixed(1) + "%") + "</td>" +
+        "<td style='color:" + ((b.avg_pct || 0) >= 0 ? "var(--green)" : "var(--red)") + "'>" +
+          (b.avg_pct != null ? pctTxt(b.avg_pct) : "—") + "</td>" +
+        "<td>" + (b.up5 != null ? b.up5 : "—") + "</td>" +
+        "<td>" + (b.down5 != null ? b.down5 : "—") + "</td>" +
+        "<td><span class='lbl' style='color:" + labelColour(h.label) + "'>" +
+          esc(h.label || "—") + "</span> " +
+          (h.score != null ? "<span style='color:var(--muted)'>" + h.score + "</span>" : "") +
+        "</td></tr>";
+    }).join("");
+    $("calTable").innerHTML = head + "<tbody>" + body + "</tbody>";
+    $("calCount").textContent = hist.length + (hist.length === 1 ? " session" : " sessions");
+  } else {
+    $("calTable").innerHTML = "";
+    $("calCount").textContent = "no history yet";
+  }
+
+  // collapsed by default, consistent with the rest of the site
+  (function(){
+    var h = $("calToggle"), b = $("calBody");
+    function toggle(){
+      var open = h.getAttribute("aria-expanded") === "true";
+      h.setAttribute("aria-expanded", open ? "false" : "true");
+      b.hidden = open;
+    }
+    h.onclick = toggle;
+    h.onkeydown = function(e){
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    };
+  })();
 
   // ---- sector columns, strongest breadth first
   var rows = Object.keys(sectors).map(function(name){
