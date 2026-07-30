@@ -102,7 +102,7 @@
 </header>
 <div class="src" style="padding:10px 20px 0">Foreign-institutional net flow by sector (Screener /fii/). Inflows (green) vs outflows (red). This now feeds the <a href="sector.html">Sector Tailwind</a> score.</div>
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
-<div class="src" id="src">source: screener.in/fii/</div>
+<div class="src" id="src">Institutional holding changes, quarter on quarter.</div>
 <script>
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -122,7 +122,7 @@ function cell(c,r){const v=r[c.k];
 function render(){const rows=DATA.slice().sort((a,b)=>{let x=a[sort.k],y=b[sort.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?sort.dir*x.localeCompare(y):sort.dir*(x-y);});
  f('head').innerHTML=COLS.map(c=>{const cl=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';return `<th class="${cl}" data-k="${c.k}">${c.t}</th>`;}).join('');
  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sort.k===k)sort.dir*=-1;else{sort.k=k;sort.dir=-1;}render();});
- f('body').innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(c,r)).join('')+'</tr>').join('')||'<tr><td colspan="4" class="na" style="padding:18px">No FII data yet — runs once scanX scrapes screener.in/fii/.</td></tr>';}
+ f('body').innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(c,r)).join('')+'</tr>').join('')||'<tr><td colspan="4" class="na" style="padding:18px">No FII data yet — it builds in the daily refresh.</td></tr>';}
 async function load(){try{const j=await fetch('data/fii.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});DATA=j.sectors||[];
  const tt=j.totals||{};f('kFn').textContent=tt.fortnight!=null?inr(tt.fortnight):'–';f('kFn').className='v '+((tt.fortnight||0)>=0?'':'');
  f('kFn').style.color=(tt.fortnight||0)>=0?'var(--green)':'var(--red)';

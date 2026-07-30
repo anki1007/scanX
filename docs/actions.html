@@ -103,7 +103,7 @@
 <div class="bar"><div class="fld"><label>Search</label><input id="q" placeholder="company…" style="width:240px"></div></div>
 <div class="tabs" id="tabs"></div>
 <div class="tablebox"><table id="tbl"><thead><tr><th>Company</th><th>Action</th><th>Ex date</th><th style="text-align:left">Detail</th></tr></thead><tbody id="body"></tbody></table></div>
-<div class="src">source: screener.in/actions/ (dividend, bonus, split, right)</div>
+<div class="src">Corporate actions: dividend, bonus, split and rights.</div>
 <script>
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -116,7 +116,7 @@ function render(){let rs=DATA.slice();if(flt!=='all')rs=rs.filter(x=>x.action===
  if(q){const Q=q.toLowerCase();rs=rs.filter(x=>(x.company||'').toLowerCase().includes(Q));}
  f('body').innerHTML=rs.map(r=>`<tr><td><a href="fundamental.html?code=${encodeURIComponent(r.code)}">${esc(r.company||r.code)}</a></td>`+
   `<td>${badge(r.action)}</td><td>${esc(r.ex_date||'—')}</td><td style="text-align:left;white-space:normal">${esc(r.detail||'—')}</td></tr>`).join('')
-  ||'<tr><td colspan="4" class="na" style="padding:18px">No corporate actions yet — runs once scanX scrapes screener.in/actions/.</td></tr>';
+  ||'<tr><td colspan="4" class="na" style="padding:18px">No corporate actions yet — it builds in the daily refresh.</td></tr>';
  f('kShown').textContent=rs.length;}
 f('tabs').innerHTML=KINDS.map(([k,t],i)=>`<div class="tab ${i===0?'on':''}" data-k="${k}">${t}</div>`).join('');
 f('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{f('tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');flt=t.dataset.k;render();});

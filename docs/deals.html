@@ -103,7 +103,7 @@
 <div class="bar"><div class="fld"><label>Search</label><input id="q" placeholder="company / person…" style="width:240px"></div></div>
 <div class="tabs" id="tabs"></div>
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
-<div class="src">source: screener.in/trades/ (bulk, block, insider, SAST)</div>
+<div class="src">Bulk, block, insider and SAST transactions.</div>
 <script>
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -126,7 +126,7 @@ function rows(){let r=DATA.slice();if(flt!=='all')r=r.filter(x=>x.deal===flt);
 function render(){const rs=rows();
  f('head').innerHTML=COLS.map(c=>{const cl=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';return `<th class="${cl}" data-k="${c.k}">${c.t}</th>`;}).join('');
  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sort.k===k)sort.dir*=-1;else{sort.k=k;sort.dir=-1;}render();});
- f('body').innerHTML=rs.map(r=>'<tr>'+COLS.map(c=>cell(c,r)).join('')+'</tr>').join('')||'<tr><td colspan="7" class="na" style="padding:18px">No deals yet — runs once scanX scrapes screener.in/trades/.</td></tr>';
+ f('body').innerHTML=rs.map(r=>'<tr>'+COLS.map(c=>cell(c,r)).join('')+'</tr>').join('')||'<tr><td colspan="7" class="na" style="padding:18px">No deals yet — it builds in the daily refresh.</td></tr>';
  f('kShown').textContent=rs.length;}
 f('tabs').innerHTML=KINDS.map(([k,t],i)=>`<div class="tab ${i===0?'on':''}" data-k="${k}">${t}</div>`).join('');
 f('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{f('tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');flt=t.dataset.k;render();});

@@ -108,7 +108,7 @@
   <div class="fld"><label>Group</label><div class="chips" id="grpChips"></div></div>
 </div>
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
-<div class="src" id="src">source: docs/data/fundamental bundles (Screener) → scripts/refresh_banking.py</div>
+<div class="src" id="src">Built from the fundamental bundles scanX has already baked.</div>
 <script>
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -183,7 +183,7 @@ async function load(){
   f('kTime').innerHTML=(staleChip(ts)||'<span class="dot"></span>')+esc(ts||'live');
   buildControls();render();
  }catch(e){DATA=null;render();
-  f('src').textContent='No banking data yet — run python scripts/refresh_banking.py (reads local fundamental bundles, no network needed).';}
+  f('src').textContent='No banking data yet — it builds in the daily refresh.';}
 }
 load();setInterval(load,300000);
 </script>

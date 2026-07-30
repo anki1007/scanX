@@ -305,7 +305,7 @@ async function livePoll(){
       let n=0;
       DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()];
         if(x){ if(x.ltp!=null)d.ltp=x.ltp; if(x.pct!=null)d.pct_change=x.pct; n++; } });
-      if(n){ calcDrift(); render(); f('src').textContent='source: '+(META.source||'—')+' · ● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
+      if(n){ calcDrift(); render(); f('src').textContent='● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
     }
   }catch(e){}
   liveSchedule(60000);

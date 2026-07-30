@@ -205,7 +205,7 @@
 </div>
 <div id="vInd" style="display:none"></div>
 
-<div class="src" id="src">Vehicle REGISTRATIONS from the government Vahan dashboard (all-India, all categories).
+<div class="src" id="src">Vehicle REGISTRATIONS, all-India, all categories.
   Registrations trail factory dispatches, so these run slightly below a company's reported wholesale volumes.</div>
 </div></div>
 
@@ -367,7 +367,7 @@ function companyRows(all){
 function renderCompany(){
   if(!AUTO||!YEAR){
     f('boxC').style.display='none';f('empty').style.display='';
-    f('empty').textContent='No Vahan data yet — builds in the daily cloud refresh. '+
+    f('empty').textContent='No registration data yet — builds in the daily cloud refresh. '+
       'The government dashboard sometimes blocks datacenter IPs, in which case data lands on the next successful run.';
     return;
   }
@@ -482,7 +482,7 @@ function renderCat(){
         +'full prior years — read that column as a run-rate, not a finished year.</div>' : '')
     +'<div class="note">Showing '+shown.length+' of '+rs.length+' makers in '
       +esc(CATSEL[s.key])+'. Market share is against all '+all.length
-      +' makers Vahan lists for this '+(VIEW==='group'?'group':'category')+'.</div>';
+      +' makers listed for this '+(VIEW==='group'?'group':'category')+'.</div>';
   const h2=f('head2');
   if(h2){h2.innerHTML=headHtml(cols,sortK);wireHead(h2,sortK,renderCat);}
 }
@@ -682,8 +682,8 @@ async function load(){
     f('year').innerHTML=yrs.map(y=>'<option value="'+esc(y)+'"'+(y===YEAR?' selected':'')+'>'+esc(y)+'</option>').join('');
   }else{YEAR=null;f('year').innerHTML='';}
   f('kTime').innerHTML=(staleChip(META.generated_at_ist)||'<span class="dot"></span>')+esc(META.generated_at_ist||'live');
-  if(META.source) f('src').textContent='Source: '+META.source+
-    ' — registrations trail factory dispatches, so these run slightly below reported wholesale volumes.';
+  f('src').textContent =
+    'Registrations trail factory dispatches, so these run slightly below reported wholesale volumes.';
   render();
 }
 f('vbCompany').onclick=()=>setView('company');

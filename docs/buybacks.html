@@ -192,7 +192,7 @@ async function load(){
     ]);
     DATA=d||[]; META=m||{};
     f('kTime').innerHTML=(staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
-    f('src').textContent='source: '+(m.source||'BSE buy-back filings + Screener')+(m.prices?(' · '+m.prices):'');
+    f('src').textContent=(m.prices?String(m.prices):'');
     render();
   }catch(e){ f('src').textContent='data load error: '+e; }
 }

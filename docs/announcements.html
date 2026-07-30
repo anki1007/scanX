@@ -102,7 +102,7 @@
 </header>
 <div class="bar"><div class="fld"><label>Search</label><input id="q" placeholder="company / keyword…" style="width:280px"></div></div>
 <div class="tablebox"><table id="tbl"><thead><tr><th>Company</th><th style="text-align:left">Announcement</th><th>When</th></tr></thead><tbody id="body"></tbody></table></div>
-<div class="src">source: screener.in/announcements/</div>
+<div class="src">Exchange announcements, most recent first.</div>
 <script>
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -112,7 +112,7 @@ let DATA=[],q='';
 function render(){let rs=DATA.slice();if(q){const Q=q.toLowerCase();rs=rs.filter(x=>(x.company||'').toLowerCase().includes(Q)||(x.title||'').toLowerCase().includes(Q));}
  f('body').innerHTML=rs.map(r=>`<tr><td><a href="fundamental.html?code=${encodeURIComponent(r.code)}">${esc(r.company||r.code)}</a></td>`+
   `<td style="text-align:left;white-space:normal">${esc(r.title||'—')}</td><td class="na">${esc(r.when||'')}</td></tr>`).join('')
-  ||'<tr><td colspan="3" class="na" style="padding:18px">No announcements yet — runs once scanX scrapes screener.in/announcements/.</td></tr>';}
+  ||'<tr><td colspan="3" class="na" style="padding:18px">No announcements yet — it builds in the daily refresh.</td></tr>';}
 f('q').addEventListener('input',e=>{q=e.target.value.trim();render();});
 async function load(){try{const j=await fetch('data/announcements.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});DATA=j.rows||[];
  f('kN').textContent=DATA.length;f('kTime').innerHTML=(staleChip(j.generated_at_ist)||'<span class="dot"></span>')+esc(j.generated_at_ist||'live');render();}catch(e){render();}}

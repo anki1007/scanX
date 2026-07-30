@@ -570,7 +570,7 @@ function debateHtml(d){
   if(m.model) bits.push('model '+esc(String(m.model)));
   const ev=(d.evidence||[]).slice(0,8).map(function(e){
     return '<li><b>['+esc(e.id||'')+']</b> '+esc(e.fact||'')+
-      (e.value?' \u2014 '+esc(String(e.value)):'')+' <i>'+esc(e.source||'')+'</i></li>';
+      (e.value?' \u2014 '+esc(String(e.value)):'')+'</li>';
   }).join('');
   return body+'<div class="dsc">'+bits.map(function(b){return '<span>'+b+'</span>';}).join('')+'</div>'+
     (ev?'<details class="devi"><summary>Evidence both sides argued from</summary><ul>'+ev+'</ul></details>':'');
