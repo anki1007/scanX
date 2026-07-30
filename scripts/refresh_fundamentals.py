@@ -152,7 +152,29 @@ def _attach_swot(bundle: dict, code: str, sec=None) -> bool:
         return False
 
 
-def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
+def _ratios_fresh(stamp, today, days) -> bool:
+    """Are these ratios younger than `days`? PURE. Blank/garbage = stale.
+
+    Ratios come from QUARTERLY filings. Treating them as stale after one day
+    made the backfill restart at index 0 on every run, spend its whole budget
+    re-fetching the same leading ~1,261 companies, and never once reach the
+    other 4,200 -- which is why coverage sat at 32% and current_ratio at 1%
+    no matter how many days it ran.
+    """
+    if not stamp:
+        return False
+    if days <= 0:
+        return stamp == today
+    try:
+        a = time.strptime(str(stamp), "%Y-%m-%d")
+        b = time.strptime(str(today), "%Y-%m-%d")
+    except (ValueError, TypeError):
+        return False
+    delta = (time.mktime(b) - time.mktime(a)) / 86400.0
+    return 0 <= delta < days + 0.5
+
+
+def _backfill_ratios(out, codes, today, max_minutes: float = 0, fresh_days: int = 7) -> int:
     """Add Upstox ratios to bundles that already exist, without re-scraping Screener.
 
     A full bake skips any bundle already baked today, so bundles written before
@@ -185,7 +207,7 @@ def _backfill_ratios(out, codes, today, max_minutes: float = 0) -> int:
         # computed from a phantom period column, and without it those wrong
         # values would persist until the date rolled over.
         if (bundle.get("swot") and bundle.get("upstox_ratios")
-                and bundle.get("ratios_at") == today
+                and _ratios_fresh(bundle.get("ratios_at"), today, fresh_days)
                 and bundle.get("ratios_v") == RATIOS_VERSION):
             skipped += 1
             continue
@@ -280,6 +302,10 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "docs" / "data" / "fundamental"))
     ap.add_argument("--max-minutes", type=float, default=0,
                     help="stop baking after N minutes (0=no limit) so the cloud commits incrementally")
+    ap.add_argument("--ratios-days", type=int, default=7,
+                    help="treat ratios younger than N days as fresh and skip them "
+                         "(default 7). They come from quarterly filings; re-fetching "
+                         "daily made the pass restart at 0 and never finish the universe.")
     ap.add_argument("--ratios-only", action="store_true",
                     help="refresh ONLY the Upstox ratio/health block of bundles that already exist "
                          "(no Screener re-scrape) — backfills current ratio across the universe")
@@ -365,7 +391,7 @@ def main():
             if p.stem != "index" and p.stem not in seen_codes:
                 seen_codes.add(p.stem)
                 codes.append(p.stem)
-        return _backfill_ratios(out, codes, today, args.max_minutes)
+        return _backfill_ratios(out, codes, today, args.max_minutes, args.ratios_days)
     for i, code in enumerate(codes, 1):
         if args.max_minutes and (time.time() - _bake_start) > args.max_minutes * 60:
             print(f'[fund] time budget {args.max_minutes:.0f}min reached at {i}/{len(codes)} - committing what is baked'); break

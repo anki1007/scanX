@@ -114,12 +114,19 @@ jobs:
           run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
           #    each daily run bakes more new stocks until every listed name is covered
-          run python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 90
+          # completes in ~4s now the universe is fully baked; it only picks up
+          # genuinely new listings, so it does not need a 90-minute allowance
+          run python scripts/refresh_fundamentals.py --top 6000 --skip-any --max-minutes 25
           # Backfill the Upstox ratio/health block into bundles that already
           # exist. A normal bake skips anything baked today, so without this the
           # ~5,400 bundles written before the ratio feature would sit at "n/a"
           # forever — only newly-baked companies would ever show a current ratio.
-          run python scripts/refresh_fundamentals.py --ratios-only --top 6000 --max-minutes 20
+          # Budget moved here from the pass above, which no longer needs it.
+          # Measured throughput is ~63 companies/min, so 5,495 companies take
+          # ~87 minutes of wall clock; with the freshness window the first two
+          # runs finish the universe and every run after that only tops up what
+          # has aged past --ratios-days.
+          run python scripts/refresh_fundamentals.py --ratios-only --top 6000 --ratios-days 7 --max-minutes 60
           # banking heatmaps assemble from the bundles baked just above
           run python scripts/refresh_banking.py
           # daily close for EVERY baked company: the intraday quotes file only

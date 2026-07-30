@@ -71,3 +71,41 @@ def test_every_exported_secret_maps_to_a_same_named_secret():
             if env_name != secret_name:
                 odd.append(f"{wf.name}: env {env_name} <- secrets.{secret_name}")
     assert not odd, "env name differs from secret name:\n  " + "\n  ".join(odd)
+
+
+# ------------------------------------------------ the ratios backfill must finish
+def _refresh_boards_step():
+    import yaml
+    wf = yaml.safe_load((WF / "refresh-data.yml").read_text(encoding="utf-8"))
+    steps = wf["jobs"]["refresh"]["steps"]
+    return [s for s in steps if s.get("name") == "Refresh boards"][0]["run"]
+
+
+def test_the_ratios_backfill_has_enough_budget_to_finish_the_universe():
+    """Measured throughput is ~63 companies/min against 5,495 companies, so the
+    old 20-minute budget could only ever reach the first ~1,261 — and because
+    the skip test was "ratios_at == today", it restarted at index 0 every run
+    and re-did that same prefix forever. Coverage sat at 32%, current_ratio at
+    1%, with 4,223 bundles never touched."""
+    body = _refresh_boards_step()
+    m = re.search(r"--ratios-only[^\n]*--max-minutes (\d+)", body)
+    assert m, "no ratios-only step found"
+    assert int(m.group(1)) >= 45, "the backfill cannot reach the whole universe in this budget"
+
+
+def test_the_backfill_skips_by_age_not_by_calendar_day():
+    src = (ROOT / "scripts" / "refresh_fundamentals.py").read_text(encoding="utf-8")
+    code = "\n".join(ln for ln in src.splitlines() if not ln.lstrip().startswith("#"))
+    assert "_ratios_fresh(" in code, "the freshness window is not applied"
+    assert 'bundle.get("ratios_at") == today' not in code, \
+        "same-day-only skip re-fetches everything and never advances"
+
+
+def test_the_phase_one_budget_still_fits_the_job_timeout():
+    """Raising one budget must not push the job past its own ceiling — a timeout
+    there loses the whole phase, which is why the commit was split out."""
+    import yaml
+    wf = yaml.safe_load((WF / "refresh-data.yml").read_text(encoding="utf-8"))
+    limit = int(wf["jobs"]["refresh"]["timeout-minutes"])
+    spent = sum(int(m) for m in re.findall(r"--max-minutes (\d+)", _refresh_boards_step()))
+    assert spent < limit - 40, f"phase-1 budget {spent}min leaves too little slack under {limit}min"
