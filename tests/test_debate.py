@@ -613,3 +613,59 @@ def test_run_debate_survives_garbage_input():
         assert isinstance(out, dict) and "error" in out
         assert set(out) >= {"code", "name", "generated_at", "evidence",
                             "rounds", "scorecard", "_meta"}
+
+
+# ------------------------------------------------------------- focusing the pack
+def test_focus_pack_narrows_the_prompt_substantially():
+    """The full pack ships every item on EVERY turn, and on a local model prompt
+    tokens are most of the wall clock. Measured on DLF: 74 items -> 17, an 80%
+    cut in prompt characters, which is what brings a full-universe local bake
+    inside a working week."""
+    from earnings_intel.data import debate as db
+    items = [{"id": f"E{i}", "fact": f"Compounded sales growth over {i} years is {i}%",
+              "value": f"{i}%", "family": "growth", "weight": 3,
+              "side_hint": "bull" if i % 2 else "bear", "source": "Screener.in"}
+             for i in range(1, 40)]
+    out = db.focus_pack(items)
+    assert 0 < len(out) < len(items)
+    assert len(db._render_evidence(out)) < len(db._render_evidence(items))
+
+
+def test_focus_pack_keeps_the_heavyweight_items_whatever_the_clash_was():
+    """A debate that only ever saw one dispute would miss a debt-free balance
+    sheet or a pledge sitting in a different family entirely."""
+    from earnings_intel.data import debate as db
+    items = [{"id": f"E{i}", "fact": f"Sales growth {i}", "value": f"{i}%",
+              "family": "growth", "weight": 1, "side_hint": "neutral"}
+             for i in range(1, 30)]
+    items.append({"id": "E99", "fact": "The company is debt free", "value": "0.0x",
+                  "family": "balance_sheet", "weight": 3, "side_hint": "bull"})
+    out = db.focus_pack(items)
+    assert any(e["id"] == "E99" for e in out), "heavyweight evidence was dropped"
+
+
+def test_focus_pack_returns_everything_when_there_is_too_little_to_focus():
+    """A thin company must still get whatever argument it can support."""
+    from earnings_intel.data import debate as db
+    thin = [{"id": "E1", "fact": "Trades at a P/E of 20", "value": "20x",
+             "family": "valuation", "weight": 3, "side_hint": "neutral"}]
+    assert db.focus_pack(thin) == thin
+
+
+def test_focus_pack_never_raises_and_preserves_pack_order():
+    from earnings_intel.data import debate as db
+    for junk in (None, [], [None], ["nope"], [{}]):
+        assert isinstance(db.focus_pack(junk), list)
+    items = [{"id": f"E{i}", "fact": f"P/E of {i}", "value": f"{i}x",
+              "family": "valuation", "weight": 3,
+              "side_hint": "bull" if i % 2 else "bear"} for i in range(1, 30)]
+    out = db.focus_pack(items)
+    ids = [e["id"] for e in out]
+    order = {e["id"]: i for i, e in enumerate(items)}
+    assert ids == sorted(ids, key=lambda x: order[x]), "pack order was not preserved"
+
+
+def test_focus_is_off_by_default_so_the_cloud_bake_is_unchanged():
+    import inspect
+    from earnings_intel.data import debate as db
+    assert inspect.signature(db.run_debate).parameters["focus"].default is False

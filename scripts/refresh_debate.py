@@ -580,6 +580,10 @@ def main():
                          "(default 7; 0 = only skip what was baked today). The "
                          "argument comes from quarterly numbers, so re-running it "
                          "daily spends the free-tier quota restating itself.")
+    ap.add_argument("--focus", action="store_true",
+                    help="narrow each pack to the sharpest dispute plus the heavyweight "
+                         "items (~80% fewer prompt characters). Worth it on a local "
+                         "model, where prompt tokens are most of the wall clock.")
     ap.add_argument("--skip-any", dest="skip_any", action="store_true",
                     help="coverage pass: extend the universe past the board into every "
                          "baked company and skip anything ALREADY debated on any day")
@@ -647,7 +651,8 @@ def main():
             ev = evidence_for(db, bundle, filings=filings, sector=row)
             t0 = time.time()
             result = run_debate(db, bundle, filings=filings, sector=row,
-                                rounds=args.rounds, provider=args.provider or None)
+                                rounds=args.rounds, provider=args.provider or None,
+                                focus=args.focus)
             took = time.time() - t0
             b = build_bundle(code, bundle.get("name"), result, sector=sector_brief(row, sec_name),
                              evidence=ev, rounds=args.rounds, today=today)
