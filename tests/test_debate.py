@@ -14,6 +14,8 @@ sys.path.insert(0, str(ROOT))
 from earnings_intel.data import debate as D            # noqa: E402
 from earnings_intel.llm import LLMResponse             # noqa: E402
 
+import pytest
+
 
 # ------------------------------------------------------------------- fixtures
 def _cols(*vals):
@@ -669,3 +671,47 @@ def test_focus_is_off_by_default_so_the_cloud_bake_is_unchanged():
     import inspect
     from earnings_intel.data import debate as db
     assert inspect.signature(db.run_debate).parameters["focus"].default is False
+
+
+# ------------------------------------------- arithmetic the model got wrong
+def test_an_inverted_comparison_is_dropped():
+    """Found on the very first local bake: "profit growth ... stands at 4%,
+    which is HIGHER than the sector median of 37.5%". The citation was valid —
+    the pack really says 37.5% — so the grounding check passed it cleanly. The
+    claim is still false, and 16% of comparison sentences in that sample were
+    directionally wrong."""
+    from earnings_intel.data.debate import strip_inverted_comparisons as strip
+    bad = "Profit growth stands at 4%, which is higher than the sector median of 37.5%."
+    kept, dropped = strip(bad)
+    assert dropped == 1 and kept == ""
+
+
+def test_a_correct_comparison_survives():
+    from earnings_intel.data.debate import strip_inverted_comparisons as strip
+    good = "TTM profit growth is only 4%, which is lower than the sector median of 37.5%."
+    kept, dropped = strip(good)
+    assert dropped == 0 and kept == good
+
+
+@pytest.mark.parametrize("sentence", [
+    "Margins fell to 12% this year.",                       # one number
+    "Sales grew 41% YoY.",                                  # no comparison word
+    "P/E of 19.59x against a sector benchmark of 16.86x.",  # not percentages
+    "Growth was 10% and the sector was 10%.",               # equal
+    "",
+])
+def test_the_guard_is_conservative(sentence):
+    """A false positive deletes a TRUE sentence, which is the worse error — so it
+    fires only on exactly two percentages plus one unambiguous direction word."""
+    from earnings_intel.data.debate import _comparison_is_inverted
+    assert _comparison_is_inverted(sentence) is False
+
+
+def test_a_turn_left_with_nothing_carries_no_citations():
+    """Dropping the only claim must not leave a turn that cites evidence it no
+    longer discusses — the scorecard counts those citations."""
+    from earnings_intel.data import debate as db
+    valid = {"E1", "E2"}
+    text = "Profit growth is 4%, which is higher than the sector median of 37.5% [E1]."
+    out, cites, invalid, stripped = db._clean_turn(text, valid, None)
+    assert out == "" and cites == [] and stripped >= 1

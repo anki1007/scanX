@@ -59,7 +59,7 @@ from . import docanalysis as da
 
 log = logging.getLogger("technofunda.debate")
 
-__all__ = ["evidence_pack", "focus_pack", "run_debate", "scorecard", "FAMILY_WEIGHT",
+__all__ = ["evidence_pack", "focus_pack", "strip_inverted_comparisons", "run_debate", "scorecard", "FAMILY_WEIGHT",
            "HIGH_WEIGHT"]
 
 # --------------------------------------------------------------------- config
@@ -914,9 +914,77 @@ def _clean_turn(text: str, valid: set, corpus: str) -> tuple[str, list, list, in
             if i not in cites:
                 cites.append(i)
     out = " ".join(kept).strip()
+    # Arithmetic the model got wrong survives the citation check, because the
+    # ids are real -- only the direction between them is false. Dropped here for
+    # the same reason an invented citation is: a published research artefact
+    # must not assert that 4% is higher than 37.5%.
+    out, flipped = strip_inverted_comparisons(out)
+    stripped += flipped
+    if not out.strip():
+        cites = []
     if not cites:
         out = ""
     return out, cites, invalid, stripped
+
+
+# --------------------------------------------- pure: arithmetic the model got wrong
+# Words that assert a DIRECTION between two numbers in the same sentence.
+_CMP_HIGHER = ("higher than", "above", "exceeds", "exceeding", "greater than",
+               "outperforms", "ahead of", "more than")
+_CMP_LOWER = ("lower than", "below", "less than", "trails", "behind",
+              "underperforms", "short of", "weaker than")
+_CMP_RE = re.compile("|".join(re.escape(w) for w in _CMP_HIGHER + _CMP_LOWER), re.I)
+_PCT_RE = re.compile(r"(-?\d+(?:\.\d+)?)\s*%")
+_SENT_RE = re.compile(r"(?<=[.!?])\s+")
+
+
+def _comparison_is_inverted(sentence: str) -> bool:
+    """Does this sentence claim A > B when the numbers say otherwise? PURE.
+
+    A small local model gets citations right and arithmetic wrong. Observed on
+    the very first local bake: "profit growth ... stands at 4%, which is HIGHER
+    than the sector median of 37.5%". The citation was valid -- the pack really
+    does say 37.5% -- so the grounding check passed it cleanly. The claim is
+    still false, and on 5,000 companies that is thousands of inverted statements
+    published as research.
+
+    Deliberately conservative. It fires only when the sentence carries EXACTLY
+    two percentages and one unambiguous direction word, because a false positive
+    deletes a true sentence and that is the worse error.
+    """
+    text = str(sentence or "")
+    hit = _CMP_RE.search(text)
+    if not hit:
+        return False
+    nums = _PCT_RE.findall(text)
+    if len(nums) != 2:
+        return False
+    try:
+        first, second = float(nums[0]), float(nums[1])
+    except ValueError:
+        return False
+    if first == second:
+        return False
+    word = hit.group(0).lower()
+    claims_higher = any(word.startswith(w) for w in _CMP_HIGHER)
+    return claims_higher != (first > second)
+
+
+def strip_inverted_comparisons(text: str) -> tuple[str, int]:
+    """Drop sentences whose numeric comparison runs backwards. PURE.
+
+    Returns (kept_text, dropped_count). Consistent with how an invented citation
+    is handled: the sentence is deleted before publication rather than published
+    with a caveat, because a research artefact that states 4% > 37.5% is worse
+    than one that says less.
+    """
+    body = str(text or "").strip()
+    if not body:
+        return "", 0
+    sentences = _SENT_RE.split(body)
+    kept = [s for s in sentences if not _comparison_is_inverted(s)]
+    dropped = len(sentences) - len(kept)
+    return (" ".join(kept).strip(), dropped)
 
 
 # ------------------------------------------------------- pure: focusing the pack
