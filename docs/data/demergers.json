@@ -136,6 +136,18 @@
     "stage_date": "2026-04-29",
     "headlines": [
       {
+        "date": "30 Jul 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)- Scheme of Arrangement Please refer the enclosed file.\n\nVedanta approved demerger of real estate business into Announcement -\n    \n    30 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60f46404-ff50-41d5-8c65-4324c4bf1fa4.pdf"
+      },
+      {
+        "date": "30 Jul 2026",
+        "stage": "BOARD_APPROVED",
+        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release Announcement under Regulation 30 (LODR)-Press Release / Media Release\n\nVedanta announces Demerger of its Real Estate business\n\nBoard approved demerger Announcement -\n    \n    30 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=9adef360-bd45-451e-a454-1c50fc0cd610.pdf"
+      },
+      {
         "date": "29 Apr 2026",
         "stage": "LISTED",
         "text": "Disclosure Under Regulation 30 Of SEBI (LODR) Regulations, 2015 - Post-Demerger Update Demerger Update\n\nPlease refer the enclosed file.\n\nVedanta shared a post- demerger investor presentation on its website Announcement -\n    \n    29 Apr 2026",
@@ -1158,6 +1170,20 @@
     ]
   },
   {
+    "code": "THERMAX",
+    "name": "Thermax Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-07-30",
+    "headlines": [
+      {
+        "date": "30 Jul 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement held on July 30, 2026 have approved the proposed Scheme of Arrangement and Amalgamation between Thermax Bioenergy Solutions Private Limited ( Demerged Announcement -\n    \n    30 Jul 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77fac0a0-b0c7-4f0d-94b2-7404a902b3f0.pdf"
+      }
+    ]
+  },
+  {
     "code": "ASTRAL",
     "name": "Astral Ltd",
     "stage": "ANNOUNCED",
@@ -1238,20 +1264,6 @@
         "stage": "ANNOUNCED",
         "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release commenced trading on NSE and BSE on July 3, 2026 after demerger Announcement -\n    \n    03 Jul 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=722dd242-7fc2-44c5-8a2d-1eef64e468b0.pdf"
-      }
-    ]
-  },
-  {
-    "code": "GUJENERGY",
-    "name": "Gujarat Energy Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-05-01",
-    "headlines": [
-      {
-        "date": "1 May 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release effect.\"\n\nGSPC and GSPL merged into GGL; transmission business demerged into GTL, effective 1 May 2026 Announcement -\n    \n    01 May 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=cf17f125-f05d-4143-9f2b-3e39b2e887c9.pdf"
       }
     ]
   }
