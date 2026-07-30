@@ -86,46 +86,94 @@ class InstrumentResolver:
                     unresolved.append(symbol)
         if unresolved:
             logger.warning(
-                "unresolved symbols count=%d sample=%s (no NSE_EQ match in "
-                "instrument master — BSE-only codes need an explicit "
-                "SYMBOL,ISIN mapping file)",
+                "unresolved symbols count=%d sample=%s (no match in the NSE or "
+                "BSE instrument masters — a delisted or suspended scrip)",
                 len(unresolved), unresolved[:5],
             )
         return resolved, unresolved
 
     # -- instrument master -----------------------------------------------------
     def _load_mapping(self) -> dict[str, str]:
+        """SYMBOL -> ISIN, from the NSE master AND the BSE master.
+
+        Screener identifies BSE-only listings by their numeric scrip code
+        (500012, 544291, ...), and 2,457 of the 5,488 companies on the platform
+        are such codes. The NSE master cannot contain them by definition, so
+        every one of them used to fall out here — which is what the
+        "unresolved symbols ... BSE-only codes need an explicit mapping" line in
+        every run was reporting, and why the daily universe stopped at ~2,960.
+
+        No hand-maintained mapping file is needed: in Upstox's BSE master the
+        ``exchange_token`` IS the BSE scrip code, so it keys straight to the same
+        ISIN the rest of the pipeline already uses.
+
+        NSE wins on collisions. A company listed on both exchanges is the same
+        ISIN either way, but the NSE symbol is what the rest of scanX calls it.
+        """
         if self._symbol_to_isin is None:
+            mapping: dict[str, str] = {}
+
+            def collect(records, segment, keys):
+                found = 0
+                for record in records:
+                    if not isinstance(record, Mapping):
+                        continue
+                    if record.get("segment") != segment:
+                        continue
+                    isin = record.get("isin")
+                    if not (isinstance(isin, str) and ISIN_RE.match(isin)):
+                        continue
+                    for field in keys:
+                        value = record.get(field)
+                        if value is None:
+                            continue
+                        text = str(value).strip().upper()
+                        if text and text not in mapping:
+                            mapping[text] = isin
+                            found += 1
+                return found
+
             try:
-                records = self._load_master_records()
+                nse = self._load_master_records(self.settings.instruments_url,
+                                                self.settings.instruments_cache)
             except (OSError, ValueError, UpstoxLabError) as exc:
                 logger.error("instrument master unavailable error=%s", exc)
-                records = []
-            mapping: dict[str, str] = {}
-            for record in records:
-                if not isinstance(record, Mapping):
-                    continue
-                if record.get("segment") != "NSE_EQ":
-                    continue
-                symbol = record.get("trading_symbol")
-                isin = record.get("isin")
-                if isinstance(symbol, str) and isinstance(isin, str) and ISIN_RE.match(isin):
-                    mapping.setdefault(symbol.upper(), isin)
+                nse = []
+            n_nse = collect(nse, "NSE_EQ", ("trading_symbol",))
+
+            # BSE second so NSE keeps the name on any collision
+            n_bse = 0
+            bse_url = getattr(self.settings, "bse_instruments_url", "")
+            if bse_url:
+                cache = self.settings.instruments_cache
+                bse_cache = cache.with_name(cache.name.replace(".json", "_bse.json")
+                                            if ".json" in cache.name
+                                            else cache.name + ".bse")
+                try:
+                    bse = self._load_master_records(bse_url, bse_cache)
+                except (OSError, ValueError, UpstoxLabError) as exc:
+                    logger.warning("BSE instrument master unavailable error=%s", exc)
+                    bse = []
+                n_bse = collect(bse, "BSE_EQ", ("exchange_token", "trading_symbol"))
+
             self._symbol_to_isin = mapping
-            logger.info("instrument master loaded symbols=%d", len(mapping))
+            logger.info("instrument master loaded nse=%d bse=%d total=%d",
+                        n_nse, n_bse, len(mapping))
         return self._symbol_to_isin
 
-    def _load_master_records(self) -> list[Any]:
-        cache = self.settings.instruments_cache
+    def _load_master_records(self, url: str | None = None,
+                             cache: Path | None = None) -> list[Any]:
+        cache = cache or self.settings.instruments_cache
+        url = url or self.settings.instruments_url
         max_age = self.settings.instruments_max_age_hours * 3600.0
         if not cache.is_file() or (time.time() - cache.stat().st_mtime) > max_age:
-            self._download_master(cache)
+            self._download_master(cache, url)
         with gzip.open(cache, "rt", encoding="utf-8") as fh:
             data = json.load(fh)
         return data if isinstance(data, list) else []
 
-    def _download_master(self, cache: Path) -> None:
-        url = self.settings.instruments_url
+    def _download_master(self, cache: Path, url: str | None = None) -> None:
+        url = url or self.settings.instruments_url
         logger.info("downloading instrument master url=%s", url)
         session = self._session
         if session is None:
