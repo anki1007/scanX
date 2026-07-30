@@ -117,18 +117,46 @@ def _baked_on(path):
         return ""
 
 
-def _skip_baked(path, today, enabled=True, any_existing=False):
+def _fresh_within(stamp, today, days):
+    """Is `stamp` within `days` of `today`? PURE. Blank/garbage stamps are stale."""
+    if not stamp:
+        return False
+    if days <= 0:
+        return stamp == today
+    try:
+        a = time.strptime(stamp, "%Y-%m-%d")
+        b = time.strptime(today, "%Y-%m-%d")
+    except (ValueError, TypeError):
+        return False
+    delta = (time.mktime(b) - time.mktime(a)) / 86400.0
+    return 0 <= delta < days + 0.5          # tolerate DST shifting the boundary
+
+
+def _skip_baked(path, today, enabled=True, any_existing=False, fresh_days=0):
     """Skip decision for one code. PURE.
 
-    Two modes, because this board has two jobs. The daily job KEEPS the top names
-    current, so "already debated today" is the right skip. The coverage job walks
-    the rest of the universe a slice at a time and must never pay twice for a
-    company it already argued, whatever day that was — that is ``any_existing``.
+    Two modes, because this board has two jobs.
+
+    The refresh job keeps the headline names current. It used to skip only what
+    was debated TODAY, which meant it re-argued the same 100 companies every
+    single day -- roughly 600 model calls spent restating yesterday's argument,
+    on a free tier whose whole daily allowance is a few times that. A bull/bear
+    case is built from quarterly fundamentals and filings; it does not change
+    between Tuesday and Wednesday. ``fresh_days`` makes that window explicit.
+
+    The coverage job walks the rest of the universe a slice at a time and must
+    never pay twice for a company it already argued, whatever day that was --
+    that is ``any_existing``.
     """
     p = Path(path)
+    if not p.exists():
+        return False
+    stamp = _baked_on(p)
     if any_existing:
-        return p.exists() and bool(_baked_on(p))
-    return bool(enabled) and p.exists() and _baked_on(p) == today
+        return bool(stamp)
+    if not enabled:
+        return False
+    return _fresh_within(stamp, today, fresh_days)
 
 
 # Provider signatures for "you are rate-limited / out of quota / we are overloaded".
@@ -231,14 +259,25 @@ def universe(board, top=100, codes=""):
     return out, by_code
 
 
-def extend_universe(codes, fdir, cap):
-    """Append on-disk fundamental codes until `cap`, keeping order. PURE.
+def extend_universe(codes, fdir, cap, rows=None):
+    """Append on-disk fundamental codes until `cap`, LARGEST FIRST. PURE.
 
     The board (technofunda.json) only ranks a few hundred names, but the site
     publishes a bundle for every listed company — so "debate the whole platform"
     cannot be expressed as a bigger --top against the board alone. This walks
-    docs/data/fundamental/*.json, which IS the platform's universe, and appends
-    whatever the board never ranked.
+    docs/data/fundamental/*.json, which IS the platform's universe.
+
+    ORDER IS THE WHOLE POINT, and getting it wrong is not a cosmetic mistake.
+    This first shipped ordered by ``sorted(glob("*.json"))`` — alphabetical —
+    which on this repo means it starts at BSE numeric codes (504646, 505036, ...):
+    the most obscure microcaps on the platform. After a full day of baking, 38 of
+    the 40 LARGEST companies had no debate (no Reliance, no HDFC Bank, no TCS, no
+    Infosys) while names with a Rs 6 Cr market cap did. Every token went where
+    nobody looks.
+
+    Market cap descending instead, read from the board rows when available. Codes
+    the board never ranked keep alphabetical order among themselves and sort
+    last — they are the tail nobody searches for.
     """
     out = list(codes or [])
     seen = set(out)
@@ -246,16 +285,32 @@ def extend_universe(codes, fdir, cap):
     if len(out) >= cap:
         return out
     try:
-        paths = sorted(Path(fdir).glob("*.json"))
+        paths = list(Path(fdir).glob("*.json"))
     except Exception:  # noqa: BLE001
         return out
+
+    def mcap_of(code):
+        row = (rows or {}).get(code)
+        if isinstance(row, dict):
+            try:
+                v = float(row.get("mcap") or 0)
+                return v if v == v else 0.0        # NaN sorts with the unranked
+            except (TypeError, ValueError):
+                return 0.0
+        return 0.0
+
+    pending = []
     for path in paths:
-        if len(out) >= cap:
-            break
         code = path.stem.strip().upper()
         if code and code != "INDEX" and code not in seen:
-            seen.add(code)
-            out.append(code)
+            pending.append(code)
+    # -mcap first, then code, so the order is total and reproducible
+    pending.sort(key=lambda c: (-mcap_of(c), c))
+    for code in pending:
+        if len(out) >= cap:
+            break
+        seen.add(code)
+        out.append(code)
     return out
 
 
@@ -520,6 +575,11 @@ def main():
                     help="skip codes already debated today (DEFAULT ON; stamp read from the file)")
     ap.add_argument("--force", dest="skip_existing", action="store_false",
                     help="re-debate codes already done today — this costs tokens again")
+    ap.add_argument("--refresh-days", type=int, default=7,
+                    help="treat a debate younger than N days as fresh and skip it "
+                         "(default 7; 0 = only skip what was baked today). The "
+                         "argument comes from quarterly numbers, so re-running it "
+                         "daily spends the free-tier quota restating itself.")
     ap.add_argument("--skip-any", dest="skip_any", action="store_true",
                     help="coverage pass: extend the universe past the board into every "
                          "baked company and skip anything ALREADY debated on any day")
@@ -540,7 +600,7 @@ def main():
 
     codes, rows = universe(_read_board(Path(args.board)), args.top, args.codes)
     if args.skip_any:
-        codes = extend_universe(codes, Path(args.fundamental), args.top)
+        codes = extend_universe(codes, Path(args.fundamental), args.top, rows)
     if args.limit:
         codes = codes[:args.limit]
     if not codes:
@@ -562,7 +622,8 @@ def main():
     start = time.time()
     print(f"[debate] {len(codes)} companies, {args.rounds} rounds, provider "
           f"{args.provider or providers[0]} (credentialled: {', '.join(providers)})"
-          f"{' — re-debating everything (--force)' if not args.skip_existing else ''}")
+          f"{' — re-debating everything (--force)' if not args.skip_existing else ''}"
+          f"{'' if args.skip_any or not args.skip_existing else f', skipping anything debated in the last {args.refresh_days}d'}")
 
     for i, code in enumerate(codes, 1):
         spent = (time.time() - start) / 60.0
@@ -570,7 +631,7 @@ def main():
             print(f"[debate] time budget {args.max_minutes:.0f}min reached at "
                   f"{i}/{len(codes)} — committing what is baked"); break
         bf = out / f"{code}.json"
-        if _skip_baked(bf, today, args.skip_existing, args.skip_any):
+        if _skip_baked(bf, today, args.skip_existing, args.skip_any, args.refresh_days):
             skipped += 1; continue
         bundle = company_bundle(_read_json(fdir / f"{code}.json"), code,
                                 board_field(rows, code, "name"))

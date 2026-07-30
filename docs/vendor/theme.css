@@ -118,6 +118,19 @@
 .brand:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:7px}
 .brand small{pointer-events:none}
 
+/* -------------------------------------------------------- always-visible nav
+ * nav.js groups every .nav-i that FOLLOWS a .grpL heading, and groups start
+ * collapsed. That is the requested behaviour, but it means a new nav item added
+ * inside a group is invisible until someone thinks to expand that group -- which
+ * is exactly what happened to Market Breadth (buried in "Market Pulse") and to
+ * the route home. These two sit ABOVE the first heading, where nav.js cannot
+ * reach them, so they are always on screen.
+ */
+.nav-top{font-weight:600}
+.nav .nav-top{color:var(--text)}
+.nav .nav-top:last-of-type{margin-bottom:6px;padding-bottom:10px;
+  border-bottom:1px solid var(--line)}
+
 /* ---------------------------------------------------- evidence, not chrome
  * The score component notes ("P/E 19.43; DCF margin of safety 11.3%"), the
  * why-invest / why-not evidence lines ("Borrowings 32 Cr -> 5,504 Cr") and the

@@ -146,3 +146,42 @@ def test_sampling_preserves_the_advancing_ratio_not_just_the_count():
     assert "upKeep" in js and "downKeep" in js
     # the ratio must be derived from the real split, not assumed 50/50
     assert re.search(r"upKeep\s*=\s*Math\.round\(\s*keep\s*\*\s*\(\s*up\.length\s*/\s*total", js)
+
+
+# ------------------------------------- discoverability, not just reachability
+def test_home_and_breadth_sit_above_the_first_collapsing_group():
+    """A link that exists but is hidden is not a feature.
+
+    nav.js groups every .nav-i that FOLLOWS a .grpL heading, and groups start
+    COLLAPSED by request. Market Breadth was added inside "Market Pulse" (the 4th
+    group) and the route home was inside "Screens", so both shipped live and
+    invisible — reported as "I could not find this on the site". Anything above
+    the first heading is never grouped, so it can never be collapsed shut.
+    """
+    problems = []
+    for p in _pages():
+        text = p.read_text(encoding="utf-8")
+        first_group = text.find('class="grpL"')
+        for label, needle in (("Home", 'href="index.html"><span class="ic">\U0001F3E0'),
+                              ("Market Breadth", 'href="breadth.html"')):
+            at = text.find(needle)
+            if at < 0:
+                problems.append(f"{p.name}: {label} missing")
+            elif 0 <= first_group < at:
+                problems.append(f"{p.name}: {label} is inside a collapsing group")
+    assert not problems, "hidden nav items:\n  " + "\n  ".join(problems)
+
+
+def test_the_breadth_link_is_not_duplicated():
+    """It was moved out of the group, not copied — two entries is confusing."""
+    for p in _pages():
+        assert p.read_text(encoding="utf-8").count('href="breadth.html"') == 1, \
+            f"{p.name} links breadth.html more than once"
+
+
+def test_nav_js_only_groups_items_after_a_heading():
+    """The guarantee the fix above relies on. If nav.js ever starts grouping
+    items that PRECEDE the first .grpL, both links silently become hidden again."""
+    js = (DOCS / "vendor" / "nav.js").read_text(encoding="utf-8")
+    assert re.search(r"else\s+if\s*\(\s*cur\s*&&", js), \
+        "nav.js must only collect nav-i into a group once a heading has been seen"
