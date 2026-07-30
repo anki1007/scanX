@@ -162,3 +162,38 @@ def test_theme_js_persists_and_defaults_safely():
         assert theme in js, f"{theme} missing from the picker"
     # storage can throw in private mode; the page must still render
     assert "catch" in js
+
+
+# ------------------------------------------------- evidence text, not chrome
+def test_every_theme_declares_the_evidence_tier():
+    for name, palette in themes().items():
+        assert "evidence" in palette, f"{name} has no --evidence"
+
+
+def test_evidence_text_is_brighter_than_muted_on_every_theme():
+    """The score component notes, the why-invest evidence lines and the SWOT
+    evidence carry the NUMBERS behind every claim on the page. They were styled
+    var(--muted) at 11.5px, which is de-emphasised chrome styling applied to the
+    substance. --evidence sits close to body text instead."""
+    for name, palette in themes().items():
+        for surface in ("panel", "panel2", "chip"):
+            ev = contrast(palette["evidence"], palette[surface])
+            mu = contrast(palette["muted"], palette[surface])
+            assert ev > mu, f"{name}: evidence ({ev}) is not brighter than muted ({mu})"
+            assert ev >= AAA, f"{name}: evidence on {surface} is only {ev}"
+
+
+def test_the_evidence_rules_outrank_the_page_stylesheets():
+    """theme.css is linked BEFORE each page's <style> so page layout rules win.
+    That also means a bare `.cnote` here LOSES to the page's own
+    .cnote{color:var(--muted)} — which is exactly what happened first time.
+    The :root prefix makes it (0,2,0) against the page's (0,1,0)."""
+    # Comments must be stripped FIRST. The note above the rule explains that the
+    # colour wins "without !important", and a whole-file substring check reads
+    # that sentence as a use of it — which is how this test first failed.
+    css = re.sub(r"/\*.*?\*/", "", THEME_CSS.read_text(encoding="utf-8"), flags=re.S)
+    block = re.search(r"([^{}]*\.cnote[^{]*)\{\s*color:\s*var\(--evidence\)", css)
+    assert block, "no --evidence colour rule for .cnote"
+    assert ":root .cnote" in block.group(1), \
+        "the rule must be :root-prefixed or the page stylesheet wins"
+    assert "!important" not in css, "specificity should do this, not !important"

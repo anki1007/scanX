@@ -25,7 +25,7 @@
 :root[data-theme="dark"] {
   --bg:#0c111d; --panel:#141b2d; --panel2:#1b2438; --chip:#0f1726;
   --line:#33456a;
-  --text:#eef3fa; --muted:#a8b8d0;
+  --text:#eef3fa; --muted:#a8b8d0; --evidence:#d6e2f2;
   --teal:#2dd4bf; --teal2:#5eead4;
   --green:#4ade80; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
 
@@ -40,7 +40,7 @@
 :root[data-theme="emerald-blue"] {
   --bg:#071626; --panel:#0d2135; --panel2:#132c44; --chip:#0a1c2e;
   --line:#2b5a7d;
-  --text:#eaf4fb; --muted:#a3c2d8;
+  --text:#eaf4fb; --muted:#a3c2d8; --evidence:#d3e6f4;
   --teal:#34d399; --teal2:#6ee7b7;
   --green:#6ee7b7; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
 
@@ -54,7 +54,7 @@
 :root[data-theme="emerald-green"] {
   --bg:#06140f; --panel:#0c2018; --panel2:#122c21; --chip:#081a13;
   --line:#2a6349;
-  --text:#ecf7f1; --muted:#a5c9b6;
+  --text:#ecf7f1; --muted:#a5c9b6; --evidence:#d5ebe0;
   --teal:#5eead4; --teal2:#99f6e4;
   --green:#6ee7b7; --red:#fca5a5; --amber:#fcd34d; --purple:#c4b5fd;
 
@@ -70,7 +70,7 @@
 :root[data-theme="light-beige"] {
   --bg:#f4efe4; --panel:#fbf8f1; --panel2:#ece4d3; --chip:#e6ddc9;
   --line:#a89877;
-  --text:#1b1811; --muted:#4a4437;
+  --text:#1b1811; --muted:#4a4437; --evidence:#2b271c;
   /* teal2 is the LINK colour (a{color:var(--teal2)}). #00786a measured 3.99
    * on --chip -- below AA -- which the contrast test caught. #014a41 clears
    * AAA on every surface. On the dark themes teal2 is the LIGHTER of the
@@ -117,6 +117,34 @@
 .brand:hover{text-decoration:none;filter:brightness(1.18)}
 .brand:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:7px}
 .brand small{pointer-events:none}
+
+/* ---------------------------------------------------- evidence, not chrome
+ * The score component notes ("P/E 19.43; DCF margin of safety 11.3%"), the
+ * why-invest / why-not evidence lines ("Borrowings 32 Cr -> 5,504 Cr") and the
+ * SWOT evidence were all styled var(--muted) at 11.5px. That was a design
+ * mistake rather than a colour-value one: those lines carry the NUMBERS behind
+ * every claim on the page, so they are the substance, not de-emphasised chrome.
+ * --muted measures ~7.7-9.4 on these surfaces, which is AAA on paper and still
+ * reads faint at 11.5px next to a bold coloured score.
+ *
+ * They now use --evidence, which sits close to body text (11-14 on the same
+ * surfaces) and applies on every theme including the light one.
+ */
+/* Prefixed with :root deliberately. theme.css is linked BEFORE each page's own
+ * <style> so page layout rules keep winning -- which also means a bare .cnote
+ * here loses to the page's .cnote{color:var(--muted)}. :root .cnote is (0,2,0)
+ * against the page's (0,1,0), so the colour wins without !important and without
+ * touching 22 files. */
+:root .cnote, :root .whygrid .ev, :root .swe, :root .sw .swn,
+:root .cbar .cl, :root .gauge .gv span, :root .tchip .s .ct,
+:root .dcite, :root .devi {
+  color: var(--evidence);
+}
+/* ...and they were the smallest text on the page. 11.5px was doing as much of
+ * the damage as the colour. */
+:root .cnote, :root .whygrid .ev, :root .swe, :root .sw .swn {
+  font-size:13px; line-height:1.5;
+}
 
 /* Respect a reader who has asked for more contrast at the OS level. */
 @media (prefers-contrast: more) {
