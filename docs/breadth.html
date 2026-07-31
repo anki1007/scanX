@@ -229,23 +229,35 @@ async function j(path){
     });
   });
 
+  // A stock that did not trade is not participating in breadth. 727 of 5,073
+  // constituents came back at EXACTLY 0.00% -- illiquid BSE scrips with no trade
+  // that session -- and counting them in the denominator dragged "advancing"
+  // from 41% down to 35% while saying nothing about market direction.
+  //
+  // quotes_wide carries no volume field, so an exact 0.00% is the only available
+  // proxy for "no trade". It also catches the rare name that genuinely closed
+  // unchanged, which is why the count is REPORTED rather than quietly dropped.
   var up = stocks.filter(function(s){ return s.pct > 0; }).length;
   var dn = stocks.filter(function(s){ return s.pct < 0; }).length;
-  var flat = stocks.length - up - dn;
-  var advPct = stocks.length ? (100 * up / stocks.length) : 0;
+  var untraded = stocks.length - up - dn;
+  var traded = up + dn;
+  var advPct = traded ? (100 * up / traded) : 0;
 
-  $("stamp").textContent = "Daily closes for " + stocks.length.toLocaleString("en-IN") +
-    " stocks across " + Object.keys(sectors).length + " sectors" +
+  $("stamp").textContent = traded.toLocaleString("en-IN") + " stocks traded of " +
+    stocks.length.toLocaleString("en-IN") + " across " + Object.keys(sectors).length + " sectors" +
     (quotes.date ? " · " + quotes.date : "") + (quotes.ist ? " · " + quotes.ist : "");
 
   $("bigPct").textContent = advPct.toFixed(0) + "%";
   $("bigPct").style.color = advPct >= 50 ? "var(--green)" : "var(--red)";
-  $("bigCap").textContent = "of universe advancing";
+  $("bigCap").textContent = "of traded stocks advancing";
 
   var breadth = (mood && mood.latest && mood.latest.breadth) || {};
   var dma = (mood && mood.latest && mood.latest.dma) || {};
-  var avg = stocks.length
-    ? stocks.reduce(function(a,s){ return a + s.pct; }, 0) / stocks.length : 0;
+  // Same denominator as the headline: a name that did not trade has no move to
+  // average, and 727 zeroes pull the mean toward nothing.
+  var movers = stocks.filter(function(s){ return s.pct !== 0; });
+  var avg = movers.length
+    ? movers.reduce(function(a,s){ return a + s.pct; }, 0) / movers.length : 0;
 
   function kpi(label, value, colour, extra){
     return '<div class="kpi' + (extra ? " " + extra : "") + '"><span class="l">' +
@@ -258,7 +270,7 @@ async function j(path){
     dn.toLocaleString("en-IN") + '</span><div class="bar"><i style="width:' +
     advPct.toFixed(1) + '%"></i></div></div>';
   html += kpi("Average move", pctTxt(avg), avg >= 0 ? "var(--green)" : "var(--red)");
-  html += kpi("Unchanged", flat.toLocaleString("en-IN"));
+  html += kpi("Did not trade", untraded.toLocaleString("en-IN"));
   if (mood && mood.latest) {
     html += kpi("Mood score", mood.latest.score + " / 100",
                 mood.latest.score >= 50 ? "var(--green)" : "var(--red)");
@@ -272,7 +284,7 @@ async function j(path){
 
   if (window.Breadth3D) {
     var field = window.Breadth3D.mount($("field"), {
-      stocks: stocks, max: 560,
+      stocks: movers, max: 560,     // only names that actually traded
       onPick: function(p){ location.href = "fundamental.html?code=" + encodeURIComponent(p.code); }
     });
     var spinBtn = $("spinBtn"), resetBtn = $("resetBtn");
@@ -412,8 +424,9 @@ async function j(path){
     }).filter(Boolean);
     list.sort(function(a,b){ return b.pct - a.pct; });
     var u = list.filter(function(s){ return s.pct > 0; }).length;
-    return { name:name, list:list, up:u, n:list.length,
-             pct: list.length ? 100 * u / list.length : 0 };
+    var t = list.filter(function(s){ return s.pct !== 0; }).length;   // traded only
+    return { name:name, list:list, up:u, n:t, untraded:list.length - t,
+             pct: t ? 100 * u / t : 0 };
   }).filter(function(r){ return r.n >= 3; });
   rows.sort(function(a,b){ return b.pct - a.pct; });
 
@@ -428,7 +441,8 @@ async function j(path){
     var lose = r.list.slice(-4).reverse().filter(function(s){ return gain.indexOf(s) < 0; });
     return '<div class="sec"><header><h4>' + esc(r.name) + '</h4><span class="pct" style="color:' +
       (r.pct >= 50 ? "var(--green)" : "var(--red)") + '">' + r.pct.toFixed(0) + '%</span></header>' +
-      '<div class="meta">' + r.up + " of " + r.n + ' advancing</div>' +
+      '<div class="meta">' + r.up + " of " + r.n + ' traded advancing' +
+      (r.untraded ? ' (' + r.untraded + ' untraded)' : '') + '</div>' +
       '<div class="sbar"><i style="width:' + r.pct.toFixed(1) + '%"></i></div>' +
       '<div class="mvh">Top gainers</div>' + gain.map(mover).join("") +
       (lose.length ? '<div class="mvh">Top losers</div>' + lose.map(mover).join("") : "") +

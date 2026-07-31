@@ -322,3 +322,36 @@ def test_the_bse_instrument_master_is_configured():
     assert "DEFAULT_BSE_INSTRUMENTS_URL" in cfg
     assert "exchange/BSE.json.gz" in cfg
     assert "bse_instruments_url" in cfg
+
+
+# ------------------------------------------- breadth measures TRADED names only
+def test_untraded_names_are_excluded_from_the_breadth_denominator():
+    """727 of 5,073 constituents came back at EXACTLY 0.00% — illiquid BSE scrips
+    with no trade that session. Counting them dragged "advancing" from 41% down
+    to 35% while telling a reader nothing about market direction."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert "var traded = up + dn;" in html
+    assert "advPct = traded ?" in html, "the headline still divides by the full universe"
+    assert "var movers = stocks.filter" in html, "the average still includes non-movers"
+
+
+def test_the_untraded_count_is_reported_not_silently_dropped():
+    """quotes_wide has no volume field, so an exact 0.00% is only a PROXY for
+    "no trade" — it also catches the rare name that genuinely closed unchanged.
+    That is why the count is shown rather than quietly discarded."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert "Did not trade" in html
+    assert "stocks traded of" in html, "the stamp should state both numbers"
+
+
+def test_the_particle_field_plots_only_names_that_moved():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "stocks: movers" in html
+
+
+def test_sector_columns_use_the_same_denominator_as_the_headline():
+    """A sector reading 60% on traded names but 40% on all constituents would
+    contradict the number above it."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert "traded advancing" in html
+    assert "untraded)" in html, "the per-sector untraded count is not shown"
