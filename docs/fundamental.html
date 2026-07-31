@@ -326,9 +326,13 @@ async function overlayLivePrice(code){
     }catch(e){}
   }
   if(ltp==null) return;
-  el.innerHTML='₹'+Number(ltp).toLocaleString('en-IN',{maximumFractionDigits:2})
+  const money='₹'+Number(ltp).toLocaleString('en-IN',{maximumFractionDigits:2});
+  el.innerHTML=money
     +(pct!=null?' '+pctTxt(pct):'')
     +(src?` <span class="na" style="font-size:11px;font-weight:400">${esc(src)}</span>`:'');
+  // Same price in the Overview grid, or the page contradicts itself.
+  const card=f('ovPx');
+  if(card) card.innerHTML=money+(pct!=null?` <span style="font-size:12px">${pctTxt(pct)}</span>`:'');
 }
 
 /* ---------------- autocomplete ---------------- */
@@ -771,7 +775,12 @@ function render(d,swot,score){
   const ov=d.overview||{}, gr=d.growth||{}, q=d.quarters||{};
   const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
   const keys=order.filter(k=>ov[k]!=null).concat(Object.keys(ov).filter(k=>!order.includes(k)));
-  const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}</div><div class="v">${esc(ov[k])}</div></div>`).join('');
+  // The Current Price card is tagged so overlayLivePrice can refresh it too.
+  // It used to render straight from the bundle -- the BAKE-TIME price -- while
+  // only the header price was overlaid, so the page showed two different prices
+  // and the stale one sat in the metrics grid where a reader actually looks.
+  const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}</div><div class="v"${
+    k==='Current Price'?' id="ovPx"':''}>${esc(ov[k])}</div></div>`).join('');
 
   const span=['10 Years','5 Years','3 Years','TTM','1 Year','Last Year'];
   const gturn=Object.keys(gr).map(name=>{const v=gr[name];const cols=Object.keys(v).sort((a,b)=>span.indexOf(a)-span.indexOf(b));

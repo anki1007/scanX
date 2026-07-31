@@ -355,3 +355,25 @@ def test_sector_columns_use_the_same_denominator_as_the_headline():
     html = PAGE.read_text(encoding="utf-8")
     assert "traded advancing" in html
     assert "untraded)" in html, "the per-sector untraded count is not shown"
+
+
+# ------------------------------------------------- one price, not two
+def test_the_overview_price_card_is_refreshed_like_the_header_price():
+    """fundamental.html showed TWO prices: the header was overlaid with the live
+    quote while the Overview grid rendered `Current Price` straight from the
+    bundle — the BAKE-TIME price, which can be weeks old. The stale one sits in
+    the metrics grid where a reader actually looks."""
+    html = (DOCS / "fundamental.html").read_text(encoding="utf-8")
+    assert 'id="ovPx"' in html, "the Overview price card is not addressable"
+    overlay = html[html.index("function overlayLivePrice"):]
+    assert "ovPx" in overlay[:2200], "the overlay never updates the Overview card"
+
+
+def test_intraday_shows_stale_quotes_rather_than_an_empty_page():
+    """The fallback dropped quotes.json once it was 90 minutes old, which OUTSIDE
+    MARKET HOURS is always — so the page reported "no intraday data" while
+    holding a perfectly good snapshot. Age is stated in the header instead."""
+    html = (DOCS / "intraday.html").read_text(encoding="utf-8")
+    assert "age>5400" not in html.replace(" ", ""), "the hard staleness cutoff is back"
+    assert "quotes_wide.json" in html, "no fallback to the wide daily file"
+    assert "old'" in html or "old\"" in html, "the age is not surfaced to the reader"

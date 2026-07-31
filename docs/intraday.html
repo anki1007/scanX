@@ -137,6 +137,9 @@ function render(){
   f("kHigh").textContent=DATA.filter(d=>d.pead_category==='HIGH'&&Math.abs(d.pct_change||0)>=3).length;
   f("cnt").textContent=`(${DATA.length} symbols)`;
 }
+const EMPTY_MSG = "No price snapshot on disk yet. Movers are ranked from the " +
+  "delayed quotes the daily refresh publishes; the live tick engine needs the " +
+  "local server and does not run on the published site.";
 async function load(){
   try{
     const r=await fetch('data/intraday.json?t='+Date.now());
@@ -148,15 +151,24 @@ async function load(){
       DATA=rows; FALLBACK=false;
       f("kTime").innerHTML='<span class="dot"></span>'+esc((j.generated_at||'live').replace('T',' '));
       f("tbl").style.display=''; f("empty").style.display='none'; render();
-    } else if(!(await quotesFallback())) showEmpty("No movers yet this cycle.");
-  }catch(e){ if(!(await quotesFallback())) showEmpty("No intraday data yet — movers appear during market hours (09:15–15:30 IST)."); }
+    } else if(!(await quotesFallback())) showEmpty(EMPTY_MSG);
+  }catch(e){ if(!(await quotesFallback())) showEmpty(EMPTY_MSG); }
 }
 async function quotesFallback(){
   // GitHub mode: rank top |%| moves from the delayed NSE/BSE quotes snapshot
   try{
-    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();});
+    // Try the intraday snapshot first, then the WIDE daily file. Neither is
+    // rejected for age any more: the old code dropped quotes.json once it was
+    // 90 minutes old, which outside market hours is ALWAYS -- so the page showed
+    // "no intraday data" while holding a perfectly good snapshot. Age is stated
+    // in the header instead, which is the honest version of the same fact.
+    let q=null;
+    try{ q=await fetch('data/quotes.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();}); }catch(e){}
+    if(!q || !q.quotes || !Object.keys(q.quotes).length){
+      try{ q=await fetch('data/quotes_wide.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();}); }catch(e){}
+    }
+    if(!q || !q.quotes) return false;
     const age=(Date.now()/1000)-(q.ts||0);
-    if(!q.quotes || age>5400) return false;
     let pead={};
     try{ const p=await fetch('data/pead.json?t='+Date.now()).then(r=>{if(!r.ok) throw 0;return r.json();});
       (p||[]).forEach(x=>pead[String(x.code||'').toUpperCase()]={s:x.pead_score,c:x.pead_category}); }catch(e){}
@@ -171,7 +183,10 @@ async function quotesFallback(){
           pead_score:(pead[k]||{}).s??null,pead_category:(pead[k]||{}).c||''};});
     if(!DATA.length) return false;
     FALLBACK=true;
-    f("kTime").innerHTML='<span class="dot"></span>quotes '+esc(q.ist||'')+' · '+esc(q.source||'delayed');
+    const hrs=age>0?age/3600:0;
+    const stamp=(q.date?esc(q.date)+' ':'')+esc(q.ist||'')+
+      (hrs>2?' · '+(hrs<48?hrs.toFixed(0)+'h':(hrs/24).toFixed(0)+'d')+' old':'');
+    f("kTime").innerHTML='<span class="dot"></span>'+stamp;
     f("tbl").style.display=''; f("empty").style.display='none'; render();
     return true;
   }catch(e){ return false; }
