@@ -28,12 +28,24 @@ def test_one_median_per_sector_not_one_per_company():
     assert out["Chemicals"]["roce"]["n"] == 6
 
 
-def test_the_median_resists_a_single_absurd_reading():
-    """One company on a 900x P/E must not drag the benchmark somewhere no member
-    of the sector actually is — which a mean would."""
-    bundles = _bundles(5, {"pe": [20, 21, 22, 23, 900]})
-    out = sector_medians(bundles, {f"C{i}": "X" for i in range(5)})
-    assert out["X"]["pe"]["median"] == 22          # mean would be ~197
+def test_the_median_resists_a_single_extreme_reading():
+    """One company on a 400x P/E must not drag the benchmark somewhere no member
+    of the sector actually is — which a mean would.
+
+    400 rather than 900 deliberately: anything past 500x is treated as a data
+    error and filtered before the median ever sees it, so a 900 would test the
+    sanity gate instead of the statistic.
+    """
+    bundles = _bundles(6, {"pe": [20, 21, 22, 23, 24, 400]})
+    out = sector_medians(bundles, {f"C{i}": "X" for i in range(6)})
+    assert out["X"]["pe"]["n"] == 6
+    assert out["X"]["pe"]["median"] == pytest.approx(22.5)   # a mean would be ~85
+
+
+def test_a_reading_past_the_sanity_bound_is_a_data_error_not_an_outlier():
+    bundles = _bundles(6, {"pe": [20, 21, 22, 23, 24, 900]})
+    out = sector_medians(bundles, {f"C{i}": "X" for i in range(6)})
+    assert out["X"]["pe"]["n"] == 5, "the 900x reading should have been filtered"
 
 
 def test_a_thin_sector_publishes_nothing_rather_than_an_accident():
