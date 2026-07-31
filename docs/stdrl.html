@@ -71,6 +71,25 @@
     <div class="sub" id="stamp"><span class="spin"></span> loading…</div>
 
     <div class="panel">
+      <h3>Holdings — what to buy and hold</h3>
+      <p class="psub">A rules-based book. Every line states the signal that put it in and the
+        rule that would take it out. Deterministic: no model, no randomness, same inputs give
+        the same book.</p>
+      <div class="tscroll"><table class="ag" id="hold"></table></div>
+      <div class="note" id="rules"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Exits and replacements</h3>
+      <p class="psub">An exit needs only ONE trigger; an entry needs every gate to pass. A name
+        that exits is barred from re-entry for a cool-off, so a stop cannot be undone by the
+        next pass buying it straight back.</p>
+      <div class="tscroll"><table class="ag" id="exits"></table></div>
+      <h4 style="margin:16px 0 4px;font-size:13.5px">Next in line</h4>
+      <div class="tscroll"><table class="ag" id="watch"></table></div>
+    </div>
+
+    <div class="panel">
       <h3>Agent comparison</h3>
       <p class="psub">Deep reinforcement-learning agents trained on a basket of NSE/BSE names and
         ranked on risk-adjusted return. Training runs offline; this page shows the baked result.</p>
@@ -109,6 +128,65 @@ function signed(v){
   return '<span class="'+(v>=0?'pos':'neg')+'">'+(v>=0?'+':'')+Number(v).toFixed(2)+'%</span>';
 }
 var PALETTE = ["var(--teal)","var(--amber)","var(--purple)","var(--green)","var(--red)","var(--teal2)"];
+
+// ---------------------------------------------------------------- the book
+(async function(){
+  var b;
+  try {
+    var rb = await fetch("data/portfolio.json?t=" + Date.now());
+    if (!rb.ok) throw 0;
+    b = await rb.json();
+  } catch (e) {
+    $("hold").innerHTML = '<tr><td class="empty">No book published yet — run ' +
+      '<code>python scripts/refresh_portfolio.py</code>.</td></tr>';
+    return;
+  }
+  var R = b.rules || {};
+  $("rules").innerHTML =
+    "Enter when the analysis score is at least <b>" + R.entry_score + "</b>, the sector is not " +
+    "in a headwind, market cap is above <b>" + (R.min_mcap_cr||0).toLocaleString("en-IN") +
+    " Cr</b>, cash backs the profit, and the P/E is under <b>" + R.max_pe_vs_sector +
+    "x</b> the sector. Exit on ANY of: score below <b>" + R.exit_score + "</b>, a <b>" +
+    R.stop_pct + "%</b> stop from entry, the sector turning to a headwind, valuation stretching " +
+    "past <b>" + R.max_pe_vs_sector + "x</b> the sector, or the name leaving the screen. " +
+    "Cool-off before re-entry: <b>" + R.cooloff_days + " days</b>.";
+
+  $("hold").innerHTML =
+    "<thead><tr><th>#</th><th>Code</th><th>Company</th><th>Sector</th><th>Score</th>" +
+    "<th>Entry</th><th>Last</th><th>Change</th><th>Buy signal</th></tr></thead><tbody>" +
+    (b.holdings||[]).map(function(h, i){
+      return "<tr><td>" + (i+1) + "</td><td><a href='fundamental.html?code=" +
+        encodeURIComponent(h.code) + "'>" + esc(h.code) + "</a></td>" +
+        "<td>" + esc(h.name||"") + "</td><td>" + esc(h.sector||"") + "</td>" +
+        "<td>" + num(h.score,1) + "</td><td>" + num(h.entry_price) + "</td>" +
+        "<td>" + num(h.last_price) + "</td><td>" + signed(h.change_pct) + "</td>" +
+        "<td style='text-align:left;white-space:normal;color:var(--evidence,var(--muted))'>" +
+        esc((h.reasons||[]).join("; ")) + "</td></tr>";
+    }).join("") + "</tbody>";
+
+  $("exits").innerHTML = (b.exits||[]).length
+    ? "<thead><tr><th>Code</th><th>Company</th><th>Entry</th><th>Exit</th><th>Change</th>" +
+      "<th>Trigger</th><th>Re-entry barred until</th></tr></thead><tbody>" +
+      b.exits.map(function(e){
+        return "<tr><td>" + esc(e.code) + "</td><td>" + esc(e.name||"") + "</td>" +
+          "<td>" + num(e.entry_price) + "</td><td>" + num(e.exit_price) + "</td>" +
+          "<td>" + signed(e.change_pct) + "</td>" +
+          "<td style='text-align:left;white-space:normal' class='neg'>" +
+          esc((e.triggers||[]).join("; ")) + "</td>" +
+          "<td>" + esc(e.cooloff_until||"—") + "</td></tr>";
+      }).join("") + "</tbody>"
+    : "<tbody><tr><td class='empty'>No exits triggered this pass.</td></tr></tbody>";
+
+  $("watch").innerHTML =
+    "<thead><tr><th>Code</th><th>Company</th><th>Score</th><th>Sector</th>" +
+    "<th>What is blocking it</th></tr></thead><tbody>" +
+    (b.watchlist||[]).slice(0,10).map(function(w){
+      return "<tr><td>" + esc(w.code) + "</td><td>" + esc(w.name||"") + "</td>" +
+        "<td>" + num(w.score,1) + "</td><td>" + esc(w.sector||"") + "</td>" +
+        "<td style='text-align:left;white-space:normal;color:var(--evidence,var(--muted))'>" +
+        esc((w.blockers||[]).join("; ")) + "</td></tr>";
+    }).join("") + "</tbody>";
+})();
 
 (async function(){
   var d;

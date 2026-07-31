@@ -165,3 +165,98 @@ def test_the_published_ranking_includes_the_benchmark():
               "Buy & hold": [100000 * (1.015 ** i) for i in range(60)]}
     out = rs.build_payload(curves, meta={"periods_per_year": 12})
     assert "Buy & hold" in {a["agent"] for a in out["agents"]}
+
+
+# ------------------------------------------------- the buy / hold / exit book
+def _cand(code, score, **kw):
+    row = {"code": code, "name": code, "score": score, "ltp": 100.0,
+           "sector": "X", "sector_signal": "TAILWIND", "mcap": 9000.0}
+    row.update(kw)
+    return row
+
+
+def test_a_stopped_out_name_is_not_re_bought_in_the_same_pass():
+    """The first version sold AAA at -22% and bought it straight back — which is
+    not a stop loss, it is a round trip that pays costs twice and leaves the
+    position exactly where the rule said it must not be."""
+    from earnings_intel.data.portfolio import rebalance
+    prev = [{"code": "AAA", "entry_price": 100.0, "entry_date": "2026-01-01", "score": 7.0}]
+    cands = [_cand("AAA", 7.0, ltp=78.0), _cand("NEW", 8.1, ltp=50.0)]
+    book = rebalance(prev, cands, size=5, today="2026-07-31")
+    assert [e["code"] for e in book["exits"]] == ["AAA"]
+    assert "AAA" not in [e["code"] for e in book["entries"]]
+    assert "NEW" in [e["code"] for e in book["entries"]]
+
+
+def test_the_cooloff_survives_into_the_next_pass():
+    from earnings_intel.data.portfolio import rebalance
+    prev = [{"code": "AAA", "entry_price": 100.0, "entry_date": "2026-01-01", "score": 7.0}]
+    cands = [_cand("AAA", 8.5, ltp=78.0)]
+    first = rebalance(prev, cands, size=5, today="2026-07-31")
+    again = rebalance(first["holdings"] + first["exits"], cands, size=5, today="2026-08-05")
+    assert "AAA" not in [e["code"] for e in again["entries"]], "cool-off ignored"
+
+
+@pytest.mark.parametrize("score,row,trigger", [
+    (3.9, {}, "score fell"),
+    (7.0, {"sector_signal": "HEADWIND"}, "headwind"),
+    (7.0, {"pe": 200.0, "pe_sector": 20.0}, "stretched"),
+    (7.0, {"ltp": 70.0}, "stop hit"),
+])
+def test_each_exit_rule_fires_on_its_own(score, row, trigger):
+    """An exit needs only ONE trigger — the asymmetry with entry is the point.
+
+    `score` is passed separately because _cand takes it positionally; supplying
+    it through **kw as well is a TypeError, which is how this test first failed.
+    """
+    from earnings_intel.data.portfolio import exit_signal
+    holding = {"code": "A", "entry_price": 100.0}
+    verdict = exit_signal(holding, _cand("A", score, **row))
+    assert verdict["ok"], f"no trigger fired for {row}"
+    assert any(trigger in t for t in verdict["triggers"]), verdict["triggers"]
+
+
+def test_a_name_that_leaves_the_screen_is_sold_not_silently_kept():
+    from earnings_intel.data.portfolio import exit_signal
+    verdict = exit_signal({"code": "GONE", "entry_price": 100.0, "last_price": 90.0}, None)
+    assert verdict["ok"] and "no longer in the screened universe" in verdict["triggers"]
+
+
+def test_entry_needs_every_gate_but_still_reports_why_it_failed():
+    """The watchlist shows 'would qualify except for X', not a bare no."""
+    from earnings_intel.data.portfolio import entry_signal
+    sig = entry_signal(_cand("A", 8.8, mcap=160.0))
+    assert not sig["ok"]
+    assert any("market cap" in b for b in sig["blockers"])
+    assert any("8.8" in r for r in sig["reasons"])       # the good part is kept
+
+
+def test_a_loss_making_company_never_qualifies():
+    from earnings_intel.data.portfolio import entry_signal
+    assert not entry_signal(_cand("A", 8.0, pe=-12.0))["ok"]
+    assert not entry_signal(_cand("A", 8.0, health={"ocf_np": {"value": -0.5}}))["ok"]
+
+
+def test_exits_free_seats_for_entries_in_the_same_pass():
+    """Entries first would cap the book while holding names already on the way out."""
+    from earnings_intel.data.portfolio import rebalance
+    prev = [{"code": f"OLD{i}", "entry_price": 100.0, "score": 7.0} for i in range(3)]
+    cands = [_cand(f"OLD{i}", 3.0) for i in range(3)] + [_cand(f"N{i}", 8.0) for i in range(3)]
+    book = rebalance(prev, cands, size=3, today="2026-07-31")
+    assert len(book["exits"]) == 3 and len(book["entries"]) == 3
+    assert len(book["holdings"]) == 3
+
+
+def test_the_book_is_deterministic():
+    from earnings_intel.data.portfolio import rebalance
+    cands = [_cand(f"C{i}", 6.0 + i * 0.1) for i in range(20)]
+    a = rebalance([], cands, size=5, today="2026-07-31")
+    b = rebalance([], cands, size=5, today="2026-07-31")
+    assert [h["code"] for h in a["holdings"]] == [h["code"] for h in b["holdings"]]
+
+
+def test_the_page_renders_the_book_and_the_rules():
+    page = (ROOT / "docs" / "stdrl.html").read_text(encoding="utf-8")
+    assert "data/portfolio.json" in page
+    for el in ('id="hold"', 'id="exits"', 'id="watch"', 'id="rules"'):
+        assert el in page, f"missing {el}"
