@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from earnings_intel.data import analytics as A  # noqa: E402
 from earnings_intel.data import ratios as R     # noqa: E402
 
+import pytest
+
 HDRS = ["Mar 2024", "Mar 2025", "Mar 2026"]
 
 
@@ -284,3 +286,66 @@ def test_real_ratios_payloads_flow_into_the_health_panel():
     assert h["peers"]["pe"]["bias"] == "negative"     # 20.15 vs a 12.46 sector: expensive
     assert h["peers"]["roe"]["bias"] == "negative"    # 8.94% vs 16.46%: trailing
     assert h["peers"]["roe"]["unit"] == "pct"
+
+
+# --------------------------------------- the real balance-sheet payload shape
+def _bs(rows):
+    return {"data": {"full_statement": rows}}
+
+
+def test_periods_nested_under_history_are_parsed():
+    """The CI log said this on EVERY run, 2,847 times:
+
+        balance-sheet: no period columns recognised;
+        row keys seen: ['history', 'particular']
+
+    Periods are nested inside `history`, not spread across the row as sibling
+    keys. Rejecting "history" as a period NAME was only half the fix — without
+    descending into it every balance sheet parsed to nothing, which is why
+    current_ratio sat at 30 of 5,498 companies."""
+    from earnings_intel.data.ratios import ratios_from_balance_sheet
+    out = ratios_from_balance_sheet(_bs([
+        {"particular": "Total Current Assets",
+         "history": [{"period": "2026-03-31", "value": 320.0},
+                     {"period": "2025-03-31", "value": 300.0}]},
+        {"particular": "Total Current Liabilities",
+         "history": [{"period": "2026-03-31", "value": 270.0}]},
+    ]))
+    assert out["current_ratio"]["value"] == pytest.approx(320 / 270, abs=0.01)
+    assert out["current_ratio"]["period"] == "2026-03-31"
+
+
+def test_a_particular_is_matched_on_the_wording_the_payload_actually_uses():
+    """The constants say "current assets"; real statements say "Total Current
+    Assets". An exact match found none of them."""
+    from earnings_intel.data.ratios import ratios_from_balance_sheet
+    out = ratios_from_balance_sheet(_bs([
+        {"particular": "Total Current Assets", "history": [{"period": "2026-03-31", "value": 100.0}]},
+        {"particular": "Total Current Liabilities", "history": [{"period": "2026-03-31", "value": 50.0}]},
+    ]))
+    assert out["current_ratio"]["value"] == pytest.approx(2.0)
+
+
+def test_current_liabilities_is_not_confused_with_NON_current_liabilities():
+    """"Total Non Current Liabilities" CONTAINS "current liabilities", so a
+    naive substring match would compute a completely different ratio and publish
+    it as the current ratio. Shortest containing match wins."""
+    from earnings_intel.data.ratios import ratios_from_balance_sheet
+    out = ratios_from_balance_sheet(_bs([
+        {"particular": "Total Current Assets", "history": [{"period": "2026-03-31", "value": 320.0}]},
+        {"particular": "Total Non Current Liabilities", "history": [{"period": "2026-03-31", "value": 90.0}]},
+        {"particular": "Total Current Liabilities", "history": [{"period": "2026-03-31", "value": 270.0}]},
+        {"particular": "Total Equity Capital", "history": [{"period": "2026-03-31", "value": 450.0}]},
+    ]))
+    assert out["current_ratio"]["value"] == pytest.approx(320 / 270, abs=0.01)
+    assert out["debt_equity_proxy"]["value"] == pytest.approx(0.2, abs=0.01)
+
+
+def test_the_sibling_key_shape_still_works():
+    """Some payloads DO spread periods across the row; both shapes must parse."""
+    from earnings_intel.data.ratios import ratios_from_balance_sheet
+    out = ratios_from_balance_sheet(_bs([
+        {"particular": "Current Assets", "2026-03-31": 200.0},
+        {"particular": "Current Liabilities", "2026-03-31": 100.0},
+    ]))
+    assert out["current_ratio"]["value"] == pytest.approx(2.0)

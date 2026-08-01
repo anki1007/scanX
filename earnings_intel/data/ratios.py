@@ -268,6 +268,32 @@ def _statement_index(full_statement: Any) -> dict[str, dict[str, float]]:
             if number is None:
                 continue
             bucket.setdefault(period, number)
+
+        # The periods are usually nested under `history`, not spread across the
+        # row as sibling keys. Rejecting "history" as a period name (which it is
+        # not) was only half the fix — without descending INTO it, 2,847 balance
+        # sheets parsed to nothing and every one of those companies showed
+        # "current ratio n/a". The log said so on every run:
+        #   "no period columns recognised; row keys seen: ['history','particular']"
+        history = row.get("history")
+        if isinstance(history, list):
+            for entry in history:
+                if not isinstance(entry, Mapping):
+                    continue
+                period, number = "", None
+                for key, value in entry.items():
+                    name = str(key).strip()
+                    if _is_period(name) and _to_number(value) is not None:
+                        # a period-shaped KEY carrying the value
+                        period, number = name, _to_number(value)
+                        break
+                    low = name.lower()
+                    if low in {"period", "date", "year", "as_on", "asondate"}:
+                        period = str(value).strip()
+                    elif low in {"value", "amount", "figure"}:
+                        number = _to_number(value)
+                if period and number is not None and _is_period(period):
+                    bucket.setdefault(period, number)
     if not any(index.values()):
         # No row yielded a period we recognise. Name the keys we saw so the
         # real payload shape shows up in the log instead of being guessed at.
@@ -290,6 +316,41 @@ def _latest_common_period(
     return max(common, key=lambda period: (_period_sort_key(period), period))
 
 
+def _lookup(index: Mapping[str, dict[str, float]], label: str) -> dict[str, float]:
+    """Find a particular by name, tolerating the wording the payload actually uses.
+
+    The constants say "current assets"; real statements say "Total Current
+    Assets", "Total current assets", sometimes with a trailing note. An exact
+    match found none of them, so every balance sheet parsed to an index and then
+    yielded no ratio.
+
+    Exact first, then the SHORTEST containing match — shortest so that
+    "current liabilities" prefers "Total Current Liabilities" over
+    "Total Non Current Liabilities", which contains the phrase too and would
+    otherwise silently compute a completely different ratio.
+    """
+    exact = index.get(label)
+    if exact:
+        return exact
+    hits = []
+    for name, row in index.items():
+        if label not in name or not row:
+            continue
+        # A containing match must not INVERT the meaning. "Total Non Current
+        # Liabilities" contains "current liabilities", so with the real row
+        # absent this would compute the CURRENT ratio from NON-current
+        # liabilities and publish it as fact. An existing test caught it.
+        before = name[:name.index(label)]
+        if before.strip().endswith(("non", "non-")):
+            continue
+        hits.append((name, row))
+    if not hits:
+        return {}
+    # shortest wins, so an exact-ish name beats a longer one that merely contains it
+    hits.sort(key=lambda kv: (len(kv[0]), kv[0]))
+    return hits[0][1]
+
+
 def _derived_ratio(
     index: Mapping[str, dict[str, float]],
     numerator_label: str,
@@ -298,8 +359,8 @@ def _derived_ratio(
     denominator_key: str,
 ) -> dict[str, Any] | None:
     """Compute one derived ratio, or ``None`` when it cannot be stated honestly."""
-    numerator = index.get(numerator_label) or {}
-    denominator = index.get(denominator_label) or {}
+    numerator = _lookup(index, numerator_label)
+    denominator = _lookup(index, denominator_label)
     period = _latest_common_period(numerator, denominator)
     if period is None:
         return None
