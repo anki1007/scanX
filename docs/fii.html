@@ -101,7 +101,7 @@
   <div class="ptitle">FII Sector Flows</div>
   <div class="kpis"><div class="kpi"><div class="v" id="kFn">–</div><div class="l">Fortnight Net ₹Cr</div></div><div class="kpi"><div class="v teal" id="kY1">–</div><div class="l">1Y Net ₹Cr</div></div><div class="kpi"><div class="v" id="kSec">–</div><div class="l">Sectors</div></div><div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (auto 60s)</div></div></div>
 </header>
-<div class="src" style="padding:10px 20px 0">Foreign-institutional net flow by sector (Screener /fii/). Inflows (green) vs outflows (red). This now feeds the <a href="sector.html">Sector Tailwind</a> score.</div>
+<div class="src" style="padding:10px 20px 0">Foreign-institutional net flow by sector (institutional-flow filings). Inflows (green) vs outflows (red). This now feeds the <a href="sector.html">Sector Tailwind</a> score.</div>
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
 <div class="src" id="src">Institutional holding changes, quarter on quarter.</div>
 <script>
@@ -129,7 +129,7 @@ async function load(){try{const j=await fetch('data/fii.json?t='+Date.now()).the
  f('kFn').style.color=(tt.fortnight||0)>=0?'var(--green)':'var(--red)';
  f('kY1').textContent=tt.oneY!=null?inr(tt.oneY):'–';f('kY1').style.color=(tt.oneY||0)>=0?'var(--green)':'var(--red)';
  f('kSec').textContent=DATA.length;f('kTime').innerHTML=(staleChip(j.generated_at_ist)||'<span class="dot"></span>')+esc(j.generated_at_ist||'live');render();}
- catch(e){f('src').textContent='No FII data yet — run scanX (needs a logged-in Screener session).';}}
+ catch(e){f('src').textContent='No FII data yet — run scanX (needs a logged-in session).';}}
 load();setInterval(load,60000);
 
 </script>

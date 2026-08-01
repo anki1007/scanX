@@ -116,7 +116,6 @@ let DATA=[],s={k:"pct_change",d:-1},FALLBACK=false;
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const pct=v=>v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(1)}%</span>`;
-const url=c=>'https://www.screener.in/company/'+encodeURIComponent(c)+'/';
 function render(){
   // GitHub/static fallback: quotes.json rows may lack some engine columns — drop the all-empty ones
   const cols=FALLBACK?COLS.filter(c=>c[0]==='symbol'||DATA.some(r=>r[c[0]]!=null)):COLS;

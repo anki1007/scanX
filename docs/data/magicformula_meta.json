@@ -1,9 +1,1 @@
-{
- "generated_at_ist": "2026-07-31 20:25:42 IST",
- "source": "screener.in screen",
- "query": "Return on capital employed > 0 AND EVEBITDA > 0",
- "universe": 2488,
- "ranked": 2488,
- "financials_flagged": 185,
- "mcap_floor": 0.0
-}
+{"generated_at_ist":"2026-07-31 20:25:42 IST","source":"stock screen","query":"Return on capital employed > 0 AND EVEBITDA > 0","universe":2488,"ranked":2488,"financials_flagged":185,"mcap_floor":0.0}

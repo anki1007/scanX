@@ -137,6 +137,14 @@ jobs:
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           exit 0
 
+      # The site never names its data vendor. This runs after every refresh
+      # script and before the commit, so a script can be written without
+      # thinking about the rule and a new one cannot reintroduce the leak.
+      # Idempotent, and it never fails the run.
+      - name: Redact data-source names
+        if: always()
+        run: python scripts/redact_sources.py || true
+
       - name: Commit & push board data
         run: |
           bash scripts/ci_commit.sh "data: cloud refresh"
@@ -164,6 +172,11 @@ jobs:
           run python scripts/refresh_debate.py --skip-any --top 6000 --rounds 2 --max-minutes 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           exit 0
+
+      # Again after the AI boards: debate evidence carries a source URL per node.
+      - name: Redact data-source names (AI boards)
+        if: always()
+        run: python scripts/redact_sources.py || true
 
       - name: Commit & push AI data
         if: always()

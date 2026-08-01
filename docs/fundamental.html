@@ -274,7 +274,7 @@
                placeholder="e.g.  Oberoi Realty   or   500325   or   RELIANCE" />
         <div id="ac" class="ac" style="display:none"></div>
       </div>
-      <div class="hint" id="hint">Searches Screener live. Works when launched through <b>scanX.bat</b> (local API).</div>
+      <div class="hint" id="hint">Live lookup. Works when launched through <b>scanX.bat</b> (local API).</div>
 
       <div id="out"><div class="empty">Search a company to load full fundamentals, statements, auto-DCF, trends, charts, returns &amp; risk.</div></div>
     </div>
@@ -284,7 +284,6 @@
 <script>
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-const screenerUrl=c=>'https://www.screener.in/company/'+encodeURIComponent(c)+'/';
 const charts={};
 function toNum(s){ if(s==null) return null;
   const m=String(s).replace(/,/g,'').match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
@@ -405,11 +404,11 @@ async function load(code){
     if(bundle && bundle.fundamental) d=bundle.fundamental;
   }
   if(!d){
-    const sn=screenerUrl(code);
+    // No "open it over there" escape hatch: the site does not name its data
+    // provider, and an outbound link spells the host out in the status bar.
     f('out').innerHTML='<div class="empty">'+(slow
-      ? '⏱️ Screener is slow / unreachable right now — the live lookup timed out. Try again in a moment, or '
-      : 'ℹ️ <b>'+esc(code)+'</b> isn’t in the offline (pre-baked) set yet — only the top ~900 board stocks are baked for the static GitHub Pages site. ')
-      +'<a href="'+sn+'" target="_blank" rel="noopener">Open '+esc(code)+' on Screener.in ↗</a>'
+      ? '⏱️ The live lookup timed out. Try again in a moment.'
+      : 'ℹ️ <b>'+esc(code)+'</b> isn’t in the pre-baked set yet.')
       +'<div class="hint" style="margin-top:10px">Tip: launch the desktop terminal (<b>scanX.bat</b>) for live lookup of any listed stock, or widen the nightly bake with <code>refresh_fundamentals.py --top 5000</code>.</div></div>';
     return;
   }
@@ -773,14 +772,34 @@ function render(d,swot,score){
   const sw=swot||(d&&d.swot)||null;
   const scr=score||(d&&d.score)||null;   // baked bundle carries it; live API does not      // baked bundle carries it; the live API doesn't
   const ov=d.overview||{}, gr=d.growth||{}, q=d.quarters||{};
+
+  // Headline P/E: prefer the key-ratios feed, fall back to the scraped statement.
+  // Measured on 20 large caps the two agree to a median 7.2%, so this is a
+  // tie-break between corroborating numbers rather than a choice of story --
+  // but the feed is dated daily and carries no scrape risk, and where they do
+  // split the feed is the sane one (ADANIENT 54.5 against 172).
+  //
+  // This runs BEFORE `keys` is built, so a company the scrape missed entirely
+  // still gets a P/E card instead of a silent gap.
+  const _upe = ((d.upstox_ratios||{}).pe||{}).value;
+  if (typeof _upe === 'number' && isFinite(_upe) && _upe > 0) {
+    ov['Stock P/E'] = _upe.toFixed(1);
+  }
+
   const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
   const keys=order.filter(k=>ov[k]!=null).concat(Object.keys(ov).filter(k=>!order.includes(k)));
   // The Current Price card is tagged so overlayLivePrice can refresh it too.
   // It used to render straight from the bundle -- the BAKE-TIME price -- while
   // only the header price was overlaid, so the page showed two different prices
   // and the stale one sat in the metrics grid where a reader actually looks.
-  const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}</div><div class="v"${
-    k==='Current Price'?' id="ovPx"':''}>${esc(ov[k])}</div></div>`).join('');
+  // Say which statement a ratio came from. Standalone and consolidated differ by
+  // 10x on a holding company -- Grasim standalone reads a P/E of 500 against a
+  // consolidated 42 -- so an unlabelled multiple is not a fact, it is a guess.
+  const basis = d.basis || (d.fundamental && d.fundamental.basis) || '';
+  const BASIS_TAGGED = ['Stock P/E','ROCE','ROE','Book Value'];
+  const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}${
+    (basis && BASIS_TAGGED.includes(k)) ? ` <span class="na" style="font-weight:400">· ${esc(basis)}</span>` : ''
+  }</div><div class="v"${k==='Current Price'?' id="ovPx"':''}>${esc(ov[k])}</div></div>`).join('');
 
   const span=['10 Years','5 Years','3 Years','TTM','1 Year','Last Year'];
   const gturn=Object.keys(gr).map(name=>{const v=gr[name];const cols=Object.keys(v).sort((a,b)=>span.indexOf(a)-span.indexOf(b));
@@ -854,7 +873,7 @@ async function loadPrices(code, preD){
   const sec=f('priceSec'); if(!sec) return;
   let d=preD;
   if(!d){ try{ d=await (await fetch('/api/prices?code='+encodeURIComponent(code))).json(); }catch(e){ d={ok:false}; } }
-  if(!d||!d.ok){ sec.innerHTML='<h3>Returns &amp; risk</h3><div class="hint">Price analytics need the local server (yfinance) — run via <b>scanX.bat</b>.</div>'; return; }
+  if(!d||!d.ok){ sec.innerHTML='<h3>Returns &amp; risk</h3><div class="hint">Price analytics need the local server — run via <b>scanX.bat</b>.</div>'; return; }
   const r=d.risk||{};
   const rc=[['Avg weekly',r.avg_weekly,'%'],['Weekly std',r.weekly_std,'%'],['Annualized vol',r.ann_vol,'%'],
     ['Max drawdown',r.max_drawdown,'%'],['% positive weeks',r.pct_positive,'%'],['Sharpe',r.sharpe,''],['Sortino',r.sortino,'']]

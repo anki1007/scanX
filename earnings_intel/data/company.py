@@ -232,10 +232,21 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
     if hit and (time.time() - hit[0] < 60) and "error" not in hit[1]:
         return hit[1]
     try:
-        r = _client(session_id).get(f"{_SCREENER}/company/{code}/", timeout=timeout)
+        # CONSOLIDATED FIRST. The bare /company/<code>/ page is the STANDALONE
+        # statement, and for a holding or conglomerate structure that excludes
+        # the operating subsidiaries entirely. Verified against BSE and an
+        # independent reference on 78 large caps: standalone gave Grasim a P/E
+        # of 500 against a real 42, Adani Ports 141 against 29, Bajaj Finserv
+        # 146 against 27. Eleven of the 78 were more than 50% out, and every
+        # one of them was a holding structure.
+        #
+        # Standalone remains the fallback, because a company with no
+        # subsidiaries publishes no consolidated statement and that URL 404s.
+        basis = "consolidated"
+        r = _client(session_id).get(f"{_SCREENER}/company/{code}/consolidated/", timeout=timeout)
         if r.status_code != 200:
-            # consolidated URL sometimes 404s for standalone-only names
-            r = _client(session_id).get(f"{_SCREENER}/company/{code}/consolidated/", timeout=timeout)
+            basis = "standalone"
+            r = _client(session_id).get(f"{_SCREENER}/company/{code}/", timeout=timeout)
         if r.status_code != 200:
             return {"error": f"http {r.status_code}"}
         soup = BeautifulSoup(r.text, "lxml")
@@ -252,6 +263,9 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
             "code": code,
             "name": h1.get_text(strip=True) if h1 else code,
             "url": f"{_SCREENER}/company/{code}/",
+            # Which statement these numbers came from. A P/E means nothing
+            # without it, and the two differ by 10x on a holding company.
+            "basis": basis,
             "overview": overview,
             "growth": growth,
             "quarters": quarters,
