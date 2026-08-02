@@ -1,0 +1,255 @@
+# Bake the debate boards in the cloud, so nobody's laptop has to stay on.
+#
+# The local runner (run-ai-server.ps1) works but needs a machine switched on for
+# days. This does the same work on Actions runners, which are free and unmetered
+# for a public repository, and it runs on a schedule whether anyone is awake.
+#
+# Shape: plan -> warm -> bake (matrix) -> collect.
+#
+#   plan     works out who still has no debate, largest company first, and
+#            round-robins them into disjoint shards.
+#   warm     pulls the model ONCE into a cache. Without this every shard would
+#            pull the same 2GB on a cold cache, simultaneously.
+#   bake     one job per shard, each writing to a SCRATCH directory and
+#            uploading only what it produced. Shards never touch the same file,
+#            so there is no push race and a shard that dies costs only its slice.
+#   collect  merges the artifacts, rebuilds the index, commits once.
+#
+# Nothing here is destructive: a company already debated is never re-argued, and
+# an interrupted run simply leaves those companies in the next run's backlog.
+name: scanX debate (cloud)
+
+on:
+  schedule:
+    # Every 6 hours. The universe is ~5,150 companies at the time of writing;
+    # the run summary prints the rate so this can be tuned against reality
+    # rather than against my arithmetic.
+    - cron: "40 1,7,13,19 * * *"
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: "Parallel bake jobs"
+        default: "6"
+      minutes:
+        description: "Bake minutes per shard (job hard-stops at 350)"
+        default: "280"
+      model:
+        description: "Ollama model"
+        default: "qwen2.5:3b"
+      rounds:
+        description: "Debate rounds per company"
+        default: "2"
+
+# One run at a time. Two overlapping runs would bake the same backlog twice and
+# then fight over the same commit.
+concurrency:
+  group: debate-cloud
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  OLLAMA_VERSION: "0.32.5"
+  OLLAMA_MODEL: ${{ github.event.inputs.model || 'qwen2.5:3b' }}
+  SHARDS: ${{ github.event.inputs.shards || '6' }}
+  BAKE_MINUTES: ${{ github.event.inputs.minutes || '280' }}
+  ROUNDS: ${{ github.event.inputs.rounds || '2' }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.split.outputs.matrix }}
+      remaining: ${{ steps.split.outputs.remaining }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - id: split
+        run: python scripts/debate_shards.py --shards "$SHARDS" --github-output "$GITHUB_OUTPUT"
+      # Block scalar, not a plain one: the message contains ": ", which YAML
+      # reads as a mapping key inside an unquoted value.
+      - run: |
+          echo "### Debate backlog: ${{ steps.split.outputs.remaining }} companies" >> "$GITHUB_STEP_SUMMARY"
+
+  warm:
+    needs: plan
+    if: needs.plan.outputs.remaining != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          key: ollama-${{ env.OLLAMA_MODEL }}-v1
+      - name: Install ollama
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          # Pinned release asset from the official repo, not a piped install
+          # script: reproducible, and the version is visible in the diff.
+          curl -fsSL -o /tmp/ollama.tgz \
+            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tgz"
+          sudo tar -C /usr -xzf /tmp/ollama.tgz
+      - name: Pull the model into the cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          ollama serve &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:11434/api/version && break; sleep 2; done
+          ollama pull "$OLLAMA_MODEL"
+          du -sh ~/.ollama/models || true
+
+  bake:
+    needs: [plan, warm]
+    if: needs.plan.outputs.remaining != '0'
+    runs-on: ubuntu-latest
+    # The hard ceiling is 360. Leave room for checkout, model restore and upload
+    # so a shard is never killed mid-write.
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Same set the data-refresh workflow proved against this script, minus
+      # google-genai: the debate runs on a local model here, so the hosted
+      # provider is not just unused, it must not be reachable.
+      - name: Install dependencies
+        run: |
+          python -m pip install --quiet --disable-pip-version-check \
+            "pandas>=2.0" "numpy>=1.24" "requests>=2.31" \
+            "beautifulsoup4>=4.12" "lxml>=5.0" "curl_cffi>=0.7" \
+            "yfinance>=0.2.40" "pdfplumber>=0.10" "openpyxl>=3.1"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          key: ollama-${{ env.OLLAMA_MODEL }}-v1
+
+      - name: Start ollama
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/ollama.tgz \
+            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tgz"
+          sudo tar -C /usr -xzf /tmp/ollama.tgz
+          ollama serve &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:11434/api/version && break; sleep 2; done
+          ollama list
+
+      - name: Bake shard ${{ matrix.shard }} (${{ matrix.n }} companies)
+        env:
+          SCANX_LLM_PROVIDER: ollama
+          # Must be a full URL. The adapter appends "/api/generate" to this
+          # verbatim, so a bare host:port yields a schemeless URL and every
+          # call fails.
+          OLLAMA_HOST: http://127.0.0.1:11434
+          PYTHONIOENCODING: utf-8
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/shard-out"
+          # --top 0 means "no board names": this shard bakes EXACTLY the codes
+          # it was handed, which is what keeps the shards disjoint.
+          python scripts/refresh_debate.py \
+            --top 0 --codes "${{ matrix.codes }}" \
+            --rounds "$ROUNDS" --focus \
+            --provider ollama \
+            --out "$RUNNER_TEMP/shard-out" \
+            --max-minutes "$BAKE_MINUTES"
+          n=$(find "$RUNNER_TEMP/shard-out" -maxdepth 1 -name '*.json' ! -name 'index.json' | wc -l)
+          echo "shard ${{ matrix.shard }}: baked $n of ${{ matrix.n }} in ${BAKE_MINUTES}min"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: debate-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/shard-out
+          if-no-files-found: ignore
+          retention-days: 1
+
+  collect:
+    needs: [plan, bake]
+    # always(): a shard that timed out still produced real debates, and they are
+    # worth publishing. Losing four hours of baking because a fifth shard died
+    # is exactly the failure this split exists to prevent.
+    if: always() && needs.plan.outputs.remaining != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/shards
+          pattern: debate-shard-*
+          merge-multiple: false
+
+      - name: Merge shards and rebuild the index
+        run: |
+          set -euo pipefail
+          mkdir -p docs/data/debate
+          # find|wc, not ls|grep -c: grep exits 1 when it matches nothing, so
+          # `grep -c ... || echo 0` prints BOTH grep's "0" and the fallback "0"
+          # and the variable becomes the two-line string "0\n0".
+          count() { find docs/data/debate -maxdepth 1 -name '*.json' ! -name 'index.json' | wc -l; }
+          before=$(count)
+          # A shard's index.json describes only that shard; the real one is
+          # rebuilt from what is on disk afterwards.
+          find /tmp/shards -name '*.json' ! -name 'index.json' -exec cp -n {} docs/data/debate/ \; 2>/dev/null || true
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          from refresh_debate import write_index
+          write_index("docs/data/debate")
+          PY
+          after=$(count)
+          echo "ADDED=$((after - before))" >> "$GITHUB_ENV"
+          echo "TOTAL=$after" >> "$GITHUB_ENV"
+
+      - name: Strip data-source names
+        run: python scripts/redact_sources.py || true
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/debate
+          if git diff --cached --quiet; then
+            echo "nothing new to publish"; exit 0
+          fi
+          git commit -q -m "debate: cloud bake +${ADDED} (${TOTAL} total)"
+          # The data-refresh workflow pushes to this branch too. Rebase and
+          # retry rather than failing a run that has real work in it.
+          for n in 1 2 3 4; do
+            if git push -q origin HEAD:main; then echo "pushed"; exit 0; fi
+            git fetch -q origin main
+            git rebase -q origin/main || { git rebase --abort || true; break; }
+          done
+          echo "could not push after retries" >&2
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Debate bake"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| backlog at start | ${{ needs.plan.outputs.remaining }} |"
+            echo "| baked this run | ${ADDED:-0} |"
+            echo "| total on disk | ${TOTAL:-0} |"
+            echo "| model | ${OLLAMA_MODEL} |"
+          } >> "$GITHUB_STEP_SUMMARY"
