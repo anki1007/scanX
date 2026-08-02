@@ -800,13 +800,34 @@ function render(d,swot,score){
                exceptional: med > 0 && Math.max.apply(null, used.map(Math.abs)) > 6*med };
     }catch(e){ return null; }
   })();
-  if (_peInfo && _peInfo.pe) {
+  // FEED FIRST. Product decision: the key-ratios feed is the source of record
+  // for the headline multiple. It is dated daily, needs no scraped login
+  // session, and does not go wrong under rate limiting the way the statement
+  // scrape does -- operational reasons that outweigh per-name accuracy.
+  //
+  // Known and accepted: the feed reads standalone on some holding structures,
+  // and uses "net profit for the period" rather than "attributable to owners"
+  // on names with large minority interests (JSWSTEEL 11.1 against a filed
+  // 12.5, ~13% overstated). Do NOT "fix" this back to the computed value --
+  // it is a deliberate choice, not an oversight.
+  //
+  // The feed carries a P/E for 56% of bundles. UPSTOX_ONLY decides what
+  // happens to the other 44%: leave it false and the computed multiple fills
+  // the gap (labelled, so the two are never silently mixed); set it true and
+  // those ~1,540 companies show no P/E at all.
+  const UPSTOX_ONLY = false;
+  const _upe = ((d.upstox_ratios||{}).pe||{}).value;
+  let _peShown = null;                              // 'feed' | 'computed' | null
+  if (typeof _upe === 'number' && isFinite(_upe) && _upe > 0) {
+    ov['Stock P/E'] = _upe.toFixed(1);
+    _peShown = 'feed';
+  } else if (UPSTOX_ONLY) {
+    ov['Stock P/E'] = null;                         // strict: no feed, no number
+  } else if (_peInfo && _peInfo.pe) {
     ov['Stock P/E'] = _peInfo.pe.toFixed(1);
+    _peShown = 'computed';
   } else if (_peInfo && _peInfo.loss) {
     ov['Stock P/E'] = '—';                          // loss-making, not missing
-  } else if (ov['Stock P/E'] == null) {
-    const _upe = ((d.upstox_ratios||{}).pe||{}).value;
-    if (typeof _upe === 'number' && isFinite(_upe) && _upe > 0) ov['Stock P/E'] = _upe.toFixed(1);
   }
 
   const order=['Market Cap','Current Price','Stock P/E','Book Value','ROCE','ROE','Dividend Yield','High / Low','Face Value'];
@@ -825,10 +846,18 @@ function render(d,swot,score){
   // marker: JSWSTEEL's trailing 12.5 rests on a one-off and will not survive
   // four more quarters.
   const peNote = (k)=>{
-    if (k!=='Stock P/E' || !_peInfo || !_peInfo.pe) return '';
+    if (k!=='Stock P/E') return '';
+    if (_peShown === 'feed') {
+      // An exceptional quarter distorts the multiple whoever computed it --
+      // JSWSTEEL's trailing figure rests on a disposal gain worth two thirds
+      // of its TTM EPS. Worth saying even when the number is not ours.
+      return _peInfo && _peInfo.exceptional
+        ? ' <span class="na" style="font-weight:400">· incl. one-off</span>' : '';
+    }
+    if (_peShown !== 'computed' || !_peInfo || !_peInfo.pe) return '';
     const q=_peInfo.quarters||[];
     const span=q.length===4 ? `${q[0]}–${q[3]}` : 'trailing 12m';
-    return ` <span class="na" style="font-weight:400">· ${esc(span)}${_peInfo.exceptional?' · incl. one-off':''}</span>`;
+    return ` <span class="na" style="font-weight:400">· computed · ${esc(span)}${_peInfo.exceptional?' · incl. one-off':''}</span>`;
   };
   const cards=keys.map(k=>`<div class="card"><div class="l">${esc(k)}${
     (basis && BASIS_TAGGED.includes(k)) ? ` <span class="na" style="font-weight:400">· ${esc(basis)}</span>` : ''

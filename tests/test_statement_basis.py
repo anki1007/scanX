@@ -58,24 +58,35 @@ def test_the_page_labels_which_basis_a_ratio_came_from():
         assert field in html
 
 
-def test_headline_pe_is_computed_from_filed_quarters():
-    """Verified against primary filings on seven large caps: computing it
-    lands within a median 0.5%, while the statement headline read 25.8 for
-    JSWSTEEL against a filed 12.5 and the feed read 28.2 for DLF against 37.0.
-    Neither precomputed source is safe to publish unchecked."""
+def test_the_feed_is_the_headline_pe():
+    """Product decision: the key-ratios feed is the source of record for the
+    headline multiple -- dated daily, no scraped login session, and it does not
+    go wrong under rate limiting the way the statement scrape does.
+
+    Its known errors are accepted, not overlooked: standalone on some holding
+    structures, and "net profit for the period" rather than "attributable to
+    owners" where minority interests are large (JSWSTEEL 11.1 against a filed
+    12.5). This test exists so nobody quietly reverts the decision."""
+    html = PAGE.read_text(encoding="utf-8")
+    i_feed = html.index("ov['Stock P/E'] = _upe.toFixed(1)")
+    i_computed = html.index("ov['Stock P/E'] = _peInfo.pe.toFixed(1)")
+    assert i_feed < i_computed, "the computed value can still beat the feed"
+
+
+def test_the_computed_value_fills_the_feeds_gaps():
+    """The feed carries a P/E for 56% of bundles. Without a fallback, 1,540
+    companies that have one today would go blank."""
     html = PAGE.read_text(encoding="utf-8")
     assert "const _peInfo" in html, "the computed P/E is gone"
     assert html.count("const _peInfo") == 1, "duplicated P/E block"
-    assert "ov['Stock P/E'] = _peInfo.pe.toFixed(1)" in html
+    assert "UPSTOX_ONLY" in html, "no switch for strict feed-only mode"
 
 
-def test_the_feed_is_only_a_last_resort():
-    """It may fill a gap; it may not overwrite a computed number."""
+def test_a_filled_gap_is_labelled_not_silently_mixed():
+    """A reader must be able to tell which number they are looking at."""
     html = PAGE.read_text(encoding="utf-8")
-    i_compute = html.index("ov['Stock P/E'] = _peInfo.pe.toFixed(1)")
-    i_feed = html.index("const _upe")
-    assert i_compute < i_feed, "the feed can still override the computed P/E"
-    assert "ov['Stock P/E'] == null" in html, "the feed is not gated on a gap"
+    assert "_peShown" in html
+    assert "'· computed · '" in html or "· computed · " in html
 
 
 def test_loss_making_shows_a_dash_not_a_negative_multiple():
