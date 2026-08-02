@@ -15,17 +15,22 @@ sys.path.insert(0, str(ROOT))
 
 WF = ROOT / ".github" / "workflows"
 
-# script -> credentials it needs to do its real work (not merely to import)
-NEEDS = {
-    "refresh_fundamentals.py": {"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"},
-    "refresh_docinsights.py": {"GEMINI_API_KEY"},
-    # refresh_debate.py accepts ANY credentialled provider, but Gemini is the only
-    # one this workflow exports — and with none set the script prints "no LLM
-    # credentials configured" and exits 0. Green, silent, and no debates: the
-    # precise failure shape this file exists to make impossible.
-    "refresh_debate.py": {"GEMINI_API_KEY"},
-    "refresh_quotes.py --wide": {"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"},
-    "screener_login.py": {"SCREENER_EMAIL", "SCREENER_PASSWORD"},
+# script -> the ways its credential requirement can be satisfied. A list of
+# ALTERNATIVES: the step is fine if ANY ONE of them is fully provided.
+NEEDS: dict[str, list[set[str]]] = {
+    "refresh_fundamentals.py": [{"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"}],
+    "refresh_docinsights.py": [{"GEMINI_API_KEY"}],
+    # refresh_debate.py accepts ANY credentialled provider, and with none set it
+    # prints "no LLM credentials configured" and exits 0. Green, silent, and no
+    # debates: the precise failure shape this file exists to make impossible.
+    #
+    # Two ways to satisfy it. A hosted key, or a local model -- for which
+    # OLLAMA_HOST is the opt-in switch the adapter actually tests, and which is
+    # deliberately NOT a secret because there is nothing secret about
+    # 127.0.0.1. The cloud debate workflow uses the second.
+    "refresh_debate.py": [{"GEMINI_API_KEY"}, {"OLLAMA_HOST"}],
+    "refresh_quotes.py --wide": [{"UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN"}],
+    "screener_login.py": [{"SCREENER_EMAIL", "SCREENER_PASSWORD"}],
 }
 
 
@@ -38,18 +43,78 @@ def _exported(text: str) -> set[str]:
     return set(re.findall(r"^\s*([A-Z_]+):\s*\$\{\{\s*secrets\.", text, re.M))
 
 
+def _env_keys(text: str) -> set[str]:
+    """Every env var the workflow SETS to a non-empty value, at any level.
+
+    Parsed from the YAML rather than grepped, so a key that merely appears in a
+    comment or a shell line does not count as provided.
+    """
+    import yaml
+
+    found: set[str] = set()
+
+    def walk(node):
+        if isinstance(node, dict):
+            env = node.get("env")
+            if isinstance(env, dict):
+                found.update(k for k, v in env.items()
+                             if v is not None and str(v).strip() != "")
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    walk(yaml.safe_load(text))
+    return found
+
+
 def test_each_workflow_exports_the_credentials_its_steps_need():
     problems = []
     for wf in _workflows():
         text = wf.read_text(encoding="utf-8")
-        exported = _exported(text)
-        for script, needed in NEEDS.items():
+        provided = _exported(text) | _env_keys(text)
+        for script, alternatives in NEEDS.items():
             if script not in text:
                 continue
-            missing = needed - exported
-            if missing:
-                problems.append(f"{wf.name} runs {script} but does not export {sorted(missing)}")
+            if not any(alt <= provided for alt in alternatives):
+                wanted = " or ".join(sorted(str(sorted(a)) for a in alternatives))
+                problems.append(f"{wf.name} runs {script} but provides none of {wanted}")
     assert not problems, "workflow(s) would silently no-op:\n  " + "\n  ".join(problems)
+
+
+def test_the_guard_still_catches_a_workflow_with_no_provider_at_all():
+    """The any-of relaxation must not turn this into a test that passes on
+    anything. A debate step with neither a hosted key nor a local host is the
+    original silent-no-op bug and must still fail."""
+    text = (
+        "name: x\n"
+        "jobs:\n"
+        "  j:\n"
+        "    steps:\n"
+        "      - run: python scripts/refresh_debate.py --top 10\n"
+    )
+    provided = _exported(text) | _env_keys(text)
+    assert not any(alt <= provided for alt in NEEDS["refresh_debate.py"])
+
+    ollama_ok = text.replace("    steps:\n", "    env:\n      OLLAMA_HOST: http://127.0.0.1:11434\n    steps:\n")
+    provided = _exported(ollama_ok) | _env_keys(ollama_ok)
+    assert any(alt <= provided for alt in NEEDS["refresh_debate.py"])
+
+
+def test_an_empty_env_value_does_not_count_as_provided():
+    """`OLLAMA_HOST: ""` resolves to empty at runtime and latches the adapter
+    off exactly like an absent one."""
+    text = (
+        "name: x\n"
+        "jobs:\n"
+        "  j:\n"
+        "    env:\n"
+        '      OLLAMA_HOST: ""\n'
+        "    steps:\n"
+        "      - run: python scripts/refresh_debate.py\n"
+    )
+    assert "OLLAMA_HOST" not in _env_keys(text)
 
 
 def test_secret_names_are_consistent_across_workflows():
