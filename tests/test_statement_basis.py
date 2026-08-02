@@ -30,8 +30,9 @@ def _code():
 def test_consolidated_is_requested_before_standalone():
     code = _code()
     cons = code.find("/consolidated/")
-    bare = code.find('company/{code}/", timeout')
+    bare = code.find('company/{code}/"')
     assert cons > 0, "the consolidated URL is never requested"
+    assert bare > 0, "the standalone URL is never requested"
     assert cons < bare, "standalone is still requested first"
 
 
@@ -39,8 +40,8 @@ def test_standalone_remains_the_fallback():
     """A company with no subsidiaries publishes no consolidated statement and
     that URL 404s — it must not become an error."""
     code = _code()
-    assert 'company/{code}/", timeout' in code, "standalone fallback was removed"
-    assert code.count("status_code != 200") >= 2, "the fallback chain is gone"
+    assert 'company/{code}/"' in code, "standalone fallback was removed"
+    assert "status_code == 404" in code,         "the fallback is no longer gated on 404 -- a rate limit would be absorbed again"
 
 
 def test_the_basis_is_recorded_in_the_bundle():
@@ -57,19 +58,39 @@ def test_the_page_labels_which_basis_a_ratio_came_from():
         assert field in html
 
 
-def test_headline_pe_prefers_the_key_ratios_feed():
-    """Measured on 20 large caps: the feed and the scraped consolidated
-    statement agree to a median 7.2%. Where they split, the feed is the sane
-    one (ADANIENT 54.5 against a scraped 172). The feed is also dated daily.
-    """
+def test_headline_pe_is_computed_from_filed_quarters():
+    """Verified against primary filings on seven large caps: computing it
+    lands within a median 0.5%, while the statement headline read 25.8 for
+    JSWSTEEL against a filed 12.5 and the feed read 28.2 for DLF against 37.0.
+    Neither precomputed source is safe to publish unchecked."""
     html = PAGE.read_text(encoding="utf-8")
-    assert "const _upe" in html, "the headline P/E override is gone"
-    assert html.count("const _upe") == 1, "duplicated override block"
-    assert "ov['Stock P/E'] = _upe" in html
+    assert "const _peInfo" in html, "the computed P/E is gone"
+    assert html.count("const _peInfo") == 1, "duplicated P/E block"
+    assert "ov['Stock P/E'] = _peInfo.pe.toFixed(1)" in html
 
 
-def test_override_runs_before_the_card_list_is_built():
-    """Otherwise a company the scrape missed shows no P/E card at all, even
-    though the feed has one."""
+def test_the_feed_is_only_a_last_resort():
+    """It may fill a gap; it may not overwrite a computed number."""
     html = PAGE.read_text(encoding="utf-8")
-    assert html.index("const _upe") < html.index("const keys=order.filter")
+    i_compute = html.index("ov['Stock P/E'] = _peInfo.pe.toFixed(1)")
+    i_feed = html.index("const _upe")
+    assert i_compute < i_feed, "the feed can still override the computed P/E"
+    assert "ov['Stock P/E'] == null" in html, "the feed is not gated on a gap"
+
+
+def test_loss_making_shows_a_dash_not_a_negative_multiple():
+    """A negative P/E ranks a loss-maker as cheap."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert "_peInfo.loss" in html
+
+
+def test_the_quarters_behind_the_pe_are_named():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "peNote" in html and "_peInfo.quarters" in html
+    assert "one-off" in html, "an exceptional quarter is not marked"
+
+
+def test_computation_runs_before_the_card_list_is_built():
+    """Otherwise a company the scrape missed shows no P/E card at all."""
+    html = PAGE.read_text(encoding="utf-8")
+    assert html.index("const _peInfo") < html.index("const keys=order.filter")

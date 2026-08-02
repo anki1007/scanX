@@ -39,6 +39,49 @@ def _client(session_id: Optional[str]):
     return s
 
 
+#: Attempts for a rate-limited page, and the base backoff in seconds.
+_RETRY_ATTEMPTS = 4
+_RETRY_BACKOFF = 2.0
+
+
+def _retry_get(url: str, session_id: Optional[str], timeout: int):
+    """GET a page, retrying only the statuses that mean "not yet".
+
+    Returns the last response, or None if every attempt raised.
+
+    429 and 5xx are transient: the page exists and we were throttled. Retrying
+    is the difference between a correct number and a silently wrong one, so it
+    is worth the wall clock. 404 and every other status return immediately --
+    a missing page will still be missing in four seconds.
+
+    Honours Retry-After when the server sends it, since guessing shorter than
+    the server's own answer just burns another attempt.
+    """
+    import time
+
+    last = None
+    for attempt in range(_RETRY_ATTEMPTS):
+        try:
+            last = _client(session_id).get(url, timeout=timeout)
+        except Exception:
+            last = None
+        if last is not None and last.status_code not in (429, 500, 502, 503, 504):
+            return last
+        if attempt == _RETRY_ATTEMPTS - 1:
+            break
+        wait = _RETRY_BACKOFF * (2 ** attempt)
+        # Not every response object carries headers -- test doubles and some
+        # adapters do not. A missing Retry-After just means we use our own
+        # backoff; it must never turn a rate limit into an AttributeError.
+        try:
+            headers = getattr(last, "headers", None) or {}
+            wait = max(wait, min(float(headers.get("Retry-After", 0) or 0), 30.0))
+        except (TypeError, ValueError, AttributeError):
+            pass
+        time.sleep(wait)
+    return last
+
+
 def search(q: str, session_id: Optional[str] = None, timeout: int = 15) -> list:
     """Screener company search (autocomplete). Matches company name OR BSE code."""
     if not q or requests is None:
@@ -242,13 +285,29 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
         #
         # Standalone remains the fallback, because a company with no
         # subsidiaries publishes no consolidated statement and that URL 404s.
+        # A 404 and a 429 mean OPPOSITE things here, and treating them alike is
+        # how a P/E ends up 5x wrong:
+        #
+        #   404 -> this company genuinely files no consolidated statement.
+        #          Standalone IS the right answer. Fall back.
+        #   429 -> we are being rate limited. The consolidated statement exists
+        #          and we simply have not got it yet. Falling back produces a
+        #          STANDALONE P/E silently labelled as the company's headline
+        #          multiple. Measured on a rapid 30-company sweep, 7 came back
+        #          429; those got BAJAJFINSV 146 instead of 31.6 and ADANIENSOL
+        #          426 instead of 67.7. Bulk baking makes this the common case,
+        #          not the rare one, so it must be retried rather than absorbed.
         basis = "consolidated"
-        r = _client(session_id).get(f"{_SCREENER}/company/{code}/consolidated/", timeout=timeout)
-        if r.status_code != 200:
+        r = _retry_get(f"{_SCREENER}/company/{code}/consolidated/", session_id, timeout)
+        if r is not None and r.status_code == 404:
             basis = "standalone"
-            r = _client(session_id).get(f"{_SCREENER}/company/{code}/", timeout=timeout)
-        if r.status_code != 200:
-            return {"error": f"http {r.status_code}"}
+            r = _retry_get(f"{_SCREENER}/company/{code}/", session_id, timeout)
+        if r is None or r.status_code != 200:
+            # Deliberately an error, not a standalone fallback. A missing P/E is
+            # recoverable on the next pass; a wrong one gets published, scored,
+            # ranked and argued over.
+            code_txt = "timeout" if r is None else r.status_code
+            return {"error": f"http {code_txt}"}
         soup = BeautifulSoup(r.text, "lxml")
         h1 = soup.select_one("h1")
         overview = _overview(soup)
