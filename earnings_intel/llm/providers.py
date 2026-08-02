@@ -64,7 +64,31 @@ __all__ = [
 
 DEFAULT_PROVIDER = "gemini"
 _ENV_PROVIDER = "SCANX_LLM_PROVIDER"
-_TIMEOUT = 90
+def _timeout_default() -> int:
+    """Seconds to wait for one completion.
+
+    90 is right for a hosted API. It is far too short for a local model on CPU:
+    measured on an Actions runner, qwen2.5:3b takes 90-160s for a single debate
+    turn, so the call timed out, the turn was dropped, and companies came back
+    with "2 turns over 1 rounds" instead of 4 over 2. The debate still wrote --
+    it was just quietly half a debate, which is worse than none.
+
+    SCANX_LLM_TIMEOUT overrides it, so a slow local runner can ask for the time
+    it actually needs without making every hosted call hang that long on a
+    genuine outage.
+    """
+    raw = os.environ.get("SCANX_LLM_TIMEOUT", "").strip()
+    if raw:
+        try:
+            value = int(float(raw))
+            if value > 0:
+                return value
+        except (TypeError, ValueError):
+            pass
+    return 90
+
+
+_TIMEOUT = _timeout_default()
 _MAX_ERR = 240
 _JSON_HINT = "\n\nReturn one valid JSON value and nothing else."
 _JSON_SYSTEM = "Reply with a single valid JSON value and nothing else. No prose, no code fences."

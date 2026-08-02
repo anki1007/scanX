@@ -156,6 +156,11 @@ jobs:
           # call fails.
           OLLAMA_HOST: http://127.0.0.1:11434
           PYTHONIOENCODING: utf-8
+          # A CPU runner needs 90-160s for one debate turn. At the 90s default
+          # the call timed out, the turn was dropped, and companies came back
+          # with "2 turns over 1 rounds" instead of 4 over 2 -- quietly half a
+          # debate, which is worse than none.
+          SCANX_LLM_TIMEOUT: "420"
         run: |
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/shard-out"
