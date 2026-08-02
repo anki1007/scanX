@@ -92,9 +92,12 @@ jobs:
           set -euo pipefail
           # Pinned release asset from the official repo, not a piped install
           # script: reproducible, and the version is visible in the diff.
-          curl -fsSL -o /tmp/ollama.tgz \
-            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tgz"
-          sudo tar -C /usr -xzf /tmp/ollama.tgz
+          # The asset is .tar.zst, NOT .tgz -- ollama moved to zstd, and the
+          # old name 404s. Runners ship zstd, so tar --zstd works.
+          curl -fsSL -o /tmp/ollama.tar.zst \
+            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tar.zst"
+          sudo tar -C /usr --zstd -xf /tmp/ollama.tar.zst
+          ollama --version
       - name: Pull the model into the cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -138,9 +141,9 @@ jobs:
       - name: Start ollama
         run: |
           set -euo pipefail
-          curl -fsSL -o /tmp/ollama.tgz \
-            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tgz"
-          sudo tar -C /usr -xzf /tmp/ollama.tgz
+          curl -fsSL -o /tmp/ollama.tar.zst \
+            "https://github.com/ollama/ollama/releases/download/v${OLLAMA_VERSION}/ollama-linux-amd64.tar.zst"
+          sudo tar -C /usr --zstd -xf /tmp/ollama.tar.zst
           ollama serve &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:11434/api/version && break; sleep 2; done
           ollama list
