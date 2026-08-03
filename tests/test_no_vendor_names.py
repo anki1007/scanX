@@ -106,3 +106,38 @@ def test_the_guard_would_actually_catch_a_regression():
     # ...and these must not fire.
     assert not VENDOR.search("Fundamental Screener")
     assert not VENDOR.search("NSE/BSE delayed 15 min")
+
+
+# --------------------------------------------- the escape trap, twice burned
+
+def test_no_regex_in_the_repo_contains_a_literal_backspace():
+    """`\b` written through a non-raw string becomes 0x08, and the pattern
+    then matches NOTHING. It shipped that way twice here: once in the quota
+    regex in refresh_debate.py, once in the vendor rules in redact.py. It is
+    invisible in an editor and in a file listing, so only a byte-level check
+    finds it."""
+    offenders = []
+    for path in list((ROOT / "earnings_intel").rglob("*.py")) + \
+            list((ROOT / "scripts").rglob("*.py")):
+        if b"\x08" in path.read_bytes():
+            offenders.append(str(path.relative_to(ROOT)))
+    assert not offenders, f"literal backspace (0x08) in: {offenders}"
+
+
+def test_the_redaction_rules_actually_fire():
+    """A rule that matches nothing is worse than no rule: it reads as coverage."""
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT))
+    from earnings_intel.data.redact import redact
+
+    cases = {
+        "screener_pro": "flagged_pro",
+        "screener_con": "flagged_con",
+        "screener_note": "flagged_note",
+        "Screener pro: Company is almost debt free.":
+            "Flagged as a positive: Company is almost debt free.",
+        "Screener con: high debtors of 162 days.":
+            "Flagged as a negative: high debtors of 162 days.",
+    }
+    for raw, want in cases.items():
+        assert redact(raw) == want, f"{raw!r} -> {redact(raw)!r}, wanted {want!r}"

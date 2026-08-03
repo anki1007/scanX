@@ -83,7 +83,7 @@ FAMILY_WEIGHT = {
     "risk": 2,
     "insight": 2,
     "sector": 2,
-    "screener_note": 1,
+    "flagged_note": 1,
     "signal": 1,
     "filing": 3,
     "commitment": 3,
@@ -103,7 +103,10 @@ _TEMPERATURE = 0.2
 _MAX_TURN_CHARS = 4000
 _MIN_QUOTE = 12               # matches docanalysis._MIN_QUOTE_CHARS
 
-_SCREENER = "Screener.in"
+# Neutral, like the other three below it. The site does not name its data
+# vendor, and every evidence item written before this carried "Screener.in"
+# into a published JSON file -- not rendered on the page, but shipped.
+_SCREENER = "filed statements"
 _PRICES_SRC = "scanX price history"
 _SIGNAL_SRC = "scanX signal engine"
 _SECTOR_SRC = "scanX sector tailwind"
@@ -720,11 +723,14 @@ def _ev_insight(p: _Pack, v: dict) -> None:
 
 
 def _ev_screener_notes(p: _Pack, v: dict) -> None:
+    # The fact TEXT is rendered on the company page, so it must not name the
+    # data vendor. Every debate published before this read "Screener flags a
+    # negative: ..." straight into the evidence list a reader opens.
     for text in v["pros"][:_MAX_NOTES]:
-        p.add("screener_note", f"Screener flags a positive: {_txt(text)}",
+        p.add("flagged_note", f"Flagged as a positive: {_txt(text)}",
               source=_screener(), url=v["url"], side_hint="bull")
     for text in v["cons"][:_MAX_NOTES]:
-        p.add("screener_note", f"Screener flags a negative: {_txt(text)}",
+        p.add("flagged_note", f"Flagged as a negative: {_txt(text)}",
               source=_screener(), url=v["url"], side_hint="bear")
 
 

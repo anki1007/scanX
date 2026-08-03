@@ -263,7 +263,7 @@ def test_pack_covers_every_family_present():
     families = {i["family"] for i in pack}
     expected = {"valuation", "peer_ratio", "profitability", "growth", "margin",
                 "cash", "balance_sheet", "capex", "ownership", "flow", "dcf",
-                "technical", "risk", "insight", "screener_note", "signal",
+                "technical", "risk", "insight", "flagged_note", "signal",
                 "sector", "filing", "commitment"}
     assert families == expected, sorted(expected ^ families)
     # every family we emit must carry a weight we actually declared
@@ -302,7 +302,7 @@ def test_pack_invents_nothing_that_is_absent():
     assert families == {"valuation", "profitability"}
     for gone in ("dcf", "technical", "risk", "flow", "growth", "cash", "capex",
                  "ownership", "balance_sheet", "margin", "peer_ratio",
-                 "screener_note", "signal", "sector", "filing", "commitment"):
+                 "flagged_note", "signal", "sector", "filing", "commitment"):
         assert gone not in families
     # and nothing was defaulted to a zero the agents could then cite
     assert not any(i["value"].strip() in ("0", "0.0", "0%", "0.00x") for i in pack)

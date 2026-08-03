@@ -29,6 +29,21 @@ __all__ = ["VENDORS", "redact", "redact_deep", "is_vendor_url"]
 #: Vendor name -> what to say instead. Order matters: longest first, so
 #: "screener.in" is consumed before the bare "screener" pattern sees it.
 _RULES: tuple[tuple[re.Pattern, str], ...] = (
+    # These two run FIRST because the generic substitution below turns them
+    # into "the data provider flags a negative: ..." and "the data
+    # provider_note", which are worse than what they replace.
+    (re.compile(r"\bscreener\s+flags\s+a\s+(positive|negative)\b", re.I),
+     lambda m: f"Flagged as a {m.group(1).lower()}"),
+    # NO \b AFTER THESE. Written through a non-raw string it becomes a
+    # literal backspace (0x08) and then matches nothing at all -- exactly
+    # how it first shipped here, and how the quota regex in
+    # refresh_debate.py shipped before it. A negative lookahead says the
+    # same thing and cannot be mangled by an escape.
+    (re.compile(r"screener_note(?![a-z])", re.I), "flagged_note"),
+    (re.compile(r"screener_pro(?![a-z])", re.I), "flagged_pro"),
+    (re.compile(r"screener_con(?![a-z])", re.I), "flagged_con"),
+    (re.compile(r"screener\s+(pro|con):", re.I),
+     lambda m: "Flagged as a " + ("positive:" if m.group(1).lower() == "pro" else "negative:")),
     (re.compile(r"\bscreener\.in\s+screen\b", re.I), "stock screen"),
     (re.compile(r"\bscreener\s+full[-\s]?text[-\s]?search\b", re.I), "full-text search"),
     (re.compile(r"\bscreener\s+/fii/", re.I), "institutional-flow filings"),
@@ -56,6 +71,12 @@ VENDORS: tuple[str, ...] = ("screener.in", "upstox.com",
                             "tradingview.com", "finance.yahoo.com")
 
 _URL_RE = re.compile(r"https?://\S+", re.I)
+
+#: "Does this string name a vendor at all?" -- the gate for rewriting a nested
+#: value. Deliberately NOT the catch-all rule above, which uses word boundaries
+#: and therefore misses "screener_note(?![a-z])": an underscore is a word character, so
+#: there is no boundary between "screener" and "_note".
+_MENTIONS = re.compile(r"screener|upstox|yahoo|tradingview|yfinance", re.I)
 
 
 def is_vendor_url(value: Any) -> bool:
@@ -116,7 +137,21 @@ def redact_deep(obj: Any, *, drop_vendor_urls: bool = True,
             k = str(key).lower()
             if drop_vendor_urls and k in ("url", "href", "link") and is_vendor_url(value):
                 continue
-            if _depth == 0 and k in _DISPLAY_KEYS and isinstance(value, str):
+            # A `source` at ANY depth is rewritten when its value actually
+            # names a vendor. Debate evidence carries one per item, nested in a
+            # list, and every published debate file shipped "Screener.in" in it.
+            # Gating on the VALUE keeps the top-level-only rule for everything
+            # else, so an ordinary nested string is still left alone.
+            # `text` is the debate transcript, which IS rendered. The model
+            # repeated "source: Screener.in" back out of a prompt that used to
+            # carry it, so 361 published debates showed the vendor name inside
+            # the argument itself. New debates are built from neutral source
+            # labels; these are the ones already on disk.
+            if (k in ("source", "fact", "family", "text", "evidence", "metric", "note")
+                    and isinstance(value, str)
+                    and _MENTIONS.search(value)):
+                out[key] = redact(value)
+            elif _depth == 0 and k in _DISPLAY_KEYS and isinstance(value, str):
                 out[key] = redact(value)
             else:
                 out[key] = redact_deep(value, drop_vendor_urls=drop_vendor_urls,

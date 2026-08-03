@@ -26,6 +26,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from earnings_intel.data.freshness import is_stale  # noqa: E402
 
 
 def _num(value) -> float:
@@ -36,15 +39,20 @@ def _num(value) -> float:
 
 
 def remaining(fundamental_dir: Path, debate_dir: Path) -> list[str]:
-    """Codes with a bundle but no debate, largest company first. PURE-ish (reads disk)."""
-    done = {p.stem for p in debate_dir.glob("*.json") if p.stem != "index"} \
-        if debate_dir.exists() else set()
+    """Codes due for a debate, largest company first. PURE-ish (reads disk).
 
+    Due means either NEVER argued, or argued against filings that have since
+    moved -- a new quarter, or restated numbers. Without the second test a
+    company could publish a result that halved its margin and its bull/bear
+    case would sit there unchanged and confident until someone noticed.
+    """
     rows: list[tuple[float, str]] = []
     for path in fundamental_dir.glob("*.json"):
         code = path.stem
-        if code == "index" or code in done:
+        if code == "index":
             continue
+
+        bundle = None
         mcap = 0.0
         try:
             bundle = json.loads(path.read_text(encoding="utf-8"))
@@ -54,7 +62,17 @@ def remaining(fundamental_dir: Path, debate_dir: Path) -> list[str]:
         except Exception:  # noqa: BLE001
             # An unreadable bundle still deserves a debate attempt; it just
             # sorts last rather than dropping out of the universe silently.
-            mcap = 0.0
+            bundle = None
+
+        debate_path = debate_dir / f"{code}.json"
+        if debate_path.exists():
+            try:
+                debate = json.loads(debate_path.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001
+                debate = None
+            if not is_stale(debate, bundle):
+                continue
+
         rows.append((mcap, code))
 
     rows.sort(key=lambda r: (-r[0], r[1]))

@@ -752,11 +752,11 @@ def test_screener_pros_and_cons_come_through_verbatim():
         pros=["Company is almost debt free.", "Debtors reduced to 40 days"],
         cons=["Stock is trading at 7.82 times its book value",
               "The company has delivered a poor sales growth of 3.81%"]))
-    strong = _find(res, "strengths", "screener_pro")
+    strong = _find(res, "strengths", "flagged_pro")
     assert strong["point"] == "Company is almost debt free."
-    assert strong["evidence"] == "Screener pro: Company is almost debt free."
+    assert strong["evidence"] == "Flagged as a positive: Company is almost debt free."
     assert strong["weight"] == 2                       # 'debt free' is a strong pro
-    minor = [i for i in res["strengths"] if i["metric"] == "screener_pro"][1]
+    minor = [i for i in res["strengths"] if i["metric"] == "flagged_pro"][1]
     assert minor["weight"] == 1
     assert any(i["weight"] == 2 for i in res["weaknesses"]
                if "poor sales growth" in i["point"])
@@ -772,8 +772,8 @@ def test_screener_cons_can_raise_a_threat_too():
 
 def test_no_pros_or_cons_means_no_text_points():
     res = W.build_swot(_bundle(pros=[], cons=["   "]))
-    assert _find(res, "strengths", "screener_pro") is None
-    assert _find(res, "weaknesses", "screener_con") is None
+    assert _find(res, "strengths", "flagged_pro") is None
+    assert _find(res, "weaknesses", "flagged_con") is None
 
 
 # ================================================================= sector
@@ -884,16 +884,16 @@ def test_quadrants_are_sorted_by_weight_descending():
 def test_exact_duplicate_points_are_collapsed():
     res = W.build_swot(_bundle(pros=["Company is almost debt free.",
                                      "Company is almost debt free!"]))
-    assert len([i for i in res["strengths"] if i["metric"] == "screener_pro"]) == 1
+    assert len([i for i in res["strengths"] if i["metric"] == "flagged_pro"]) == 1
 
 
 def test_near_identical_points_collapse_keeping_the_heavier_reading():
     kept = W._finalise([
-        W.Point("Company is almost debt free.", "Screener pro: A", "screener_pro", 1),
-        W.Point("The company is virtually debt free.", "Screener pro: B",
-                "screener_pro", 3)])
+        W.Point("Company is almost debt free.", "Flagged as a positive: A", "flagged_pro", 1),
+        W.Point("The company is virtually debt free.", "Flagged as a positive: B",
+                "flagged_pro", 3)])
     assert len(kept) == 1
-    assert kept[0].weight == 3 and kept[0].evidence == "Screener pro: B"
+    assert kept[0].weight == 3 and kept[0].evidence == "Flagged as a positive: B"
 
 
 def test_computed_rules_that_read_alike_are_not_collapsed():
@@ -915,9 +915,9 @@ def test_a_single_shot_metric_never_appears_twice_in_one_quadrant():
 
 def test_repeatable_metrics_may_appear_more_than_once():
     kept = W._finalise([W.Point("Company is almost debt free.", "e1",
-                                "screener_pro", 2),
+                                "flagged_pro", 2),
                         W.Point("Debtors reduced to 40 days.", "e2",
-                                "screener_pro", 1)])
+                                "flagged_pro", 1)])
     assert len(kept) == 2
 
 

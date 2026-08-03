@@ -438,7 +438,7 @@ def health_ratios(bs: dict, cf: dict, pl: dict, extra: Optional[dict] = None) ->
     else:
         out["current_ratio"] = {"value": None, "bias": "na",
                                 "note": "needs the expanded balance-sheet schedule "
-                                        "(not in Screener's compact view)"}
+                                        "(not in the compact statement view)"}
 
     ocf = _stmt_map(cf, "Cash from Operating")
     np_ = _stmt_map(pl, "Net Profit")

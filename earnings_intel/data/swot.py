@@ -35,7 +35,7 @@ QUADRANTS = ("strengths", "weaknesses", "opportunities", "threats")
 #: metrics that may legitimately emit more than one point inside one quadrant
 #: (list-shaped sources: Screener pros/cons, signal reasons, filing facts).
 REPEATABLE_METRICS = frozenset({
-    "screener_pro", "screener_con", "signal_flag", "bias_check",
+    "flagged_pro", "flagged_con", "signal_flag", "bias_check",
     "filing_guidance", "filing_capex", "filing_demand", "filing_orders",
     "filing_capital_allocation", "filing_margins", "filing_commitment",
     "filing_risk", "filing_governance_risk", "filing_concentration_risk",
@@ -1321,17 +1321,17 @@ def _rule_screener_text(ctx: _Ctx, bag: _Bag) -> None:
     for pro in ctx.pros[:8]:
         low = pro.lower()
         weight = 2 if any(word in low for word in _STRONG_PRO_WORDS) else 1
-        bag.s(pro, f"Screener pro: {pro}", "screener_pro", weight)
+        bag.s(pro, f"Flagged as a positive: {pro}", "flagged_pro", weight)
     for con in ctx.cons[:8]:
         low = con.lower()
         weight = 2 if any(word in low for word in _STRONG_CON_WORDS) else 1
-        bag.w(con, f"Screener con: {con}", "screener_con", weight)
+        bag.w(con, f"Flagged as a negative: {con}", "flagged_con", weight)
         if "contingent liabilit" in low:
             bag.t("Contingent liabilities sit off the reported balance sheet.",
-                  f"Screener con: {con}", "contingent_liabilities", 2)
+                  f"Flagged as a negative: {con}", "contingent_liabilities", 2)
         if "interest coverage" in low:
             bag.t("A low interest-coverage ratio is a solvency risk.",
-                  f"Screener con: {con}", "interest_coverage", 2)
+                  f"Flagged as a negative: {con}", "interest_coverage", 2)
 
 
 def _rule_sector(ctx: _Ctx, bag: _Bag) -> None:

@@ -613,6 +613,7 @@ def main():
 
     try:
         from earnings_intel.data import debate as db      # lazy: sibling module, may lag
+        from earnings_intel.data import freshness as fr
     except Exception as e:  # noqa: BLE001
         print(f"[debate] earnings_intel/data/debate.py not importable "
               f"({type(e).__name__}: {e}) — skipping the debate bake")
@@ -629,15 +630,24 @@ def main():
           f"{' — re-debating everything (--force)' if not args.skip_existing else ''}"
           f"{'' if args.skip_any or not args.skip_existing else f', skipping anything debated in the last {args.refresh_days}d'}")
 
+    restale = 0
     for i, code in enumerate(codes, 1):
         spent = (time.time() - start) / 60.0
         if args.max_minutes and spent > args.max_minutes:
             print(f"[debate] time budget {args.max_minutes:.0f}min reached at "
                   f"{i}/{len(codes)} — committing what is baked"); break
         bf = out / f"{code}.json"
-        if _skip_baked(bf, today, args.skip_existing, args.skip_any, args.refresh_days):
+        raw_bundle = _read_json(fdir / f"{code}.json")
+        would_skip = _skip_baked(bf, today, args.skip_existing, args.skip_any, args.refresh_days)
+        if would_skip and fr.is_stale(_read_json(bf), raw_bundle):
+            # The calendar says leave it, but the filings have moved since this
+            # was argued -- a new quarter, or restated numbers. That is exactly
+            # when the argument is worth having again.
+            would_skip = False
+            restale += 1
+        if would_skip:
             skipped += 1; continue
-        bundle = company_bundle(_read_json(fdir / f"{code}.json"), code,
+        bundle = company_bundle(raw_bundle, code,
                                 board_field(rows, code, "name"))
         if not bundle:
             nobundle += 1
@@ -664,6 +674,9 @@ def main():
                 print(f"  [{i}/{len(codes)}] no debate for {code}"
                       f"{': ' + b['_meta']['note'][:70] if b['_meta']['note'] else ''}")
                 continue
+            # What this argument was built from, so the next run can tell
+            # whether the filings have moved rather than guessing from a date.
+            b[fr.FINGERPRINT_KEY] = fr.fingerprint(raw_bundle)
             _atomic(bf, json.dumps(b, separators=(",", ":")))
             done += 1
             print(f"  [{i}/{len(codes)}] {code}: {b['_meta']['turns']} turns over "
@@ -679,7 +692,8 @@ def main():
     mins = (time.time() - start) / 60.0
     covered = write_index(out)
     print(f"[debate] baked {done}, skipped {skipped}, no-debate {thin}, no-bundle {nobundle}, "
-          f"failed {fail}{f' ({busy} rate-limited/out of quota)' if busy else ''} in "
+          f"failed {fail}{f' ({busy} rate-limited/out of quota)' if busy else ''}"
+          f"{f', {restale} re-argued on new filings' if restale else ''} in "
           f"{mins:.1f}min -> {out} ({covered} companies have a debate)")
     if nobundle and not _sid():
         print("[debate] tip: the missing companies have no docs/data/fundamental/<CODE>.json — "
