@@ -129,6 +129,9 @@ jobs:
           run python scripts/refresh_fundamentals.py --ratios-only --top 6000 --ratios-days 7 --max-minutes 60
           # banking heatmaps assemble from the bundles baked just above
           run python scripts/refresh_banking.py
+          # advanced fundamental checklist - pure arithmetic over the bundles
+          # already on disk, so it costs no network and must run AFTER them
+          run python scripts/refresh_advanced.py
           # daily close for EVERY baked company: the intraday quotes file only
           # covers ~500 board names, so without this ~90% of company pages fall
           # back to the price frozen into their bundle at bake time

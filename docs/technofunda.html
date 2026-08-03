@@ -111,6 +111,7 @@
         <select id="view" class="fbtn" style="cursor:pointer">
           <option value="TF">TechnoFunda 100</option>
           <option value="GARP">GARP screen</option>
+          <option value="ADV">Advanced fundamentals</option>
         </select>
         <button class="fbtn on" data-f="ALL">All</button>
         <button class="fbtn" data-f="BUY">Buy</button>
@@ -139,6 +140,141 @@ const GARP_COLS=[["rank","#","rank"],["name","Company","name"],["peg","PEG","num
 /* sanity bounds keep base-effect artifacts out: a 12,000% NP jump off a
    near-zero base or a 0.01 PE is data noise, not growth at a reasonable price */
 const GARP={peg_max:1.5, np_min:15, np_max:200, sales_min:10, pe_min:3, mcap_min:300};
+
+/* ---------------- Advanced fundamental checklist ----------------
+   A balance-sheet / income-statement / cash-flow checklist, baked by
+   scripts/refresh_advanced.py. The board file stores only [verdict, value]
+   per check, positionally against a `keys` legend; the sentences below are
+   rebuilt here, because storing 25 lines of prose for 5,444 companies is
+   megabytes of text that is entirely derivable from the numbers.
+
+   A check with no data reads "not available" and says why. It never reads as
+   a pass -- the whole point of the screen is to surface what is wrong, and a
+   silent gap is the one failure that would defeat it. */
+const ADV_COLS=[["rank","#","rank"],["name","Company","name"],["score","Score","score"],
+  ["tally","Pass / Warn / Fail","tally"],
+  ["roe","ROE","chk"],["interest_cover","Int cover","chk"],["cfo_conversion","Cash conv","chk"],
+  ["capex_intensity","Capex","chk"],["deleveraging","Debt","chk"],
+  ["margin_stability","Margin","chk"],["recv_inv_share","Recv+Inv","chk"],
+  ["zone_of_danger","Danger zone","chk"],["mcap","MCap \u20b9Cr","cr"],["pe","PE","num1"]];
+
+const ADV_GROUP={
+  capex_intensity:"Balance sheet", asset_turnover:"Balance sheet", deleveraging:"Balance sheet",
+  equity_base:"Balance sheet", recv_inv_share:"Balance sheet", debtor_days_trend:"Balance sheet",
+  investments_share:"Balance sheet", cash_pile:"Balance sheet",
+  roe:"Income statement", margin_stability:"Income statement", margin_trend:"Income statement",
+  operating_leverage:"Income statement", interest_cover:"Income statement",
+  depreciation_volatility:"Income statement", other_income_reliance:"Income statement",
+  zone_of_danger:"Income statement", volume_vs_value:"Income statement",
+  inventory_writeoff:"Income statement",
+  cfo_conversion:"Cash flow", cfo_trend:"Cash flow", free_cash_flow:"Cash flow",
+  working_capital:"Cash flow",
+  growth:"Nature", cyclical:"Nature", corporate_actions:"Nature"};
+
+const ADV_LABEL={
+  capex_intensity:"Capex under way (CWIP vs net block)",
+  asset_turnover:"Asset turnover",
+  deleveraging:"Borrowings trend",
+  equity_base:"Equity base (capital + reserves)",
+  recv_inv_share:"Receivables + inventory as % of assets",
+  debtor_days_trend:"Debtor days trend",
+  investments_share:"Investments as % of assets",
+  cash_pile:"Excess cash on the balance sheet",
+  roe:"ROE above 15%",
+  margin_stability:"Operating-margin stability",
+  margin_trend:"Operating margin direction",
+  operating_leverage:"Operating leverage",
+  interest_cover:"Interest cover above 7x",
+  depreciation_volatility:"Depreciation consistency",
+  other_income_reliance:"Reliance on other income",
+  zone_of_danger:"Peak margin on a peak multiple",
+  volume_vs_value:"Volume growth vs price growth",
+  inventory_writeoff:"Inventory write-offs / inventory gains",
+  cfo_conversion:"Profit converts to cash (CFO/OP above 70%)",
+  cfo_trend:"Operating cash-flow trend",
+  free_cash_flow:"Free cash flow",
+  working_capital:"Working-capital days trend",
+  growth:"Sales growth above 15%",
+  cyclical:"Cyclicality",
+  corporate_actions:"Auditor exits, warrants, promoter selling, concall gaps"};
+
+const pc=v=>v==null?'':(v>0?'+':'')+(+v).toFixed(0)+'%';
+/* key -> sentence. `v` is the verdict letter, `n` the stored number. */
+const ADV_SAY={
+  capex_intensity:(v,n)=>n==null?'':(n>=2?`CWIP is ${n}x the existing net block \u2014 the plant is being more than doubled`
+    :n>=0.5?`CWIP is ${n}x net block \u2014 a heavy build is under way`
+    :`CWIP is ${n}x net block \u2014 maintenance capex, no step change coming`),
+  asset_turnover:(v,n)=>n==null?'':`${n}x \u2014 `+(n>=1?'assets convert to sales, so new capex should convert too'
+    :'a low-turn base; new capex adds depreciation before it adds revenue'),
+  deleveraging:(v,n)=>n==null?'':`borrowings ${n<0?'down':'up'} ${Math.abs(n).toFixed(0)}% over the window`,
+  equity_base:(v,n)=>n==null?'':`net worth ${n>0?'up':'down'} ${Math.abs(n).toFixed(0)}% over the window`,
+  recv_inv_share:(v,n)=>n==null?'':`~${n.toFixed(0)}% of the balance sheet in unpaid bills and unsold stock `
+    +`(derived from debtor/inventory days, not a filed line)`,
+  debtor_days_trend:(v,n)=>n==null?'':`debtor days ${n<0?'falling':'rising'} ${Math.abs(n).toFixed(0)}% \u2014 `
+    +(n<0?'cash arrives sooner':'cash arrives later'),
+  investments_share:(v,n)=>n==null?'not available':`${n.toFixed(0)}% of assets. The financial-asset / associate / `
+    +`subsidiary split is a holding-percentage disclosure in the annual report, not a balance-sheet line`,
+  cash_pile:()=>'not available \u2014 these statements carry no separate cash line, only "Other Assets"',
+  roe:(v,n)=>n==null?'':`${n}% return on equity`,
+  margin_stability:(v,n)=>n==null?'':`operating margin varies ${n.toFixed(0)}% \u2014 `
+    +(v==='p'?'a secular business':v==='w'?'it moves about':'cyclical; price it on P/B, not on a peak margin'),
+  // Under a point either way is flat. "Compressing 0%" states a change and
+  // then denies it in the same breath.
+  margin_trend:(v,n)=>n==null?'':(Math.abs(n)<1?'margin broadly flat'
+      :`margin ${n>0?'expanding':'compressing'} ${Math.abs(n).toFixed(0)}%`)
+    +` (operating margin \u2014 no raw-material line, so gross margin is not available)`,
+  operating_leverage:(v,n)=>n==null?'':(n>0?`sales outgrew costs by ${n.toFixed(0)} points \u2014 costs held while sales grew`
+    :`costs outgrew sales by ${Math.abs(n).toFixed(0)} points`),
+  interest_cover:(v,n)=>n==null?'no meaningful interest cost':`EBIT covers interest ${n}x`
+    +(v==='p'?'':' \u2014 a shock here compounds fast'),
+  depreciation_volatility:(v,n)=>n==null?'':`the charge as a share of the net block varies ${n.toFixed(0)}%`
+    +(v==='f'?' \u2014 check whether asset lives were revised':''),
+  other_income_reliance:(v,n)=>n==null?'':`other income is ${n.toFixed(0)}% of pre-tax profit`
+    +(v==='p'?'':' \u2014 read what sits inside it'),
+  zone_of_danger:(v,n)=>v==='f'?`margin at its own peak on a P/E of ${n} \u2014 both have to keep going right`
+    :v==='w'?'margin at its own peak, but the multiple is not stretched'
+    :'margin is below its peak \u2014 room to recover',
+  volume_vs_value:()=>'not available \u2014 volume is disclosed in the annual report and concall, not the statements',
+  inventory_writeoff:()=>'not available \u2014 needs the raw-material and inventory notes from the annual report',
+  cfo_conversion:(v,n)=>n==null?'':`${n.toFixed(0)}% of operating profit arrived as cash`,
+  cfo_trend:(v,n)=>n==null?'':`CFO ${n>0?'rising':'falling'} ${Math.abs(n).toFixed(0)}% over the window`,
+  free_cash_flow:(v,n)=>v==='p'?'positive throughout the recent window'
+    :v==='w'?'positive in some years, not all':'negative through the recent window',
+  // Past a full 100% the series crossed zero, and "falling 189%" is not a
+  // sentence about anything. Working-capital days going negative is a real and
+  // good outcome -- the business collects before it pays -- so say that.
+  working_capital:(v,n)=>n==null?'':(Math.abs(n)>=100
+    ? `working-capital days ${n<0?'fell through zero \u2014 the business now collects before it pays':'more than doubled \u2014 absorbs cash'}`
+    : `working-capital days ${n<0?'falling':'rising'} ${Math.abs(n).toFixed(0)}% \u2014 `
+      +(n<0?'releases cash':'absorbs cash')),
+  growth:(v,n)=>n==null?'':`${n.toFixed(0)}% a year over the window`,
+  cyclical:()=>'reported, not scored \u2014 cyclical is a different game, not a worse business',
+  corporate_actions:()=>'not available \u2014 needs a per-company filing history; the boards here carry only a '
+    +'market-wide snapshot of recent actions'};
+
+const VW={p:['OK','s-hi'],w:['WATCH','s-mid'],f:['FLAG','s-lo'],n:['n/a','na']};
+let ADV_DATA=null, ADV_KEYS=[], advLoading=false, advOpen=null;
+
+async function loadAdvanced(){
+  if(ADV_DATA||advLoading) return;
+  advLoading=true;
+  f("empty").style.display=''; f("tbl").style.display='none';
+  f("empty").textContent='Loading the fundamental checklist\u2026';
+  try{
+    const j=await fetch('data/advanced.json?t='+Date.now()).then(r=>r.json());
+    ADV_KEYS=j.keys||[];
+    ADV_DATA=(j.rows||[]).map(r=>{
+      const chk={};
+      (r.c||[]).forEach((pair,i)=>{ if(ADV_KEYS[i]) chk[ADV_KEYS[i]]=pair; });
+      return Object.assign({},r,{chk:chk,tally:r.p});
+    });
+  }catch(e){
+    ADV_DATA=[];
+    f("empty").textContent='Could not load the fundamental checklist.';
+  }
+  advLoading=false; render();
+}
+
 let DATA=[], flt="ALL", q="", s={k:"composite",d:-1}, LIMIT=100, view="TF";
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -157,6 +293,21 @@ function cell(r,c){
   if(c[2]==='num1') return `<td>${v==null?'—':(+v).toFixed(1)}</td>`;
   if(c[2]==='num2') return `<td>${v==null?'—':(+v).toFixed(2)}</td>`;
   if(c[2]==='pct1') return `<td>${v==null?'—':(+v).toFixed(0)+'%'}</td>`;
+  if(c[2]==='tally'){
+    return `<td style="white-space:nowrap"><span class="s-hi">${r.p}</span> / `
+      +`<span class="s-mid">${r.w}</span> / <span class="s-lo">${r.f}</span>`
+      +(r.n?` <span class="na" style="font-size:11px">(${r.n} n/a)</span>`:'')+`</td>`;
+  }
+  if(c[2]==='chk'){
+    const pair=(r.chk||{})[c[0]];
+    if(!pair) return '<td class="na">\u2014</td>';
+    const [vd,val]=pair, w=VW[vd]||VW.n;
+    // 9999 is the reporting cap, not a measurement. Every ratio here has a
+    // denominator that can approach zero; printing "9999.0" as though it were
+    // measured would be worse than saying it ran off the scale.
+    const num=(val==null)?'':` <span class="na" style="font-size:11px">${Math.abs(val)>=9999?'&gt;9999':(+val).toFixed(1)}</span>`;
+    return `<td class="${w[1]}" style="white-space:nowrap">${w[0]}${num}</td>`;
+  }
   if(c[2]==='em'){
     if(!v) return '<td class="na">—</td>';
     const cls=v==='ACCELERATING'?'tw':(v==='DECELERATING'?'hw':'nu');
@@ -181,21 +332,58 @@ function garpRows(rows){
     &&(r.mcap??0)>=GARP.mcap_min);
 }
 function render(){
-  const cols=view==='GARP'?GARP_COLS:COLS;
+  const cols=view==='ADV'?ADV_COLS:(view==='GARP'?GARP_COLS:COLS);
   f("head").innerHTML=cols.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
   f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
-  let rows=DATA.filter(r=>flt==='ALL'||r.label===flt);
+  // The checklist board has no Buy/Neutral/Sell verdict of its own, so the
+  // verdict filter does not apply to it.
+  let rows=view==='ADV'?(ADV_DATA||[]).slice():DATA.filter(r=>flt==='ALL'||r.label===flt);
   if(view==='GARP') rows=garpRows(rows);
   if(q){const Q=q.toLowerCase();rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.code||'').toLowerCase().includes(Q));}
   rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
-  if(view==='GARP') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
+  if(view==='GARP'||view==='ADV') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
   const total=rows.length;
   if(LIMIT!==Infinity) rows=rows.slice(0,LIMIT);
-  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
+  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='ADV'?'No companies in the fundamental checklist yet \u2014 run scripts/refresh_advanced.py.':view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
   f("tbl").style.display='';f("empty").style.display='none';
-  f("body").innerHTML=rows.map(r=>'<tr>'+cols.map(c=>cell(r,c)).join('')+'</tr>').join('');
+  f("body").innerHTML=rows.map(r=>{
+    const tr=`<tr data-code="${esc(r.code)}"${view==='ADV'?' style="cursor:pointer"':''}>`
+      +cols.map(c=>cell(r,c)).join('')+'</tr>';
+    return (view==='ADV'&&advOpen===r.code)
+      ? tr+`<tr class="advdet"><td colspan="${cols.length}">${advDetail(r)}</td></tr>` : tr;
+  }).join('');
+  if(view==='ADV'){
+    f("body").querySelectorAll('tr[data-code]').forEach(tr=>tr.onclick=ev=>{
+      if(ev.target.closest('a')) return;           // the company link still navigates
+      const code=tr.dataset.code;
+      advOpen=(advOpen===code)?null:code; render();
+    });
+  }
   window.__shown=rows.map(r=>String(r.code||'').toUpperCase());
   f("cnt").textContent=`showing ${rows.length} of ${total}`;
+}
+function advDetail(r){
+  const groups=["Balance sheet","Income statement","Cash flow","Nature"];
+  let html='<div style="padding:6px 2px 10px">';
+  groups.forEach(g=>{
+    const keys=ADV_KEYS.filter(k=>ADV_GROUP[k]===g);
+    if(!keys.length) return;
+    html+=`<div class="na" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;`
+      +`margin:10px 0 4px">${esc(g)}</div>`;
+    keys.forEach(k=>{
+      const pair=(r.chk||{})[k]; if(!pair) return;
+      const [vd,val]=pair, w=VW[vd]||VW.n;
+      const say=(ADV_SAY[k]?ADV_SAY[k](vd,val):'')||'';
+      html+=`<div style="display:flex;gap:10px;align-items:baseline;padding:3px 0">`
+        +`<span class="${w[1]}" style="min-width:52px;font-size:11px">${w[0]}</span>`
+        +`<span style="min-width:250px">${esc(ADV_LABEL[k]||k)}</span>`
+        +`<span class="na" style="font-size:12px">${esc(say)}</span></div>`;
+    });
+  });
+  html+='<div class="na" style="font-size:11px;margin-top:10px">Score counts only the checks the '
+    +'statements can decide. Items marked n/a need the annual report — open the company page for '
+    +'its document analysis and bull/bear debate.</div>';
+  return html+'</div>';
 }
 function applySectors(rows, tw, st){
   if(!rows||!rows.length) return;
@@ -230,7 +418,13 @@ async function load(){
     f("empty").innerHTML='No board data yet. Run <code>python scripts/refresh_technofunda.py</code> (or it builds in the scanX.bat daily job).'; }
 }
 f("showAll").onclick=()=>{LIMIT=(LIMIT===Infinity?100:Infinity);f("showAll").textContent=(LIMIT===Infinity?'Top 100':'Show all');f("showAll").classList.toggle('on',LIMIT===Infinity);render();};
-f("view").onchange=e=>{view=e.target.value;s=view==='GARP'?{k:'peg',d:1}:{k:'composite',d:-1};render();};
+f("view").onchange=e=>{view=e.target.value;
+  s=view==='GARP'?{k:'peg',d:1}:(view==='ADV'?{k:'score',d:-1}:{k:'composite',d:-1});
+  advOpen=null;
+  // Fetched only when the view is chosen: the checklist board is ~2 MB and
+  // most visitors never open it.
+  if(view==='ADV'&&!ADV_DATA){ loadAdvanced(); return; }
+  render();};
 document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
 // ---- delayed NSE/BSE quotes from the static data/quotes.json ----
