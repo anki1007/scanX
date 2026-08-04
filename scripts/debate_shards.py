@@ -24,6 +24,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Sequence
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -79,18 +80,32 @@ def remaining(fundamental_dir: Path, debate_dir: Path) -> list[str]:
     return [code for _, code in rows]
 
 
-def shard(codes: list[str], count: int, per_shard_cap: int = 0) -> list[dict]:
-    """Round-robin `codes` into `count` shards."""
+def shard(codes: list[str], count: int, per_shard_cap: int = 0,
+          providers: Sequence[str] | None = None) -> list[dict]:
+    """Round-robin `codes` into `count` shards, one provider each.
+
+    Each shard is pinned to ONE model provider, assigned round-robin from
+    whatever credentials exist. That is what makes extra models worth having:
+    a single provider parallelised eight ways just hits its own rate limit
+    eight times faster, whereas eight providers running one stream each are
+    eight independent quotas and eight independent outages.
+
+    With no providers supplied every shard gets "", meaning "first credentialled
+    provider" -- the previous behaviour.
+    """
     count = max(1, int(count))
     buckets: list[list[str]] = [[] for _ in range(count)]
     for i, code in enumerate(codes):
         buckets[i % count].append(code)
+
+    pool = [p.strip() for p in (providers or []) if str(p).strip()]
     out = []
     for i, bucket in enumerate(buckets):
         if per_shard_cap > 0:
             bucket = bucket[:per_shard_cap]
         if bucket:
-            out.append({"shard": i, "codes": ",".join(bucket), "n": len(bucket)})
+            out.append({"shard": i, "codes": ",".join(bucket), "n": len(bucket),
+                        "provider": pool[i % len(pool)] if pool else ""})
     return out
 
 
@@ -103,16 +118,24 @@ def main() -> int:
                          "leftovers are simply still missing on the next run.")
     ap.add_argument("--fundamental", default=str(ROOT / "docs" / "data" / "fundamental"))
     ap.add_argument("--debate", default=str(ROOT / "docs" / "data" / "debate"))
+    ap.add_argument("--providers", default="",
+                    help="comma-separated provider names to spread across shards "
+                         "(e.g. gemini,deepseek,mistral,ollama). Each shard is "
+                         "pinned to one, so N credentials give N independent "
+                         "quotas rather than N ways to hit the same one.")
     ap.add_argument("--github-output", default="",
                     help="also append matrix= and remaining= to this file")
     args = ap.parse_args()
 
     codes = remaining(Path(args.fundamental), Path(args.debate))
-    matrix = {"include": shard(codes, args.shards, args.per_shard_cap)}
+    providers = [x for x in args.providers.split(",") if x.strip()]
+    matrix = {"include": shard(codes, args.shards, args.per_shard_cap, providers)}
 
     print(json.dumps(matrix, separators=(",", ":")))
+    used = sorted({e["provider"] for e in matrix["include"] if e.get("provider")})
     print(f"[shards] {len(codes)} companies still need a debate, "
-          f"across {len(matrix['include'])} shard(s)", file=sys.stderr)
+          f"across {len(matrix['include'])} shard(s)"
+          f"{' on ' + ', '.join(used) if used else ''}", file=sys.stderr)
 
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as fh:

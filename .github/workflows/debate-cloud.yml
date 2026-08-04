@@ -63,13 +63,41 @@ jobs:
     outputs:
       matrix: ${{ steps.split.outputs.matrix }}
       remaining: ${{ steps.split.outputs.remaining }}
+      needs_ollama: ${{ steps.split.outputs.needs_ollama }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      # Spread the shards across EVERY model we hold a credential for. Eight
+      # shards on one provider just hit that provider's rate limit eight times
+      # faster; eight providers running one stream each are eight independent
+      # quotas and eight independent outages. ollama is always available since
+      # it needs no key, so the list is never empty.
       - id: split
-        run: python scripts/debate_shards.py --shards "$SHARDS" --github-output "$GITHUB_OUTPUT"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+        run: |
+          set -euo pipefail
+          POOL=""
+          add() { [ -n "${2:-}" ] && POOL="${POOL:+$POOL,}$1" || true; }
+          add gemini    "${GEMINI_API_KEY:-}"
+          add openai    "${OPENAI_API_KEY:-}"
+          add anthropic "${ANTHROPIC_API_KEY:-}"
+          add deepseek  "${DEEPSEEK_API_KEY:-}"
+          add mistral   "${MISTRAL_API_KEY:-}"
+          add qwen      "${QWEN_API_KEY:-}"
+          add together  "${TOGETHER_API_KEY:-}"
+          POOL="${POOL:+$POOL,}ollama"          # needs no key; always last resort
+          echo "provider pool: $POOL"
+          python scripts/debate_shards.py --shards "$SHARDS" \
+            --providers "$POOL" --github-output "$GITHUB_OUTPUT"
       # Block scalar, not a plain one: the message contains ": ", which YAML
       # reads as a mapping key inside an unquoted value.
       - run: |
@@ -77,7 +105,7 @@ jobs:
 
   warm:
     needs: plan
-    if: needs.plan.outputs.remaining != '0'
+    if: needs.plan.outputs.remaining != '0' && needs.plan.outputs.needs_ollama == 'yes'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -123,22 +151,31 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      # Same set the data-refresh workflow proved against this script, minus
-      # google-genai: the debate runs on a local model here, so the hosted
-      # provider is not just unused, it must not be reachable.
+      # Same set the data-refresh workflow proved against this script.
+      # google-genai is included ONLY on a gemini shard: that adapter imports it
+      # lazily, so without the package a gemini-pinned shard reports "no
+      # credentials" and bakes nothing, silently. Every other provider speaks
+      # plain HTTP through requests.
       - name: Install dependencies
         run: |
           python -m pip install --quiet --disable-pip-version-check \
             "pandas>=2.0" "numpy>=1.24" "requests>=2.31" \
             "beautifulsoup4>=4.12" "lxml>=5.0" "curl_cffi>=0.7" \
             "yfinance>=0.2.40" "pdfplumber>=0.10" "openpyxl>=3.1"
+          if [ "${{ matrix.provider }}" = "gemini" ]; then
+            python -m pip install --quiet --disable-pip-version-check "google-genai>=0.3"
+          fi
 
+      # Only the local-model shards need 2GB of weights and a server. A hosted
+      # shard skipping this starts baking about four minutes sooner.
       - uses: actions/cache@v4
+        if: matrix.provider == 'ollama' || matrix.provider == ''
         with:
           path: ~/.ollama/models
           key: ollama-${{ env.OLLAMA_MODEL }}-v1
 
       - name: Start ollama
+        if: matrix.provider == 'ollama' || matrix.provider == ''
         run: |
           set -euo pipefail
           curl -fsSL -o /tmp/ollama.tar.zst \
@@ -148,9 +185,19 @@ jobs:
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:11434/api/version && break; sleep 2; done
           ollama list
 
-      - name: Bake shard ${{ matrix.shard }} (${{ matrix.n }} companies)
+      - name: Bake shard ${{ matrix.shard }} on ${{ matrix.provider || 'default' }} (${{ matrix.n }} companies)
         env:
-          SCANX_LLM_PROVIDER: ollama
+          SCANX_LLM_PROVIDER: ${{ matrix.provider }}
+          # Every key is exported to every shard, but --provider pins which one
+          # this shard may use. Exporting them all keeps the step definition
+          # identical across the matrix; the pin is what separates the quotas.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
           # Must be a full URL. The adapter appends "/api/generate" to this
           # verbatim, so a bare host:port yields a schemeless URL and every
           # call fails.
@@ -159,7 +206,8 @@ jobs:
           # A CPU runner needs 90-160s for one debate turn. At the 90s default
           # the call timed out, the turn was dropped, and companies came back
           # with "2 turns over 1 rounds" instead of 4 over 2 -- quietly half a
-          # debate, which is worse than none.
+          # debate, which is worse than none. A hosted model answers in seconds
+          # and does not need this, but the ceiling costs it nothing.
           SCANX_LLM_TIMEOUT: "420"
         run: |
           set -uo pipefail
@@ -169,7 +217,7 @@ jobs:
           python scripts/refresh_debate.py \
             --top 0 --codes "${{ matrix.codes }}" \
             --rounds "$ROUNDS" --focus \
-            --provider ollama \
+            --provider "${{ matrix.provider }}" \
             --out "$RUNNER_TEMP/shard-out" \
             --max-minutes "$BAKE_MINUTES"
           n=$(find "$RUNNER_TEMP/shard-out" -maxdepth 1 -name '*.json' ! -name 'index.json' | wc -l)

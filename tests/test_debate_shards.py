@@ -94,3 +94,40 @@ def test_per_shard_cap_is_honoured():
 def test_shard_count_is_never_zero():
     out = shard(["A", "B", "C"], 0)
     assert len(out) == 1 and out[0]["n"] == 3
+
+
+# ------------------------------------------- one provider pinned per shard
+
+def test_each_shard_is_pinned_to_one_provider():
+    """N credentials must become N independent quotas. Eight shards on ONE
+    provider just hit that provider's rate limit eight times faster."""
+    out = shard([f"C{i}" for i in range(40)], 6,
+                providers=["gemini", "deepseek", "mistral", "ollama"])
+    assert [s["provider"] for s in out] == \
+        ["gemini", "deepseek", "mistral", "ollama", "gemini", "deepseek"]
+
+
+def test_more_providers_than_shards_is_not_an_error():
+    out = shard([f"C{i}" for i in range(10)], 2,
+                providers=["a", "b", "c", "d", "e"])
+    assert [s["provider"] for s in out] == ["a", "b"]
+
+
+def test_no_providers_means_first_credentialled_as_before():
+    out = shard(["A", "B", "C"], 2)
+    assert all(s["provider"] == "" for s in out)
+
+
+def test_blank_provider_names_are_ignored_not_assigned():
+    """An unset secret produces an empty entry; a shard must not be pinned to
+    the empty string while real providers sit unused."""
+    out = shard([f"C{i}" for i in range(6)], 3, providers=["gemini", "", "  ", "ollama"])
+    assert sorted({s["provider"] for s in out}) == ["gemini", "ollama"]
+
+
+def test_sharding_stays_disjoint_with_providers_attached():
+    codes = [f"C{i}" for i in range(37)]
+    out = shard(codes, 5, providers=["x", "y"])
+    seen = [c for s in out for c in s["codes"].split(",")]
+    assert sorted(seen) == sorted(codes)
+    assert len(seen) == len(set(seen))
