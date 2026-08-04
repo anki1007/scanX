@@ -1,26 +1,26 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-GESHIP,GE Shipping Co,https://www.screener.in/company/GESHIP/,19966.0,1398.0,5.3,Jun 2026,66.94,32.69,159.72,25.38,108.09,42.19,,,93.8,HIGH,True,True,2026-08-03T15:14:33+00:00,1398.0,
-AEROPLANE,A C J K Exports,https://www.screener.in/company/AEROPLANE/,2059.0,199.0,16.6,Jun 2026,55.14,-4.46,127.33,83.0,39.73,39.1,,,88.5,HIGH,True,True,2026-08-03T15:14:33+00:00,199.0,
-PELATRO,Pelatro,https://www.screener.in/company/PELATRO/,283.0,267.0,13.3,Jun 2026,50.56,2.81,52.53,-11.13,36.03,29.34,,,75.8,HIGH,False,True,2026-08-03T15:14:33+00:00,267.0,
-THOMASCOOK,Thomas Cook (I),https://www.screener.in/company/THOMASCOOK/,5034.0,107.0,40.4,Jun 2026,1.22,153.21,5.77,207.33,35.06,630.61,,,73.3,HIGH,True,False,2026-08-03T15:14:33+00:00,107.0,
-RBA,Restaurant Brand,https://www.screener.in/company/RBA/,5041.0,70.8,,Jun 2026,17.91,16.41,27.31,30.38,37.36,5.26,,,71.7,HIGH,True,False,2026-08-03T15:14:33+00:00,70.8,
-NOIDATOLL,Noida Tollbridg.,https://www.screener.in/company/NOIDATOLL/,82.3,4.44,2.9,Jun 2026,8.57,1.79,28.5,38.18,10.19,60.55,,,71.0,HIGH,True,False,2026-08-03T15:14:33+00:00,4.44,
-HBSL,HB Stockholdings,https://www.screener.in/company/HBSL/,36.3,50.5,,Jun 2026,0.0,2705.56,6.57,179.98,0.11,178.43,,,68.9,HIGH,True,False,2026-08-03T15:14:33+00:00,50.5,
-NXST,Nexus Select,https://www.screener.in/company/NXST/,25267.0,167.0,57.4,Jun 2026,10.91,4.45,30.83,1186.89,11.4,9.58,,,68.9,HIGH,True,False,2026-08-03T15:14:33+00:00,167.0,
-ARTEMISMED,Artemis Medicare,https://www.screener.in/company/ARTEMISMED/,4801.0,302.0,41.6,Jun 2026,12.8,2.92,44.86,4.73,35.7,10.34,,,68.5,HIGH,False,False,2026-08-03T15:14:33+00:00,302.0,
-GPTHEALTH,GPT Healthcare,https://www.screener.in/company/GPTHEALTH/,1346.0,164.0,28.5,Jun 2026,17.76,0.0,65.36,-13.01,39.08,3.42,,,68.3,HIGH,False,False,2026-08-03T15:14:33+00:00,164.0,
-PATINTLOG,Patel Integrated,https://www.screener.in/company/PATINTLOG/,98.1,14.0,9.4,Jun 2026,44.87,16.98,53.05,-16.05,27.84,-32.79,,,67.0,HIGH,False,True,2026-08-03T15:14:33+00:00,14.0,
-539012,Megri Soft,https://www.screener.in/company/539012/,25.2,80.1,38.1,Jun 2026,45.83,14.13,35.71,-20.83,33.33,-17.65,,,64.9,HIGH,False,True,2026-08-03T15:14:33+00:00,80.1,-1.71
-KAYA,Kaya Ltd,https://www.screener.in/company/KAYA/,421.0,278.0,,Jun 2026,13.83,7.71,-7.8,45.32,3.21,130.39,,,64.5,HIGH,True,False,2026-08-03T15:14:33+00:00,278.0,
-TORNTPOWER,Torrent Power,https://www.screener.in/company/TORNTPOWER/,70133.0,1392.0,30.2,Jun 2026,2.76,26.82,-10.78,100.0,3.71,33.86,,,63.8,HIGH,True,False,2026-08-03T15:14:33+00:00,1392.0,
-GKWLIMITED,GKW,https://www.screener.in/company/GKWLIMITED/,991.0,1660.0,,Jun 2026,2.05,525.71,-21.74,292.51,0.0,298.41,,,63.3,HIGH,True,False,2026-08-03T15:14:33+00:00,1660.0,
-531033,Regal Entertain.,https://www.screener.in/company/531033/,13.6,15.2,71.3,Jun 2026,62.5,-64.86,66.67,-127.27,85.71,-135.29,,,62.5,HIGH,False,True,2026-08-03T15:14:33+00:00,15.22,-4.87
-AVADHSUGAR,Avadh Sugar,https://www.screener.in/company/AVADHSUGAR/,1117.0,559.0,16.6,Jun 2026,8.65,16.1,102.73,-99.59,29.08,-69.67,,,57.1,HIGH,False,False,2026-08-03T15:14:33+00:00,559.0,
-BUTTERFLY,Butterfly Gan Ap,https://www.screener.in/company/BUTTERFLY/,1313.0,736.0,26.7,Jun 2026,14.44,-1.83,38.26,-22.02,17.19,-23.08,,,55.3,HIGH,False,False,2026-08-03T15:14:33+00:00,736.0,
-530445,Sumeru Industrie,https://www.screener.in/company/530445/,11.2,1.55,124.0,Jun 2026,,,200.0,-75.0,11.11,-100.0,,,51.4,HIGH,False,False,2026-08-03T15:14:33+00:00,1.55,-0.64
-TEXRAIL,Texmaco Rail,https://www.screener.in/company/TEXRAIL/,4591.0,113.0,21.2,Jun 2026,-16.9,-35.13,70.99,-13.62,-19.61,-46.23,,,45.3,MEDIUM,False,False,2026-08-03T15:14:33+00:00,113.0,
-531762,Unjha Formul.,https://www.screener.in/company/531762/,12.9,28.8,26.8,Jun 2026,-8.82,-0.6,-58.97,121.62,-54.76,142.22,,,41.8,MEDIUM,True,False,2026-08-03T15:14:33+00:00,28.75,10.53
-533019,Simplex Papers,https://www.screener.in/company/533019/,3.95,1317.0,,Jun 2026,,,0.0,-50.0,0.0,-50.0,,,37.5,MEDIUM,False,False,2026-08-03T15:14:33+00:00,1316.7,0.0
-523232,Cont. Petroleums,https://www.screener.in/company/523232/,78.1,82.4,23.2,Jun 2026,-33.15,-41.15,-4.84,-6.35,-14.84,-30.16,,,31.7,MEDIUM,False,False,2026-08-03T15:14:33+00:00,82.42,-0.82
-PNC,Prit Nandy Comm.,https://www.screener.in/company/PNC/,29.6,20.4,8.3,Jun 2026,-92.55,-36.55,-224.19,62.62,-237.93,60.78,,,27.9,LOW,True,False,2026-08-03T15:14:33+00:00,20.4,
-DLF,DLF,https://www.screener.in/company/DLF/,165587.0,669.0,38.5,Jun 2026,-52.89,-29.44,4.06,-37.43,-58.79,-63.5,,,19.0,LOW,False,False,2026-08-03T15:14:33+00:00,669.0,
+531923,Dhampur.Spl.Sug.,https://www.screener.in/company/531923/,107.0,123.0,16.7,Jun 2026,74.52,0.58,76.29,189.83,105.5,279.66,,,92.6,HIGH,True,True,2026-08-04T14:38:33+00:00,123.0,
+512271,Tashi India,https://www.screener.in/company/512271/,8.65,116.0,8.2,Jun 2026,121.43,-53.73,159.09,165.52,187.5,138.33,,,87.5,HIGH,True,True,2026-08-04T14:38:33+00:00,116.5,0.22
+JYOTISTRUC,Jyoti Structures,https://www.screener.in/company/JYOTISTRUC/,1383.0,11.6,21.5,Jun 2026,60.9,7.26,74.11,7.73,205.92,22.54,,,85.2,HIGH,False,True,2026-08-04T14:38:33+00:00,11.6,
+CASTROLIND,Castrol India,https://www.screener.in/company/CASTROLIND/,18511.0,187.0,17.2,Jun 2026,24.98,21.1,42.62,43.8,41.14,50.15,,,83.3,HIGH,True,False,2026-08-04T14:38:33+00:00,187.0,
+MARICO,Marico,https://www.screener.in/company/MARICO/,114316.0,875.0,60.6,Jun 2026,22.85,19.87,27.1,59.8,25.04,57.2,,,77.6,HIGH,True,False,2026-08-04T14:38:33+00:00,875.0,
+NYKAA,FSN E-Commerce,https://www.screener.in/company/NYKAA/,98949.0,342.0,371.7,Jun 2026,29.1,5.06,225.71,1.27,67.38,5.83,,,76.4,HIGH,False,True,2026-08-04T14:38:33+00:00,342.0,
+ANDHRAPAP,Andhra Paper,https://www.screener.in/company/ANDHRAPAP/,1231.0,61.9,44.6,Jun 2026,0.25,-25.24,42.25,292.49,45.24,94.42,,,73.8,HIGH,True,False,2026-08-04T14:38:33+00:00,61.9,
+UGROCAP,Ugro Capital,https://www.screener.in/company/UGROCAP/,1504.0,97.1,10.8,Jun 2026,0.72,-14.55,78.01,105.07,4.65,-6.9,,,68.0,HIGH,True,False,2026-08-04T14:38:33+00:00,97.1,
+TIRUMALCHM,Thirumalai Chem.,https://www.screener.in/company/TIRUMALCHM/,2237.0,185.0,,Jun 2026,21.56,29.01,27.17,-56.07,222.1,428.36,,,67.9,HIGH,True,False,2026-08-04T14:38:33+00:00,185.0,
+BHARTIARTL,Bharti Airtel,https://www.screener.in/company/BHARTIARTL/,1241638.0,1970.0,39.8,Jun 2026,18.35,5.7,34.9,8.27,19.63,5.75,,,65.8,HIGH,False,False,2026-08-04T14:38:33+00:00,1970.0,
+SFL,Sheela Foam,https://www.screener.in/company/SFL/,8384.0,768.0,41.2,Jun 2026,25.7,-1.71,851.15,-32.14,44.95,-6.84,,,65.3,HIGH,False,True,2026-08-04T14:38:33+00:00,768.0,
+KALYANKJIL,Kalyan Jewellers,https://www.screener.in/company/KALYANKJIL/,61082.0,591.0,41.8,Jun 2026,45.69,3.06,32.2,-14.88,24.61,-13.99,,,63.2,HIGH,False,True,2026-08-04T14:38:33+00:00,591.0,
+NECCLTD,North Eastn.Car.,https://www.screener.in/company/NECCLTD/,163.0,15.7,20.5,Jun 2026,9.41,-21.41,12.92,187.14,-15.63,108.37,,,62.1,HIGH,True,False,2026-08-04T14:38:33+00:00,15.7,
+532057,Abhinav Capital,https://www.screener.in/company/532057/,72.6,105.0,26.2,Jun 2026,11.22,-0.91,37.5,-10.81,24.64,7.5,,,61.6,HIGH,False,False,2026-08-04T14:38:33+00:00,105.0,
+BHARTIHEXA,Bharti Hexacom,https://www.screener.in/company/BHARTIHEXA/,80661.0,1617.0,43.6,Jun 2026,10.91,3.98,22.96,7.83,13.87,4.34,,,60.8,HIGH,False,False,2026-08-04T14:38:33+00:00,1617.0,
+508571,Cochin Malabar,https://www.screener.in/company/508571/,26.9,152.0,,Jun 2026,,,-9.09,20.0,0.0,84.38,,,56.9,HIGH,True,False,2026-08-04T14:38:33+00:00,152.0,10.14
+538520,Shivamshree Busi,https://www.screener.in/company/538520/,12.3,1.63,18.4,Jun 2026,-1.49,-42.01,108.51,-93.75,475.0,-68.92,,,52.3,HIGH,False,False,2026-08-04T14:38:33+00:00,1.63,
+MAPMYINDIA,C.E. Info System,https://www.screener.in/company/MAPMYINDIA/,6232.0,1140.0,45.2,Jun 2026,14.75,-3.45,8.52,-2.36,2.21,-12.6,,,52.1,HIGH,False,False,2026-08-04T14:38:33+00:00,1140.0,
+534422,Looks Health,https://www.screener.in/company/534422/,10.3,9.77,342.0,Jun 2026,71.43,0.0,,-100.0,0.0,-20.0,,,50.0,HIGH,False,False,2026-08-04T14:38:33+00:00,9.77,
+511658,Nettlinx,https://www.screener.in/company/511658/,36.2,15.0,,Jun 2026,-20.75,-35.8,77.08,-112.22,180.0,-76.07,,,49.6,MEDIUM,False,False,2026-08-04T14:38:33+00:00,14.98,-1.45
+504132,Permanent Magnet,https://www.screener.in/company/504132/,735.0,854.0,55.7,Jun 2026,17.91,-4.96,-38.41,-4.76,2.8,15.91,,,45.8,MEDIUM,False,False,2026-08-04T14:38:33+00:00,854.1,-0.32
+KRITIKA,Kritika Wires,https://www.screener.in/company/KRITIKA/,158.0,5.93,20.1,Jun 2026,-21.74,10.2,15.94,-21.95,-21.19,-22.48,,,41.4,MEDIUM,False,False,2026-08-04T14:38:33+00:00,5.93,
+GEEKAYWIRE,Geekay Wires,https://www.screener.in/company/GEEKAYWIRE/,241.0,23.1,8.4,Jun 2026,3.49,-12.94,-19.75,-14.52,-9.84,-37.12,,,36.3,MEDIUM,False,False,2026-08-04T14:38:33+00:00,23.1,
+539519,Sattva Sukun,https://www.screener.in/company/539519/,28.4,0.74,,Jun 2026,-47.54,-92.47,-124.62,77.46,-130.77,96.32,,,29.6,LOW,True,False,2026-08-04T14:38:33+00:00,0.74,
+539470,Shree Ganesh Bio,https://www.screener.in/company/539470/,21.9,0.55,,Jun 2026,3.62,-32.55,-272.73,-280.0,-888.89,-106.98,,,14.0,LOW,False,False,2026-08-04T14:38:33+00:00,0.55,
