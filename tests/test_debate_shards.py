@@ -131,3 +131,49 @@ def test_sharding_stays_disjoint_with_providers_attached():
     seen = [c for s in out for c in s["codes"].split(",")]
     assert sorted(seen) == sorted(codes)
     assert len(seen) == len(set(seen))
+
+
+# ------------------------------------- the planner must need no dependencies
+
+def test_planner_runs_without_numpy_or_requests(tmp_path):
+    """The plan job installs NOTHING -- that is its whole point, it reads JSON
+    and prints a matrix in ten seconds. When this script imported
+    `earnings_intel.data.freshness` it executed earnings_intel/__init__.py,
+    which pulls in the pipeline and finally numpy, and every scheduled run died
+    at the first step with ModuleNotFoundError while the rest of the workflow
+    was skipped behind it. Nothing surfaced except a red tick.
+    """
+    import json
+    import subprocess
+    import sys
+    import textwrap
+
+    fdir, ddir = tmp_path / "f", tmp_path / "d"
+    fdir.mkdir()
+    ddir.mkdir()
+    (fdir / "AAA.json").write_text(
+        json.dumps({"fundamental": {"overview": {"Market Cap": "100"}}}), encoding="utf-8")
+
+    harness = tmp_path / "run.py"
+    harness.write_text(textwrap.dedent(f"""
+        import sys
+
+        class _Block:
+            BLOCKED = {{"numpy", "pandas", "requests", "bs4", "lxml", "curl_cffi"}}
+            def find_module(self, name, path=None):
+                return self if name.split(".")[0] in self.BLOCKED else None
+            def load_module(self, name):
+                raise ImportError("blocked: " + name)
+
+        sys.meta_path.insert(0, _Block())
+        sys.argv = ["debate_shards.py", "--shards", "2",
+                    "--fundamental", {str(fdir)!r},
+                    "--debate", {str(ddir)!r}]
+        exec(open({str(ROOT / "scripts" / "debate_shards.py")!r}, encoding="utf-8").read(),
+             {{"__name__": "__main__",
+               "__file__": {str(ROOT / "scripts" / "debate_shards.py")!r}}})
+    """), encoding="utf-8")
+
+    proc = subprocess.run([sys.executable, str(harness)], capture_output=True, text=True)
+    assert proc.returncode == 0, f"planner needs a dependency it will not have:\n{proc.stderr}"
+    assert "AAA" in proc.stdout

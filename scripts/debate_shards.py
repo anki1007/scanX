@@ -29,7 +29,30 @@ from typing import Sequence
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from earnings_intel.data.freshness import is_stale  # noqa: E402
+
+def _load_freshness():
+    """Load earnings_intel/data/freshness.py WITHOUT importing the package.
+
+    `from earnings_intel.data.freshness import ...` executes
+    earnings_intel/__init__.py, which pulls in the pipeline, the data package
+    and finally numpy. This planner runs in a job that installs nothing -- that
+    is the point of it, it reads JSON and prints a matrix in ten seconds -- so
+    the package import killed every scheduled run at the first step with
+    ModuleNotFoundError: numpy, and the whole workflow was skipped behind it.
+
+    freshness.py itself is pure stdlib, so loading the file directly gets the
+    tested logic with none of the package's dependencies.
+    """
+    import importlib.util
+
+    path = ROOT / "earnings_intel" / "data" / "freshness.py"
+    spec = importlib.util.spec_from_file_location("_scanx_freshness", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+is_stale = _load_freshness().is_stale
 
 
 def _num(value) -> float:
