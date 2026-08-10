@@ -5,7 +5,7 @@
     "order_count": 1,
     "total_value_cr": 212.0,
     "revenue_fy": 23.24,
-    "market_cap": 17.4,
+    "market_cap": 17.8,
     "orders_pct_revenue": 912.22
   },
   {
@@ -13,18 +13,9 @@
     "name": "Astra Microwave Products Ltd",
     "order_count": 1,
     "total_value_cr": 2205.23,
-    "revenue_fy": 1156.0,
-    "market_cap": 17475.0,
-    "orders_pct_revenue": 190.76
-  },
-  {
-    "code": "511144",
-    "name": "Axis Solutions Ltd",
-    "order_count": 1,
-    "total_value_cr": 400.0,
-    "revenue_fy": 260.0,
-    "market_cap": 2095.0,
-    "orders_pct_revenue": 153.85
+    "revenue_fy": 1135.0,
+    "market_cap": 16471.0,
+    "orders_pct_revenue": 194.29
   },
   {
     "code": "543378",
@@ -32,7 +23,7 @@
     "order_count": 1,
     "total_value_cr": 87.53,
     "revenue_fy": 151.0,
-    "market_cap": 724.0,
+    "market_cap": 717.0,
     "orders_pct_revenue": 57.97
   },
   {
@@ -41,7 +32,7 @@
     "order_count": 1,
     "total_value_cr": 256.89,
     "revenue_fy": 540.0,
-    "market_cap": 175.0,
+    "market_cap": 174.0,
     "orders_pct_revenue": 47.57
   },
   {
@@ -50,7 +41,7 @@
     "order_count": 1,
     "total_value_cr": 1.72,
     "revenue_fy": 5.35,
-    "market_cap": 15.6,
+    "market_cap": 16.7,
     "orders_pct_revenue": 32.15
   },
   {
@@ -59,7 +50,7 @@
     "order_count": 1,
     "total_value_cr": 69.51,
     "revenue_fy": 237.0,
-    "market_cap": 861.0,
+    "market_cap": 856.0,
     "orders_pct_revenue": 29.33
   },
   {
@@ -68,17 +59,17 @@
     "order_count": 1,
     "total_value_cr": 82.79,
     "revenue_fy": 285.0,
-    "market_cap": 39.6,
+    "market_cap": 39.8,
     "orders_pct_revenue": 29.05
   },
   {
-    "code": "DSSL",
-    "name": "Dynacons Systems & Solutions Ltd",
+    "code": "538351",
+    "name": "A F Enterprises Ltd",
     "order_count": 1,
-    "total_value_cr": 267.58,
-    "revenue_fy": 1423.0,
-    "market_cap": 1563.0,
-    "orders_pct_revenue": 18.8
+    "total_value_cr": 3.0,
+    "revenue_fy": 12.78,
+    "market_cap": 5.72,
+    "orders_pct_revenue": 23.47
   },
   {
     "code": "JKIL",
@@ -86,7 +77,7 @@
     "order_count": 1,
     "total_value_cr": 990.16,
     "revenue_fy": 5723.0,
-    "market_cap": 3802.0,
+    "market_cap": 3783.0,
     "orders_pct_revenue": 17.3
   },
   {
@@ -94,9 +85,9 @@
     "name": "Afcons Infrastructure Ltd",
     "order_count": 1,
     "total_value_cr": 1918.0,
-    "revenue_fy": 11938.0,
-    "market_cap": 10085.0,
-    "orders_pct_revenue": 16.07
+    "revenue_fy": 11246.0,
+    "market_cap": 9704.0,
+    "orders_pct_revenue": 17.05
   },
   {
     "code": "KERNEX",
@@ -104,7 +95,7 @@
     "order_count": 1,
     "total_value_cr": 66.62,
     "revenue_fy": 426.0,
-    "market_cap": 4106.0,
+    "market_cap": 3886.0,
     "orders_pct_revenue": 15.64
   },
   {
@@ -113,8 +104,17 @@
     "order_count": 1,
     "total_value_cr": 8.0,
     "revenue_fy": 51.4,
-    "market_cap": 124.0,
+    "market_cap": 121.0,
     "orders_pct_revenue": 15.56
+  },
+  {
+    "code": "ARSSINFRA",
+    "name": "ARSS Infrastructure Projects Ltd",
+    "order_count": 1,
+    "total_value_cr": 19.79,
+    "revenue_fy": 146.0,
+    "market_cap": 123.0,
+    "orders_pct_revenue": 13.55
   },
   {
     "code": "AASTHA",
@@ -122,8 +122,17 @@
     "order_count": 1,
     "total_value_cr": 51.46,
     "revenue_fy": 443.0,
-    "market_cap": 329.0,
+    "market_cap": 324.0,
     "orders_pct_revenue": 11.62
+  },
+  {
+    "code": "542012",
+    "name": "A-1 Ltd",
+    "order_count": 1,
+    "total_value_cr": 38.7,
+    "revenue_fy": 453.0,
+    "market_cap": 231.0,
+    "orders_pct_revenue": 8.54
   },
   {
     "code": "NBCC",
@@ -131,7 +140,7 @@
     "order_count": 1,
     "total_value_cr": 801.2,
     "revenue_fy": 9755.0,
-    "market_cap": 25646.0,
+    "market_cap": 25644.0,
     "orders_pct_revenue": 8.21
   },
   {
@@ -140,7 +149,7 @@
     "order_count": 1,
     "total_value_cr": 0.6,
     "revenue_fy": 8.75,
-    "market_cap": 13.3,
+    "market_cap": 12.7,
     "orders_pct_revenue": 6.86
   },
   {
@@ -149,17 +158,8 @@
     "order_count": 1,
     "total_value_cr": 91.57,
     "revenue_fy": 1348.0,
-    "market_cap": 1263.0,
+    "market_cap": 1240.0,
     "orders_pct_revenue": 6.79
-  },
-  {
-    "code": "544741",
-    "name": "Highness Microelectronics Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.07,
-    "revenue_fy": 16.12,
-    "market_cap": 94.5,
-    "orders_pct_revenue": 6.64
   },
   {
     "code": "544684",
@@ -167,44 +167,35 @@
     "order_count": 1,
     "total_value_cr": 4.88,
     "revenue_fy": 77.0,
-    "market_cap": 495.0,
+    "market_cap": 520.0,
     "orders_pct_revenue": 6.34
   },
   {
-    "code": "INTERARCH",
-    "name": "Interarch Building Solutions Ltd",
+    "code": "OMPOWER",
+    "name": "Om Power Transmission Ltd",
     "order_count": 1,
-    "total_value_cr": 83.0,
-    "revenue_fy": 1977.0,
-    "market_cap": 2975.0,
-    "orders_pct_revenue": 4.2
+    "total_value_cr": 24.03,
+    "revenue_fy": 449.0,
+    "market_cap": 586.0,
+    "orders_pct_revenue": 5.35
   },
   {
-    "code": "KOTYARK",
-    "name": "Kotyark Industries Ltd",
+    "code": "KMEW",
+    "name": "Knowledge Marine & Engineering Works Ltd",
     "order_count": 1,
-    "total_value_cr": 11.93,
-    "revenue_fy": 296.0,
-    "market_cap": 450.0,
-    "orders_pct_revenue": 4.03
+    "total_value_cr": 11.41,
+    "revenue_fy": 225.0,
+    "market_cap": 6599.0,
+    "orders_pct_revenue": 5.07
   },
   {
-    "code": "544555",
-    "name": "Ameenji Rubber Ltd",
+    "code": "544675",
+    "name": "Gabion Technologies India Ltd",
     "order_count": 1,
-    "total_value_cr": 4.15,
-    "revenue_fy": 123.0,
-    "market_cap": 158.0,
-    "orders_pct_revenue": 3.37
-  },
-  {
-    "code": "BEL",
-    "name": "Bharat Electronics Ltd",
-    "order_count": 1,
-    "total_value_cr": 847.0,
-    "revenue_fy": 28596.0,
-    "market_cap": 293159.0,
-    "orders_pct_revenue": 2.96
+    "total_value_cr": 5.42,
+    "revenue_fy": 112.0,
+    "market_cap": 108.0,
+    "orders_pct_revenue": 4.84
   },
   {
     "code": "543991",
@@ -212,8 +203,35 @@
     "order_count": 1,
     "total_value_cr": 1.05,
     "revenue_fy": 41.04,
-    "market_cap": 98.9,
+    "market_cap": 100.0,
     "orders_pct_revenue": 2.56
+  },
+  {
+    "code": "544555",
+    "name": "Ameenji Rubber Ltd",
+    "order_count": 1,
+    "total_value_cr": 2.91,
+    "revenue_fy": 123.0,
+    "market_cap": 158.0,
+    "orders_pct_revenue": 2.37
+  },
+  {
+    "code": "BEL",
+    "name": "Bharat Electronics Ltd",
+    "order_count": 1,
+    "total_value_cr": 541.0,
+    "revenue_fy": 28596.0,
+    "market_cap": 294762.0,
+    "orders_pct_revenue": 1.89
+  },
+  {
+    "code": "BAJEL",
+    "name": "Bajel Projects Ltd",
+    "order_count": 1,
+    "total_value_cr": 50.0,
+    "revenue_fy": 2751.0,
+    "market_cap": 2212.0,
+    "orders_pct_revenue": 1.82
   },
   {
     "code": "3IINFOLTD",
@@ -221,7 +239,7 @@
     "order_count": 1,
     "total_value_cr": 3.32,
     "revenue_fy": 314.0,
-    "market_cap": 535.0,
+    "market_cap": 565.0,
     "orders_pct_revenue": 1.06
   },
   {
@@ -229,9 +247,9 @@
     "name": "HBL Engineering Ltd",
     "order_count": 1,
     "total_value_cr": 31.49,
-    "revenue_fy": 3252.0,
-    "market_cap": 20140.0,
-    "orders_pct_revenue": 0.97
+    "revenue_fy": 3284.0,
+    "market_cap": 19263.0,
+    "orders_pct_revenue": 0.96
   },
   {
     "code": "RAILTEL",
@@ -239,17 +257,17 @@
     "order_count": 1,
     "total_value_cr": 37.67,
     "revenue_fy": 4427.0,
-    "market_cap": 9265.0,
+    "market_cap": 9336.0,
     "orders_pct_revenue": 0.85
   },
   {
-    "code": "STLTECH",
-    "name": "Sterlite Technologies Ltd",
+    "code": "544047",
+    "name": "Siyaram Recycling Industries Ltd",
     "order_count": 1,
-    "total_value_cr": 21.0,
-    "revenue_fy": 2832.0,
-    "market_cap": 32818.0,
-    "orders_pct_revenue": 0.74
+    "total_value_cr": 2.64,
+    "revenue_fy": 362.0,
+    "market_cap": 84.1,
+    "orders_pct_revenue": 0.73
   },
   {
     "code": "538713",
@@ -257,44 +275,17 @@
     "order_count": 1,
     "total_value_cr": 0.33,
     "revenue_fy": 57.09,
-    "market_cap": 181.0,
+    "market_cap": 184.0,
     "orders_pct_revenue": 0.58
   },
   {
-    "code": "544656",
-    "name": "HRS Aluglaze Ltd",
+    "code": "UNIDT",
+    "name": "United Drilling Tools Ltd",
     "order_count": 1,
-    "total_value_cr": 0.3,
-    "revenue_fy": 68.0,
-    "market_cap": 482.0,
-    "orders_pct_revenue": 0.44
-  },
-  {
-    "code": "DYNAMIC",
-    "name": "Dynamic Services & Security Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.1,
-    "revenue_fy": 315.0,
-    "market_cap": 238.0,
-    "orders_pct_revenue": 0.35
-  },
-  {
-    "code": "544516",
-    "name": "Airfloa Rail Technology Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.07,
-    "revenue_fy": 320.0,
-    "market_cap": 757.0,
-    "orders_pct_revenue": 0.33
-  },
-  {
-    "code": "543971",
-    "name": "Bondada Engineering Ltd",
-    "order_count": 1,
-    "total_value_cr": 2.1,
-    "revenue_fy": 2752.0,
-    "market_cap": 3322.0,
-    "orders_pct_revenue": 0.08
+    "total_value_cr": 0.48,
+    "revenue_fy": 182.0,
+    "market_cap": 470.0,
+    "orders_pct_revenue": 0.26
   },
   {
     "code": "MEDICO",
@@ -302,7 +293,7 @@
     "order_count": 1,
     "total_value_cr": 0.14,
     "revenue_fy": 206.0,
-    "market_cap": 392.0,
+    "market_cap": 384.0,
     "orders_pct_revenue": 0.07
   },
   {
@@ -310,8 +301,8 @@
     "name": "Delhivery Ltd",
     "order_count": 1,
     "total_value_cr": 5.36,
-    "revenue_fy": 9847.0,
-    "market_cap": 34977.0,
+    "revenue_fy": 10416.0,
+    "market_cap": 35998.0,
     "orders_pct_revenue": 0.05
   },
   {
@@ -320,61 +311,34 @@
     "order_count": 1,
     "total_value_cr": 0.74,
     "revenue_fy": 4214.0,
-    "market_cap": 4425.0,
+    "market_cap": 4367.0,
     "orders_pct_revenue": 0.02
   },
   {
-    "code": "LT",
-    "name": "Larsen & Toubro Ltd",
+    "code": "CEMPRO",
+    "name": "Cemindia Projects Ltd",
+    "order_count": 1,
+    "total_value_cr": 1.24,
+    "revenue_fy": 10060.0,
+    "market_cap": 21736.0,
+    "orders_pct_revenue": 0.01
+  },
+  {
+    "code": "INNOVISION",
+    "name": "Innovision Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 156234.0,
-    "market_cap": 559677.0,
+    "revenue_fy": 979.0,
+    "market_cap": 674.0,
     "orders_pct_revenue": null
   },
   {
-    "code": "531260",
-    "name": "Refex Renewables & Infrastructure Ltd",
+    "code": "CANBK",
+    "name": "Canara Bank",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 8.0,
-    "market_cap": 146.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "COALINDIA",
-    "name": "Coal India Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1549.0,
-    "market_cap": 257706.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "POWERICA",
-    "name": "Powerica Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 2594.0,
-    "market_cap": 6746.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "CESC",
-    "name": "CESC Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 9732.0,
-    "market_cap": 21729.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "CANARYS",
-    "name": "Canarys Automations Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 100.0,
-    "market_cap": 139.0,
+    "revenue_fy": 128320.0,
+    "market_cap": 117412.0,
     "orders_pct_revenue": null
   },
   {
@@ -383,7 +347,151 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3539.0,
-    "market_cap": 9477.0,
+    "market_cap": 9506.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "ZAGGLE",
+    "name": "Zaggle Prepaid Ocean Services Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 1853.0,
+    "market_cap": 2741.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "SEPC",
+    "name": "SEPC Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 548.0,
+    "market_cap": 1197.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "LT",
+    "name": "Larsen & Toubro Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 156234.0,
+    "market_cap": 562880.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "531260",
+    "name": "Refex Renewables & Infrastructure Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 8.0,
+    "market_cap": 147.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "COALINDIA",
+    "name": "Coal India Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 1549.0,
+    "market_cap": 254268.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "POWERICA",
+    "name": "Powerica Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2760.0,
+    "market_cap": 6813.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "CESC",
+    "name": "CESC Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 9732.0,
+    "market_cap": 21802.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "543971",
+    "name": "Bondada Engineering Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2752.0,
+    "market_cap": 3245.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "544741",
+    "name": "Highness Microelectronics Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 16.12,
+    "market_cap": 98.9,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "CANARYS",
+    "name": "Canarys Automations Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 100.0,
+    "market_cap": 131.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "511144",
+    "name": "Axis Solutions Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 260.0,
+    "market_cap": 2200.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "STLTECH",
+    "name": "Sterlite Technologies Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2832.0,
+    "market_cap": 32782.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "544656",
+    "name": "HRS Aluglaze Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 68.0,
+    "market_cap": 486.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "DYNAMIC",
+    "name": "Dynamic Services & Security Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 315.0,
+    "market_cap": 241.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "INTERARCH",
+    "name": "Interarch Building Solutions Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 1977.0,
+    "market_cap": 2861.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "KOTYARK",
+    "name": "Kotyark Industries Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 296.0,
+    "market_cap": 474.0,
     "orders_pct_revenue": null
   },
   {
@@ -396,21 +504,12 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "SEPC",
-    "name": "SEPC Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 548.0,
-    "market_cap": 1183.0,
-    "orders_pct_revenue": null
-  },
-  {
     "code": "CEINSYS",
     "name": "Ceinsys Tech Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 635.0,
-    "market_cap": 1758.0,
+    "market_cap": 1764.0,
     "orders_pct_revenue": null
   },
   {
@@ -419,7 +518,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 172.0,
-    "market_cap": 327.0,
+    "market_cap": 319.0,
     "orders_pct_revenue": null
   },
   {
@@ -428,7 +527,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 84.0,
-    "market_cap": 1383.0,
+    "market_cap": 1365.0,
     "orders_pct_revenue": null
   },
   {
@@ -437,7 +536,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 413.0,
-    "market_cap": 2536.0,
+    "market_cap": 2475.0,
     "orders_pct_revenue": null
   },
   {
@@ -446,7 +545,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1628.0,
-    "market_cap": 1547.0,
+    "market_cap": 1506.0,
     "orders_pct_revenue": null
   },
   {
@@ -455,7 +554,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 812.0,
-    "market_cap": 429.0,
+    "market_cap": 438.0,
     "orders_pct_revenue": null
   },
   {
@@ -464,7 +563,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 32.48,
-    "market_cap": 88.2,
+    "market_cap": 92.6,
     "orders_pct_revenue": null
   },
   {
@@ -473,7 +572,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 62.71,
-    "market_cap": 123.0,
+    "market_cap": 122.0,
     "orders_pct_revenue": null
   },
   {
@@ -482,7 +581,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 303.0,
-    "market_cap": 355.0,
+    "market_cap": 353.0,
     "orders_pct_revenue": null
   },
   {
@@ -491,7 +590,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 127.0,
-    "market_cap": 218.0,
+    "market_cap": 225.0,
     "orders_pct_revenue": null
   },
   {
@@ -500,7 +599,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 7507.0,
-    "market_cap": 29776.0,
+    "market_cap": 29639.0,
     "orders_pct_revenue": null
   },
   {
@@ -509,7 +608,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 19047.0,
-    "market_cap": 12740.0,
+    "market_cap": 12658.0,
     "orders_pct_revenue": null
   },
   {
@@ -518,7 +617,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 228.0,
-    "market_cap": 7298.0,
+    "market_cap": 7232.0,
     "orders_pct_revenue": null
   },
   {
@@ -536,7 +635,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 203.0,
-    "market_cap": 426.0,
+    "market_cap": 414.0,
     "orders_pct_revenue": null
   },
   {
@@ -545,7 +644,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 87.74,
-    "market_cap": 244.0,
+    "market_cap": 255.0,
     "orders_pct_revenue": null
   },
   {
@@ -554,7 +653,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 5346.0,
-    "market_cap": 31798.0,
+    "market_cap": 32571.0,
     "orders_pct_revenue": null
   },
   {
@@ -563,7 +662,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 17059.0,
-    "market_cap": 6020.0,
+    "market_cap": 5273.0,
     "orders_pct_revenue": null
   },
   {
@@ -572,7 +671,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 411.0,
-    "market_cap": 95.2,
+    "market_cap": 94.8,
     "orders_pct_revenue": null
   },
   {
@@ -581,7 +680,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 23842.0,
-    "market_cap": 77166.0,
+    "market_cap": 78081.0,
     "orders_pct_revenue": null
   },
   {
@@ -590,7 +689,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 48.23,
-    "market_cap": 41.5,
+    "market_cap": 46.9,
     "orders_pct_revenue": null
   },
   {
@@ -599,7 +698,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 15.58,
-    "market_cap": 46.9,
+    "market_cap": 44.5,
     "orders_pct_revenue": null
   },
   {
@@ -608,7 +707,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 544.0,
-    "market_cap": 379.0,
+    "market_cap": 381.0,
     "orders_pct_revenue": null
   },
   {
@@ -617,7 +716,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 17997.0,
-    "market_cap": 9140.0,
+    "market_cap": 9194.0,
     "orders_pct_revenue": null
   },
   {
@@ -625,8 +724,8 @@
     "name": "PNC Infratech Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 4633.0,
-    "market_cap": 5753.0,
+    "revenue_fy": 5015.0,
+    "market_cap": 5397.0,
     "orders_pct_revenue": null
   },
   {
@@ -635,7 +734,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 227.0,
-    "market_cap": 4508.0,
+    "market_cap": 4478.0,
     "orders_pct_revenue": null
   },
   {
@@ -644,7 +743,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1304.0,
-    "market_cap": 3688.0,
+    "market_cap": 3682.0,
     "orders_pct_revenue": null
   },
   {
@@ -652,8 +751,8 @@
     "name": "Bansal Roofing Products Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 154.0,
-    "market_cap": 170.0,
+    "revenue_fy": 164.0,
+    "market_cap": 176.0,
     "orders_pct_revenue": null
   },
   {
@@ -662,7 +761,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1129.0,
-    "market_cap": 838.0,
+    "market_cap": 840.0,
     "orders_pct_revenue": null
   },
   {
@@ -671,7 +770,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 608.0,
-    "market_cap": 2247.0,
+    "market_cap": 2215.0,
     "orders_pct_revenue": null
   },
   {
@@ -680,7 +779,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 56.35,
-    "market_cap": 82.6,
+    "market_cap": 81.0,
     "orders_pct_revenue": null
   },
   {
@@ -689,7 +788,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 434.0,
-    "market_cap": 538.0,
+    "market_cap": 559.0,
     "orders_pct_revenue": null
   },
   {
@@ -698,7 +797,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 334.0,
-    "market_cap": 1229.0,
+    "market_cap": 1216.0,
     "orders_pct_revenue": null
   },
   {
@@ -707,7 +806,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2891.0,
-    "market_cap": 32436.0,
+    "market_cap": 34082.0,
     "orders_pct_revenue": null
   },
   {
@@ -716,7 +815,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2307.0,
-    "market_cap": 4016.0,
+    "market_cap": 4072.0,
     "orders_pct_revenue": null
   },
   {
@@ -725,7 +824,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 0.0,
-    "market_cap": 958.0,
+    "market_cap": 960.0,
     "orders_pct_revenue": null
   },
   {
@@ -733,8 +832,8 @@
     "name": "Jindal Drilling & Industries Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 997.0,
-    "market_cap": 1846.0,
+    "revenue_fy": 1018.0,
+    "market_cap": 1744.0,
     "orders_pct_revenue": null
   },
   {
@@ -743,7 +842,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 102.0,
-    "market_cap": 1750.0,
+    "market_cap": 1709.0,
     "orders_pct_revenue": null
   },
   {
@@ -752,7 +851,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 1080.0,
-    "market_cap": 21836.0,
+    "market_cap": 21377.0,
     "orders_pct_revenue": null
   },
   {
@@ -770,7 +869,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 298.0,
-    "market_cap": 1257.0,
+    "market_cap": 1249.0,
     "orders_pct_revenue": null
   },
   {
@@ -779,88 +878,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 172.0,
-    "market_cap": 762.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "544786",
-    "name": "Schneider Electric President Systems Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 384.0,
-    "market_cap": 2794.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "DBREALTY",
-    "name": "Valor Estate Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 529.0,
-    "market_cap": 6420.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "IRIS",
-    "name": "IRIS Regtech Solutions Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 123.0,
-    "market_cap": 527.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "RVNL",
-    "name": "Rail Vikas Nigam Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 20012.0,
-    "market_cap": 48868.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "DALBHARAT",
-    "name": "Dalmia Bharat Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 394.0,
-    "market_cap": 34248.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "KONSTELEC",
-    "name": "Konstelec Engineers Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 210.0,
-    "market_cap": 94.5,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "544796",
-    "name": "Liotech Industries Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 70.09,
-    "market_cap": 39.6,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "DBL",
-    "name": "Dilip Buildcon Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 7005.0,
-    "market_cap": 7314.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "544426",
-    "name": "Icon Facilitators Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 64.24,
-    "market_cap": 63.7,
+    "market_cap": 764.0,
     "orders_pct_revenue": null
   }
 ]
