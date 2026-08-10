@@ -677,6 +677,10 @@ def main():
             # What this argument was built from, so the next run can tell
             # whether the filings have moved rather than guessing from a date.
             b[fr.FINGERPRINT_KEY] = fr.fingerprint(raw_bundle)
+            # Count the attempt so an argument that keeps stopping short is
+            # retried a few times and then left alone, rather than taking a
+            # slot on every run forever.
+            b[fr.ATTEMPTS_KEY] = fr.attempts_of(_read_json(bf)) + 1
             _atomic(bf, json.dumps(b, separators=(",", ":")))
             done += 1
             print(f"  [{i}/{len(codes)}] {code}: {b['_meta']['turns']} turns over "

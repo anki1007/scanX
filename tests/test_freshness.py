@@ -122,3 +122,86 @@ def test_the_cloud_planner_requeues_a_company_whose_filings_moved(tmp_path):
     assert "MOVED" in due, "a company whose filings moved was not re-queued"
     assert "NEW" in due, "a company never argued was not queued"
     assert "SAME" not in due, "an unchanged company would be argued again"
+
+
+# ------------------------------------- the half-baked debate, re-queued
+
+def _debate(turns, rounds, fp=None, attempts=None):
+    d = {"_meta": {"turns": turns, "rounds": rounds}}
+    if fp is not None:
+        d[FINGERPRINT_KEY] = fp
+    if attempts is not None:
+        d["attempts"] = attempts
+    return d
+
+
+def test_a_debate_that_stopped_short_is_due_again():
+    """486 of 2,004 on disk are like this -- 250 with three turns of four, 69
+    with one. Their fingerprints were valid, so nothing ever re-queued them."""
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete(_debate(3, 2)) is True
+    assert is_incomplete(_debate(1, 2)) is True
+    assert is_stale(_debate(3, 2, fp=fingerprint(BASE)), BASE) is True
+
+
+def test_a_finished_debate_with_matching_filings_is_left_alone():
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete(_debate(4, 2)) is False
+    assert is_stale(_debate(4, 2, fp=fingerprint(BASE)), BASE) is False
+
+
+def test_six_turns_over_three_rounds_is_complete():
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete(_debate(6, 3)) is False
+    assert is_incomplete(_debate(5, 3)) is True
+
+
+def test_retrying_stops_after_the_cap():
+    """A company with too little evidence for a bear to answer will stop short
+    every time. Retrying forever would take a slot on every run and never
+    improve."""
+    assert is_stale(_debate(3, 2, fp=fingerprint(BASE), attempts=2), BASE) is True
+    assert is_stale(_debate(3, 2, fp=fingerprint(BASE), attempts=3), BASE) is False
+
+
+def test_new_filings_still_win_over_an_exhausted_retry_budget():
+    """Out of retries is not out of scope: a fresh quarter re-opens it."""
+    moved = _bundle(Q + ["Sep 2026"], [100, 110, 120, 130, 145], [10, 11, 12, 13, 15])
+    assert is_stale(_debate(3, 2, fp=fingerprint(BASE), attempts=9), moved) is True
+
+
+def test_missing_turn_counts_are_not_treated_as_incomplete():
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete({}) is False
+    assert is_incomplete({"_meta": {}}) is False
+    assert is_incomplete({"_meta": {"turns": None, "rounds": 2}}) is False
+    assert is_incomplete({"_meta": {"turns": 3, "rounds": 0}}) is False
+
+
+def test_attempts_reads_junk_as_zero():
+    from earnings_intel.data.freshness import attempts_of
+    for junk in (None, {}, {"attempts": "x"}, {"attempts": -1}, {"attempts": None}):
+        assert attempts_of(junk) == 0
+    assert attempts_of({"attempts": 4}) == 4
+
+
+def test_an_unreadable_turn_shape_is_not_called_incomplete():
+    """`rounds_run` falls back to the TURN count when turns carry no round
+    number, so turns == rounds means 'this shape cannot be read', not 'half
+    finished'. Reading it as incomplete re-queues good debates."""
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete(_debate(2, 2)) is False
+    assert is_incomplete(_debate(1, 1)) is False
+
+
+def test_a_dropped_turn_is_authoritative_whatever_the_shape():
+    """The debate module reporting turns_dropped outranks any inference."""
+    from earnings_intel.data.freshness import is_incomplete
+    d = _debate(2, 2)
+    d["_meta"]["turns_dropped"] = 1
+    assert is_incomplete(d) is True
+
+
+def test_five_turns_over_three_rounds_is_still_short():
+    from earnings_intel.data.freshness import is_incomplete
+    assert is_incomplete(_debate(5, 3)) is True
