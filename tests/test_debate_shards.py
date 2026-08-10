@@ -177,3 +177,37 @@ def test_planner_runs_without_numpy_or_requests(tmp_path):
     proc = subprocess.run([sys.executable, str(harness)], capture_output=True, text=True)
     assert proc.returncode == 0, f"planner needs a dependency it will not have:\n{proc.stderr}"
     assert "AAA" in proc.stdout
+
+
+def test_planner_emits_needs_ollama(tmp_path):
+    """The warm job is gated on this. When it was missing the gate read false,
+    warm was skipped, and bake was skipped behind it -- a green run that baked
+    nothing, whose only symptom was the backlog not moving."""
+    import json
+    import subprocess
+    import sys
+
+    fdir, ddir = tmp_path / "f", tmp_path / "d"
+    fdir.mkdir()
+    ddir.mkdir()
+    for code in ("AAA", "BBB"):
+        (fdir / f"{code}.json").write_text(
+            json.dumps({"fundamental": {"overview": {"Market Cap": "100"}}}), encoding="utf-8")
+
+    def run(providers):
+        out = tmp_path / f"out_{providers or 'none'}.txt"
+        out.write_text("", encoding="utf-8")
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "debate_shards.py"),
+             "--shards", "2", "--providers", providers,
+             "--fundamental", str(fdir), "--debate", str(ddir),
+             "--github-output", str(out)],
+            capture_output=True, text=True, check=True)
+        return dict(l.split("=", 1) for l in out.read_text(encoding="utf-8").splitlines() if "=" in l)
+
+    local = run("gemini,ollama")
+    assert local["needs_ollama"] == "yes", "warm would be skipped with an ollama shard queued"
+    assert local["remaining"] == "2"
+
+    hosted = run("gemini,deepseek")
+    assert hosted["needs_ollama"] == "no", "2GB of weights pulled for nothing"

@@ -164,6 +164,12 @@ def main() -> int:
         with open(args.github_output, "a", encoding="utf-8") as fh:
             fh.write(f"matrix={json.dumps(matrix, separators=(',', ':'))}\n")
             fh.write(f"remaining={len(codes)}\n")
+            # Whether any shard this round actually runs the local model.
+            # The warm job pulls 2GB of weights and is gated on this; when the
+            # value was missing the gate read false, warm was skipped, and bake
+            # was skipped behind it -- a completely green run that baked nothing.
+            needs = any(e.get("provider") in ("", "ollama") for e in matrix["include"])
+            fh.write(f"needs_ollama={'yes' if needs else 'no'}\n")
     return 0
 
 

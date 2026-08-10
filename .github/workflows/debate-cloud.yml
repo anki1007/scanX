@@ -137,7 +137,13 @@ jobs:
 
   bake:
     needs: [plan, warm]
-    if: needs.plan.outputs.remaining != '0'
+    # always(), because `warm` is SKIPPED on a round where no shard runs the
+    # local model -- and a skipped dependency skips everything behind it. That
+    # is how a completely green run baked nothing at all: plan succeeded, warm
+    # was skipped, bake and collect went with it, and the only symptom was the
+    # backlog not moving. Guarded on plan actually succeeding so a broken plan
+    # still stops the run.
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.remaining != '0'
     runs-on: ubuntu-latest
     # The hard ceiling is 360. Leave room for checkout, model restore and upload
     # so a shard is never killed mid-write.
