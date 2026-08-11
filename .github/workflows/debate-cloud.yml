@@ -83,6 +83,9 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           set -euo pipefail
           POOL=""
@@ -94,6 +97,9 @@ jobs:
           add mistral   "${MISTRAL_API_KEY:-}"
           add qwen      "${QWEN_API_KEY:-}"
           add together  "${TOGETHER_API_KEY:-}"
+          add groq      "${GROQ_API_KEY:-}"
+          add cerebras  "${CEREBRAS_API_KEY:-}"
+          add openrouter "${OPENROUTER_API_KEY:-}"
           POOL="${POOL:+$POOL,}ollama"          # needs no key; always last resort
           echo "provider pool: $POOL"
           python scripts/debate_shards.py --shards "$SHARDS" \
@@ -204,6 +210,9 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Must be a full URL. The adapter appends "/api/generate" to this
           # verbatim, so a bare host:port yields a schemeless URL and every
           # call fails.

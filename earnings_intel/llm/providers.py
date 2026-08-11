@@ -457,6 +457,21 @@ PROVIDERS: dict[str, Callable[..., LLMAdapter]] = {
     "together": _compatible("https://api.together.xyz/v1", "TOGETHER_API_KEY",
                             "together", "meta-llama/Llama-3.3-70B-Instruct-Turbo",
                             "TOGETHER_MODEL"),
+    # Inference-accelerator hosts. Both are OpenAI-compatible, so they cost one
+    # line each, and both are markedly faster per token than a CPU runner --
+    # which is the whole bottleneck on the debate backlog.
+    #
+    # NONE of these is unlimited. Every free tier caps requests per minute and
+    # per day; the value of adding them is that each key is a SEPARATE quota, so
+    # the shard planner can run them side by side. Model names churn faster than
+    # this file will be edited, hence the env override on each.
+    "groq": _compatible("https://api.groq.com/openai/v1", "GROQ_API_KEY",
+                        "groq", "llama-3.3-70b-versatile", "GROQ_MODEL"),
+    "cerebras": _compatible("https://api.cerebras.ai/v1", "CEREBRAS_API_KEY",
+                            "cerebras", "llama-3.3-70b", "CEREBRAS_MODEL"),
+    "openrouter": _compatible("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY",
+                              "openrouter", "meta-llama/llama-3.3-70b-instruct",
+                              "OPENROUTER_MODEL"),
     "ollama": OllamaAdapter,
 }
 
