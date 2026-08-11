@@ -258,48 +258,39 @@ jobs:
           merge-multiple: false
 
       - name: Merge shards and rebuild the index
-        run: |
-          set -euo pipefail
-          mkdir -p docs/data/debate
-          # find|wc, not ls|grep -c: grep exits 1 when it matches nothing, so
-          # `grep -c ... || echo 0` prints BOTH grep's "0" and the fallback "0"
-          # and the variable becomes the two-line string "0\n0".
-          count() { find docs/data/debate -maxdepth 1 -name '*.json' ! -name 'index.json' | wc -l; }
-          before=$(count)
-          # A shard's index.json describes only that shard; the real one is
-          # rebuilt from what is on disk afterwards.
-          find /tmp/shards -name '*.json' ! -name 'index.json' -exec cp -n {} docs/data/debate/ \; 2>/dev/null || true
-          python - <<'PY'
-          import sys
-          sys.path.insert(0, "scripts")
-          from refresh_debate import write_index
-          write_index("docs/data/debate")
-          PY
-          after=$(count)
-          echo "ADDED=$((after - before))" >> "$GITHUB_ENV"
-          echo "TOTAL=$after" >> "$GITHUB_ENV"
-
-      - name: Strip data-source names
-        run: python scripts/redact_sources.py || true
+        run: bash scripts/ci_merge_debates.sh
 
       - name: Commit and push
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/debate
-          if git diff --cached --quiet; then
-            echo "nothing new to publish"; exit 0
-          fi
-          git commit -q -m "debate: cloud bake +${ADDED} (${TOTAL} total)"
-          # The data-refresh workflow pushes to this branch too. Rebase and
-          # retry rather than failing a run that has real work in it.
-          for n in 1 2 3 4; do
-            if git push -q origin HEAD:main; then echo "pushed"; exit 0; fi
+
+          # REPLAY, never merge. Both the local runner and the nightly refresh
+          # push to this branch, and when either added the same company that a
+          # shard just baked, `git rebase` hit an add/add conflict it cannot
+          # resolve. The loop gave up and TWO runs of ~4.8 hours were discarded
+          # with every debate in them.
+          #
+          # There is nothing to merge here: these are independent per-company
+          # files. So on a rejected push we reset the tree to whatever is now on
+          # main and lay the shard artifacts back on top. cp -n means the copy
+          # already on main wins, which only has to be deterministic -- both
+          # sides are valid debates for that company.
+          for n in 1 2 3 4 5; do
+            git add docs/data/debate
+            if git diff --cached --quiet; then
+              echo "nothing new to publish"; exit 0
+            fi
+            git commit -q -m "debate: cloud bake +${ADDED} (${TOTAL} total)"
+            if git push -q origin HEAD:main; then echo "pushed on attempt ${n}"; exit 0; fi
+
+            echo "push rejected, replaying onto the new tip (attempt ${n})"
             git fetch -q origin main
-            git rebase -q origin/main || { git rebase --abort || true; break; }
+            git reset -q --hard origin/main
+            bash scripts/ci_merge_debates.sh
           done
-          echo "could not push after retries" >&2
+          echo "could not push after 5 replays" >&2
           exit 1
 
       - name: Summary
