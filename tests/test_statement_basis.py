@@ -161,9 +161,62 @@ def test_an_empty_consolidated_page_falls_back_to_standalone(monkeypatch):
     assert any(u.endswith("/company/526971/") for u in asked), "never fell back"
 
 
-def test_a_consolidated_page_with_numbers_is_not_thrown_away(monkeypatch):
-    """The fallback must not undo the consolidated fix: Grasim standalone reads
-    a P/E of 500 against a real 42."""
+# The "a complete consolidated page is never thrown away" guarantee lives in
+# test_an_equal_score_never_flips_a_holding_company below. An earlier version
+# of it sat here and mocked only the overview, which quietly encoded the weaker
+# rule -- under the stricter one, a consolidated page with ratios but NO
+# quarterly table now correctly loses to standalone, because that exact shape
+# cost 121 companies their charts.
+
+
+# --------------- the partially-filled consolidated page: 121 lost their charts
+
+def test_completeness_scores_both_halves_of_a_page():
+    """Screener fills a consolidated page in DEGREES. Checking only the
+    overview let 121 companies keep a page with no quarterly table while their
+    standalone page had twelve -- losing the charts, the computed P/E and the
+    debate's freshness fingerprint, all of which are built from quarters."""
+    from earnings_intel.data.company import _completeness
+    nothing = ({"Market Cap": "\u20b9 Cr."}, {"headers": []})
+    partial = ({"Market Cap": "\u20b9 90 Cr."}, {"headers": []})
+    full = ({"Market Cap": "\u20b9 90 Cr."}, {"headers": ["Mar 2026"]})
+    assert _completeness(*nothing) == 0
+    assert _completeness(*partial) == 1
+    assert _completeness(*full) == 2
+
+
+def test_a_consolidated_page_with_no_quarters_loses_to_standalone(monkeypatch):
+    import earnings_intel.data.company as C
+
+    class _R:
+        def __init__(self, tag):
+            self.status_code, self.text, self.headers = 200, f"<html><h1>{tag}</h1></html>", {}
+
+    asked = []
+
+    def fake_get(url, session_id=None, timeout=None):
+        asked.append(url)
+        return _R("cons" if url.endswith("/consolidated/") else "stand")
+
+    def fake_quarters(soup, *a, **k):
+        return {"headers": [] if "cons" in str(soup) else ["Mar 2026"], "rows": {}}
+
+    monkeypatch.setattr(C, "_retry_get", fake_get)
+    monkeypatch.setattr(C, "_overview", lambda soup: {"Market Cap": "\u20b9 90 Cr."})
+    monkeypatch.setattr(C, "_quarters", fake_quarters)
+    for fn in ("_growth", "_statement", "_shareholding", "_insights", "_analyze"):
+        if hasattr(C, fn):
+            monkeypatch.setattr(C, fn, lambda *a, **k: {})
+    C._FCACHE.clear()
+
+    out = C.fundamentals("504908", timeout=5)
+    assert out.get("basis") == "standalone"
+    assert out.get("quarters", {}).get("headers"), "kept the page with no quarters"
+
+
+def test_an_equal_score_never_flips_a_holding_company(monkeypatch):
+    """Both pages complete means consolidated wins. Flipping on a tie would
+    undo the whole fix and hand Grasim back its standalone P/E of 500."""
     import earnings_intel.data.company as C
 
     class _R:
@@ -178,12 +231,13 @@ def test_a_consolidated_page_with_numbers_is_not_thrown_away(monkeypatch):
 
     monkeypatch.setattr(C, "_retry_get", fake_get)
     monkeypatch.setattr(C, "_overview", lambda soup: {"Market Cap": "\u20b9 2,25,678 Cr."})
-    for fn in ("_growth", "_quarters", "_statement", "_shareholding", "_insights", "_analyze"):
+    monkeypatch.setattr(C, "_quarters", lambda *a, **k: {"headers": ["Mar 2026"], "rows": {}})
+    for fn in ("_growth", "_statement", "_shareholding", "_insights", "_analyze"):
         if hasattr(C, fn):
             monkeypatch.setattr(C, fn, lambda *a, **k: {})
     C._FCACHE.clear()
 
     out = C.fundamentals("GRASIM", timeout=5)
     assert out.get("basis") == "consolidated"
-    assert sum(1 for u in asked if u.endswith("/company/GRASIM/")) == 0, \
-        "fell back even though consolidated had numbers"
+    assert not any(u.endswith("/company/GRASIM/") for u in asked), \
+        "fetched standalone even though consolidated was complete"

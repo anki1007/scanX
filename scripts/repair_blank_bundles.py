@@ -32,16 +32,25 @@ DIGIT = re.compile(r"\d")
 
 
 def is_blank(bundle: dict) -> bool:
-    """No number anywhere in the overview. PURE.
+    """Is this bundle missing data a complete page would have carried? PURE.
 
-    A truthiness check passes "Rs Cr." -- which is how these shipped.
+    Two shapes, both from a partially-filled consolidated page:
+
+      * no number anywhere in the overview -- "Rs Cr." and "%" only. A
+        truthiness check passes that, which is how 613 shipped.
+      * ratios present but NO quarterly table, which is how another 121
+        shipped: blank charts, no computed P/E, no freshness fingerprint.
     """
     if not isinstance(bundle, dict):
         return False
-    overview = (bundle.get("fundamental") or {}).get("overview") or {}
+    fundamental = bundle.get("fundamental") or {}
+    overview = fundamental.get("overview") or {}
     if not overview:
         return True
-    return not any(DIGIT.search(str(v)) for v in overview.values())
+    if not any(DIGIT.search(str(v)) for v in overview.values()):
+        return True
+    quarters = fundamental.get("quarters") or {}
+    return not quarters.get("headers")
 
 
 def main() -> int:
@@ -92,7 +101,9 @@ def main() -> int:
             continue
 
         overview = fresh.get("overview") or {}
-        if not any(DIGIT.search(str(v)) for v in overview.values()):
+        improved = (any(DIGIT.search(str(v)) for v in overview.values())
+                    and (fresh.get("quarters") or {}).get("headers"))
+        if not improved:
             # Genuinely has nothing on either statement -- a suspended or
             # newly listed shell. Leave it rather than write blanks again.
             still += 1

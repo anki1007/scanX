@@ -269,6 +269,29 @@ def _analyze(overview, growth, quarters, pl, bs, cf, ratios, sh) -> dict:
 _HAS_DIGIT = re.compile(r"\d")
 
 
+def _completeness(overview: dict, quarters: dict) -> int:
+    """How much of a statement page actually arrived. PURE.
+
+    Screener fills a consolidated page in DEGREES, not all-or-nothing, so one
+    test is not enough. Three real shapes, all answering HTTP 200:
+
+        overview  quarters
+           no        no      files no consolidated statement at all
+           yes       no      partial: ratios and an annual column, no quarters
+           yes       yes     a genuine consolidated statement
+
+    The middle case is the one that got through the first fix, which only
+    checked the overview: 121 companies kept a consolidated page carrying no
+    quarterly table while their standalone page had twelve. That costs the
+    charts, the computed P/E, and the debate's freshness fingerprint, all of
+    which are built from quarters.
+    """
+    score = 1 if _has_values(overview) else 0
+    if isinstance(quarters, dict) and quarters.get("headers"):
+        score += 1
+    return score
+
+
 def _has_values(overview: dict) -> bool:
     """Does this overview carry actual NUMBERS, or only units? PURE.
 
@@ -344,17 +367,25 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
         #
         # So the test is whether the page actually CARRIES numbers, not what
         # status code it returned.
-        if basis == "consolidated" and not _has_values(overview):
+        quarters = _quarters(soup)
+        if basis == "consolidated" and _completeness(overview, quarters) < 2:
             fallback = _retry_get(f"{_SCREENER}/company/{code}/", session_id, timeout)
             if fallback is not None and fallback.status_code == 200:
                 alt = BeautifulSoup(fallback.text, "lxml")
-                alt_overview = _overview(alt)
-                if _has_values(alt_overview):
-                    basis, r, soup, overview = "standalone", fallback, alt, alt_overview
+                alt_overview, alt_quarters = _overview(alt), _quarters(alt)
+                # STRICTLY better only. A holding company's consolidated page is
+                # the right answer even when standalone happens to look similar,
+                # so an equal score must never flip it -- that would undo the
+                # whole point and hand Grasim back its standalone P/E of 500.
+                if _completeness(alt_overview, alt_quarters) > _completeness(overview, quarters):
+                    basis, r, soup = "standalone", fallback, alt
+                    overview, quarters = alt_overview, alt_quarters
 
         h1 = soup.select_one("h1")
         growth = _growth(soup)
-        quarters = _quarters(soup)
+        # `quarters` was parsed above to decide which statement to keep, and the
+        # decision may have swapped `soup`. Re-parsing here would be harmless
+        # but wasteful; using the value from the chosen page is the point.
         pl = _statement(soup, "profit-loss")
         bs = _statement(soup, "balance-sheet")
         cf = _statement(soup, "cash-flow")

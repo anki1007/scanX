@@ -132,6 +132,27 @@ jobs:
           # advanced fundamental checklist - pure arithmetic over the bundles
           # already on disk, so it costs no network and must run AFTER them
           run python scripts/refresh_advanced.py
+          # These three shipped with a refresh script that NO workflow ran, so
+          # their boards froze the day they were first baked: sector medians and
+          # the portfolio book were 12 days stale, STDRL 9. All read bundles
+          # already on disk, so they cost no network and belong here, after the
+          # fundamentals they derive from.
+          run python scripts/refresh_sector_medians.py
+          run python scripts/refresh_portfolio.py
+          # STDRL trains reinforcement-learning agents. Two reasons it is gated
+          # to one day rather than run nightly: it is a model comparison over
+          # MONTHLY bars, so a daily re-run reproduces the same answer, and it
+          # is the only board needing torch. Installing that costs a couple of
+          # minutes, which is worth paying once a week and not six times.
+          if [ "$(date -u +%u)" = "6" ]; then
+            python -m pip install --quiet --disable-pip-version-check \
+              --index-url https://download.pytorch.org/whl/cpu "torch" || true
+            python -m pip install --quiet --disable-pip-version-check \
+              "stable-baselines3>=2.0" "gymnasium>=0.29" || true
+            run python scripts/refresh_stdrl.py --timesteps 20000 --cost-bps 25
+          else
+            echo "[stdrl] skipped - trains on Saturdays only"
+          fi
           # daily close for EVERY baked company: the intraday quotes file only
           # covers ~500 board names, so without this ~90% of company pages fall
           # back to the price frozen into their bundle at bake time
