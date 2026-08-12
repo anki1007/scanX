@@ -266,6 +266,26 @@ def _analyze(overview, growth, quarters, pl, bs, cf, ratios, sh) -> dict:
     }
 
 
+_HAS_DIGIT = re.compile(r"\d")
+
+
+def _has_values(overview: dict) -> bool:
+    """Does this overview carry actual NUMBERS, or only units? PURE.
+
+    Screener renders a company's ratio cards even when it has nothing to put in
+    them, so a scrape can come back structurally perfect and semantically empty:
+
+        {"Market Cap": "Rs Cr.", "ROCE": "%", "Stock P/E": "", "Face Value": "Rs"}
+
+    Every key present, every key non-empty as a string, every value useless.
+    A truthiness check passes it. Only a digit test catches it -- which is why
+    613 such bundles were published before anyone looked at the page.
+    """
+    if not isinstance(overview, dict):
+        return False
+    return any(_HAS_DIGIT.search(str(v)) for v in overview.values())
+
+
 def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20) -> dict:
     if requests is None or BeautifulSoup is None:
         return {"error": "requests+bs4 required"}
@@ -309,8 +329,30 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
             code_txt = "timeout" if r is None else r.status_code
             return {"error": f"http {code_txt}"}
         soup = BeautifulSoup(r.text, "lxml")
-        h1 = soup.select_one("h1")
         overview = _overview(soup)
+
+        # A 404 is NOT the only way a company can lack a consolidated statement.
+        # For most such companies the consolidated URL answers 200 with a page
+        # that has every ratio LABEL and no value: the overview parses to
+        # {"Market Cap": "Rs Cr.", "ROCE": "%", "Stock P/E": ""} and the
+        # quarters table is empty. 84KB of HTML instead of 166KB.
+        #
+        # Falling back only on 404 therefore published 613 companies -- 11% of
+        # the universe -- with every number blank and empty charts, which is
+        # exactly what a reader sees on the page. Small caps overwhelmingly,
+        # because they are the ones with no subsidiaries to consolidate.
+        #
+        # So the test is whether the page actually CARRIES numbers, not what
+        # status code it returned.
+        if basis == "consolidated" and not _has_values(overview):
+            fallback = _retry_get(f"{_SCREENER}/company/{code}/", session_id, timeout)
+            if fallback is not None and fallback.status_code == 200:
+                alt = BeautifulSoup(fallback.text, "lxml")
+                alt_overview = _overview(alt)
+                if _has_values(alt_overview):
+                    basis, r, soup, overview = "standalone", fallback, alt, alt_overview
+
+        h1 = soup.select_one("h1")
         growth = _growth(soup)
         quarters = _quarters(soup)
         pl = _statement(soup, "profit-loss")

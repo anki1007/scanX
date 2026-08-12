@@ -105,3 +105,85 @@ def test_computation_runs_before_the_card_list_is_built():
     """Otherwise a company the scrape missed shows no P/E card at all."""
     html = PAGE.read_text(encoding="utf-8")
     assert html.index("const _peInfo") < html.index("const keys=order.filter")
+
+
+# ------------------ the empty consolidated page: 613 blank bundles shipped
+
+def test_has_values_rejects_a_page_of_units():
+    """Screener renders the ratio cards even with nothing to put in them, so a
+    scrape comes back structurally perfect and semantically empty. Every key
+    present, every value a non-empty string, every value useless."""
+    from earnings_intel.data.company import _has_values
+    empty = {"Market Cap": "\u20b9 Cr.", "ROCE": "%", "Stock P/E": "",
+             "Book Value": "\u20b9", "High / Low": "\u20b9 /"}
+    assert _has_values(empty) is False
+    real = dict(empty, **{"Market Cap": "\u20b9 151 Cr."})
+    assert _has_values(real) is True
+
+
+def test_has_values_survives_junk():
+    from earnings_intel.data.company import _has_values
+    for junk in (None, {}, [], "x", {"a": None}, {"a": {}}):
+        assert _has_values(junk) is False
+
+
+def test_an_empty_consolidated_page_falls_back_to_standalone(monkeypatch):
+    """A 404 is not the only way a company lacks a consolidated statement --
+    most answer 200 with a page carrying labels and no numbers. Falling back
+    only on 404 published 613 companies with every field blank."""
+    import earnings_intel.data.company as C
+
+    EMPTY = "<html><h1>X</h1></html>"
+    FULL = "<html><h1>X</h1>full</html>"
+
+    class _R:
+        def __init__(self, text):
+            self.status_code, self.text, self.headers = 200, text, {}
+
+    asked = []
+
+    def fake_get(url, session_id=None, timeout=None):
+        asked.append(url)
+        return _R(EMPTY if url.endswith("/consolidated/") else FULL)
+
+    monkeypatch.setattr(C, "_retry_get", fake_get)
+    monkeypatch.setattr(C, "_overview",
+                        lambda soup: {"Market Cap": "\u20b9 Cr."}
+                        if "full" not in str(soup) else {"Market Cap": "\u20b9 151 Cr."})
+    for fn in ("_growth", "_quarters", "_statement", "_shareholding", "_insights", "_analyze"):
+        if hasattr(C, fn):
+            monkeypatch.setattr(C, fn, lambda *a, **k: {})
+    C._FCACHE.clear()
+
+    out = C.fundamentals("526971", timeout=5)
+    assert out.get("basis") == "standalone", "kept the empty consolidated page"
+    assert any(u.endswith("/consolidated/") for u in asked), "never tried consolidated"
+    assert any(u.endswith("/company/526971/") for u in asked), "never fell back"
+
+
+def test_a_consolidated_page_with_numbers_is_not_thrown_away(monkeypatch):
+    """The fallback must not undo the consolidated fix: Grasim standalone reads
+    a P/E of 500 against a real 42."""
+    import earnings_intel.data.company as C
+
+    class _R:
+        def __init__(self):
+            self.status_code, self.text, self.headers = 200, "<html><h1>X</h1></html>", {}
+
+    asked = []
+
+    def fake_get(url, session_id=None, timeout=None):
+        asked.append(url)
+        return _R()
+
+    monkeypatch.setattr(C, "_retry_get", fake_get)
+    monkeypatch.setattr(C, "_overview", lambda soup: {"Market Cap": "\u20b9 2,25,678 Cr."})
+    for fn in ("_growth", "_quarters", "_statement", "_shareholding", "_insights", "_analyze"):
+        if hasattr(C, fn):
+            monkeypatch.setattr(C, fn, lambda *a, **k: {})
+    C._FCACHE.clear()
+
+    out = C.fundamentals("GRASIM", timeout=5)
+    assert out.get("basis") == "consolidated"
+    assert sum(1 for u in asked if u.endswith("/company/GRASIM/")) == 0, \
+        "fell back even though consolidated had numbers"
