@@ -139,6 +139,9 @@ jobs:
           # fundamentals they derive from.
           run python scripts/refresh_sector_medians.py
           run python scripts/refresh_portfolio.py
+          # four consecutive quarters of rising net profit - reads the quarterly
+          # tables from the bundles above, so it costs no network either
+          run python scripts/refresh_qprofit.py
           # STDRL trains reinforcement-learning agents. Two reasons it is gated
           # to one day rather than run nightly: it is a model comparison over
           # MONTHLY bars, so a daily re-run reproduces the same answer, and it

@@ -112,6 +112,7 @@
           <option value="TF">TechnoFunda 100</option>
           <option value="GARP">GARP screen</option>
           <option value="ADV">Advanced fundamentals</option>
+          <option value="QP">Rising net profit · 4 quarters</option>
         </select>
         <button class="fbtn on" data-f="ALL">All</button>
         <button class="fbtn" data-f="BUY">Buy</button>
@@ -255,6 +256,38 @@ const ADV_SAY={
 const VW={p:['OK','s-hi'],w:['WATCH','s-mid'],f:['FLAG','s-lo'],n:['n/a','na']};
 let ADV_DATA=null, ADV_KEYS=[], advLoading=false, advOpen=null;
 
+/* ---------------- Rising net profit, four quarters ----------------
+   NP(latest) > NP(-1) > NP(-2) > NP(-3), and NP(latest) > 0.
+
+   Baked by scripts/refresh_qprofit.py, which writes ONLY the companies that
+   pass -- a screen has no use for the failures.
+
+   Sorted by market cap, not by growth. Growth-first put a company that went
+   from Rs 0.01 Cr to Rs 1.56 Cr at the top on +15,500%, and the whole first
+   page was rounding error on a near-zero base. The column is still there and
+   still sortable, it just is not what the screen leads with. */
+const QP_COLS=[["rank","#","rank"],["name","Company","name"],
+  ["np","Net profit, four quarters (₹ Cr)","npseq"],
+  ["growth","Growth","qgrow"],["turnaround","Kind","kind"],
+  ["ltp","LTP","rs"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
+let QP_DATA=null, qpLoading=false, QP_RULE="";
+
+async function loadQProfit(){
+  if(QP_DATA||qpLoading) return;
+  qpLoading=true;
+  f("empty").style.display=''; f("tbl").style.display='none';
+  f("empty").textContent='Loading the four-quarter profit screen…';
+  try{
+    const j=await fetch('data/qprofit.json?t='+Date.now()).then(r=>r.json());
+    QP_RULE=j.rule||'';
+    QP_DATA=(j.rows||[]).map(r=>Object.assign({},r,{turnaround:!!r.turnaround}));
+  }catch(e){
+    QP_DATA=[];
+    f("empty").textContent='Could not load the four-quarter profit screen.';
+  }
+  qpLoading=false; render();
+}
+
 async function loadAdvanced(){
   if(ADV_DATA||advLoading) return;
   advLoading=true;
@@ -298,6 +331,32 @@ function cell(r,c){
       +`<span class="s-mid">${r.w}</span> / <span class="s-lo">${r.f}</span>`
       +(r.n?` <span class="na" style="font-size:11px">(${r.n} n/a)</span>`:'')+`</td>`;
   }
+  if(c[2]==='npseq'){
+    // The four quarters as filed, oldest first, so the row reads the way the
+    // rule is written. Showing the numbers beats showing a growth figure: the
+    // reader can see the shape of the run, including how small the base is.
+    const seq=r.np||[];
+    if(!seq.length) return '<td class="na">—</td>';
+    const q=r.periods||[];
+    const fmt=v=>Math.abs(v)>=1000?Number(v).toLocaleString('en-IN',{maximumFractionDigits:0})
+                                  :(+v).toFixed(2).replace(/\.00$/,'');
+    return `<td style="white-space:nowrap" title="${esc(q.join(' → '))}">`
+      +seq.map((v,i)=>`<span class="${v>0?'pos':'neg'}">${fmt(v)}</span>`
+        +(i<seq.length-1?'<span class="na"> → </span>':'')).join('')+`</td>`;
+  }
+  if(c[2]==='qgrow'){
+    if(v==null) return '<td class="na">—</td>';
+    const capped=Math.abs(v)>=999;
+    return `<td class="${v>0?'pos':'neg'}" style="white-space:nowrap">`
+      +(capped?'&gt;999':(v>0?'+':'')+(+v).toFixed(0))+'%</td>';
+  }
+  if(c[2]==='kind'){
+    // Both shapes satisfy the rule and they are not the same investment:
+    // -12 → -4 → 3 → 9 is a recovery, 8 → 11 → 15 → 21 is compounding.
+    return r.turnaround
+      ? '<td><span class="schip nu">↻ TURNAROUND</span></td>'
+      : '<td><span class="schip tw">▲ COMPOUNDING</span></td>';
+  }
   if(c[2]==='chk'){
     const pair=(r.chk||{})[c[0]];
     if(!pair) return '<td class="na">\u2014</td>';
@@ -332,19 +391,21 @@ function garpRows(rows){
     &&(r.mcap??0)>=GARP.mcap_min);
 }
 function render(){
-  const cols=view==='ADV'?ADV_COLS:(view==='GARP'?GARP_COLS:COLS);
+  const cols=view==='QP'?QP_COLS:(view==='ADV'?ADV_COLS:(view==='GARP'?GARP_COLS:COLS));
   f("head").innerHTML=cols.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
   f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
   // The checklist board has no Buy/Neutral/Sell verdict of its own, so the
   // verdict filter does not apply to it.
-  let rows=view==='ADV'?(ADV_DATA||[]).slice():DATA.filter(r=>flt==='ALL'||r.label===flt);
+  let rows=view==='QP'?(QP_DATA||[]).slice()
+          :view==='ADV'?(ADV_DATA||[]).slice()
+          :DATA.filter(r=>flt==='ALL'||r.label===flt);
   if(view==='GARP') rows=garpRows(rows);
   if(q){const Q=q.toLowerCase();rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.code||'').toLowerCase().includes(Q));}
   rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
-  if(view==='GARP'||view==='ADV') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
+  if(view==='GARP'||view==='ADV'||view==='QP') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
   const total=rows.length;
   if(LIMIT!==Infinity) rows=rows.slice(0,LIMIT);
-  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='ADV'?'No companies in the fundamental checklist yet \u2014 run scripts/refresh_advanced.py.':view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
+  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='QP'?'No companies pass the four-quarter profit screen \u2014 run scripts/refresh_qprofit.py.':view==='ADV'?'No companies in the fundamental checklist yet \u2014 run scripts/refresh_advanced.py.':view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
   f("tbl").style.display='';f("empty").style.display='none';
   f("body").innerHTML=rows.map(r=>{
     const tr=`<tr data-code="${esc(r.code)}"${view==='ADV'?' style="cursor:pointer"':''}>`
@@ -419,11 +480,13 @@ async function load(){
 }
 f("showAll").onclick=()=>{LIMIT=(LIMIT===Infinity?100:Infinity);f("showAll").textContent=(LIMIT===Infinity?'Top 100':'Show all');f("showAll").classList.toggle('on',LIMIT===Infinity);render();};
 f("view").onchange=e=>{view=e.target.value;
-  s=view==='GARP'?{k:'peg',d:1}:(view==='ADV'?{k:'score',d:-1}:{k:'composite',d:-1});
+  s=view==='GARP'?{k:'peg',d:1}:(view==='ADV'?{k:'score',d:-1}
+     :(view==='QP'?{k:'mcap',d:-1}:{k:'composite',d:-1}));
   advOpen=null;
   // Fetched only when the view is chosen: the checklist board is ~2 MB and
   // most visitors never open it.
   if(view==='ADV'&&!ADV_DATA){ loadAdvanced(); return; }
+  if(view==='QP'&&!QP_DATA){ loadQProfit(); return; }
   render();};
 document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
