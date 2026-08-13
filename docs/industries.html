@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>scanX · Industries Overview</title>
+<link rel="stylesheet" href="vendor/theme.css">
+  <script src="vendor/theme.js"></script>
+  <style>
+*{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--teal2);text-decoration:none}a:hover{text-decoration:underline}
+  .app{display:flex;min-height:100vh}
+  .nav{width:200px;flex:0 0 200px;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
+  .nav .brand{font-size:21px;font-weight:800;color:var(--teal);padding:2px 8px 4px}
+  .nav .brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+  .nav .grpL{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+  .nav-i{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:var(--muted);font-size:13px;font-weight:600;margin:2px 0}
+  .nav-i:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+  .nav-i.active{background:rgba(45,212,191,.12);color:var(--teal)}
+  .nav-i .ic{font-size:15px;width:18px;text-align:center}
+  .content{flex:1;min-width:0;display:flex;flex-direction:column}
+  header{padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header .ptitle{font-size:18px;font-weight:800}header .sub{color:var(--muted);font-size:12px}
+  .wrap{padding:18px 22px;max-width:1320px}
+  .mkt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+  .mkt .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .mkt .big{font-size:34px;font-weight:800}
+  .badge{font-weight:800;border-radius:8px;padding:4px 12px;font-size:13px}
+  .TAILWIND{background:rgba(52,211,153,.16);color:var(--green)}
+  .HEADWIND{background:rgba(248,113,113,.16);color:var(--red)}
+  .NEUTRAL{background:rgba(251,191,36,.16);color:var(--amber)}
+  .chartbox{height:230px;margin-top:14px}
+  .tablebox{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+  th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{position:sticky;top:0;background:var(--panel2);cursor:pointer;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;user-select:none}
+  thead th:hover{color:var(--teal)}
+  tbody tr.secrow{cursor:pointer}
+  tbody tr.secrow:hover{background:#10182a}
+  tbody tr.open{background:rgba(45,212,191,.07)}
+  .bar{display:inline-block;vertical-align:middle;width:110px;height:8px;background:var(--chip);border-radius:6px;overflow:hidden;margin-right:8px}
+  .bf{height:100%;border-radius:6px}
+  .pos{color:var(--green)}.neg{color:var(--red)}.na{color:var(--muted)}
+  .chev{color:var(--muted);margin-right:6px;font-size:11px;display:inline-block;width:10px}
+  .detail{margin:14px 0 4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none}
+  .detail.show{display:block}
+  .dhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .dhead .t{font-weight:800;font-size:14px}
+  .fbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:5px 11px;cursor:pointer;font-size:12px;font-weight:600}
+  .fbtn.on{border-color:var(--teal);color:var(--teal)}
+  .dinner{max-height:520px;overflow:auto}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px;animation:p 2s infinite}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .legend{font-size:11px;color:var(--muted);margin-top:8px}
+  .sgn{font-weight:700;border-radius:6px;padding:2px 8px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <a class="brand" href="index.html" title="Back to the PEAD board (home)">scanX<small>NSE / BSE terminal</small></a>
+    <a class="nav-i nav-top" href="index.html"><span class="ic">🏠</span><span>Home</span></a>
+    <a class="nav-i nav-top" href="breadth.html"><span class="ic">🌐</span><span>Market Breadth</span></a>
+    <div class="grpL">Screens</div>
+    <a class="nav-i" href="technofunda.html"><span class="ic">🎖️</span><span>TechnoFunda 100</span></a>
+    <a class="nav-i" href="index.html"><span class="ic">📊</span><span>PEAD Board</span></a>
+    <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
+    <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
+    <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+    <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
+    <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
+    <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
+    <div class="grpL">Intrinsic Value</div>
+    <a class="nav-i" href="sector.html"><span class="ic">🧭</span><span>Sector Tailwind</span></a>
+    <a class="nav-i active" href="industries.html"><span class="ic">🏭</span><span>Industries</span></a>
+    <a class="nav-i" href="ivranking.html"><span class="ic">🏅</span><span>IV Ranking</span></a>
+    <a class="nav-i" href="returnmaps.html"><span class="ic">🗺️</span><span>Return Maps</span></a>
+    <a class="nav-i" href="fairvalue.html"><span class="ic">⚖️</span><span>Fair Value</span></a>
+    <div class="grpL">Tools</div>
+    <a class="nav-i" href="valuation.html"><span class="ic">🎯</span><span>Valuation</span></a>
+    <a class="nav-i" href="fundamental.html"><span class="ic">🔎</span><span>Fundamental</span></a>
+    <a class="nav-i" href="stdrl.html"><span class="ic">🤖</span><span>STDRL Scanner</span></a>
+        <div class="grpL">Market Pulse</div>
+      <a class="nav-i" href="marketmood.html"><span class="ic">🌡️</span><span>Market Mood</span></a>
+      <a class="nav-i " href="fii.html"><span class="ic">🌍</span><span>FII Flows</span></a>
+      <a class="nav-i" href="fpi.html"><span class="ic">🏦</span><span>FPI Flows</span></a>
+      <a class="nav-i" href="banking.html"><span class="ic">🏛️</span><span>Banking Data</span></a>
+      <a class="nav-i" href="auto.html"><span class="ic">🚗</span><span>Auto Sales</span></a>
+      <a class="nav-i " href="deals.html"><span class="ic">🤝</span><span>Deals</span></a>
+      <a class="nav-i " href="announcements.html"><span class="ic">📣</span><span>Announcements</span></a>
+      <a class="nav-i " href="actions.html"><span class="ic">🎁</span><span>Corp Actions</span></a>
+    </aside>
+
+  <div class="content">
+    <header>
+      <div><div class="ptitle">🏭 Industries Overview</div>
+      <div class="sub">Every listed company rolled up by industry, not by the 22 coarse sectors</div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="kInd">–</div><div class="l">Industries</div></div>
+        <div class="kpi"><div class="v" id="kCos">–</div><div class="l">Companies</div></div>
+        <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated</div></div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="bar">
+        <select id="lvl" class="fbtn" style="cursor:pointer">
+          <option value="industry">Industry</option>
+          <option value="sector">Sector (broadest)</option>
+          <option value="group">Industry group</option>
+          <option value="subgroup">Sub-industry (finest)</option>
+        </select>
+        <button class="fbtn on" data-t="ALL">All</button>
+        <button class="fbtn" data-t="DEEP">5+ companies</button>
+        <span id="cnt" class="na" style="font-size:12px"></span>
+        <input class="srch" id="srch" placeholder="filter by industry…">
+      </div>
+      <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
+      <div id="empty" class="empty" style="display:none"></div>
+      <div class="dis">⚠️ Every figure is a MEDIAN across the industry's own constituents, not a mean —
+        one company on a 900x multiple would drag a mean somewhere no member actually trades.
+        Growth is year on year (latest quarter against the same quarter a year earlier), because
+        most of these businesses are seasonal. Industries with fewer than five companies are
+        marked <span class="schip nu">THIN</span>: a three-company median is an anecdote, and
+        hiding them would drop coverage you cannot see is missing.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLS=[["rank","#","rank"],["name","Industry","name"],["members","Cos","num0"],
+  ["pe","P/E","med"],["roce","ROCE %","med"],["roe","ROE %","med"],["opm","OPM %","med"],
+  ["np_growth","Profit YoY","pct"],["sales_growth","Sales YoY","pct"],
+  ["mcap","MCap ₹Cr","cr"],["top","Largest member","top"]];
+let RAW=null, LEVEL="industry", TIER="ALL", q="", s={k:"mcap",d:-1};
+const f=id=>document.getElementById(id);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+function cell(r,c){
+  const v=r[c[0]];
+  if(c[2]==='rank') return `<td class="rank">${r.rank??''}</td>`;
+  if(c[2]==='name'){
+    // The taxonomy repeats itself where a sector has one industry -- "Financial
+    // Services > Financial Services" -- and printing both just reads as a typo.
+    const parent=(r.parent && r.parent!==r.name) ? r.parent : '';
+    return `<td><b>${esc(r.name)}</b>`
+      +(r.thin?' <span class="schip nu">THIN</span>':'')
+      +(parent?`<div class="snm" style="margin-left:0;text-align:left">${esc(parent)}</div>`:'')
+      +`</td>`;
+  }
+  if(c[2]==='num0') return `<td>${v==null?'—':Math.round(v)}</td>`;
+  if(c[2]==='cr') return `<td>${v==null?'—':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0})}</td>`;
+  if(c[2]==='med'){
+    // n is how many members actually had the figure. A median of 3 out of 40
+    // is not the industry's median, and saying so costs one small number.
+    const n=r[c[0]+'_n'];
+    if(v==null) return '<td class="na">—</td>';
+    return `<td>${(+v).toFixed(1)}<span class="na" style="font-size:10px"> /${n}</span></td>`;
+  }
+  if(c[2]==='pct'){
+    if(v==null) return '<td class="na">—</td>';
+    return `<td class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(0)}%</td>`;
+  }
+  if(c[2]==='top') return `<td style="text-align:left">${r.top_code
+    ? `<a href="fundamental.html?code=${encodeURIComponent(r.top_code)}">${esc(r.top)}</a>` : esc(r.top)}</td>`;
+  return `<td>${v==null?'—':esc(v)}</td>`;
+}
+
+function render(){
+  if(!RAW) return;
+  f("head").innerHTML=COLS.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
+  f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k; if(s.k===k)s.d*=-1; else {s.k=k;s.d=-1;} render();});
+
+  let rows=(RAW.data[LEVEL]||[]).slice();
+  if(TIER==='DEEP') rows=rows.filter(r=>!r.thin);
+  if(q){const Q=q.toLowerCase();
+    rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.parent||'').toLowerCase().includes(Q));}
+  rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];
+    if(x==null)x=-1e15; if(y==null)y=-1e15;
+    return typeof x==='string'?s.d*String(x).localeCompare(String(y)):s.d*(x-y);});
+  rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
+
+  if(!rows.length){f("tbl").style.display='none';f("empty").style.display='';
+    f("empty").textContent='No industries match.';f("cnt").textContent='';return;}
+  f("tbl").style.display='';f("empty").style.display='none';
+  f("body").innerHTML=rows.map(r=>'<tr>'+COLS.map(c=>cell(r,c)).join('')+'</tr>').join('');
+  f("cnt").textContent=`showing ${rows.length} ${LEVEL === 'sector' ? 'sectors' : 'industries'}`;
+  f("kInd").textContent=(RAW.data[LEVEL]||[]).length;
+}
+
+async function load(){
+  try{
+    RAW=await fetch('data/industries.json?t='+Date.now()).then(r=>r.json());
+    f("kCos").textContent=(RAW.classified||0).toLocaleString('en-IN');
+    f("kTime").innerHTML='<span class="dot"></span>'+esc(RAW.generated_at||'');
+    render();
+  }catch(e){
+    f("tbl").style.display='none'; f("empty").style.display='';
+    f("empty").textContent='No industries board yet — run scripts/refresh_industries.py.';
+  }
+}
+f("lvl").onchange=e=>{LEVEL=e.target.value; s={k:'mcap',d:-1}; render();};
+f("srch").oninput=e=>{q=e.target.value.trim(); render();};
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-t]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); TIER=b.dataset.t; render();});
+load();
+</script>
+</body>
+</html>

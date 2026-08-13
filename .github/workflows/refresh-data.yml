@@ -142,6 +142,10 @@ jobs:
           # four consecutive quarters of rising net profit - reads the quarterly
           # tables from the bundles above, so it costs no network either
           run python scripts/refresh_qprofit.py
+          # industries overview - rolls the universe up on the four-level
+          # classification each bundle carries, giving ~190 industries where
+          # the sector boards give 22
+          run python scripts/refresh_industries.py
           # STDRL trains reinforcement-learning agents. Two reasons it is gated
           # to one day rather than run nightly: it is a model comparison over
           # MONTHLY bars, so a daily re-run reproduces the same answer, and it

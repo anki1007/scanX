@@ -188,6 +188,44 @@ def _row(stmt: dict, *prefixes) -> list:
     return []
 
 
+#: The classification breadcrumb, coarsest first. Four levels deep:
+#:
+#:   Energy > Oil, Gas & Consumable Fuels > Petroleum Products > Refineries & Marketing
+#:
+#: This is the industry taxonomy the site has been missing. scanX groups
+#: everything into 22 SECTORS, which is too coarse to compare a speciality
+#: chemicals maker with a fertiliser maker; this carries ~190 industries.
+_CLASS_LEVELS = ("sector", "industry", "group", "subgroup")
+_CLASS_HREF = re.compile(r"^/market/(?:[A-Z0-9]+/)+$")
+
+
+def _classification(soup) -> dict:
+    """Sector / industry / group / sub-industry for one company. PURE.
+
+    Read from the breadcrumb links already on the page we fetch anyway, so it
+    costs no extra request.
+
+    Only the NAMES are kept. The hrefs are the data provider's own URL scheme
+    and the site never discloses where a number came from, so storing them
+    would smuggle the vendor into every bundle.
+
+    Depth is nesting depth, not link order: the levels are distinguished by how
+    many path segments the href has, which is stable even if the markup moves.
+    """
+    out: dict = {}
+    for a in soup.select("a[href]"):
+        href = str(a.get("href") or "")
+        if not _CLASS_HREF.match(href):
+            continue
+        depth = len([p for p in href.split("/") if p]) - 1   # drop "market"
+        if not 1 <= depth <= len(_CLASS_LEVELS):
+            continue
+        name = _clean(a.get_text(" "))
+        if name:
+            out.setdefault(_CLASS_LEVELS[depth - 1], name)
+    return out
+
+
 def _insights(soup) -> dict:
     """Screener AI 'Insights' (operational KPIs) - yearly + quarterly grids.
 
@@ -398,6 +436,11 @@ def fundamentals(code: str, session_id: Optional[str] = None, timeout: int = 20)
             # Which statement these numbers came from. A P/E means nothing
             # without it, and the two differ by 10x on a holding company.
             "basis": basis,
+            # Sector / industry / group / sub-industry, from the breadcrumb on
+            # the page we already fetched. Nothing else in the repo carries an
+            # industry label -- only 22 coarse sectors -- so this is what the
+            # industries board is built from.
+            "classification": _classification(soup),
             "overview": overview,
             "growth": growth,
             "quarters": quarters,
