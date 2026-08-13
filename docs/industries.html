@@ -107,11 +107,15 @@
 
     <div class="wrap">
       <div class="bar">
+        <!-- Defaults to the FINEST level. The taxonomy has four, and the one a
+             reader means by "industries overview" is the 192-entry one -- the
+             22-entry level is barely finer than the sector boards that already
+             exist, so leading with it would look like the same page twice. -->
         <select id="lvl" class="fbtn" style="cursor:pointer">
-          <option value="industry">Industry</option>
-          <option value="sector">Sector (broadest)</option>
-          <option value="group">Industry group</option>
-          <option value="subgroup">Sub-industry (finest)</option>
+          <option value="subgroup">Industry &middot; finest (~192)</option>
+          <option value="group">Industry group (~58)</option>
+          <option value="industry">Broad industry (~22)</option>
+          <option value="sector">Sector &middot; broadest (~12)</option>
         </select>
         <button class="fbtn on" data-t="ALL">All</button>
         <button class="fbtn" data-t="DEEP">5+ companies</button>
@@ -135,7 +139,9 @@ const COLS=[["rank","#","rank"],["name","Industry","name"],["members","Cos","num
   ["pe","P/E","med"],["roce","ROCE %","med"],["roe","ROE %","med"],["opm","OPM %","med"],
   ["np_growth","Profit YoY","pct"],["sales_growth","Sales YoY","pct"],
   ["mcap","MCap ₹Cr","cr"],["top","Largest member","top"]];
-let RAW=null, LEVEL="industry", TIER="ALL", q="", s={k:"mcap",d:-1};
+// Must match the FIRST <option>, or the select shows one level while the table
+// renders another -- the control and the data silently disagreeing.
+let RAW=null, LEVEL="subgroup", TIER="ALL", q="", s={k:"mcap",d:-1};
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 

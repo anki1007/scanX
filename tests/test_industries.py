@@ -158,3 +158,26 @@ def test_the_baker_is_scheduled():
     wf = "\n".join(p.read_text(encoding="utf-8")
                    for p in (ROOT / ".github" / "workflows").glob("*.yml"))
     assert "refresh_industries.py" in wf
+
+
+def test_the_default_level_matches_the_first_option():
+    """The select and the table must agree on load. They are set in two places
+    -- the first <option> and a JS variable -- so they can silently disagree,
+    showing one level in the control while rendering another."""
+    import re
+    html = (ROOT / "docs" / "industries.html").read_text(encoding="utf-8")
+    first = re.search(r'<select id="lvl".*?<option value="([a-z]+)"', html, re.S)
+    js = re.search(r'LEVEL\s*=\s*"([a-z]+)"', html)
+    assert first and js, "could not read the two defaults"
+    assert first.group(1) == js.group(1), (
+        f'select opens on "{first.group(1)}" but the table renders '
+        f'"{js.group(1)}"')
+
+
+def test_the_finest_level_leads():
+    """"Industries overview" means the ~192-entry level. The 22-entry one is
+    barely finer than the sector boards that already exist."""
+    import re
+    html = (ROOT / "docs" / "industries.html").read_text(encoding="utf-8")
+    first = re.search(r'<select id="lvl".*?<option value="([a-z]+)"', html, re.S)
+    assert first.group(1) == "subgroup"
