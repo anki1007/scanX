@@ -22,6 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from earnings_intel.data import boarduniverse as BU   # noqa: E402
 from earnings_intel.data import sectors as S          # noqa: E402
 from earnings_intel.data import sectorscore as SC     # noqa: E402
 
@@ -53,6 +54,25 @@ def main():
     rows = S.fetch_sectors(_sid(), max_pages=args.max_pages, only=args.only)
     if not rows:
         print("[sectors] no data fetched"); return
+
+    # The screen carries no price history, so the per-stock momentum term and
+    # the "% of 52w" column were empty market-wide. Fold in the strength
+    # rating we already hold on disk. Costs no network.
+    _tech = {}
+    _fdir = ROOT / "docs" / "data" / "fundamental"
+    if _fdir.exists():
+        for _p in _fdir.glob("*.json"):
+            if _p.stem == "index":
+                continue
+            try:
+                _t = BU.technical_of(json.loads(_p.read_text(encoding="utf-8")))
+            except Exception:  # noqa: BLE001
+                continue
+            if _t:
+                _tech[_p.stem] = _t
+    rows = BU.enrich(rows, _tech)
+    _rated = sum(1 for r in rows if r.get("rs_rating") is not None)
+    print(f"[sectors] relative strength on {_rated}/{len(rows)} constituents")
     res = SC.market_tailwind(rows)
     now = datetime.now(IST)
     res["generated_at_ist"] = now.strftime("%Y-%m-%d %H:%M:%S IST")

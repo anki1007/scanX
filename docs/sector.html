@@ -140,7 +140,7 @@ function renderTable(){
 let dflt="ALL", ds={k:"sscore",d:-1}, dlimit=100;
 function toggle(sec){ if(openSec===sec){openSec=null;f("detail").classList.remove('show');renderTable();return;} openSec=sec;dflt="ALL";ds={k:"sscore",d:-1};dlimit=100;renderTable();renderDetail();}
 const DCOLS=[["name","Company","name"],["signal","Signal","sbadge"],["result","Result","res"],
-  ["np","NP growth","pctv"],["sales","Sales growth","pctv"],["pos","% of ATH","pctp"],
+  ["np","NP growth","pctv"],["sales","Sales growth","pctv"],["pos","52w Range %","pctp"],
   ["ltp","LTP","rs"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
 function dCell(r,c){const v=r[c[0]];
   if(c[2]==='name')return `<td><a href="${fund(r.code)}">${esc(r.name||r.code)}</a></td>`;

@@ -29,6 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from earnings_intel.data import boarduniverse as bu   # noqa: E402
 from earnings_intel.data import company as co        # noqa: E402  (deep verdict, optional)
 from earnings_intel.data import pricehist as ph       # noqa: E402
 from earnings_intel.data import signal as sg          # noqa: E402
@@ -75,6 +76,35 @@ def universe(sid, query, pages):
         return []
 
 
+def held(fundamental_dir):
+    """Screen-shaped rows for every company we already hold a bundle for.
+
+    The screen alone decided the board's universe until this existed, so a
+    company the scrape missed was absent from the board even though a complete
+    bundle for it was on disk. Reading what we hold costs no network.
+    """
+    if not fundamental_dir:                      # explicit opt-out: screen only
+        return [], {}
+    fdir = Path(fundamental_dir)
+    if not fdir.exists():
+        return [], {}
+    pairs, technicals = [], {}
+    for path in sorted(fdir.glob("*.json")):
+        if path.stem == "index":
+            continue
+        try:
+            bundle = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        pairs.append((path.stem, bundle))
+        # One read, two uses: the row itself for companies the screen missed,
+        # and the price block for EVERY company including the ones it returned.
+        tech = bu.technical_of(bundle)
+        if tech:
+            technicals[path.stem] = tech
+    return bu.rows_from_bundles(pairs), technicals
+
+
 def build_row(base):
     bs = sg.board_signal(base)
     row = {
@@ -83,7 +113,8 @@ def build_row(base):
         "results": bs["results"], "momentum": bs["momentum"], "quality": bs["quality"],
         "ltp": base.get("cmp"), "pe": base.get("pe"), "mcap": base.get("mcap"),
         "sales_yoy": base.get("sales_var"), "np_yoy": base.get("profit_var"),
-        "fii_chg": base.get("fii_chg"), "pos_ath": bs["pos_ath"],
+        "fii_chg": base.get("fii_chg"), "pos_52w": bs["pos_52w"],
+        "rs_rating": base.get("rs_rating"),
     }
     sec = sl.sector_for(base.get("code"), base.get("name"))
     if sec and sec.get("label"):
@@ -122,12 +153,23 @@ def main():
     ap.add_argument("--price-floor", type=float, default=1, help="min CMP ₹")
     ap.add_argument("--screen-pages", type=int, default=250, help="screen pages (~50/page)")
     ap.add_argument("--top", type=int, default=0, help="cap stored rows (0 = all)")
+    ap.add_argument("--fundamental", default=str(ROOT / "docs" / "data" / "fundamental"),
+                    help="bundles to union with the screen (blank = screen only)")
     ap.add_argument("--out", default=str(ROOT / "docs" / "data"))
     args = ap.parse_args()
 
     sid = _sid()
     query = f"Market Capitalization > {args.mcap_floor:g}"
-    uni = universe(sid, query, args.screen_pages)
+    screened = universe(sid, query, args.screen_pages)
+    mine, technicals = held(args.fundamental)
+    uni = bu.merge(screened, mine)
+    added = len(uni) - len(screened)
+    print(f"[techno] universe: {len(screened)} screened + {added} held-only "
+          f"= {len(uni)} ({len(mine)} bundles readable)")
+    uni = bu.enrich(uni, technicals)
+    rated = sum(1 for r in uni if r.get("rs_rating") is not None)
+    print(f"[techno] relative strength on {rated}/{len(uni)} rows "
+          f"({len(uni) - rated} score a neutral momentum)")
     uni = [r for r in uni if (r.get("mcap") or 0) >= args.mcap_floor
            and (r.get("cmp") or 0) >= args.price_floor]
     print(f"[techno] scored {len(uni)} companies (mcap>{args.mcap_floor:g}, cmp>{args.price_floor:g})")
@@ -148,6 +190,10 @@ def main():
         "buy": sum(1 for r in rows if r["label"] == "BUY"),
         "neutral": sum(1 for r in rows if r["label"] == "NEUTRAL"),
         "sell": sum(1 for r in rows if r["label"] == "SELL"),
+        # Said out loud rather than left as a silent shortfall: these rows
+        # score a neutral 50 for momentum because no price history reached
+        # them, which on the board looks identical to a real, measured 50.
+        "no_rs": sum(1 for r in rows if r.get("rs_rating") is None),
     }
     _atomic(out / "technofunda_meta.json", json.dumps(meta, indent=2))
     print(f"[techno] ranked {len(rows)} | BUY {meta['buy']} NEU {meta['neutral']} "

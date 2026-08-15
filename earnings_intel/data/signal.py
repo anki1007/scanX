@@ -317,13 +317,22 @@ def board_signal(row: dict) -> dict:
     (no per-stock fetch) so the board can cover the ENTIRE universe.
 
     results  = Qtr profit/sales variation (outperforming results)
-    momentum = price position in its range (CMP vs 52w-low and all-time-high)
+    momentum = relative strength vs the index, from `rs_rating`
     quality  = ROCE + FII inflow + valuation
     Returns composite + BUY/SELL/NEUTRAL with the three sub-scores.
+
+    On `rs_rating`: a screen returns no 52-week low and no all-time high, so
+    the old cmp/low/high path scored a FLAT 50 for every row on the board --
+    35% of every composite was the same constant, the BUY gate `mom >= 50` was
+    always exactly true and the SELL gate `mom < 35` could never fire. The
+    price bundles already carried a real 1-99 strength rating against the
+    Nifty 500; this reads it. The range path is kept for rows that genuinely
+    arrive with those columns.
     """
     pv = row.get("profit_var"); sv = row.get("sales_var")
     roce = row.get("roce"); fii = row.get("fii_chg"); pe = row.get("pe")
     cmp_ = row.get("cmp"); lo = row.get("low_52w"); ath = row.get("ath")
+    rs = row.get("rs_rating")
 
     # --- results (outperforming results) ---
     r = 50.0
@@ -333,14 +342,26 @@ def board_signal(row: dict) -> dict:
         r += 10 if sv > 15 else (5 if sv > 0 else -8)
     results = _clip(r)
 
-    # --- momentum (relative-strength proxy from price position) ---
+    # --- momentum (relative strength) ---
     mom = 50.0
-    pos = None
-    if cmp_ and lo and ath and ath > 0 and lo > 0:
+    pos = row.get("pos_52w")                  # position in the 52-week range
+    if rs is not None:
+        try:
+            # Already a 1-99 percentile against the index, so it maps onto the
+            # 0-100 score scale directly -- no rescaling to invent.
+            mom = _clip(float(rs))
+        except (TypeError, ValueError):
+            mom = 50.0
+    elif cmp_ and lo and ath and ath > 0 and lo > 0:
         above_low = cmp_ / lo - 1.0           # how far above the 52w low
         near_ath = cmp_ / ath                 # 1.0 = at all-time high
         mom = _clip(50 * min(max(near_ath, 0), 1.1) + 50 * min(max(above_low, 0), 1))
-        pos = round(near_ath * 100, 1)
+        # Deliberately does NOT overwrite pos: that would publish a "% of ATH"
+        # under a field that means "position in the 52-week range".
+    try:
+        pos = round(float(pos), 1) if pos is not None else None
+    except (TypeError, ValueError):
+        pos = None
 
     # --- quality / value ---
     q = 50.0
@@ -362,4 +383,4 @@ def board_signal(row: dict) -> dict:
     else:
         label = "NEUTRAL"
     return {"composite": composite, "label": label, "results": round(results),
-            "momentum": round(mom), "quality": round(quality), "pos_ath": pos}
+            "momentum": round(mom), "quality": round(quality), "pos_52w": pos}

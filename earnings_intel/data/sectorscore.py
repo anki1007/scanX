@@ -81,8 +81,25 @@ def stock_signal(r: dict) -> dict:
     a TAILWIND/NEUTRAL/HEADWIND signal, and a PEAD-style result score (0..100)."""
     pv = r.get("profit_var"); sv = r.get("sales_var")
     c = r.get("cmp"); lo = r.get("low_52w"); a = r.get("ath")
+    # A screen returns neither a 52-week low nor an all-time high, so this used
+    # to leave pos None and mom 0.0 on EVERY row: the "% of ATH" column was
+    # empty market-wide and "price momentum + earnings" was earnings alone.
+    # rs_rating is a 0-100 strength rating against the index; centring it on 50
+    # maps it onto this function's -1..+1 momentum scale.
+    rs = r.get("rs_rating")
     pos = (c - lo) / (a - lo) if (c and lo and a and a > lo) else None
-    mom = _clip((pos - 0.5) * 2) if pos is not None else 0.0
+    if rs is not None:
+        try:
+            mom = _clip(float(rs) / 50.0 - 1.0)
+        except (TypeError, ValueError):
+            mom = 0.0
+    else:
+        mom = _clip((pos - 0.5) * 2) if pos is not None else 0.0
+    if r.get("pos_52w") is not None:
+        try:
+            pos = float(r["pos_52w"]) / 100.0
+        except (TypeError, ValueError):
+            pass
     earn = _clip(((pv or 0) + (sv or 0)) / 40.0)
     score = round(2 * (0.5 * mom + 0.5 * earn), 2)
     res = 50.0
