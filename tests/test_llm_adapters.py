@@ -137,6 +137,96 @@ def test_every_builtin_adapter_satisfies_the_protocol():
 
 
 # ------------------------------------------------------------------ registry
+# Model ids a vendor has switched off. The registry pins a default id per
+# provider, and a retired one does not fail loudly -- it 404s, the deterministic
+# chain quietly hands the work to the NEXT provider, and the whole point of
+# pinning one provider per CI shard (N keys = N independent quotas) is lost
+# while every run still reports green. Groq retired both of these on
+# 2026-08-16; Cerebras dropped llama-3.3-70b from its public endpoints.
+# Add a line here when a vendor announces a shutdown: the test then names every
+# place still pinning it.
+RETIRED = {
+    "llama-3.3-70b-versatile": "groq, 2026-08-16 -> openai/gpt-oss-120b",
+    "llama-3.1-8b-instant": "groq, 2026-08-16 -> openai/gpt-oss-20b",
+    "llama-3.3-70b": "cerebras, withdrawn -> gpt-oss-120b",
+    "deepseek-chat": "deepseek, replaced by the v4 line -> deepseek-v4-flash",
+    "deepseek-reasoner": "deepseek, replaced by the v4 line -> deepseek-v4-pro",
+}
+
+
+def test_no_provider_defaults_to_a_retired_model():
+    """Exact-id match on purpose: the local ollama tag "llama3.1" is a
+    different string from the hosted "llama-3.1-8b-instant" and must not be
+    caught by a substring rule."""
+    pinned = {name: pv.get_adapter(name).model for name in pv.PROVIDERS}
+    dead = {n: f"{m} ({RETIRED[m]})" for n, m in pinned.items() if m in RETIRED}
+    assert not dead, f"provider(s) pinned to a switched-off model: {dead}"
+
+
+def test_the_two_gpt_oss_hosts_keep_their_own_naming():
+    """Same weights, two schemes: Groq serves it as "openai/gpt-oss-120b" and
+    Cerebras as bare "gpt-oss-120b". Copying one id to the other 404s."""
+    assert pv.get_adapter("groq").model.startswith("openai/")
+    assert not pv.get_adapter("cerebras").model.startswith("openai/")
+
+
+def test_claude_4_7_and_later_drop_the_temperature_parameter():
+    """Anthropic 400s on a non-default temperature from 4.7 onward. We send 0
+    for determinism, so the parameter does not degrade -- it fails the call."""
+    for model in ("claude-sonnet-5", "claude-opus-5", "claude-opus-4-7",
+                  "claude-opus-4-8", "claude-fable-5", "claude-mythos-5"):
+        assert not pv._accepts_temperature(model), model
+
+
+def test_claude_4_6_and_earlier_still_send_it():
+    for model in ("claude-sonnet-4-6", "claude-haiku-4-5-20251001",
+                  "claude-opus-4-5-20251101", "claude-sonnet-4-20250514"):
+        assert pv._accepts_temperature(model), model
+
+
+def test_an_unrecognised_model_keeps_sending_temperature():
+    """Omitting it silently means temperature 1.0 -- a debate that is quietly
+    non-deterministic. A loud 400 that trips the fallback chain is better."""
+    for model in ("some-future-model", "", "gpt-4o-mini", "claude-mythos-preview"):
+        assert pv._accepts_temperature(model), model
+
+
+def test_the_anthropic_payload_omits_temperature_only_when_it_must(monkeypatch):
+    """The version rule has to reach the wire, not just the helper."""
+    sent = {}
+
+    class _Resp:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"content": [{"type": "text", "text": "{}"}]}
+
+    class _Req:
+        @staticmethod
+        def post(url, headers=None, json=None, timeout=None):
+            sent.clear()
+            sent.update(json or {})
+            return _Resp()
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", SENTINEL)
+    monkeypatch.setattr(pv.BaseAdapter, "_requests", lambda self: _Req)
+
+    pv.AnthropicAdapter(model="claude-sonnet-4-6").complete("hi", temperature=0.0)
+    assert sent.get("temperature") == 0.0, "4.6 lost a parameter it accepts"
+
+    pv.AnthropicAdapter(model="claude-sonnet-5").complete("hi", temperature=0.0)
+    assert "temperature" not in sent, "would 400 on Claude 5"
+    assert sent.get("model") == "claude-sonnet-5"
+
+
+def test_every_hosted_provider_can_be_repinned_without_a_code_change():
+    """The registry will always lag the vendors. An env override is what makes
+    a decommissioning a config change rather than a release."""
+    for name in ("groq", "cerebras", "openrouter", "together", "mistral", "qwen"):
+        assert pv.get_adapter(name).model_env, f"{name} has no model env var"
+
+
 def test_registry_lookup_returns_the_right_adapter():
     assert isinstance(pv.get_adapter("gemini"), pv.GeminiAdapter)
     assert isinstance(pv.get_adapter("openai"), pv.OpenAIAdapter)
@@ -327,7 +417,7 @@ def test_deepseek_and_openai_compatible_use_their_own_base_url(monkeypatch):
     http = _http(monkeypatch, _chat_ok())
     pv.DeepSeekAdapter().complete("p")
     assert http.calls[0]["url"] == "https://api.deepseek.com/v1/chat/completions"
-    assert http.calls[0]["payload"]["model"] == "deepseek-chat"
+    assert http.calls[0]["payload"]["model"] == "deepseek-v4-flash"
 
     monkeypatch.setenv("VLLM_KEY", SENTINEL)
     http = _http(monkeypatch, _chat_ok())

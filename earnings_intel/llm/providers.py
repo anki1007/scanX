@@ -20,13 +20,13 @@ Usage:
     r.ok, r.provider, r.model, r.text
 
     r = llm.complete(prompt, provider="anthropic", fallback=False)
-    ad = llm.get_adapter("deepseek", model="deepseek-reasoner")
+    ad = llm.get_adapter("deepseek", model="deepseek-v4-pro")
     ad.complete(prompt, json_mode=True, temperature=0)
 
     # add a provider in ONE line (Groq, vLLM, Together, any OpenAI-compatible URL)
     llm.register("groq", functools.partial(
         llm.OpenAICompatibleAdapter, "https://api.groq.com/openai/v1",
-        "GROQ_API_KEY", name="groq", model="llama-3.3-70b-versatile"))
+        "GROQ_API_KEY", name="groq", model="openai/gpt-oss-120b"))
 
 Environment:
     SCANX_LLM_PROVIDER   default provider name        (default "gemini")
@@ -327,6 +327,33 @@ class OpenAIAdapter(_ChatCompletionsAdapter):
     max_tokens_field = "max_completion_tokens"  # the current OpenAI spelling
 
 
+# The minor group must be 1-2 digits AND sit at a boundary, otherwise the
+# release date in "claude-sonnet-4-20250514" parses as minor version 20250514
+# and a model that predates the rule reads as newer than every model that
+# followed it.
+_CLAUDE_VERSION = re.compile(r"^claude-[a-z]+-(\d{1,2})(?:-(\d{1,2})(?=-|$))?")
+
+
+def _accepts_temperature(model: str) -> bool:
+    """False for Claude 4.7 and later, which 400 on a non-default temperature.
+
+    We send temperature=0 for determinism, so on those models the parameter is
+    not merely ignored -- it fails the whole call. Pinning 4.6 hides this; the
+    moment $ANTHROPIC_MODEL is set to claude-sonnet-5 (which is what the env
+    override exists FOR) every request 400s.
+
+    An UNRECOGNISED name keeps sending it. Omitting silently falls back to
+    temperature 1.0, i.e. a debate that is quietly non-deterministic, and a
+    loud 400 that trips the provider fallback beats that.
+    """
+    m = _CLAUDE_VERSION.match(str(model or "").strip().lower())
+    if not m:
+        return True
+    major = int(m.group(1))
+    minor = int(m.group(2) or 0)
+    return (major, minor) < (4, 7)
+
+
 class AnthropicAdapter(BaseAdapter):
     """Anthropic api.anthropic.com/v1/messages."""
 
@@ -343,9 +370,10 @@ class AnthropicAdapter(BaseAdapter):
         payload: dict = {
             "model": self.model,
             "max_tokens": int(max_tokens or self.default_max_tokens),
-            "temperature": temperature,
             "messages": [{"role": "user", "content": str(prompt or "")}],
         }
+        if _accepts_temperature(self.model):
+            payload["temperature"] = temperature
         if json_mode:                           # no response_format on this API
             payload["system"] = _JSON_SYSTEM
         data = self._post(self.base_url.rstrip("/") + "/messages",
@@ -362,7 +390,10 @@ class DeepSeekAdapter(_ChatCompletionsAdapter):
     name = "deepseek"
     env_var = "DEEPSEEK_API_KEY"
     model_env = "DEEPSEEK_MODEL"
-    default_model = "deepseek-chat"
+    # deepseek-chat is gone: the v4 line replaced it with an explicit
+    # flash/pro split. flash is the like-for-like successor to the general
+    # chat model; deepseek-v4-pro is the reasoning tier.
+    default_model = "deepseek-v4-flash"
     base_url = "https://api.deepseek.com/v1"
 
 
@@ -465,10 +496,19 @@ PROVIDERS: dict[str, Callable[..., LLMAdapter]] = {
     # per day; the value of adding them is that each key is a SEPARATE quota, so
     # the shard planner can run them side by side. Model names churn faster than
     # this file will be edited, hence the env override on each.
+    # Was llama-3.3-70b-versatile until Groq decommissioned it on 2026-08-16,
+    # together with llama-3.1-8b-instant. gpt-oss-120b is Groq's own like-for-
+    # like replacement for that tier; the 20b is ~2x the tokens/sec at lower
+    # quality, so $GROQ_MODEL is the lever if the backlog matters more than the
+    # argument. qwen3.6-27b is the other suggested swap but is PREVIEW-only,
+    # which is not something to pin a scheduled bake to.
     "groq": _compatible("https://api.groq.com/openai/v1", "GROQ_API_KEY",
-                        "groq", "llama-3.3-70b-versatile", "GROQ_MODEL"),
+                        "groq", "openai/gpt-oss-120b", "GROQ_MODEL"),
+    # Cerebras dropped llama-3.3-70b from its public endpoints entirely. Note
+    # the id is BARE here and "openai/"-prefixed on Groq: same weights, two
+    # naming schemes, so the two entries cannot share a string.
     "cerebras": _compatible("https://api.cerebras.ai/v1", "CEREBRAS_API_KEY",
-                            "cerebras", "llama-3.3-70b", "CEREBRAS_MODEL"),
+                            "cerebras", "gpt-oss-120b", "CEREBRAS_MODEL"),
     "openrouter": _compatible("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY",
                               "openrouter", "meta-llama/llama-3.3-70b-instruct",
                               "OPENROUTER_MODEL"),
