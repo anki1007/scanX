@@ -7,8 +7,13 @@
 # conflict that `git rebase` could not resolve, the push loop gave up, and two
 # runs of ~4.8 hours each were thrown away with every debate they had baked.
 #
-# cp -n: origin's copy wins if the company is already there. Both sides are
-# valid debates for that company, so the tie-break only has to be deterministic.
+# The tie-break is COMPLETENESS, not "whoever got there first". A no-clobber
+# copy meant a company already on disk could never be replaced, which nullified
+# the re-queue path: a half-baked debate was marked incomplete, re-argued
+# by a shard over several minutes, then dropped on the floor here -- so it
+# stayed half-baked and was re-queued again next run, four times a day, while
+# the run reported success. merge_shards.py keeps whichever debate has more
+# turns, which is still a deterministic tie-break and still safe to replay.
 set -euo pipefail
 
 SHARDS="${1:-/tmp/shards}"
@@ -16,18 +21,12 @@ OUT="docs/data/debate"
 
 mkdir -p "$OUT"
 
-# find|wc, not ls|grep -c: grep exits 1 when it matches nothing, so
-# `grep -c ... || echo 0` prints BOTH grep's "0" and the fallback "0" and the
-# variable becomes the two-line string "0\n0".
-count() { find "$OUT" -maxdepth 1 -name '*.json' ! -name 'index.json' | wc -l; }
-before=$(count)
-
 # A shard's own index.json describes only that shard; the real one is rebuilt
-# from what is on disk afterwards.
-if [ -d "$SHARDS" ]; then
-  find "$SHARDS" -name '*.json' ! -name 'index.json' \
-    -exec cp -n {} "$OUT"/ \; 2>/dev/null || true
-fi
+# from what is on disk afterwards. merge_shards.py also exports ADDED/TOTAL,
+# counting what CHANGED rather than the change in file count -- an improved
+# debate replaces a file, so the old arithmetic scored it 0 and the commit
+# step concluded there was "nothing new to publish".
+python scripts/merge_shards.py "$SHARDS" "$OUT"
 
 python - <<'PY'
 import sys
@@ -37,10 +36,3 @@ write_index("docs/data/debate")
 PY
 
 python scripts/redact_sources.py >/dev/null 2>&1 || true
-
-after=$(count)
-echo "merged shards: ${before} -> ${after} debates on disk"
-if [ -n "${GITHUB_ENV:-}" ]; then
-  echo "ADDED=$((after - before))" >> "$GITHUB_ENV"
-  echo "TOTAL=${after}" >> "$GITHUB_ENV"
-fi
