@@ -99,7 +99,7 @@ def held(fundamental_dir):
         pairs.append((path.stem, bundle))
         # One read, two uses: the row itself for companies the screen missed,
         # and the price block for EVERY company including the ones it returned.
-        tech = bu.technical_of(bundle)
+        tech = bu.enrichment_of(bundle)
         if tech:
             technicals[path.stem] = tech
     return bu.rows_from_bundles(pairs), technicals
@@ -155,6 +155,8 @@ def main():
     ap.add_argument("--top", type=int, default=0, help="cap stored rows (0 = all)")
     ap.add_argument("--fundamental", default=str(ROOT / "docs" / "data" / "fundamental"),
                     help="bundles to union with the screen (blank = screen only)")
+    ap.add_argument("--allow-dead-inputs", action="store_true",
+                    help="publish even if a scoring input contributes nothing")
     ap.add_argument("--out", default=str(ROOT / "docs" / "data"))
     args = ap.parse_args()
 
@@ -173,6 +175,20 @@ def main():
     uni = [r for r in uni if (r.get("mcap") or 0) >= args.mcap_floor
            and (r.get("cmp") or 0) >= args.price_floor]
     print(f"[techno] scored {len(uni)} companies (mcap>{args.mcap_floor:g}, cmp>{args.price_floor:g})")
+
+    # Refuse to publish a board scored on an input that is doing nothing. Three
+    # of these shipped and none of them failed a bake; the numbers just quietly
+    # stopped meaning anything. --allow-dead-inputs is the deliberate override.
+    dead = bu.dead_inputs(uni)
+    if dead:
+        detail = "; ".join(f"{k}: {v}" for k, v in sorted(dead.items()))
+        if not args.allow_dead_inputs:
+            print(f"[techno] ABORT - scoring input(s) contribute nothing: {detail}",
+                  file=sys.stderr)
+            print("[techno] the feed is broken, not the market. Re-run with "
+                  "--allow-dead-inputs to publish anyway.", file=sys.stderr)
+            return 1
+        print(f"[techno] WARNING - dead scoring input(s): {detail}", file=sys.stderr)
 
     rows = [build_row(r) for r in uni]
     rows.sort(key=lambda r: r["composite"], reverse=True)
@@ -203,4 +219,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Propagate the exit code: main() returns 1 when it refuses to publish a
+    # board scored on a dead input, and a bare main() would swallow that and
+    # exit 0 -- a guard that cannot stop the thing it guards.
+    raise SystemExit(main())

@@ -24,7 +24,7 @@ from typing import Any, Iterable
 from .industries import _num, _yoy
 
 __all__ = ["row_from_bundle", "rows_from_bundles", "merge", "technical_of",
-           "enrich"]
+           "fii_change", "enrichment_of", "enrich"]
 
 
 def technical_of(bundle: Any) -> dict:
@@ -48,6 +48,81 @@ def technical_of(bundle: Any) -> dict:
         if value is not None:
             out[dst] = value
     return out
+
+
+def fii_change(bundle: Any) -> dict:
+    """Change in FII holding, latest disclosure against the one before it.
+
+    In PERCENTAGE POINTS: a move from 3.70% to 3.98% is +0.28, not +7.6%. The
+    score only reads the sign, but a ratio would be wildly unstable off a small
+    base and is not what "FII inflow" means on a shareholding table.
+
+    The third input found scoring nothing at all: `fii_chg` was null on every
+    row of the board, so the FII term in the quality block had never once
+    fired, while the code read as though it were doing something.
+    """
+    out: dict = {}
+    if not isinstance(bundle, Mapping):
+        return out
+    fundamental = bundle.get("fundamental")
+    fundamental = fundamental if isinstance(fundamental, Mapping) else bundle
+    if not isinstance(fundamental, Mapping):
+        return out
+    holding = fundamental.get("shareholding")
+    rows = holding.get("rows") if isinstance(holding, Mapping) else None
+    if not isinstance(rows, Mapping):
+        return out
+    for name, series in rows.items():
+        if not str(name).strip().lower().startswith("fii"):
+            continue
+        values = [v for v in (_num(x) for x in (series or [])) if v is not None]
+        if len(values) >= 2:
+            out["fii_chg"] = round(values[-1] - values[-2], 2)
+        break
+    return out
+
+
+def enrichment_of(bundle: Any) -> dict:
+    """Everything a screen cannot supply, for one company."""
+    out = technical_of(bundle)
+    out.update(fii_change(bundle))
+    return out
+
+
+# Inputs board_signal actually scores on. A value that is absent or identical
+# for the ENTIRE market is not a score -- it is a broken feed wearing one.
+SCORED_INPUTS = ("profit_var", "sales_var", "roce", "pe", "rs_rating", "fii_chg")
+
+
+def dead_inputs(rows: Iterable[Mapping] | None,
+                fields: Iterable[str] = SCORED_INPUTS,
+                min_rows: int = 50) -> dict:
+    """Scoring inputs that are missing everywhere, or the same value everywhere.
+
+    Three separate inputs reached production scoring nothing: momentum was the
+    constant 50 on every row, the sector momentum term contributed 0 on every
+    row, and `fii_chg` was null on all of them. Not one failed a bake, raised,
+    or looked wrong on the page -- each simply stopped contributing, and the
+    numbers stayed plausible. Nobody finds that by reading the board.
+
+    So the bake asserts it instead. Returns {field: reason} for anything dead;
+    empty means every input is doing work.
+
+    Skipped under `min_rows`: a handful of rows can legitimately share a value,
+    and a partial run must not look like a broken feed.
+    """
+    materialised = [r for r in (rows or []) if isinstance(r, Mapping)]
+    if len(materialised) < int(min_rows):
+        return {}
+    dead: dict = {}
+    for field in fields:
+        values = [r.get(field) for r in materialised]
+        present = [v for v in values if v is not None]
+        if not present:
+            dead[field] = f"null on all {len(values)} rows"
+        elif len(set(present)) == 1 and len(present) > int(min_rows):
+            dead[field] = f"the single value {present[0]!r} on all {len(present)} rows"
+    return dead
 
 
 def enrich(rows: Iterable[Mapping] | None,

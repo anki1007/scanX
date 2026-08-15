@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from earnings_intel.data.boarduniverse import (  # noqa: E402
-    merge, row_from_bundle, rows_from_bundles,
+    dead_inputs, enrichment_of, fii_change, merge, row_from_bundle,
+    rows_from_bundles,
 )
 
 
@@ -139,6 +140,97 @@ def test_a_dead_screen_still_produces_a_board():
 
 def test_rows_without_a_code_are_dropped_rather_than_keyed_on_blank():
     assert merge([{"name": "no code"}], []) == []
+
+
+# ------------------------------------------------- foreign institutions
+
+def _holding(*fii):
+    return {"fundamental": {"shareholding": {
+        "headers": [f"Q{i}" for i in range(len(fii))],
+        "rows": {"FIIs": list(fii), "Promoters": ["50%"] * len(fii)}}}}
+
+
+def test_fii_change_is_percentage_points_not_a_ratio():
+    """3.70% -> 3.98% is +0.28pp. As a ratio it would be +7.6%, which is not
+    what a shareholding table means and is unstable off a small base."""
+    assert fii_change(_holding("3.70%", "3.98%"))["fii_chg"] == 0.28
+
+
+def test_fii_change_signs_an_exit():
+    assert fii_change(_holding("8.00%", "6.50%"))["fii_chg"] == -1.5
+
+
+def test_fii_change_needs_two_disclosures():
+    assert fii_change(_holding("3.70%")) == {}
+    assert fii_change(_holding()) == {}
+
+
+def test_fii_change_survives_junk():
+    for junk in (None, {}, [], "x", {"fundamental": {"shareholding": "no"}},
+                 {"fundamental": {"shareholding": {"rows": "no"}}}):
+        assert fii_change(junk) == {}
+
+
+def test_enrichment_carries_both_price_and_holding():
+    bundle = dict(_holding("3.70%", "3.98%"))
+    bundle["prices"] = {"ok": True, "technical": {"rs_rating": 61, "pos_52w": 44.0}}
+    out = enrichment_of(bundle)
+    assert out == {"rs_rating": 61.0, "pos_52w": 44.0, "fii_chg": 0.28}
+
+
+# ------------------------------------------- the guard against the class
+# Three scoring inputs reached production contributing nothing, and not one
+# failed a bake. These pin the check that refuses to publish a fourth.
+
+def _rows(n=200, **fixed):
+    return [{"code": str(i), "profit_var": i, "sales_var": i, "roce": i,
+             "pe": i, "rs_rating": i % 100, "fii_chg": i / 10.0, **fixed}
+            for i in range(n)]
+
+
+def test_a_healthy_board_reports_no_dead_inputs():
+    assert dead_inputs(_rows()) == {}
+
+
+def test_an_input_null_market_wide_is_caught():
+    """fii_chg, exactly as it shipped."""
+    dead = dead_inputs(_rows(fii_chg=None))
+    assert "fii_chg" in dead and "null on all" in dead["fii_chg"]
+
+
+def test_an_input_constant_market_wide_is_caught():
+    """momentum's rs_rating, had it arrived as one value for everyone."""
+    dead = dead_inputs(_rows(rs_rating=50))
+    assert "rs_rating" in dead and "single value" in dead["rs_rating"]
+
+
+def test_several_dead_inputs_are_all_named_not_just_the_first():
+    dead = dead_inputs(_rows(fii_chg=None, roce=None))
+    assert {"fii_chg", "roce"} <= set(dead)
+
+
+def test_a_small_run_is_not_judged():
+    """A handful of rows can legitimately share a value; a partial run must
+    not look like a broken feed."""
+    assert dead_inputs(_rows(3, fii_chg=None)) == {}
+
+
+def test_the_guard_reads_the_inputs_the_score_actually_uses():
+    import inspect
+
+    from earnings_intel.data import signal as sg
+    from earnings_intel.data.boarduniverse import SCORED_INPUTS
+    src = inspect.getsource(sg.board_signal)
+    for field in SCORED_INPUTS:
+        assert f'"{field}"' in src, f"{field} is guarded but never scored"
+
+
+def test_the_baker_refuses_to_publish_a_dead_input():
+    """A guard that cannot stop the bake is not a guard. main() must return
+    non-zero AND the entrypoint must propagate it."""
+    src = (ROOT / "scripts" / "refresh_technofunda.py").read_text(encoding="utf-8")
+    assert "dead_inputs(" in src, "the bake no longer checks"
+    assert "raise SystemExit(main())" in src, "the exit code is swallowed"
 
 
 # ------------------------------------------------------------ the baker

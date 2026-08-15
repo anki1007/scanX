@@ -65,7 +65,7 @@ def main():
             if _p.stem == "index":
                 continue
             try:
-                _t = BU.technical_of(json.loads(_p.read_text(encoding="utf-8")))
+                _t = BU.enrichment_of(json.loads(_p.read_text(encoding="utf-8")))
             except Exception:  # noqa: BLE001
                 continue
             if _t:
