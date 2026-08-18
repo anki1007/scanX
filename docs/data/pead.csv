@@ -1,26 +1,23 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-THAKDEV,Thakkers Develp.,https://www.screener.in/company/THAKDEV/,132.0,147.0,9.6,Jun 2026,104.67,284.94,594.44,576.19,674.19,957.14,,,97.5,HIGH,True,True,2026-08-18T13:06:36+00:00,147.0,
-531283,Cindrella Fin.,https://www.screener.in/company/531283/,4.15,9.98,34.6,Jun 2026,133.33,-50.0,200.0,150.0,50.0,25.0,,,84.4,HIGH,True,True,2026-08-18T13:06:36+00:00,9.98,-4.95
-INDOMIM,Indo-MIM,https://www.screener.in/company/INDOMIM/,47182.0,953.0,73.1,Jun 2026,9.43,16.32,31.87,72.66,24.46,102.49,,,75.8,HIGH,True,False,2026-08-18T13:06:36+00:00,953.0,
-519413,Datiware Mari.,https://www.screener.in/company/519413/,27.5,55.0,,Jun 2026,233.33,0.0,73.68,61.54,0.0,-200.0,,,75.0,HIGH,True,True,2026-08-18T13:06:36+00:00,55.0,0.7
-NXT-INFRA,Nxt-Infra Trust,https://www.screener.in/company/NXT-INFRA/,2764.0,97.0,20.9,Jun 2026,7.65,-0.34,72.06,6360.5,-11.29,14183.33,,,74.8,HIGH,True,False,2026-08-18T13:06:36+00:00,97.0,
-530253,Rajas. Tube Mfg,https://www.screener.in/company/530253/,48.5,10.8,20.6,Jun 2026,-99.55,,102.73,105.36,104.3,200.0,,,72.5,HIGH,True,False,2026-08-18T13:06:36+00:00,10.76,4.98
-AARON,Aaron Industries,https://www.screener.in/company/AARON/,301.0,144.0,36.3,Jun 2026,27.08,-10.62,141.51,10.34,34.97,-2.76,,,71.7,HIGH,False,True,2026-08-18T13:06:36+00:00,144.0,
-MERCANTILE,Mercantile Vent.,https://www.screener.in/company/MERCANTILE/,265.0,24.0,39.4,Jun 2026,9.0,-2.95,301.67,-29.24,77.42,69.57,,,70.6,HIGH,False,False,2026-08-18T13:06:36+00:00,24.0,
-539175,Starbeam Ventures,https://www.screener.in/company/539175/,79.1,1.21,30.8,Jun 2026,,,0.0,70.35,249.02,215.15,,,70.0,HIGH,True,False,2026-08-18T13:06:36+00:00,1.21,-4.72
-531515,Mahan Industries,https://www.screener.in/company/531515/,5.49,12.2,3.3,Jun 2026,309.23,12.71,2050.0,719.05,-1077.78,-482.61,,,69.1,HIGH,True,True,2026-08-18T13:06:36+00:00,12.21,0.0
-JINDALPOLY,Jindal Poly Film,https://www.screener.in/company/JINDALPOLY/,2829.0,646.0,48.3,Jun 2026,-23.85,3.11,193.15,110.83,-33.18,101.78,,,67.3,HIGH,True,False,2026-08-18T13:06:36+00:00,646.0,
-OSEINTRUST,Oriental Infra,https://www.screener.in/company/OSEINTRUST/,265.0,24.0,39.4,Jun 2026,7.91,-5.54,15.04,94.03,9.11,-6.99,,,61.5,HIGH,True,False,2026-08-18T13:06:36+00:00,24.0,
-SPIC,S P I C,https://www.screener.in/company/SPIC/,1360.0,66.6,6.6,Jun 2026,8.71,45.38,-9.75,104.07,-36.98,30.96,,,61.2,HIGH,True,False,2026-08-18T13:06:36+00:00,66.6,
-518075,Suraj Products,https://www.screener.in/company/518075/,290.0,254.0,13.8,Jun 2026,8.67,-11.32,46.62,-3.99,29.95,-17.74,,,60.5,HIGH,False,False,2026-08-18T13:06:36+00:00,253.7,4.77
-536672,VCU Data Managem,https://www.screener.in/company/536672/,11.5,7.42,287.6,Jun 2026,,,,-150.0,60.0,0.0,,,50.0,HIGH,False,False,2026-08-18T13:06:36+00:00,7.39,0.14
-514306,Garlon Poly.,https://www.screener.in/company/514306/,27.5,55.0,,Jun 2026,,,0.0,-150.0,0.0,50.0,,,47.5,MEDIUM,False,False,2026-08-18T13:06:36+00:00,3.31,0.0
-KRSNAA,Krsnaa Diagnost.,https://www.screener.in/company/KRSNAA/,1753.0,540.0,17.7,Jun 2026,19.89,21.97,-19.39,-63.59,13.17,-0.18,,,46.1,MEDIUM,True,False,2026-08-18T13:06:36+00:00,540.0,
-PIGL,Power & Instrum.,https://www.screener.in/company/PIGL/,226.0,106.0,16.6,Jun 2026,-1.45,-12.1,3.1,-13.36,6.95,-11.86,,,45.8,MEDIUM,False,False,2026-08-18T13:06:36+00:00,106.0,
-SRPL,Shree Ram Prote.,https://www.screener.in/company/SRPL/,7.28,0.34,,Jun 2026,,,-249.45,-112.0,72.78,81.53,,,42.5,MEDIUM,False,False,2026-08-18T13:06:36+00:00,0.34,
-532397,Konndor Indust.,https://www.screener.in/company/532397/,8.12,14.7,,Jun 2026,-100.0,100.0,-100.0,0.0,0.0,77.78,,,37.5,MEDIUM,True,False,2026-08-18T13:06:36+00:00,14.7,4.85
-531997,IKOMA Technologies,https://www.screener.in/company/531997/,151.0,65.0,,Jun 2026,-91.57,,-97.06,137.5,-95.62,250.0,,,32.5,MEDIUM,True,False,2026-08-18T13:06:36+00:00,64.17,-3.27
-502294,Nilachal Refract,https://www.screener.in/company/502294/,79.4,39.0,,Jun 2026,,,-52.78,-14.58,-60.71,6.25,,,29.6,LOW,False,False,2026-08-18T13:06:36+00:00,39.0,-0.74
-512517,Vinayak Vanijya,https://www.screener.in/company/512517/,,,,Jun 2026,,,-250.0,-400.0,,-150.0,,,25.0,LOW,False,False,2026-08-18T13:06:36+00:00,0.0,-100.0
-500054,Bharti Telecom,https://www.screener.in/company/500054/,301.0,144.0,36.3,Jun 2026,-65.79,-61.76,-7.53,-12.29,-96.88,-90.91,,,18.6,LOW,False,False,2026-08-18T13:06:36+00:00,144.0,
-532874,Surya Chak.Pow.,https://www.screener.in/company/532874/,8.83,0.59,,Jun 2026,,,-500.0,-500.0,-500.0,-500.0,,,17.5,LOW,False,False,2026-08-18T13:06:36+00:00,0.6,-3.23
+THAKDEV,Thakkers Develp.,https://www.screener.in/company/THAKDEV/,139.0,155.0,10.1,Jun 2026,104.67,284.94,594.44,576.19,674.19,957.14,,,97.5,HIGH,True,True,2026-08-18T17:40:24+00:00,155.0,
+INDOMIM,Indo-MIM,https://www.screener.in/company/INDOMIM/,47182.0,953.0,73.1,Jun 2026,9.43,16.32,31.87,72.66,24.46,102.49,,,75.8,HIGH,True,False,2026-08-18T17:40:24+00:00,953.0,
+519413,Datiware Mari.,https://www.screener.in/company/519413/,27.5,55.0,,Jun 2026,233.33,0.0,73.68,61.54,0.0,-200.0,,,75.0,HIGH,True,True,2026-08-18T17:40:24+00:00,55.0,0.7
+530253,Rajas. Tube Mfg,https://www.screener.in/company/530253/,48.5,10.8,20.6,Jun 2026,-99.55,,102.73,105.36,104.3,200.0,,,72.5,HIGH,True,False,2026-08-18T17:40:24+00:00,10.76,4.98
+AARON,Aaron Industries,https://www.screener.in/company/AARON/,301.0,144.0,36.3,Jun 2026,27.08,-10.62,141.51,10.34,34.97,-2.76,,,71.7,HIGH,False,True,2026-08-18T17:40:24+00:00,144.0,
+MERCANTILE,Mercantile Vent.,https://www.screener.in/company/MERCANTILE/,265.0,24.0,39.4,Jun 2026,9.0,-2.95,301.67,-29.24,77.42,69.57,,,70.6,HIGH,False,False,2026-08-18T17:40:24+00:00,24.0,
+539175,Starbeam Ventures,https://www.screener.in/company/539175/,79.1,1.21,30.8,Jun 2026,,,0.0,70.35,249.02,215.15,,,70.0,HIGH,True,False,2026-08-18T17:40:24+00:00,1.21,-4.72
+531515,Mahan Industries,https://www.screener.in/company/531515/,5.49,12.2,3.3,Jun 2026,309.23,12.71,2050.0,719.05,-1077.78,-482.61,,,69.1,HIGH,True,True,2026-08-18T17:40:24+00:00,12.21,0.0
+519512,Dr M Induscorp,https://www.screener.in/company/519512/,,,,Jun 2026,,98.58,,3633.33,,5733.33,,,67.5,HIGH,True,False,2026-08-18T17:40:24+00:00,,
+JINDALPOLY,Jindal Poly Film,https://www.screener.in/company/JINDALPOLY/,2833.0,647.0,48.4,Jun 2026,-23.85,3.11,193.15,110.83,-33.18,101.78,,,67.3,HIGH,True,False,2026-08-18T17:40:24+00:00,647.0,
+OSEINTRUST,Oriental Infra,https://www.screener.in/company/OSEINTRUST/,265.0,24.0,39.4,Jun 2026,7.91,-5.54,15.04,94.03,9.11,-6.99,,,61.5,HIGH,True,False,2026-08-18T17:40:24+00:00,24.0,
+SPIC,S P I C,https://www.screener.in/company/SPIC/,1362.0,66.7,6.6,Jun 2026,8.71,45.38,-9.75,104.07,-36.98,30.96,,,61.2,HIGH,True,False,2026-08-18T17:40:24+00:00,66.7,
+530691,Akash Agro Inds,https://www.screener.in/company/530691/,,,,Jun 2026,2.14,-8.33,-1.1,178.26,-16.1,253.57,,,59.6,HIGH,True,False,2026-08-18T17:40:24+00:00,,
+514306,Garlon Poly.,https://www.screener.in/company/514306/,27.5,55.0,,Jun 2026,,,0.0,-150.0,0.0,50.0,,,47.5,MEDIUM,False,False,2026-08-18T17:40:24+00:00,3.31,0.0
+531938,Mohindra Fast.,https://www.screener.in/company/531938/,,,,Jun 2026,19.02,-24.81,21.43,-41.38,18.13,-25.27,,,46.1,MEDIUM,False,False,2026-08-18T17:40:24+00:00,,
+KRSNAA,Krsnaa Diagnost.,https://www.screener.in/company/KRSNAA/,1753.0,540.0,17.7,Jun 2026,19.89,21.97,-19.39,-63.59,13.17,-0.18,,,46.1,MEDIUM,True,False,2026-08-18T17:40:24+00:00,540.0,
+SRPL,Shree Ram Prote.,https://www.screener.in/company/SRPL/,7.28,0.34,,Jun 2026,,,-249.45,-112.0,72.78,81.53,,,42.5,MEDIUM,False,False,2026-08-18T17:40:24+00:00,0.34,
+531997,IKOMA Technologies,https://www.screener.in/company/531997/,149.0,64.2,,Jun 2026,-91.57,,-97.06,137.5,-95.62,250.0,,,32.5,MEDIUM,True,False,2026-08-18T17:40:24+00:00,64.17,-3.27
+id,Pace Automation,https://www.screener.in/company/id/,,,,Jun 2026,-100.0,-100.0,-129.41,64.29,-116.0,76.47,,,27.5,LOW,True,False,2026-08-18T17:40:24+00:00,,
+512517,Vinayak Vanijya,https://www.screener.in/company/512517/,54.5,0.31,,Jun 2026,,,-250.0,-400.0,,-150.0,,,25.0,LOW,False,False,2026-08-18T17:40:24+00:00,0.0,-100.0
+500054,Bharti Telecom,https://www.screener.in/company/500054/,301.0,144.0,36.3,Jun 2026,-65.79,-61.76,-7.53,-12.29,-96.88,-90.91,,,18.6,LOW,False,False,2026-08-18T17:40:24+00:00,144.0,
+539217,Srestha Finvest,https://www.screener.in/company/539217/,54.5,0.31,,Jun 2026,-66.85,-5.43,-1362.67,-5929.79,-1336.25,-743.27,,,6.8,LOW,False,False,2026-08-18T17:40:24+00:00,0.31,3.33
