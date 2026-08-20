@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 DOCS = ROOT / "docs"
 PAGES = sorted(DOCS.glob("*.html"))
 BASE = "https://anki1007.github.io/scanX/"
-CARD = DOCS / "og-scanX.png"
+CARD = DOCS / "og-scanX-v2.jpg"
 
 
 def _soup(p):
@@ -45,10 +45,18 @@ def test_the_card_is_the_aspect_ratio_platforms_crop_toward():
         assert im.size == (1200, 630), f"card is {im.size}, not 1200x630"
 
 
-def test_the_card_is_small_enough_to_be_fetched():
-    """X rejects over 5MB, and a slow image is often skipped on first scrape."""
-    mb = CARD.stat().st_size / (1024 * 1024)
-    assert mb < 5, f"card is {mb:.1f} MB"
+def test_the_card_is_small_enough_for_the_strictest_platform():
+    """WhatsApp is the binding constraint, not X.
+
+    The first card shipped as a 664 KB PNG. X, LinkedIn and Facebook were all
+    happy with it -- WhatsApp silently refused to render it, because in
+    practice it gives up somewhere around 300 KB. Encoding the same artwork as
+    a quality-92 progressive JPEG costs nothing visible at card size and lands
+    at ~190 KB.
+    """
+    kb = CARD.stat().st_size / 1024
+    assert kb < 300, (
+        f"card is {kb:.0f} KB; WhatsApp stops rendering around 300 KB")
 
 
 @pytest.mark.parametrize("page", PAGES, ids=lambda p: p.name)
@@ -127,3 +135,16 @@ def test_the_alt_text_describes_the_image():
     s = _soup(DOCS / "index.html")
     alt = _meta(s, "og:image:alt")
     assert alt and len(alt) > 20, "alt text is what screen readers announce"
+
+def test_the_card_is_not_served_as_a_png_by_accident():
+    """A screenshot as PNG is several times the size of the same image as
+    JPEG, and size is what broke it the first time."""
+    assert CARD.suffix == ".jpg"
+    for p in PAGES:
+        assert _meta(_soup(p), "og:image:type") == "image/jpeg", p.name
+
+
+def test_the_secure_url_is_declared():
+    """A few crawlers look for og:image:secure_url specifically over https."""
+    for p in PAGES:
+        assert _meta(_soup(p), "og:image:secure_url") == _meta(_soup(p), "og:image"), p.name
