@@ -171,7 +171,11 @@
   }
 
   function init() {
-    var nav = document.querySelector("aside.nav") || document.querySelector(".navrail");
+    // Element-agnostic on purpose: pages use <aside class="nav">, <nav class="nav">
+    // and <aside class="navrail">. Matching only "aside.nav" left two pages with a
+    // flat, always-expanded rail while every other page collapsed -- which reads as
+    // the menu opening or hiding things by itself as you navigate.
+    var nav = document.querySelector("aside.nav, nav.nav, aside.navrail, .navrail");
     if (!nav) return;
     if (!nav.classList.contains("nav")) nav.classList.add("nav");   // fpi.html uses .navrail
     css();
