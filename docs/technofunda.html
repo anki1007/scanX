@@ -555,26 +555,45 @@ let liveTimer=null;
 function liveSchedule(ms){ clearTimeout(liveTimer); liveTimer=setTimeout(livePoll, ms); }
 async function livePoll(){
   try{
-    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>r.json());
-    const age=(Date.now()/1000)-(q.ts||0);
-    if(q.quotes && age<5400){
-      let n=0;
-      // Every loaded view, not just the main board: QP and PB both carry an
-      // LTP column and were showing a price baked hours earlier.
-      const seen=new Set();
-      [DATA, QP_DATA, PB_DATA].forEach(set=>{
-        (set||[]).forEach(d=>{
-          const code=String(d.code||'').toUpperCase();
-          const x=q.quotes[code];
-          if(!x) return;
-          if(x.ltp!=null) d.ltp=x.ltp;
-          // pct was fetched and discarded here, so the board carried no day
-          // change at all. Absent stays absent rather than becoming 0.
-          if(x.pct!=null) d.pct=x.pct;
-          if(!seen.has(code)){ seen.add(code); n++; }
-        });
+    // TWO quote files, and the board only ever read the first.
+    //   quotes.json      ~500 names, BSE per-scrip, the direct exchange read
+    //   quotes_wide.json ~5,650 names, the Upstox market-quote pass over the
+    //                    whole baked universe, with Yahoo filling its gaps
+    // Reading only the narrow one left 91% of this board with no day change
+    // at all. Narrow wins a contested code because it is the direct read;
+    // wide fills the rest. fundamental.html already resolves a price this way.
+    const t0=Date.now();
+    const [narrow, wide] = await Promise.all([
+      fetch('data/quotes.json?t='+t0).then(r=>r.json()).catch(()=>null),
+      fetch('data/quotes_wide.json?t='+t0).then(r=>r.json()).catch(()=>null)]);
+    // Each file carries its own timestamp, so a stale one is dropped on its
+    // own rather than poisoning the other.
+    const fresh=j=>!!(j && j.quotes && ((Date.now()/1000)-(j.ts||0))<5400);
+    const feed={};
+    if(fresh(wide))   Object.assign(feed, wide.quotes);
+    if(fresh(narrow)) Object.assign(feed, narrow.quotes);
+    if(!Object.keys(feed).length) return;
+    const stamp=(fresh(narrow)&&narrow.ist)||(fresh(wide)&&wide.ist)||'';
+
+    // Every loaded view, not just the main board: QP and PB carry an LTP
+    // column too and were showing a price baked hours earlier.
+    const seen=new Set();
+    [DATA, QP_DATA, PB_DATA].forEach(set=>{
+      (set||[]).forEach(d=>{
+        const code=String(d.code||'').toUpperCase();
+        const x=feed[code];
+        if(!x) return;
+        if(x.ltp!=null) d.ltp=x.ltp;
+        // pct was fetched and discarded here, so the board had no day change.
+        // Absent stays absent rather than becoming 0, which would read as
+        // "unchanged today".
+        if(x.pct!=null) d.pct=x.pct;
+        seen.add(code);
       });
-      if(n){ render(); f("kTime").innerHTML='<span class="dot"></span>quotes '+(q.ist||'')+' · '+n; }
+    });
+    if(seen.size){
+      render();
+      f("kTime").innerHTML='<span class="dot"></span>quotes '+stamp+' · '+seen.size;
     }
   }catch(e){}
   liveSchedule(60000);

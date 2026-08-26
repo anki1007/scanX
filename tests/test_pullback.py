@@ -218,6 +218,25 @@ def test_the_poller_updates_every_loaded_view():
     assert "[DATA, QP_DATA, PB_DATA]" in html
 
 
+def test_the_poller_reads_both_quote_files():
+    """quotes.json is ~500 BSE names; quotes_wide.json is the Upstox pass over
+    the whole universe. Reading only the narrow one left 91% of the board with
+    no day change, which reads as "the token is broken" when it is not."""
+    html = (DOCS / "technofunda.html").read_text(encoding="utf-8")
+    assert "data/quotes.json" in html and "data/quotes_wide.json" in html
+    # narrow must be applied AFTER wide, so the direct exchange read wins
+    wide_at = html.index("Object.assign(feed, wide.quotes)")
+    narrow_at = html.index("Object.assign(feed, narrow.quotes)")
+    assert wide_at < narrow_at, "the wide file would overwrite the direct read"
+
+
+def test_each_quote_file_is_aged_independently():
+    """One stale file must not suppress the other."""
+    html = (DOCS / "technofunda.html").read_text(encoding="utf-8")
+    assert "const fresh=j=>" in html
+    assert html.count("fresh(wide)") >= 1 and html.count("fresh(narrow)") >= 1
+
+
 def test_the_baked_board_matches_the_module():
     """Skips on a fresh clone rather than demanding the data directory."""
     out = DOCS / "data" / "pullback.json"
