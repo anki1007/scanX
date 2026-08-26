@@ -52,12 +52,12 @@ def test_pricehist_prefers_dhan(monkeypatch):
     pd = pytest.importorskip("pandas")
     from earnings_intel.data import pricehist as ph
     ser = pd.Series([10.0] * 60, index=pd.date_range("2024-01-01", periods=60))
-    monkeypatch.setattr(ph, "_history_dhan", lambda c, o: (ser, "X (Dhan NSE)"))
+    monkeypatch.setattr(ph, "_history_dhan", lambda c, o: (ser, None, "X (Dhan NSE)"))
     called = {"yf": False}
     def yf(c, o):
-        called["yf"] = True; return (None, None)
+        called["yf"] = True; return (None, None, None)
     monkeypatch.setattr(ph, "_history_yf", yf)
-    s, tk = ph._history("X", None)
+    s, vol, tk = ph._history("X", None)
     assert tk == "X (Dhan NSE)" and called["yf"] is False
 
 

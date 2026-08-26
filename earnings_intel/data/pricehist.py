@@ -107,28 +107,47 @@ def _series_from_dhan(j):
     return s if len(s) > 30 else None
 
 
+def _volume_from_dhan(j):
+    """Dhan volume array -> pandas Series aligned to the close index, or None.
+
+    Separate from _series_from_dhan so that function's contract (and its test)
+    stays a close series and nothing else.
+    """
+    import pandas as pd
+    vol = (j or {}).get("volume") or []
+    ts = (j or {}).get("timestamp") or (j or {}).get("start_Time") or []
+    if not vol or len(ts) != len(vol):
+        return None
+    try:
+        idx = pd.to_datetime([int(x) for x in ts], unit="s")
+    except Exception:  # noqa: BLE001
+        return None
+    return pd.Series([float(v) for v in vol], index=idx).dropna()
+
+
 def _history_dhan(code, overview):
     prov = _dhan_provider()
     if prov is None:
-        return None, None
+        return None, None, None
     try:
         from .dhan_provider import dhan_cooldown_left
         if dhan_cooldown_left() > 0:        # dead/paused token: don't waste
-            return None, None               # seconds per stock — go to yfinance
+            return None, None, None         # seconds per stock — go to yfinance
     except Exception:  # noqa: BLE001
         pass
     try:
         sid, seg = prov.resolve_id(code)
         if sid is None:
-            return None, None
+            return None, None, None
         j = prov.historical(sid, seg, instrument="EQUITY")
         s = _series_from_dhan(j) if j else None
         if s is None:
-            return None, None
-        return s, f"{str(code).upper()} (Dhan {seg.split('_')[0]})"
+            return None, None, None
+        v = _volume_from_dhan(j) if j else None
+        return s, v, f"{str(code).upper()} (Dhan {seg.split('_')[0]})"
     except Exception as e:  # noqa: BLE001
         log.warning("Dhan history %s failed: %s", code, e)
-        return None, None
+        return None, None, None
 
 
 # ----------------------------------------------------------- yfinance fallback
@@ -136,22 +155,30 @@ def _history_yf(code: str, overview: Optional[dict]):
     try:
         import yfinance as yf
     except ImportError:
-        return None, None
+        return None, None, None
     for t in _tickers(code, overview):
         try:
             h = yf.Ticker(t).history(period="max", interval="1d", auto_adjust=True)
             if h is not None and len(h) > 30 and "Close" in h:
-                return h["Close"].dropna(), t
+                # Volume was fetched and discarded here for as long as this
+                # file has existed, which is why no volume screen was possible.
+                vol = h["Volume"].dropna() if "Volume" in h else None
+                return h["Close"].dropna(), vol, t
         except Exception as e:  # noqa: BLE001
             log.warning("yf history %s failed: %s", t, e)
-    return None, None
+    return None, None, None
 
 
 def _history(code: str, overview: Optional[dict]):
-    """Prefer Dhan (better BSE coverage); fall back to yfinance."""
-    s, tk = _history_dhan(code, overview)
+    """Prefer Dhan (better BSE coverage); fall back to yfinance.
+
+    Returns (close, volume, ticker). Volume may be None even when close is not:
+    it is only used by the volume screens, and a missing series must read as
+    "not testable", never as "passes".
+    """
+    s, v, tk = _history_dhan(code, overview)
     if s is not None:
-        return s, tk
+        return s, v, tk
     return _history_yf(code, overview)
 
 
@@ -188,16 +215,36 @@ def _ret(series, n):
     return (a / b - 1) if b else None
 
 
-def _technical(close, bench):
-    """Relative strength + trend metrics (plain floats)."""
+def _avg_vol(vol, n):
+    """Mean traded volume over the last n sessions, or None."""
+    if vol is None:
+        return None
+    s = vol.dropna().tail(n)
+    if len(s) < max(3, n // 3):        # too thin to be an average of anything
+        return None
+    try:
+        v = float(s.mean())
+    except Exception:  # noqa: BLE001
+        return None
+    return v if v > 0 else None
+
+
+def _technical(close, bench, vol=None):
+    """Relative strength + trend metrics (plain floats).
+
+    1w/1m sit alongside the longer windows because a pullback screen needs
+    them: "up over a month but down over a week" is the entry, and neither
+    number can be recovered from the 3m/6m/12m returns already here.
+    """
     out = {}
-    W = {"3m": 63, "6m": 126, "12m": 252}
+    W = {"1w": 5, "1m": 21, "3m": 63, "6m": 126, "12m": 252}
     sret = {k: _ret(close, n) for k, n in W.items()}
     bret = {k: (_ret(bench, n) if bench is not None else None) for k, n in W.items()}
     for k in W:
         out[f"ret_{k}"] = _round((sret[k] or 0) * 100) if sret[k] is not None else None
-        out[f"excess_{k}"] = (_round((sret[k] - bret[k]) * 100)
-                              if (sret[k] is not None and bret[k] is not None) else None)
+        if k in ("3m", "6m", "12m"):        # the windows rs_rating is built on
+            out[f"excess_{k}"] = (_round((sret[k] - bret[k]) * 100)
+                                  if (sret[k] is not None and bret[k] is not None) else None)
     ex = [(out["excess_3m"], 0.5), (out["excess_6m"], 0.3), (out["excess_12m"], 0.2)]
     avail = [(e, w) for e, w in ex if e is not None]
     if avail:
@@ -216,6 +263,12 @@ def _technical(close, bench):
     hi, lo = float(win.max()), float(win.min())
     out["pos_52w"] = _round((last - lo) / (hi - lo) * 100) if hi > lo else None
     out["dist_52w_high"] = _round((last / hi - 1) * 100) if hi else None
+    # Traded volume, for the "cooling off on lighter volume" screens. None
+    # throughout when the feed gave no volume, which the screens must read as
+    # untestable rather than as a pass.
+    out["vol_1w"] = _round(_avg_vol(vol, 5), 0)
+    out["vol_1m"] = _round(_avg_vol(vol, 21), 0)
+    out["vol_1y"] = _round(_avg_vol(vol, 252), 0)
     out["benchmark"] = "Nifty 500"
     return out
 
@@ -235,7 +288,7 @@ def price_analytics(code: str, overview: Optional[dict] = None,
     except ImportError:
         return {"ok": False, "reason": "pandas/yfinance not installed"}
 
-    close, ticker = _history(code, overview)
+    close, volume, ticker = _history(code, overview)
     if close is None or len(close) < 30:
         return {"ok": False, "reason": "no price history"}
 
@@ -286,7 +339,7 @@ def price_analytics(code: str, overview: Optional[dict] = None,
             "sortino": _round(mean / downside * math.sqrt(52)) if downside else None,
         }
 
-    technical = _technical(close, _benchmark_close())
+    technical = _technical(close, _benchmark_close(), volume)
     data = {"ok": True, "ticker": ticker, "yearwise": yearwise,
             "heatmap": {"months": months, "rows": heat_rows}, "risk": risk,
             "technical": technical}

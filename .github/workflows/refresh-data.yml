@@ -142,6 +142,9 @@ jobs:
           # four consecutive quarters of rising net profit - reads the quarterly
           # tables from the bundles above, so it costs no network either
           run python scripts/refresh_qprofit.py
+          # Fifteen-condition pullback screen. Pure arithmetic over the
+          # bundles, so it belongs with the other deterministic boards.
+          run python scripts/refresh_pullback.py
           # industries overview - rolls the universe up on the four-level
           # classification each bundle carries, giving ~190 industries where
           # the sector boards give 22

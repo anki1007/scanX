@@ -134,6 +134,7 @@
           <option value="GARP">GARP screen</option>
           <option value="ADV">Advanced fundamentals</option>
           <option value="QP">Rising net profit · 4 quarters</option>
+          <option value="PB">Pullback · quality growth on light volume</option>
         </select>
         <button class="fbtn on" data-f="ALL">All</button>
         <button class="fbtn" data-f="BUY">Buy</button>
@@ -151,7 +152,7 @@
 <script>
 const COLS=[["rank","#","rank"],["name","Company","name"],["label","Verdict","badge"],
   ["composite","Composite","score"],["results","Results","score"],["momentum","RS / Mom","score"],
-  ["quality","Quality","score"],["sector_sig","Sector","sector"],["ltp","LTP","rs"],["sales_yoy","Sales YoY","pct"],
+  ["quality","Quality","score"],["sector_sig","Sector","sector"],["ltp","LTP","rs"],["pct","% Chg","chg"],["sales_yoy","Sales YoY","pct"],
   ["np_yoy","NP YoY","pct"],["pos_52w","52w Range %","pct1"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
 /* GARP view: growth at a reasonable price — PEG = PE / NP-growth, with an
    earnings-momentum bias chip driven by the Results score. */
@@ -329,6 +330,35 @@ async function loadAdvanced(){
   advLoading=false; render();
 }
 
+/* ---------------- Pullback: quality growth on light volume ----------------
+   Fifteen conditions, baked by scripts/refresh_pullback.py. The four price
+   ones (1m up, 1w down, volume cooling, volume still elevated) only apply
+   once a bundle has been re-baked since the price layer began storing
+   ret_1w / ret_1m / vol_*. Until then they are UNTESTED, never a pass, and
+   the Checks column says how many of the fifteen the row actually cleared. */
+const PB_COLS=[["rank","#","rank"],["name","Company","name"],
+  ["ltp","LTP","rs"],["pct","% Chg","chg"],
+  ["q_sales_yoy","Sales YoY","pct"],["q_profit_yoy","NP YoY","pct"],
+  ["q_opm","Qtr OPM","pct1"],["opm_5y","OPM 5Y","pct1"],
+  ["ret_1w","1w","pct"],["ret_1m","1m","pct"],
+  ["mcap","MCap ₹Cr","cr"],["tested","Checks","checks"]];
+let PB_DATA=null, pbLoading=false, PB_META=null;
+
+async function loadPullback(){
+  if(PB_DATA||pbLoading) return;
+  pbLoading=true;
+  f("empty").style.display=''; f("tbl").style.display='none';
+  f("empty").textContent='Loading the pullback screen...';
+  try{
+    const j=await fetch('data/pullback.json?t='+Date.now()).then(r=>r.json());
+    PB_META=j; PB_DATA=(j.rows||[]);
+  }catch(e){
+    PB_DATA=[];
+    f("empty").textContent='Could not load the pullback screen.';
+  }
+  pbLoading=false; render();
+}
+
 let DATA=[], flt="ALL", q="", s={k:"composite",d:-1}, LIMIT=100, view="TF";
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -342,6 +372,13 @@ function cell(r,c){
   if(c[2]==='score') return `<td class="${scoreCls(v)}">${v==null?'—':v}</td>`;
   if(c[2]==='pct') return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${v}%</span>`}</td>`;
   if(c[2]==='rs') return `<td>${v==null?'—':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2})}</td>`;
+  // Live day change. Blank, not 0.00%, when this code is absent from the
+  // quote feed -- a flat zero would read as "unchanged today", a claim.
+  if(c[2]==='chg') return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(2)}%</span>`}</td>`;
+  if(c[2]==='checks'){
+    const un=(r.untested||[]).length, tot=(PB_META&&PB_META.conditions_total)||15;
+    return `<td class="${un?'s-mid':'s-hi'}" style="white-space:nowrap" title="${esc(un?('not testable on this company: '+(r.untested||[]).join(', ')):'all conditions applied')}">${v==null?'—':v}/${tot}</td>`;
+  }
   if(c[2]==='cr') return `<td>${v==null?'—':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0})}</td>`;
   if(c[2]==='num0') return `<td>${v==null?'—':Math.round(v)}</td>`;
   if(c[2]==='num1') return `<td>${v==null?'—':(+v).toFixed(1)}</td>`;
@@ -412,21 +449,22 @@ function garpRows(rows){
     &&(r.mcap??0)>=GARP.mcap_min);
 }
 function render(){
-  const cols=view==='QP'?QP_COLS:(view==='ADV'?ADV_COLS:(view==='GARP'?GARP_COLS:COLS));
+  const cols=view==='PB'?PB_COLS:(view==='QP'?QP_COLS:(view==='ADV'?ADV_COLS:(view==='GARP'?GARP_COLS:COLS)));
   f("head").innerHTML=cols.map(c=>`<th data-k="${c[0]}">${c[1]}${c[0]===s.k?(s.d<0?' ↓':' ↑'):''}</th>`).join('');
   f("head").querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(s.k===k)s.d*=-1;else{s.k=k;s.d=-1;}render();});
   // The checklist board has no Buy/Neutral/Sell verdict of its own, so the
   // verdict filter does not apply to it.
-  let rows=view==='QP'?(QP_DATA||[]).slice()
+  let rows=view==='PB'?(PB_DATA||[]).slice()
+          :view==='QP'?(QP_DATA||[]).slice()
           :view==='ADV'?(ADV_DATA||[]).slice()
           :DATA.filter(r=>flt==='ALL'||r.label===flt);
   if(view==='GARP') rows=garpRows(rows);
   if(q){const Q=q.toLowerCase();rows=rows.filter(r=>(r.name||'').toLowerCase().includes(Q)||(r.code||'').toLowerCase().includes(Q));}
   rows.sort((a,b)=>{let x=a[s.k],y=b[s.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?s.d*x.localeCompare(y):s.d*(x-y);});
-  if(view==='GARP'||view==='ADV'||view==='QP') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
+  if(view==='GARP'||view==='ADV'||view==='QP'||view==='PB') rows=rows.map((r,i)=>Object.assign({},r,{rank:i+1}));
   const total=rows.length;
   if(LIMIT!==Infinity) rows=rows.slice(0,LIMIT);
-  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='QP'?'No companies pass the four-quarter profit screen \u2014 run scripts/refresh_qprofit.py.':view==='ADV'?'No companies in the fundamental checklist yet \u2014 run scripts/refresh_advanced.py.':view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
+  if(!total){f("tbl").style.display='none';f("empty").style.display='';f("empty").textContent=view==='PB'?'No companies pass the pullback screen - run scripts/refresh_pullback.py.':view==='QP'?'No companies pass the four-quarter profit screen \u2014 run scripts/refresh_qprofit.py.':view==='ADV'?'No companies in the fundamental checklist yet \u2014 run scripts/refresh_advanced.py.':view==='GARP'?'No stocks pass the GARP screen (PEG ≤ 1.5, NP YoY 15–200%, Sales YoY ≥ 10%, PE ≥ 3, MCap ≥ ₹300 Cr).':'No matching stocks.';f("cnt").textContent='';return;}
   f("tbl").style.display='';f("empty").style.display='none';
   f("body").innerHTML=rows.map(r=>{
     const tr=`<tr data-code="${esc(r.code)}"${view==='ADV'?' style="cursor:pointer"':''}>`
@@ -502,12 +540,13 @@ async function load(){
 f("showAll").onclick=()=>{LIMIT=(LIMIT===Infinity?100:Infinity);f("showAll").textContent=(LIMIT===Infinity?'Top 100':'Show all');f("showAll").classList.toggle('on',LIMIT===Infinity);render();};
 f("view").onchange=e=>{view=e.target.value;
   s=view==='GARP'?{k:'peg',d:1}:(view==='ADV'?{k:'score',d:-1}
-     :(view==='QP'?{k:'mcap',d:-1}:{k:'composite',d:-1}));
+     :(view==='QP'?{k:'mcap',d:-1}:(view==='PB'?{k:'q_profit_yoy',d:-1}:{k:'composite',d:-1})));
   advOpen=null;
   // Fetched only when the view is chosen: the checklist board is ~2 MB and
   // most visitors never open it.
   if(view==='ADV'&&!ADV_DATA){ loadAdvanced(); return; }
   if(view==='QP'&&!QP_DATA){ loadQProfit(); return; }
+  if(view==='PB'&&!PB_DATA){ loadPullback(); return; }
   render();};
 document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
@@ -520,7 +559,21 @@ async function livePoll(){
     const age=(Date.now()/1000)-(q.ts||0);
     if(q.quotes && age<5400){
       let n=0;
-      DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()]; if(x&&x.ltp!=null){ d.ltp=x.ltp; n++; } });
+      // Every loaded view, not just the main board: QP and PB both carry an
+      // LTP column and were showing a price baked hours earlier.
+      const seen=new Set();
+      [DATA, QP_DATA, PB_DATA].forEach(set=>{
+        (set||[]).forEach(d=>{
+          const code=String(d.code||'').toUpperCase();
+          const x=q.quotes[code];
+          if(!x) return;
+          if(x.ltp!=null) d.ltp=x.ltp;
+          // pct was fetched and discarded here, so the board carried no day
+          // change at all. Absent stays absent rather than becoming 0.
+          if(x.pct!=null) d.pct=x.pct;
+          if(!seen.has(code)){ seen.add(code); n++; }
+        });
+      });
       if(n){ render(); f("kTime").innerHTML='<span class="dot"></span>quotes '+(q.ist||'')+' · '+n; }
     }
   }catch(e){}
