@@ -26,6 +26,7 @@
 <!-- /social preview -->
 <link rel="stylesheet" href="vendor/theme.css">
   <script src="vendor/theme.js"></script>
+  <script src="vendor/quotes.js"></script>
   <style>
 *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);
@@ -296,6 +297,7 @@ async function load(){
       fetch('data/meta.json?t='+t).then(r=>r.json()).catch(()=>({}))
     ]);
     DATA=d; META=m;
+    priceAll();                      // cached feed, not the next 60s tick
     calcDrift();
     f('kTime').innerHTML = (staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
     f('src').textContent = 'source: '+(m.source||'—')+(m.prices?(' · '+m.prices):'');
@@ -314,28 +316,20 @@ f('clear').onclick=()=>{
   f('gate').checked=false; render();
 };
 
-// ---- delayed NSE/BSE quotes from the static data/quotes.json ----
-// (written by GitHub Actions every ~15 min in market hours, or by scanX.bat
-//  every 60s when running locally — same file either way, no broker, no API)
-let liveTimer=null;
-function liveSchedule(ms){ clearTimeout(liveTimer); liveTimer=setTimeout(livePoll, ms); }
-async function livePoll(){
-  try{
-    const q=await fetch('data/quotes.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});
-    const age=(Date.now()/1000)-(q.ts||0);
-    if(q.quotes && age<5400){                       // ignore if >90 min stale
-      let n=0;
-      DATA.forEach(d=>{ const x=q.quotes[String(d.code||'').toUpperCase()];
-        if(x){ if(x.ltp!=null)d.ltp=x.ltp; if(x.pct!=null)d.pct_change=x.pct; n++; } });
-      if(n){ calcDrift(); render(); f('src').textContent='● quotes '+(q.ist||'')+' · '+n+' codes ('+(q.source||'NSE/BSE delayed')+')'; }
-    }
-  }catch(e){}
-  liveSchedule(60000);
+// ---- live LTP + day change, from the shared feed (vendor/quotes.js) ----
+// Was reading data/quotes.json alone, which carries ~500 BSE names, so most
+// of this board showed the price baked at scan time and no day change.
+// The shared feed adds the wide Upstox pass over the whole universe.
+function priceAll(){
+  const n=scanXQuotes.apply(DATA,{pctKey:'pct_change'});
+  if(n){ calcDrift();
+    f('src').textContent='● quotes '+scanXQuotes.stamp()+' · '+n+' of '+DATA.length; }
+  return n;
 }
+scanXQuotes.onUpdate(()=>{ priceAll(); render(); });
 
 load();
 setInterval(load, 60000);   // data file refresh every 60s
-liveSchedule(1200);
 </script>
   </div>
 </div>

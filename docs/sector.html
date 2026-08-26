@@ -27,6 +27,7 @@
 <script src="vendor/chart.umd.min.js"></script>
 <link rel="stylesheet" href="vendor/theme.css">
   <script src="vendor/theme.js"></script>
+  <script src="vendor/quotes.js"></script>
   <style>
 *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
@@ -140,6 +141,19 @@ const COLS=[["sector","Sector","name"],["score","Score","score"],["signal","Sign
   ["breadth_pct","Breadth","pct"],["median_profit_var","NP growth","pctv"],["median_sales_var","Sales growth","pctv"],
   ["median_roce","ROCE 3Y","pctp"],["median_fii_chg","FII chg","pctv"],["n","Cos","num"],["mcap","MCap ₹Cr","cr"]];
 let DATA=[], STOCKS={}, s={k:"score",d:-1}, openSec=null;
+
+/* The drill-down carried the price baked at scan time and no day change at
+   all. STOCKS is a per-sector map, so every list is priced, not just the one
+   currently open. */
+function priceStocks(){
+  if(!window.scanXQuotes) return 0;
+  let n=0;
+  Object.keys(STOCKS||{}).forEach(k=>{ n+=scanXQuotes.apply(STOCKS[k]); });
+  return n;
+}
+if(window.scanXQuotes) scanXQuotes.onUpdate(()=>{
+  if(priceStocks() && openSec) renderDetail();
+});
 function aggCell(r,c){const v=r[c[0]];
   if(c[2]==='name')return `<td><span class="chev">${openSec===r.sector?'▾':'▸'}</span>${esc(v)}</td>`;
   if(c[2]==='badge')return `<td><span class="badge ${v}">${v}</span></td>`;
@@ -161,13 +175,14 @@ let dflt="ALL", ds={k:"sscore",d:-1}, dlimit=100;
 function toggle(sec){ if(openSec===sec){openSec=null;f("detail").classList.remove('show');renderTable();return;} openSec=sec;dflt="ALL";ds={k:"sscore",d:-1};dlimit=100;renderTable();renderDetail();}
 const DCOLS=[["name","Company","name"],["signal","Signal","sbadge"],["result","Result","res"],
   ["np","NP growth","pctv"],["sales","Sales growth","pctv"],["pos","52w Range %","pctp"],
-  ["ltp","LTP","rs"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
+  ["ltp","LTP","rs"],["pct","% Chg","chg"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
 function dCell(r,c){const v=r[c[0]];
   if(c[2]==='name')return `<td><a href="${fund(r.code)}">${esc(r.name||r.code)}</a></td>`;
   if(c[2]==='sbadge'){const cl=v==='TAILWIND'?'TAILWIND':(v==='HEADWIND'?'HEADWIND':'NEUTRAL');return `<td><span class="sgn ${cl}">${v}</span></td>`;}
   if(c[2]==='res'){const cc=v>=60?'var(--green)':(v<=40?'var(--red)':'var(--amber)');return `<td><b style="color:${cc}">${v==null?'—':v}</b></td>`;}
   if(c[2]==='pctv')return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${sgn(v)}</span>`}</td>`;
   if(c[2]==='pctp')return `<td>${v==null?'—':v+'%'}</td>`;
+  if(c[2]==='chg')return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(2)}%</span>`}</td>`;
   if(c[2]==='rs')return `<td>${v==null?'—':'₹'+Number(v).toLocaleString('en-IN')}</td>`;
   if(c[2]==='cr')return `<td>${v==null?'—':Number(v).toLocaleString('en-IN')}</td>`;
   if(c[2]==='num1')return `<td>${v==null?'—':(+v).toFixed(1)}</td>`;
@@ -244,7 +259,9 @@ async function load(){
       fetch('data/sector_tailwind.json?t='+t).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}),
       fetch('data/sector_history.json?t='+t).then(r=>r.json()).catch(()=>[]),
       fetch('data/sector_stocks.json?t='+t).then(r=>r.json()).catch(()=>({sectors:{}}))]);
-    DATA=d.sectors||[]; STOCKS=(st&&st.sectors)||{}; renderMarket(d); renderTable(); drawTrend(h||[]);
+    DATA=d.sectors||[]; STOCKS=(st&&st.sectors)||{};
+    priceStocks();                     // cached feed, before the first paint
+    renderMarket(d); renderTable(); drawTrend(h||[]);
     if(openSec) renderDetail();
     applyDeepLink();
   }catch(e){ f("mkt").innerHTML='<div class="empty">No sector data yet. Builds in the scanX.bat daily job (<code>refresh_sectors.py</code>).</div>'; }

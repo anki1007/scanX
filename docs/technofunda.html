@@ -26,6 +26,7 @@
 <!-- /social preview -->
 <link rel="stylesheet" href="vendor/theme.css">
   <script src="vendor/theme.js"></script>
+  <script src="vendor/quotes.js"></script>
   <style>
 *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
@@ -291,7 +292,7 @@ let ADV_DATA=null, ADV_KEYS=[], advLoading=false, advOpen=null;
 const QP_COLS=[["rank","#","rank"],["name","Company","name"],
   ["np","Net profit, four quarters (₹ Cr)","npseq"],
   ["growth","Growth","qgrow"],["turnaround","Kind","kind"],
-  ["ltp","LTP","rs"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
+  ["ltp","LTP","rs"],["pct","% Chg","chg"],["mcap","MCap ₹Cr","cr"],["pe","PE","num1"]];
 let QP_DATA=null, qpLoading=false, QP_RULE="";
 
 async function loadQProfit(){
@@ -303,6 +304,7 @@ async function loadQProfit(){
     const j=await fetch('data/qprofit.json?t='+Date.now()).then(r=>r.json());
     QP_RULE=j.rule||'';
     QP_DATA=(j.rows||[]).map(r=>Object.assign({},r,{turnaround:!!r.turnaround}));
+    scanXQuotes.apply(QP_DATA);        // cached feed, not the next poll
   }catch(e){
     QP_DATA=[];
     f("empty").textContent='Could not load the four-quarter profit screen.';
@@ -352,6 +354,7 @@ async function loadPullback(){
   try{
     const j=await fetch('data/pullback.json?t='+Date.now()).then(r=>r.json());
     PB_META=j; PB_DATA=(j.rows||[]);
+    scanXQuotes.apply(PB_DATA);        // cached feed, not the next poll
   }catch(e){
     PB_DATA=[];
     f("empty").textContent='Could not load the pullback screen.';
@@ -533,6 +536,7 @@ async function load(){
     f("kNeu").textContent=m.neutral??DATA.filter(r=>r.label==='NEUTRAL').length;
     f("kSell").textContent=m.sell??DATA.filter(r=>r.label==='SELL').length;
     f("kTime").innerHTML='<span class="dot"></span>'+(m.generated_at_ist||'live');
+    priceAll();                        // quotes may have arrived before the board
     render();
   }catch(e){ f("tbl").style.display='none';f("empty").style.display='';
     f("empty").innerHTML='No board data yet. Run <code>python scripts/refresh_technofunda.py</code> (or it builds in the scanX.bat daily job).'; }
@@ -550,57 +554,21 @@ f("view").onchange=e=>{view=e.target.value;
   render();};
 document.querySelectorAll('.fbtn[data-f]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.fbtn[data-f]').forEach(x=>x.classList.remove('on'));b.classList.add('on');flt=b.dataset.f;render();});
 f("srch").addEventListener('input',e=>{q=e.target.value.trim();render();});
-// ---- delayed NSE/BSE quotes from the static data/quotes.json ----
-let liveTimer=null;
-function liveSchedule(ms){ clearTimeout(liveTimer); liveTimer=setTimeout(livePoll, ms); }
-async function livePoll(){
-  try{
-    // TWO quote files, and the board only ever read the first.
-    //   quotes.json      ~500 names, BSE per-scrip, the direct exchange read
-    //   quotes_wide.json ~5,650 names, the Upstox market-quote pass over the
-    //                    whole baked universe, with Yahoo filling its gaps
-    // Reading only the narrow one left 91% of this board with no day change
-    // at all. Narrow wins a contested code because it is the direct read;
-    // wide fills the rest. fundamental.html already resolves a price this way.
-    const t0=Date.now();
-    const [narrow, wide] = await Promise.all([
-      fetch('data/quotes.json?t='+t0).then(r=>r.json()).catch(()=>null),
-      fetch('data/quotes_wide.json?t='+t0).then(r=>r.json()).catch(()=>null)]);
-    // Each file carries its own timestamp, so a stale one is dropped on its
-    // own rather than poisoning the other.
-    const fresh=j=>!!(j && j.quotes && ((Date.now()/1000)-(j.ts||0))<5400);
-    const feed={};
-    if(fresh(wide))   Object.assign(feed, wide.quotes);
-    if(fresh(narrow)) Object.assign(feed, narrow.quotes);
-    if(!Object.keys(feed).length) return;
-    const stamp=(fresh(narrow)&&narrow.ist)||(fresh(wide)&&wide.ist)||'';
-
-    // Every loaded view, not just the main board: QP and PB carry an LTP
-    // column too and were showing a price baked hours earlier.
-    const seen=new Set();
-    [DATA, QP_DATA, PB_DATA].forEach(set=>{
-      (set||[]).forEach(d=>{
-        const code=String(d.code||'').toUpperCase();
-        const x=feed[code];
-        if(!x) return;
-        if(x.ltp!=null) d.ltp=x.ltp;
-        // pct was fetched and discarded here, so the board had no day change.
-        // Absent stays absent rather than becoming 0, which would read as
-        // "unchanged today".
-        if(x.pct!=null) d.pct=x.pct;
-        seen.add(code);
-      });
-    });
-    if(seen.size){
-      render();
-      f("kTime").innerHTML='<span class="dot"></span>quotes '+stamp+' · '+seen.size;
-    }
-  }catch(e){}
-  liveSchedule(60000);
+// ---- live LTP + day change, from the shared feed (vendor/quotes.js) ----
+// apply() runs on the CACHED feed, so a screen that loads its rows after the
+// last poll is priced immediately instead of showing a column of dashes until
+// the next tick. That gap is exactly what made the board look dead.
+function priceAll(){
+  const n=scanXQuotes.apply(DATA)
+        +scanXQuotes.apply(QP_DATA)
+        +scanXQuotes.apply(PB_DATA);
+  if(n){ const s=scanXQuotes.stamp();
+    f("kTime").innerHTML='<span class="dot"></span>quotes '+s+' · '+scanXQuotes.count(); }
+  return n;
 }
+scanXQuotes.onUpdate(()=>{ priceAll(); render(); });
 
 load(); setInterval(load,300000);
-liveSchedule(1500);
 </script>
 <script src="vendor/nav.js"></script>
 </body>
