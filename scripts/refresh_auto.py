@@ -528,6 +528,35 @@ def industry_payload(scan: dict, base: dict | None = None, now: datetime | None 
                            elapsed=elapsed, prior_ytd=prior)
 
 
+def _keep_older_years(path: Path, fresh: dict) -> dict:
+    """Carry forward years this run did not scrape.
+
+    A narrow run is a REFRESH of recent years, never an instruction to forget
+    the rest. `--years 2` used to rewrite a six-year chart with two, silently,
+    and the only clue was the file dropping from 212 KB to 74 KB. Vahan is a
+    slow scrape, so re-fetching a decade to update one month is not a fix.
+
+    Only years absent from this run are carried over: anything scraped now
+    wins, so a correction upstream still lands.
+    """
+    try:
+        prev = json.loads(path.read_text(encoding="utf-8"))
+        old_years = prev.get("years")
+    except Exception:  # noqa: BLE001  - no file yet, or unreadable
+        return fresh
+    if not isinstance(old_years, dict):
+        return fresh
+    kept = [y for y in old_years if str(y) not in {str(k) for k in fresh}]
+    if not kept:
+        return fresh
+    merged = dict(fresh)
+    for y in kept:
+        merged[y] = old_years[y]
+    print(f"[auto] kept {len(kept)} year(s) this run did not fetch: "
+          + ", ".join(sorted(map(str, kept), reverse=True)))
+    return merged
+
+
 def _write(path: Path, payload: dict, note: str) -> None:
     _atomic(path, json.dumps(payload, separators=(",", ":")))
     print(f"[auto] wrote {path.name} — {note}")
@@ -583,6 +612,7 @@ def main() -> int:
         data = build(years, args.max_pages, args.top, session=sess, deadline=dl)
         if not any(v["makers"] for v in data.values()):
             raise RuntimeError("no rows parsed for the company pass")
+        data = _keep_older_years(out / "auto.json", data)
         _write(out / "auto.json",
                {"months": MONTHS, "years": data, "latest_year": max(data)},
                f"{len(data[max(data)]['makers'])} makers for {max(data)}, "

@@ -480,3 +480,56 @@ def test_progress_output_survives_a_cp1252_console():
             line.encode("cp1252")
         except UnicodeEncodeError as e:
             raise AssertionError(f"refresh_auto.py:{i} is not printable on cp1252: {e}") from None
+
+
+# ------------------------------------------------- a narrow run keeps history
+# Vahan is a slow scrape and the cloud is blocked from it entirely, so the
+# board is refreshed by hand. A short run is "update the recent years", never
+# "forget the rest" -- but it used to overwrite the file wholesale, and the
+# only sign was auto.json dropping from 212 KB to 74 KB.
+
+def _years(*ys):
+    return {str(y): {"makers": [{"maker": "X", "months": [1] * 12}]} for y in ys}
+
+
+def test_a_short_run_carries_forward_the_years_it_did_not_fetch(tmp_path):
+    f = tmp_path / "auto.json"
+    f.write_text(json.dumps({"years": _years(2026, 2025, 2024, 2023, 2022, 2021)}),
+                 encoding="utf-8")
+    merged = ra._keep_older_years(f, _years(2026, 2025))
+    assert sorted(merged, reverse=True) == ["2026", "2025", "2024", "2023", "2022", "2021"]
+
+
+def test_the_freshly_scraped_year_wins(tmp_path):
+    """A correction upstream has to land, so this is not a plain union."""
+    f = tmp_path / "auto.json"
+    f.write_text(json.dumps({"years": {"2026": {"makers": ["stale"]}}}), encoding="utf-8")
+    merged = ra._keep_older_years(f, {"2026": {"makers": ["fresh"]}})
+    assert merged["2026"]["makers"] == ["fresh"]
+
+
+def test_a_full_run_is_unchanged(tmp_path):
+    f = tmp_path / "auto.json"
+    f.write_text(json.dumps({"years": _years(2026, 2025)}), encoding="utf-8")
+    fresh = _years(2026, 2025)
+    assert ra._keep_older_years(f, fresh) == fresh
+
+
+def test_a_first_run_with_no_file_is_fine(tmp_path):
+    fresh = _years(2026)
+    assert ra._keep_older_years(tmp_path / "nope.json", fresh) == fresh
+
+
+def test_an_unreadable_or_odd_file_never_blocks_a_write(tmp_path):
+    for body in ("{not json", '{"years": "no"}', "{}"):
+        f = tmp_path / "auto.json"
+        f.write_text(body, encoding="utf-8")
+        fresh = _years(2026)
+        assert ra._keep_older_years(f, fresh) == fresh
+
+
+def test_the_workflow_does_not_pin_a_narrow_span():
+    """CI cannot reach Vahan at all, but the one run that did would have cut
+    the six-year chart to two."""
+    wf = (ROOT / ".github" / "workflows" / "refresh-data.yml").read_text(encoding="utf-8")
+    assert "refresh_auto.py --years 2" not in wf
