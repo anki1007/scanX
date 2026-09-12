@@ -109,7 +109,12 @@ jobs:
           run python scripts/refresh_magicformula.py --screen-pages 250
           run python scripts/refresh_demergers.py
           run python scripts/refresh_marketmood.py
-          run python scripts/refresh_auto.py --years 2
+          # Vahan refuses datacenter IPs, so this keeps the existing file and
+          # exits clean in CI; it is refreshed by running the script from a
+          # desktop or the VPS. The year spans are the DEFAULTS on purpose:
+          # --years 2 truncated the six-year company chart to two the one
+          # time it did run.
+          run python scripts/refresh_auto.py
           # 1) keep the top names fresh (re-bake today's data)
           run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
