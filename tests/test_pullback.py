@@ -235,3 +235,45 @@ def test_the_pullback_view_shows_a_live_price_and_day_change():
     assert "scanXQuotes.apply(PB_DATA)" in html, (
         "the pullback rows load after the poll, so they must be priced from "
         "the cached feed or the whole column shows a dash")
+
+
+def test_a_passing_bank_row_does_not_crash_the_summary(tmp_path, capsys):
+    """Shipped and reddened the nightly run for weeks.
+
+    A bank has no Sales line, so q_sales_yoy is UNTESTED, not failed, and the
+    company can still pass on the conditions that DO apply. The summary then
+    formatted that None with ":>6" and raised TypeError -- after the board had
+    already been written correctly. The data was never wrong; the run just
+    went red on its own log line.
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "rpb", ROOT / "scripts" / "refresh_pullback.py")
+    rpb = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rpb)
+
+    fdir = tmp_path / "fundamental"
+    fdir.mkdir()
+    bank = _bundle()
+    # exactly what a bank filing looks like here: no Sales, no OPM anywhere
+    del bank["fundamental"]["quarters"]["rows"]["Sales"]
+    del bank["fundamental"]["quarters"]["rows"]["OPM"]
+    del bank["fundamental"]["profit_loss"]["rows"]["Sales"]
+    del bank["fundamental"]["profit_loss"]["rows"]["OPM %"]
+    (fdir / "BANKCO.json").write_text(json.dumps(bank), encoding="utf-8")
+
+    out = tmp_path / "pullback.json"
+    import sys as _sys
+    argv = _sys.argv
+    _sys.argv = ["refresh_pullback.py", "--fundamental", str(fdir), "--out", str(out)]
+    try:
+        rc = rpb.main()
+    finally:
+        _sys.argv = argv
+
+    assert rc == 0, "the summary crashed on a row it had just published"
+    published = json.loads(out.read_text(encoding="utf-8"))
+    assert published["passed"] == 1
+    row = published["rows"][0]
+    assert row["q_sales_yoy"] is None, "this is the row that used to crash"
+    assert "--" in capsys.readouterr().out, "a missing number must print as --"

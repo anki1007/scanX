@@ -121,10 +121,18 @@ def main() -> int:
         print("[pullback] NOT yet applied (no data on most companies): "
               + ", ".join(payload["inactive"]))
         print("[pullback] these need a price re-bake since ret_1w/vol_* were added")
+    # A PASSING row can legitimately carry a None here: a bank or an NBFC has
+    # no Sales line, so q_sales_yoy is UNTESTED rather than failed, and the
+    # company still qualifies on the conditions that could be applied.
+    # Formatting that None crashed the step AFTER the board had been written
+    # correctly -- the data was fine and the run went red on the summary.
+    def _pc(x, width):
+        return f"{x:>{width}}%" if x is not None else f"{'--':>{width + 1}}"
+
     for r in payload["rows"][:8]:
         print(f"   #{r['rank']:<3} {r['name'][:26]:<28}"
-              f"NP {r['q_profit_yoy']:>7}%  Sales {r['q_sales_yoy']:>6}%  "
-              f"{r['mcap']:>9,.0f} Cr")
+              f"NP {_pc(r['q_profit_yoy'], 7)}  Sales {_pc(r['q_sales_yoy'], 6)}  "
+              f"{(r['mcap'] or 0):>9,.0f} Cr")
     return 0
 
 
