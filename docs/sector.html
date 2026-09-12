@@ -131,6 +131,9 @@
 </div>
 
 <script>
+/* At most two decimals, and no trailing .00 on a whole number: the boards were printing whatever precision the JSON happened to carry, e.g. +930.5555555555555%. */
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
+
 const f=id=>document.getElementById(id);
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
@@ -158,8 +161,8 @@ function aggCell(r,c){const v=r[c[0]];
   if(c[2]==='name')return `<td><span class="chev">${openSec===r.sector?'▾':'▸'}</span>${esc(v)}</td>`;
   if(c[2]==='badge')return `<td><span class="badge ${v}">${v}</span></td>`;
   if(c[2]==='score'){const w=Math.min(100,Math.abs(v)/2*100);return `<td><span class="bar"><span class="bf" style="width:${w}%;background:${barColor(v)}"></span></span><b style="color:${barColor(v)}">${sgn(v)}</b></td>`;}
-  if(c[2]==='pct')return `<td>${v==null?'—':v+'%'}</td>`;
-  if(c[2]==='pctp')return `<td>${v==null?'<span class="na">—</span>':v+'%'}</td>`;
+  if(c[2]==='pct')return `<td>${v==null?'—':fx(v)+'%'}</td>`;
+  if(c[2]==='pctp')return `<td>${v==null?'<span class="na">—</span>':fx(v)+'%'}</td>`;
   if(c[2]==='pctv')return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${sgn(v)}</span>`}</td>`;
   if(c[2]==='cr')return `<td>${v==null?'—':Number(v).toLocaleString('en-IN')}</td>`;
   return `<td>${v==null?'—':v}</td>`;}
@@ -181,7 +184,7 @@ function dCell(r,c){const v=r[c[0]];
   if(c[2]==='sbadge'){const cl=v==='TAILWIND'?'TAILWIND':(v==='HEADWIND'?'HEADWIND':'NEUTRAL');return `<td><span class="sgn ${cl}">${v}</span></td>`;}
   if(c[2]==='res'){const cc=v>=60?'var(--green)':(v<=40?'var(--red)':'var(--amber)');return `<td><b style="color:${cc}">${v==null?'—':v}</b></td>`;}
   if(c[2]==='pctv')return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${sgn(v)}</span>`}</td>`;
-  if(c[2]==='pctp')return `<td>${v==null?'—':v+'%'}</td>`;
+  if(c[2]==='pctp')return `<td>${v==null?'—':fx(v)+'%'}</td>`;
   if(c[2]==='chg')return `<td>${v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${(+v).toFixed(2)}%</span>`}</td>`;
   if(c[2]==='rs')return `<td>${v==null?'—':'₹'+Number(v).toLocaleString('en-IN')}</td>`;
   if(c[2]==='cr')return `<td>${v==null?'—':Number(v).toLocaleString('en-IN')}</td>`;

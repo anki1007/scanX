@@ -126,6 +126,11 @@
 <div class="tablebox"><table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table></div>
 <div class="src" id="src">Institutional holding changes, quarter on quarter.</div>
 <script>
+/* At most two decimals, and no trailing .00 on a whole number: these
+   boards printed whatever precision the JSON happened to carry, which
+   on a growth rate is the full float tail (+930.5555555555555%). */
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
+
 function f(id){return document.getElementById(id);}
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
@@ -138,7 +143,7 @@ function flowCell(v){if(v===null||v===undefined)return '<td class="na">—</td>'
  const c=v>0?'pos':(v<0?'neg':'');return `<td class="${c}" style="font-weight:700">${inr(v)}</td>`;}
 function cell(c,r){const v=r[c.k];
  if(c.kind==='sec')return `<td><a href="sector.html?sector=${encodeURIComponent(r.sector||'')}" title="Open in Sector Tailwind">${esc(r.sector)}</a></td>`;
- if(c.kind==='aum')return `<td>${v==null?'—':v+'%'}</td>`;
+ if(c.kind==='aum')return `<td>${v==null?'—':fx(v)+'%'}</td>`;
  if(c.kind==='flow')return flowCell(v);
  return `<td>${v==null?'—':esc(v)}</td>`;}
 function render(){const rows=DATA.slice().sort((a,b)=>{let x=a[sort.k],y=b[sort.k];if(x==null)x=-1e15;if(y==null)y=-1e15;return typeof x==='string'?sort.dir*x.localeCompare(y):sort.dir*(x-y);});

@@ -46,7 +46,7 @@ def technical_of(bundle: Any) -> dict:
     for src, dst in (("rs_rating", "rs_rating"), ("pos_52w", "pos_52w")):
         value = _num(tech.get(src))
         if value is not None:
-            out[dst] = value
+            out[dst] = _round(value)
     return out
 
 
@@ -147,6 +147,11 @@ def enrich(rows: Iterable[Mapping] | None,
     return out
 
 
+def _round(value, places: int = 2):
+    """Two decimals, or None. Never turns a missing value into 0.0."""
+    return None if value is None else round(float(value), places)
+
+
 def _pe(bundle: Mapping, overview: Mapping) -> float | None:
     """Feed first, scraped statement second -- the board's headline multiple.
 
@@ -197,15 +202,19 @@ def row_from_bundle(code: str, bundle: Any) -> dict | None:
     rows = quarters.get("rows") if isinstance(quarters, Mapping) else None
     rows = rows if isinstance(rows, Mapping) else {}
 
+    # Rounded at the source. A growth rate is a ratio of two reported figures,
+    # so it arrives with the full float tail -- 930.5555555555555 -- and the
+    # board printed every digit of it. Two decimals is past the precision the
+    # inputs justify, and it takes ~15 bytes a value off a 5,400-row file.
     return {
         "code": code,
         "name": str(fundamental.get("name") or code),
-        "mcap": mcap,
-        "cmp": cmp_,
-        "pe": _pe(bundle, overview),
-        "roce": _num(overview.get("ROCE")),
-        "sales_var": _growth(rows, "Sales"),
-        "profit_var": _growth(rows, "Net Profit"),
+        "mcap": _round(mcap),
+        "cmp": _round(cmp_),
+        "pe": _round(_pe(bundle, overview)),
+        "roce": _round(_num(overview.get("ROCE"))),
+        "sales_var": _round(_growth(rows, "Sales")),
+        "profit_var": _round(_growth(rows, "Net Profit")),
     }
 
 

@@ -523,7 +523,7 @@ function insightSection(a){
 const PEER_ROW=[['pe','P/E'],['pb','P/B'],['ev_ebitda','EV/EBITDA'],
                 ['roa','ROA'],['roe','ROE'],['roce','ROCE']];
 const biasCls=b=>b==='positive'?'up':(b==='negative'?'dn':'mid');
-const ratioNum=(v,u)=>v==null?'n/a':(u==='pct'?v+'%':v+'x');
+const ratioNum=(v,u)=>v==null?'n/a':(u==='pct'?fx(v)+'%':fx(v)+'x');
 function healthChip(name,h){
   if(!h) return '';
   const cls=biasCls(h.bias);

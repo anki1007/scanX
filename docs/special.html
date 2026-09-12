@@ -125,6 +125,11 @@
 <div class="src" id="src">source: –</div>
 
 <script>
+/* At most two decimals, and no trailing .00 on a whole number: these
+   boards printed whatever precision the JSON happened to carry, which
+   on a growth rate is the full float tail (+930.5555555555555%). */
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
+
 const COLS = [
   {k:'name', t:'Company', kind:'co'},
   {k:'category', t:'Situation', kind:'tag'},
@@ -143,7 +148,7 @@ let DATA=[], META={}, sort={k:'date', dir:-1};
 const f=id=>document.getElementById(id);
 const rs=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2});
 const cr=v=>v==null?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr';
-const pctv=v=>v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${v}%</span>`;
+const pctv=v=>v==null?'<span class="na">—</span>':`<span class="${v>0?'pos':(v<0?'neg':'')}">${v>0?'+':''}${fx(v)}%</span>`;
 const esc=s=>(s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
 function cell(c,r){const v=r[c.k];switch(c.kind){
@@ -152,7 +157,7 @@ function cell(c,r){const v=r[c.k];switch(c.kind){
   case 'rs': return `<td>${rs(v)}</td>`;
   case 'cr': return `<td>${cr(v)}</td>`;
   case 'pct': return `<td>${pctv(v)}</td>`;
-  case 'opm': return `<td>${v==null?'<span class="na">—</span>':v+'%'}</td>`;
+  case 'opm': return `<td>${v==null?'<span class="na">—</span>':fx(v)+'%'}</td>`;
   case 'snip': return `<td class="snip">${v?esc(v):'<span class="na">—</span>'}</td>`;
   case 'txt': return `<td>${v?esc(v):'<span class="na">—</span>'}</td>`;
   default: return `<td>${v==null?'<span class="na">—</span>':esc(v)}</td>`;}}

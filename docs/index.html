@@ -222,10 +222,14 @@ let DATA=[], META={}, sort={k:'pead_score', dir:-1};
 function f(id){return document.getElementById(id);}
 function num(id){const v=parseFloat(f(id).value);return isNaN(v)?null:v;}
 
+/* At most two decimals, and no trailing .00 on a whole number: the boards
+   were printing whatever precision the JSON happened to carry, which on a
+   growth rate is the full float tail (+930.5555555555555%). */
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
 function pctCell(v){
   if(v===null||v===undefined) return '<span class="na">—</span>';
   const c = v>0?'pos':(v<0?'neg':'');
-  return `<span class="${c}">${v>0?'+':''}${v}%</span>`;
+  return `<span class="${c}">${v>0?'+':''}${fx(v)}%</span>`;
 }
 /* post-earnings drift proxy: return from the price captured when the result
    was screened (crawl shortly after the filing) to the latest LTP */

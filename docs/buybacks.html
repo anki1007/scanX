@@ -134,6 +134,11 @@
 <div class="src" id="src">source: –</div>
 
 <script>
+/* At most two decimals, and no trailing .00 on a whole number: these
+   boards printed whatever precision the JSON happened to carry, which
+   on a growth rate is the full float tail (+930.5555555555555%). */
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
+
 const COLS = [
   {k:'name', t:'Stock', kind:'co'},
   {k:'buyback_type', t:'Type', kind:'type'},
@@ -165,7 +170,7 @@ function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{
 const num=v=>v==null?'<span class="na">—</span>':esc(v);
 const txt=v=>v?esc(v):'<span class="na">—</span>';
 function fracpct(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);const c=p>0?'pos':(p<0?'neg':'');return `<span class="${c}">${p}%</span>`;}
-function pctv(v){if(v==null)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${v}%</span>`;}
+function pctv(v){if(v==null)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${fx(v)}%</span>`;}
 function pill(v){if(v==null)return '<span class="na">—</span>';const p=+(v*100).toFixed(2);return `<span class="pill ${p>=8?'go':'no'}">${p}%</span>`;}
 function decision(v){if(!v||v==='—')return '<span class="na">—</span>';if(v==='Open Market')return '<span class="pill om">Open Market</span>';return `<span class="pill ${v.indexOf('8%')>=0&&v[0]==='A'?'go':'no'}">${esc(v)}</span>`;}
 
@@ -178,7 +183,7 @@ function cell(c,row){
     case 'cr': return `<td>${cr(v)}</td>`;
     case 'fracpct': return `<td>${fracpct(v)}</td>`;
     case 'pct': return `<td>${pctv(v)}</td>`;
-    case 'opm': return `<td>${v==null?'<span class="na">—</span>':v+'%'}</td>`;
+    case 'opm': return `<td>${v==null?'<span class="na">—</span>':fx(v)+'%'}</td>`;
     case 'pill': return `<td>${pill(v)}</td>`;
     case 'decision': return `<td>${decision(v)}</td>`;
     case 'txt': return `<td>${txt(v)}</td>`;
