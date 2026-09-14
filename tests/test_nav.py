@@ -12,8 +12,9 @@ something else". It was not one bug:
     which use `<nav class="nav">` -- silently kept a flat, always-expanded
     rail while every other page collapsed.
   * industries.html never loaded the script at all.
-  * index.html marked TWO items active, because Home and PEAD Board are the
-    same page.
+  * index.html marked TWO items active, because Home and PEAD Board were the
+    same page. The board now lives at pead.html and index.html is the home
+    that lists every module, so each entry has a page of its own.
 
 The rail is progressive enhancement over plain markup, so these assert the
 markup is identical everywhere and that every page can actually enhance it.
@@ -99,7 +100,7 @@ def test_every_link_points_at_a_page_that_exists(navs):
 
 
 def test_each_page_highlights_itself_exactly_once(navs):
-    """index.html marked both Home and PEAD Board, which are the same page."""
+    """index.html marked both Home and PEAD Board when they were one page."""
     wrong = {}
     for page, box in navs.items():
         active = [a for a in box.select(".nav-i.active")]

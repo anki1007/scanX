@@ -131,7 +131,8 @@ filterable dashboard.
 
 ```
 scripts/refresh_scanx.py   # one refresh -> docs/data/{pead.json,pead.csv,meta.json}
-docs/index.html            # the dashboard (auto-refreshes every 60s)
+docs/index.html            # home: every module, with live stats and freshness
+docs/pead.html             # the PEAD board (auto-refreshes every 60s)
 scanx_publish.ps1          # 60s worker: refresh + git push (true live updates)
 .github/workflows/refresh.yml  # ~5-min Actions backup when your PC is off
 setup_github.ps1           # one-time: init repo + push to anki1007/scanx

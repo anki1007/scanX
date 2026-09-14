@@ -173,10 +173,16 @@ def test_home_and_breadth_sit_above_the_first_collapsing_group():
 
 
 def test_the_breadth_link_is_not_duplicated():
-    """It was moved out of the group, not copied — two entries is confusing."""
+    """It was moved out of the group, not copied: two MENU entries is confusing.
+
+    Counted inside the rail only. The home page lists every module as a card,
+    and a card is a second link to the page, not a second entry in the menu.
+    """
     for p in _pages():
-        assert p.read_text(encoding="utf-8").count('href="breadth.html"') == 1, \
-            f"{p.name} links breadth.html more than once"
+        text = p.read_text(encoding="utf-8")
+        rail = re.search(r'<(?:aside|nav) class="(?:nav|navrail)"[^>]*>.*?</(?:aside|nav)>', text, re.S)
+        scope = rail.group(0) if rail else text
+        assert scope.count('href="breadth.html"') == 1,             f"{p.name} lists breadth.html more than once in the menu"
 
 
 def test_nav_js_only_groups_items_after_a_heading():

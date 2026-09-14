@@ -38,11 +38,11 @@ from bundled real sample data, and prints what's still needed. Then preview it:
 .\serve.ps1
 ```
 
-A browser opens at http://localhost:8777 showing the dashboard. (Opening
-`docs\index.html` directly shows an empty table — browsers block local file
+A browser opens at http://localhost:8777 on the home page, which lists every module. (Opening
+a board file such as `docs\pead.html` directly shows an empty table — browsers block local file
 loads, so always preview via `serve.ps1`.) Press Ctrl+C to stop the server.
 
-✅ If you see ranked companies, the whole engine works.
+✅ Open **PEAD Board** from the home page — if you see ranked companies, the whole engine works.
 
 ---
 
@@ -142,7 +142,7 @@ Alerts on fresh NSE/BSE filings with a Kite price/volume reaction.
 | Symptom | Fix |
 |---|---|
 | "running scripts is disabled on this system" | Run once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or always launch with `powershell -ExecutionPolicy Bypass -File .\<script>.ps1` |
-| Dashboard table is empty | Don't open `docs\index.html` directly — use `.\serve.ps1` |
+| Dashboard table is empty | Don't open `docs\*.html` directly — use `.\serve.ps1` |
 | Screener: "redirected to login" | `sessionid` expired — recopy it (Step 1.2) |
 | Kite: "Please log in first" | Run `python scripts\kite_login.py` (daily) |
 | `python` not found | Reinstall Python with "Add to PATH" ticked, reopen PowerShell |

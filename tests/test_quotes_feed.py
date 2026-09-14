@@ -28,7 +28,7 @@ DOCS = ROOT / "docs"
 FEED = DOCS / "vendor" / "quotes.js"
 
 # Pages that display a price and must therefore show a live one.
-PRICED_PAGES = ("index.html", "technofunda.html", "sector.html", "fairvalue.html")
+PRICED_PAGES = ("pead.html", "technofunda.html", "sector.html", "fairvalue.html")
 
 
 @pytest.fixture(scope="module")
