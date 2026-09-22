@@ -1,26 +1,26 @@
 code,name,url,market_cap,last_price,pe,result_date,sales_yoy,sales_qoq,np_yoy,np_qoq,ebitda_yoy,ebitda_qoq,opm_latest,cf_profit,pead_score,pead_category,sudden_shift,growth_gate,calculation_date,ltp,pct_change
-526231,Standard Surfact,https://www.screener.in/company/526231/,137.0,166.0,11.3,Jun 2026,92.45,38.21,1269.57,150.0,1054.47,202.77,,,97.3,HIGH,True,True,2026-09-21T18:12:52+00:00,166.27,4.99
-SKYWAYS,Skyways Air Ser.,https://www.screener.in/company/SKYWAYS/,1828.0,126.0,34.2,Jun 2026,90.45,54.44,143.64,23.5,82.78,42.98,,,94.4,HIGH,True,True,2026-09-21T18:12:52+00:00,126.0,
-ORISSAMINE,Orissa Minerals,https://www.screener.in/company/ORISSAMINE/,2291.0,3821.0,690.1,Jun 2026,47.42,-1.38,223.66,145.34,913.48,196.57,,,90.2,HIGH,True,True,2026-09-21T18:12:52+00:00,3821.0,
-DHOOTTRANS,Dhoot Transmission,https://www.screener.in/company/DHOOTTRANS/,32369.0,1582.0,72.3,Jun 2026,49.69,13.23,38.25,39.41,28.99,21.79,,,81.6,HIGH,True,True,2026-09-21T18:12:52+00:00,1582.0,
-523164,SIP Industries,https://www.screener.in/company/523164/,2.81,6.01,,Jun 2026,,,50.0,50.0,50.0,50.0,,,79.2,HIGH,True,False,2026-09-21T18:12:52+00:00,6.01,2.56
-HORIZONIND,Horizon Industrial,https://www.screener.in/company/HORIZONIND/,15216.0,52.7,,Jun 2026,55.81,6.91,79.86,-2066.1,73.3,11.81,,,74.1,HIGH,False,True,2026-09-21T18:12:52+00:00,52.7,
-SHIPROCKET,Shiprocket,https://www.screener.in/company/SHIPROCKET/,8915.0,122.0,,Jun 2026,33.94,6.86,23.89,15.95,38.07,16.15,,,71.3,HIGH,False,False,2026-09-21T18:12:52+00:00,122.0,
-MOLBIO,Molbio Diagnosti,https://www.screener.in/company/MOLBIO/,14042.0,1219.0,56.3,Jun 2026,309.23,-27.27,320.92,-44.89,727.33,-36.48,,,64.5,HIGH,False,True,2026-09-21T18:12:52+00:00,1219.0,
-BLEL,Behari Lal Engg.,https://www.screener.in/company/BLEL/,1861.0,440.0,27.2,Jun 2026,18.75,16.03,24.68,-10.28,20.52,18.45,,,63.2,HIGH,False,False,2026-09-21T18:12:52+00:00,440.0,
-SUNSHINE,Sunshine Picture,https://www.screener.in/company/SUNSHINE/,1331.0,430.0,32.5,Jun 2026,16100.0,-90.66,123.15,-99.37,242.42,-98.28,,,62.5,HIGH,False,True,2026-09-21T18:12:52+00:00,430.0,
-TEMPSENS,Tempsens Instruments,https://www.screener.in/company/TEMPSENS/,4413.0,527.0,64.3,Jun 2026,33.71,-10.53,15.6,-22.75,15.53,-17.07,,,53.1,HIGH,False,False,2026-09-21T18:12:52+00:00,527.0,
-id,Jindal Supreme,https://www.screener.in/company/id/,91.2,3.65,30.0,Jun 2026,,,,,,,,,50.0,LOW,False,False,2026-09-21T18:12:52+00:00,3.65,
-SUPREMEENG,Supreme Engg.,https://www.screener.in/company/SUPREMEENG/,91.2,3.65,,Jun 2026,-51.55,-6.65,2028.57,1755.56,-107.02,-110.81,,,48.1,MEDIUM,True,False,2026-09-21T18:12:52+00:00,3.65,
-KOTYARK,Kotyark Indust.,https://www.screener.in/company/KOTYARK/,362.0,31.6,19.0,Jun 2026,11.52,44.43,9.05,-52.45,13.59,-39.06,,,48.1,MEDIUM,True,False,2026-09-21T18:12:52+00:00,31.6,
-543435,Clara Industries,https://www.screener.in/company/543435/,88.8,34.6,50.4,Jun 2026,121.98,-4.72,-14.81,-77.67,3.7,-62.42,,,44.3,MEDIUM,False,False,2026-09-21T18:12:52+00:00,34.58,8.06
-HTEL,Hy-Tech Engineer,https://www.screener.in/company/HTEL/,689.0,72.5,30.0,Jun 2026,13.16,-23.35,10.84,-29.56,3.3,-29.08,,,42.8,MEDIUM,False,False,2026-09-21T18:12:52+00:00,72.5,
-TOYAMSL,Toyam Sports,https://www.screener.in/company/TOYAMSL/,45.0,0.8,,Jun 2026,,,-80.0,63.27,-83.82,63.34,,,42.5,MEDIUM,True,False,2026-09-21T18:12:52+00:00,0.8,
-CRSL,Cressanda Railwa,https://www.screener.in/company/CRSL/,104.0,2.53,,Jun 2026,-100.0,-100.0,-97.73,87.69,54.61,91.18,,,41.8,MEDIUM,True,False,2026-09-21T18:12:52+00:00,2.53,
-GAJA,Gaja Alternative Asset,https://www.screener.in/company/GAJA/,2293.0,163.0,26.6,Jun 2026,-49.35,-20.41,35.32,677.14,-114.51,-155.23,,,41.6,MEDIUM,True,False,2026-09-21T18:12:52+00:00,163.0,
-517077,Ind-Agiv Commer.,https://www.screener.in/company/517077/,11.7,38.3,,Jun 2026,-100.0,-100.0,0.0,88.17,-300.0,50.0,,,40.0,MEDIUM,True,False,2026-09-21T18:12:52+00:00,38.32,4.99
-TECHNOCRAF,Technocraft Ven.,https://www.screener.in/company/TECHNOCRAF/,1728.0,438.0,38.7,Jun 2026,2.21,-33.79,14.56,-54.66,15.38,-48.28,,,38.6,MEDIUM,False,False,2026-09-21T18:12:52+00:00,438.0,
-LALITHAA,Lalithaa Jewel,https://www.screener.in/company/LALITHAA/,17922.0,320.0,18.8,Jun 2026,26.2,-7.08,-21.21,-39.88,-13.66,-31.56,,,35.9,MEDIUM,False,False,2026-09-21T18:12:52+00:00,320.0,
-543464,Maruti Interior,https://www.screener.in/company/543464/,217.0,35.9,24.3,Jun 2026,-8.92,79.2,-89.82,-97.53,-39.38,74.44,,,33.6,MEDIUM,True,False,2026-09-21T18:12:52+00:00,35.86,-4.53
-512099,Eyantra Ventures,https://www.screener.in/company/512099/,107.0,533.0,,Jun 2026,-2.04,-24.11,-9.33,-155.31,-10.9,-128.89,,,30.8,MEDIUM,False,False,2026-09-21T18:12:52+00:00,533.15,-4.45
-513566,Nova Iron &Steel,https://www.screener.in/company/513566/,48.7,13.5,,Jun 2026,-40.27,-50.37,-61.09,116.07,-125.13,-132.66,,,20.8,LOW,True,False,2026-09-21T18:12:52+00:00,13.47,4.99
+SKYWAYS,Skyways Air Ser.,https://www.screener.in/company/SKYWAYS/,1892.0,130.0,35.4,Jun 2026,90.45,54.44,143.64,23.5,82.78,42.98,,,94.4,HIGH,True,True,2026-09-22T16:56:25+00:00,130.0,
+ORISSAMINE,Orissa Minerals,https://www.screener.in/company/ORISSAMINE/,2326.0,3880.0,700.6,Jun 2026,47.42,-1.38,223.66,145.34,913.48,196.57,,,90.2,HIGH,True,True,2026-09-22T16:56:25+00:00,3880.0,
+DHOOTTRANS,Dhoot Transmission,https://www.screener.in/company/DHOOTTRANS/,33812.0,1653.0,75.5,Jun 2026,49.69,13.23,38.25,39.41,28.99,21.79,,,81.6,HIGH,True,True,2026-09-22T16:56:25+00:00,1653.0,
+523164,SIP Industries,https://www.screener.in/company/523164/,2.81,6.01,,Jun 2026,,,50.0,50.0,50.0,50.0,,,79.2,HIGH,True,False,2026-09-22T16:56:25+00:00,6.01,2.56
+HORIZONIND,Horizon Industrial,https://www.screener.in/company/HORIZONIND/,15202.0,52.8,,Jun 2026,55.81,6.91,79.86,-2066.1,73.3,11.81,,,74.1,HIGH,False,True,2026-09-22T16:56:25+00:00,52.8,
+SHIPROCKET,Shiprocket,https://www.screener.in/company/SHIPROCKET/,9181.0,126.0,,Jun 2026,33.94,6.86,23.89,15.95,38.07,16.15,,,71.3,HIGH,False,False,2026-09-22T16:56:25+00:00,126.0,
+MOLBIO,Molbio Diagnosti,https://www.screener.in/company/MOLBIO/,14557.0,1264.0,58.3,Jun 2026,309.23,-27.27,320.92,-44.89,727.33,-36.48,,,64.5,HIGH,False,True,2026-09-22T16:56:25+00:00,1264.0,
+BLEL,Behari Lal Engg.,https://www.screener.in/company/BLEL/,1979.0,469.0,28.9,Jun 2026,18.75,16.03,24.68,-10.28,20.52,18.45,,,63.2,HIGH,False,False,2026-09-22T16:56:25+00:00,469.0,
+SUNSHINE,Sunshine Picture,https://www.screener.in/company/SUNSHINE/,1372.0,440.0,33.5,Jun 2026,16100.0,-90.66,123.15,-99.37,242.42,-98.28,,,62.5,HIGH,False,True,2026-09-22T16:56:25+00:00,440.0,
+TEMPSENS,Tempsens Instruments,https://www.screener.in/company/TEMPSENS/,4500.0,537.0,65.6,Jun 2026,33.71,-10.53,15.6,-22.75,15.53,-17.07,,,53.1,HIGH,False,False,2026-09-22T16:56:25+00:00,537.0,
+LUMINO,Lumino Inds,https://www.screener.in/company/LUMINO/,3296.0,108.0,19.4,Jun 2026,19.22,-26.83,32.67,-39.46,34.16,-21.53,,,50.8,HIGH,False,False,2026-09-22T16:56:25+00:00,108.0,
+id,Jindal Supreme,https://www.screener.in/company/id/,7188.0,1121.0,72.3,Jun 2026,,,,,,,,,50.0,LOW,False,False,2026-09-22T16:56:25+00:00,1121.0,
+SUPREMEENG,Supreme Engg.,https://www.screener.in/company/SUPREMEENG/,93.0,3.72,,Jun 2026,-51.55,-6.65,2028.57,1755.56,-107.02,-110.81,,,48.1,MEDIUM,True,False,2026-09-22T16:56:25+00:00,3.72,
+KOTYARK,Kotyark Indust.,https://www.screener.in/company/KOTYARK/,359.0,31.8,18.9,Jun 2026,11.52,44.43,9.05,-52.45,13.59,-39.06,,,48.1,MEDIUM,True,False,2026-09-22T16:56:25+00:00,31.8,
+543435,Clara Industries,https://www.screener.in/company/543435/,81.7,31.8,46.4,Jun 2026,121.98,-4.72,-14.81,-77.67,3.7,-62.42,,,44.3,MEDIUM,False,False,2026-09-22T16:56:25+00:00,31.8,
+HTEL,Hy-Tech Engineer,https://www.screener.in/company/HTEL/,674.0,71.0,29.4,Jun 2026,13.16,-23.35,10.84,-29.56,3.3,-29.08,,,42.8,MEDIUM,False,False,2026-09-22T16:56:25+00:00,71.0,
+TOYAMSL,Toyam Sports,https://www.screener.in/company/TOYAMSL/,47.4,0.84,,Jun 2026,,,-80.0,63.27,-83.82,63.34,,,42.5,MEDIUM,True,False,2026-09-22T16:56:25+00:00,0.84,
+GAJA,Gaja Alternative Asset,https://www.screener.in/company/GAJA/,2250.0,159.0,26.1,Jun 2026,-49.35,-20.41,35.32,677.14,-114.51,-155.23,,,41.6,MEDIUM,True,False,2026-09-22T16:56:25+00:00,159.0,
+517077,Ind-Agiv Commer.,https://www.screener.in/company/517077/,11.7,38.3,,Jun 2026,-100.0,-100.0,0.0,88.17,-300.0,50.0,,,40.0,MEDIUM,True,False,2026-09-22T16:56:25+00:00,38.32,4.99
+LALITHAA,Lalithaa Jewel,https://www.screener.in/company/LALITHAA/,18818.0,336.0,19.7,Jun 2026,26.2,-7.08,-21.21,-39.88,-13.66,-31.56,,,35.9,MEDIUM,False,False,2026-09-22T16:56:25+00:00,336.0,
+AUGMONT,Augmont Enterpri,https://www.screener.in/company/AUGMONT/,7805.0,853.0,24.2,Jun 2026,30.2,-36.83,-15.56,-8.71,-46.9,-41.58,,,34.7,MEDIUM,False,False,2026-09-22T16:56:25+00:00,853.0,
+543464,Maruti Interior,https://www.screener.in/company/543464/,208.0,34.4,23.3,Jun 2026,-8.92,79.2,-89.82,-97.53,-39.38,74.44,,,33.6,MEDIUM,True,False,2026-09-22T16:56:25+00:00,34.4,
+512099,Eyantra Ventures,https://www.screener.in/company/512099/,102.0,507.0,,Jun 2026,-2.04,-24.11,-9.33,-155.31,-10.9,-128.89,,,30.8,MEDIUM,False,False,2026-09-22T16:56:25+00:00,507.0,-4.9
+SYMBIOTEC,Symbiotec Pharma,https://www.screener.in/company/SYMBIOTEC/,7188.0,1121.0,72.3,Jun 2026,7.39,-11.02,-52.84,-48.73,-22.07,-27.21,,,25.2,LOW,False,False,2026-09-22T16:56:25+00:00,1121.0,
+513566,Nova Iron &Steel,https://www.screener.in/company/513566/,51.1,14.1,,Jun 2026,-40.27,-50.37,-61.09,116.07,-125.13,-132.66,,,20.8,LOW,True,False,2026-09-22T16:56:25+00:00,14.14,4.97
