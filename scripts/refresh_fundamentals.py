@@ -281,6 +281,22 @@ def _baked_on(path):
         return ""
 
 
+def stalest_first(codes, head, baked_on):
+    """The first `head` codes as given, then the rest oldest bake first.
+
+    The bake walks its list in order under a time budget, and the list used to
+    be the same every night: board names first, then the whole market in a
+    fixed order. ~900 board names spent the 45 minutes, so the same prefix was
+    re-baked nightly and the tail never was -- by late September 2026 half of
+    all bundles were last baked in July and still ended at the March quarter.
+    Oldest-first rotates the budget through the whole universe instead; a
+    missing or unstamped bundle ("") goes first of all.
+    """
+    head_codes = list(codes[:head])
+    tail = sorted(codes[head:], key=lambda c: (baked_on(c) or "", c))
+    return head_codes + tail
+
+
 def _sid():
     sid = os.environ.get("SCREENER_SESSIONID")
     if not sid and _SESSION.exists():
@@ -309,6 +325,10 @@ def main():
     ap.add_argument("--ratios-only", action="store_true",
                     help="refresh ONLY the Upstox ratio/health block of bundles that already exist "
                          "(no Screener re-scrape) — backfills current ratio across the universe")
+    ap.add_argument("--stalest-first", action="store_true",
+                    help="after the --top board names, bake every bundle on disk "
+                         "longest-unrefreshed first, so the time budget rotates "
+                         "through the whole universe instead of one fixed prefix")
     args = ap.parse_args()
 
     board = _read_board(Path(args.board))
@@ -316,6 +336,8 @@ def main():
         print(f"[fund] board empty/unreadable: {args.board}"); return
     board.sort(key=lambda r: r.get("composite", 0), reverse=True)
     codes = [r["code"] for r in board[:args.top] if r.get("code")]
+    n_head = len(codes)
+    pead_codes: list = []
 
     seen = set(codes)
 
@@ -344,7 +366,9 @@ def main():
     try:
         pead = json.loads((ROOT / "docs" / "data" / "pead.json")
                           .read_text(encoding="utf-8", errors="replace"))
-        _add(r.get("code") for r in (pead if isinstance(pead, list) else []))
+        pead_codes = [str(r.get("code") or "").strip()
+                      for r in (pead if isinstance(pead, list) else []) if isinstance(r, dict)]
+        _add(pead_codes)
     except Exception:  # noqa: BLE001
         pass
 
@@ -372,11 +396,27 @@ def main():
     except Exception:  # noqa: BLE001
         pass
 
+    out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
+    if args.stalest_first and not args.ratios_only:
+        # Every bundle on disk, not only today's board names: a company that
+        # dropped off every board still opens on the site, and still feeds
+        # the bundle-built sector and Magic Formula boards.
+        _add(sorted(p.stem for p in out.glob("*.json") if p.stem != "index"))
+        # The PEAD board is the page most people land on and only ~25 names:
+        # it stays in the daily head with the top of the board. The larger
+        # lists (Magic Formula, largest caps, sector members) take their turn.
+        head = codes[:n_head] + [c for c in pead_codes if c and c not in codes[:n_head]]
+        rest = [c for c in codes if c not in set(head)]
+        n_head = len(head)
+        codes = stalest_first(head + rest, n_head, lambda c: _baked_on(out / f"{c}.json"))
+        print(f"[fund] stalest-first: {n_head} board names, then {len(codes) - n_head} "
+              f"by bake age (oldest {_baked_on(out / f'{codes[n_head]}.json') or 'unbaked'})"
+              if len(codes) > n_head else f"[fund] stalest-first: {n_head} board names")
+
     if args.limit:
         codes = codes[:args.limit]
 
     sid = _sid()
-    out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     done, fail, skipped = 0, 0, 0
     today = time.strftime("%Y-%m-%d")
     _bake_start = time.time()

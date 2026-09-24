@@ -115,8 +115,14 @@ jobs:
           # --years 2 truncated the six-year company chart to two the one
           # time it did run.
           run python scripts/refresh_auto.py
-          # 1) keep the top names fresh (re-bake today's data)
-          run python scripts/refresh_fundamentals.py --top 200 --skip-existing --max-minutes 45
+          # 1) keep the top names fresh (re-bake today's data), then spend the
+          #    rest of the budget on the longest-unrefreshed bundles. Without
+          #    --stalest-first the same ~900 board names used the whole 45
+          #    minutes every night and half the universe was last baked in July,
+          #    still on the March quarter -- and the sector and Magic Formula
+          #    boards now fall back to these bundles when the scrape fails.
+          #    ~20 companies/min, so the universe cycles in about a week.
+          run python scripts/refresh_fundamentals.py --top 200 --skip-existing --stalest-first --max-minutes 45
           # 2) EXTEND coverage toward the whole universe (skip anything already baked);
           #    each daily run bakes more new stocks until every listed name is covered
           # completes in ~4s now the universe is fully baked; it only picks up
