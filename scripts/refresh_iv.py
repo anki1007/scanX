@@ -81,7 +81,12 @@ def main():
 
     uni = _read_universe()
     if not uni:
-        print("[iv] no universe (.cache/universe.json) - run refresh_sectors first"); return
+        # Non-zero on purpose. This returned 0 for three weeks while the
+        # universe was empty, so the IV, return-map and fair-value boards
+        # froze and the nightly run never listed this step as failed.
+        print("[iv] no universe (.cache/universe.json) - run refresh_sectors first",
+              file=sys.stderr)
+        return 1
     # pre-rank per sector by cheap (3Y ROCE + qtr sales var), pick candidates
     by_sec = {}
     for r in uni:
@@ -154,4 +159,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

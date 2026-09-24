@@ -33,19 +33,50 @@ SECTORS = {
 }
 
 
+CODE_OF = {name: code for code, name in SECTORS.items()}
+
+# A bundle's classification comes from the company page's breadcrumb, whose
+# industry level is the same 22-way split as the /market/ pages above, spelled
+# differently in three places. Everything else matches by name exactly.
+INDUSTRY_ALIASES = {
+    "Automobile and Auto Components": "Automobile & Auto Components",
+    "Fast Moving Consumer Goods": "FMCG",
+    "Media, Entertainment & Publication": "Media & Entertainment",
+}
+
+
+def industry_name(classification) -> str | None:
+    """The board's sector name for a bundle's classification, or None.
+
+    Reads the INDUSTRY level only. classification["sector"] is a different,
+    12-way macro taxonomy ("Commodities", "Consumer Discretionary") and would
+    put companies on the board under names it does not otherwise use.
+    """
+    if not isinstance(classification, dict):
+        return None
+    raw = str(classification.get("industry") or "").strip()
+    name = INDUSTRY_ALIASES.get(raw, raw)
+    return name if name in CODE_OF else None
+
+
 def _path(code: str) -> str:
     return f"{code[:4]}/{code}" if len(code) > 4 else code
 
 
 def fetch_sectors(session_id=None, max_pages: int = 200, only=None, delay: float = 0.8) -> list:
     """Return one dict per company tagged with its `sector` (industry) + metrics."""
-    from .screener import ScreenerClient
+    from .screener import ScreenerClient, ScreenLayoutError
     c = ScreenerClient(session_id=session_id, delay=delay)
     out = []
     items = [(k, v) for k, v in SECTORS.items() if (not only or k in only or v in only)]
     for code, name in items:
         try:
             rows = c.fetch_market(_path(code), max_pages=max_pages)
+        except ScreenLayoutError:
+            # One layout change, not 22 unrelated industry failures: let the
+            # caller see it once and fall back, instead of logging it per
+            # industry and handing back an empty market.
+            raise
         except Exception as e:  # noqa: BLE001
             log.warning("industry %s (%s) fetch failed: %s", code, name, e); rows = []
         for r in rows:

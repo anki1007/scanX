@@ -156,12 +156,40 @@ def _screen_num(s):
     return float(m.group()) if m else None
 
 
+class ScreenLayoutError(RuntimeError):
+    """The page has a company table but its header could not be read.
+
+    Distinct from "the screen matched nothing" on purpose. The vendor renamed
+    the first column from "Name" to "Company" in early September 2026, the
+    reader required a cell equal to "Name", and every screen and /market/
+    page quietly returned zero rows for three weeks: five boards froze while
+    each nightly step still exited cleanly.
+    """
+
+
+# The company and price columns, matched as sets of alternatives because this
+# is the part of the page the vendor has already renamed once. The price test
+# stays narrow: a bare "price" prefix would also catch "Price to Book".
+_NAME_HEADERS = ("name", "company", "company name")
+_PRICE_EXACT = ("price", "current price", "ltp")
+
+
+def _is_price_header(label: str) -> bool:
+    h = label.lower().strip()
+    return h.startswith("cmp") or h in _PRICE_EXACT
+
+
+def _is_header_row(cells) -> bool:
+    return (any(c.lower().strip() in _NAME_HEADERS for c in cells)
+            and any(_is_price_header(c) for c in cells))
+
+
 def _screen_colmap(headers):
     """Map Screener screen header labels -> our field keys (robust to reordering)."""
     m = {}
     for i, h in enumerate(headers):
         hl = h.lower().strip()
-        if hl.startswith("cmp"): m["cmp"] = i
+        if _is_price_header(h) and "cmp" not in m: m["cmp"] = i
         elif hl.startswith("p/e"): m["pe"] = i
         elif "mar cap" in hl or "market cap" in hl: m.setdefault("mcap", i)
         elif "qtr profit var" in hl: m["profit_var"] = i
@@ -284,9 +312,19 @@ class ScreenerClient:
             if colmap is None:
                 for tr in trs:
                     cells = [c.get_text(" ", strip=True) for c in tr.find_all(["th", "td"])]
-                    if any(c == "Name" for c in cells) and any(c.startswith("CMP") for c in cells):
+                    if _is_header_row(cells):
                         colmap = _screen_colmap(cells); break
                 if not colmap:
+                    # A table WITH company rows whose header we cannot read is a
+                    # layout change, not an empty result. Say so, with what the
+                    # header actually says, instead of returning [] and letting
+                    # every caller conclude the market is empty.
+                    if tbl.find("a", href=re.compile(r"/company/")):
+                        first = next((tr for tr in trs if tr.find("th")), trs[0] if trs else None)
+                        seen_hdr = ([c.get_text(" ", strip=True) for c in first.find_all(["th", "td"])]
+                                    if first is not None else [])
+                        raise ScreenLayoutError(
+                            f"company table found but its header is unrecognised: {seen_hdr[:12]}")
                     break
             page_codes = 0
             for tr in trs:

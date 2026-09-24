@@ -35,6 +35,9 @@ def fetch_screener_data(link):
 
         all_tables = pd.read_html(url, flavor='bs4')
         combined_df = pd.concat(all_tables)
+        # The first column was renamed "Name" -> "Company" in Sep 2026; every
+        # selection below still says 'Name'.
+        combined_df = combined_df.rename(columns={"Company": "Name", "Company Name": "Name"})
 
         combined_df = combined_df.drop(
             combined_df[combined_df['S.No.'].isnull()].index)
