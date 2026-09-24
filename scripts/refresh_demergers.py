@@ -199,7 +199,7 @@ def build_rows(months: int, max_pages: int = 2) -> list:
     return aggregate(items)
 
 
-def main() -> None:
+def main() -> int:
     ap = argparse.ArgumentParser(description="Refresh scanX Demerger Tracking board")
     ap.add_argument("--months", type=int, default=12, help="lookback window (months)")
     ap.add_argument("--max-pages", type=int, default=2)
@@ -211,10 +211,10 @@ def main() -> None:
         rows = build_rows(args.months, args.max_pages)
     except Exception as e:  # noqa: BLE001
         print(f"[demerger] scrape failed: {type(e).__name__}: {e} — keeping last-good JSON")
-        return
+        return 1
     if not rows:
         print("[demerger] no data (need a logged-in Screener session) — keeping last-good JSON")
-        return
+        return 1
 
     _atomic(out / "demergers.json", json.dumps(rows, indent=2))
     now = datetime.now(IST)
@@ -224,7 +224,8 @@ def main() -> None:
             "source": "Screener full-text-search"}
     _atomic(out / "demergers_meta.json", json.dumps(meta, indent=2))
     print(f"[demerger] {len(rows)} companies | {dict(stages)} | {now:%H:%M:%S IST}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

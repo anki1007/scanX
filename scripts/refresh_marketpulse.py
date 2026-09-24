@@ -38,6 +38,28 @@ def _atomic(path, text):
     tmp = path.with_suffix(path.suffix + ".tmp"); tmp.write_text(text, encoding="utf-8"); os.replace(tmp, path)
 
 
+def _had_rows(path: Path) -> bool:
+    try:
+        return bool(json.loads(path.read_text(encoding="utf-8")).get("rows"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def publish(path: Path, rows: list, now: str) -> bool:
+    """Write the feed, unless it came back empty over one that was not.
+
+    Each feed used to be written unconditionally, so a single failed fetch
+    blanked its board until the next night. Run hourly that becomes a board
+    that flickers empty. An empty feed replaces an empty one (nothing is lost)
+    and a populated one always wins. Returns False when it kept the old file.
+    """
+    if not rows and _had_rows(path):
+        print(f"[mp] {path.name}: fetch came back empty - keeping the last good file")
+        return False
+    _atomic(path, json.dumps({"generated_at_ist": now, "rows": rows}, separators=(",", ":")))
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser(description="Market Pulse feeds")
     ap.add_argument("--out", default=str(ROOT / "docs" / "data"))
@@ -51,19 +73,25 @@ def main():
     for k in mp.TRADE_KINDS:
         d = mp.fetch_trades(k, sid); deals += d
         print(f"[mp] trades/{k}: {len(d)}"); time.sleep(args.delay)
-    _atomic(out / "deals.json", json.dumps({"generated_at_ist": now, "rows": deals}, separators=(",", ":")))
-
     actions = []
     for k in mp.ACTION_KINDS:
         a = mp.fetch_actions(k, sid); actions += a
         print(f"[mp] actions/{k}: {len(a)}"); time.sleep(args.delay)
-    _atomic(out / "actions.json", json.dumps({"generated_at_ist": now, "rows": actions}, separators=(",", ":")))
-
     anns = mp.fetch_announcements(sid)
     print(f"[mp] announcements: {len(anns)}")
-    _atomic(out / "announcements.json", json.dumps({"generated_at_ist": now, "rows": anns}, separators=(",", ":")))
+
+    kept = [name for name, rows in (("deals.json", deals), ("actions.json", actions),
+                                    ("announcements.json", anns))
+            if not publish(out / name, rows, now)]
     print(f"[mp] done: {len(deals)} deals, {len(actions)} actions, {len(anns)} announcements -> {out}")
+    if not (deals or actions or anns):
+        # All three at once is the feed or the login, not a quiet market.
+        print("[mp] every feed came back empty", file=sys.stderr)
+        return 1
+    if kept:
+        print(f"[mp] kept the previous {', '.join(kept)}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

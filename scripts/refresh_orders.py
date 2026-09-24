@@ -91,7 +91,7 @@ def consolidate(rows: list) -> list:
     return out
 
 
-def main() -> None:
+def main() -> int:
     ap = argparse.ArgumentParser(description="Refresh scanX Orders tab")
     ap.add_argument("--months", type=int, default=3)
     ap.add_argument("--max-pages", type=int, default=5)
@@ -100,7 +100,16 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 
-    rows, source = build_rows(args.max_pages, args.max_companies)
+    try:
+        rows, source = build_rows(args.max_pages, args.max_companies)
+    except Exception as e:  # noqa: BLE001
+        print(f"[orders] fetch failed: {type(e).__name__}: {e} - keeping last-good JSON")
+        return 1
+    if not rows:
+        # Written unconditionally before, so one failed fetch blanked the
+        # board until the next night -- or, run hourly, for an hour.
+        print("[orders] nothing returned (login or feed down) - keeping last-good JSON")
+        return 1
     price_note = "no prices"
     try:
         import refresh_scanx as rs
@@ -116,7 +125,8 @@ def main() -> None:
             "companies": len(companies), "source": source, "prices": price_note}
     _atomic(out / "orders_meta.json", json.dumps(meta, indent=2))
     print(f"[orders] {len(rows)} orders / {len(companies)} cos | {source} | {price_note} | {now:%H:%M:%S IST}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -156,7 +156,7 @@ def apply_workflow(rows: list) -> None:
         r["candidate"] = bool(bt == "Tender" and k is not None and k >= GATE)
 
 
-def main() -> None:
+def main() -> int:
     ap = argparse.ArgumentParser(description="Refresh scanX Buybacks tab")
     ap.add_argument("--months", type=int, default=12)
     ap.add_argument("--max-pages", type=int, default=2)
@@ -165,7 +165,16 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 
-    rows, source = build_rows(args.max_pages, args.max_companies)
+    try:
+        rows, source = build_rows(args.max_pages, args.max_companies)
+    except Exception as e:  # noqa: BLE001
+        print(f"[buybacks] fetch failed: {type(e).__name__}: {e} - keeping last-good JSON")
+        return 1
+    if not rows:
+        # Written unconditionally before, so one failed fetch blanked the
+        # board until the next night -- or, run hourly, for an hour.
+        print("[buybacks] nothing returned (login or feed down) - keeping last-good JSON")
+        return 1
     # authoritative Tender/Open-Market flag from Screener's /actions/buyback/ table
     offer_note = "offer-type: skipped"
     try:
@@ -191,7 +200,8 @@ def main() -> None:
             "candidates": cands, "source": source, "offer_types": offer_note, "prices": price_note}
     _atomic(out / "buybacks_meta.json", json.dumps(meta, indent=2))
     print(f"[buybacks] {len(rows)} buybacks / {cands} tender>=8% | {source} | {offer_note} | {price_note} | {now:%H:%M:%S IST}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

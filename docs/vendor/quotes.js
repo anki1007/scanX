@@ -4,8 +4,8 @@
  * ~91% of its rows:
  *
  *   data/quotes.json       ~500 names, BSE per-scrip, the direct exchange read
- *   data/quotes_wide.json  ~5,650 names, the Upstox market-quote pass over the
- *                          whole baked universe, with Yahoo filling its gaps
+ *   data/quotes_wide.json  ~5,650 names, a market-quote pass over the whole
+ *                          baked universe, with delayed closes filling its gaps
  *
  * Both refresh on the same ~20-minute cycle. Wide is laid down first and
  * narrow over it, so a code held by both keeps the direct read. Each file is

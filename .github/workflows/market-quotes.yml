@@ -1,31 +1,49 @@
-# scanX market-hours quotes — refreshes docs/data/quotes.json from NSE/BSE
-# every ~15 minutes during IST trading hours so the boards show delayed quotes
-# on GitHub Pages with NO desktop and NO broker account.
+# scanX market hours — quotes every ~15 minutes and the announcement-driven
+# boards (PEAD results, market pulse, demergers, special situations, buybacks,
+# orders) every hour, through IST trading hours, on GitHub's servers.
 #
-# Best-effort by design: if NSE blocks the runner this cycle, the previous
-# quotes file simply stays live and the boards fall back to crawl prices.
+# One job loops through the session (scripts/ci_intraday.sh) instead of one
+# job per cron tick. GitHub's shared scheduler fired the old 24-a-day cron
+# about twice a weekday, so the "15-minute" quotes were two snapshots. Now the
+# first firing that lands keeps going until 15:40 IST. A job may run 6 hours,
+# less than the session, so a loop that reaches its time cap with the market
+# still open dispatches its successor, which queues behind it and carries on.
+# A firing that lands after the close runs one cycle and exits.
+#
+# For the full session regardless of GitHub's cron, dispatch it once before
+# the open from any machine with the gh CLI (a VPS cron at 09:05 IST works):
+#     gh workflow run market-quotes.yml -R anki1007/scanX
+#
+# Fundamentals stay nightly (refresh-data.yml): they only change when a
+# company files results, and the bake that reads them takes over an hour.
+#
+# Best-effort by design: a source that blocks the runner this cycle leaves the
+# previous file live; the next cycle tries again.
 
-name: scanX market quotes
+name: scanX market hours
 
 on:
   schedule:
-    # GitHub's shared cron scheduler drops most */15 firings (observed ~3/day).
-    # Offset minutes away from :00 get picked up far more reliably; window
-    # 03:07-10:47 UTC = 08:37-16:17 IST, Mon-Fri.
+    # Offset minutes away from :00 get picked up more reliably. Window
+    # 03:07-10:47 UTC = 08:37-16:17 IST, Mon-Fri. Any ONE of these landing
+    # starts the loop for the rest of the session.
     - cron: "7,27,47 3-10 * * 1-5"
   workflow_dispatch: {}
 
 permissions:
   contents: write
+  actions: write     # the loop dispatches its own successor (gh workflow run)
 
 concurrency:
   group: scanx-quotes
   cancel-in-progress: false   # never cancel a run between its commit and push
 
 jobs:
-  quotes:
+  market-hours:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # The loop stops itself at 15:40 IST or after 330 minutes, whichever is
+    # first; this is only the backstop under GitHub's 6-hour job cap.
+    timeout-minutes: 350
     env:
       PYTHONIOENCODING: utf-8
       SCANX_NO_DHAN: "1"
@@ -33,6 +51,11 @@ jobs:
       # read-only Analytics token: prices the FULL baked universe, not just
       # the ~500 board names the BSE per-scrip endpoint can serve per cycle
       UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN: ${{ secrets.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN }}
+      # the hourly boards read logged-in feeds; one login per job, reused by
+      # every cycle through the session file the login step writes
+      SCREENER_EMAIL: ${{ secrets.SCREENER_EMAIL }}
+      SCREENER_PASSWORD: ${{ secrets.SCREENER_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,28 +64,17 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install minimal deps
-        run: python -m pip install --quiet --disable-pip-version-check requests curl_cffi yfinance pandas numpy
-
-      - name: Fetch quotes
-        run: python scripts/refresh_quotes.py || echo "quotes unavailable this cycle"
-
-      - name: Fetch wide quotes (whole universe, needs the Upstox token)
-        if: env.UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN != ''
-        run: python scripts/refresh_quotes.py --wide || echo "wide quotes unavailable this cycle"
-
-      - name: Commit & push
+      - name: Install dependencies
         run: |
-          git config user.name  "scanx-bot"
-          git config user.email "scanx@users.noreply.github.com"
-          git add docs/data/quotes.json docs/data/quotes_wide.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "no quote changes"; exit 0
-          fi
-          git commit -m "quotes: $(date -u +%H:%MZ)"
-          n=0
-          until git push origin HEAD:main; do
-            n=$((n+1)); [ "$n" -gt 3 ] && { echo "push failed after retries"; exit 1; }
-            git fetch origin main
-            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
-          done
+          python -m pip install --quiet --disable-pip-version-check \
+            "pandas>=2.0" "numpy>=1.24" "requests>=2.31" \
+            "beautifulsoup4>=4.12" "lxml>=5.0" "curl_cffi>=0.7" \
+            "yfinance>=0.2.40" "pdfplumber>=0.10" "pyotp>=2.9"
+
+      - name: Login for the hourly boards
+        # Quotes do not need it, so a failed login must not stop them.
+        continue-on-error: true
+        run: python scripts/screener_login.py
+
+      - name: Quotes and boards until the close
+        run: bash scripts/ci_intraday.sh

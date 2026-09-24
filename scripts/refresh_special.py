@@ -49,7 +49,7 @@ def build_rows(max_pages: int, max_companies: int = 150):
     return rows
 
 
-def main() -> None:
+def main() -> int:
     ap = argparse.ArgumentParser(description="Refresh scanX Special Situations")
     ap.add_argument("--max-pages", type=int, default=2)
     ap.add_argument("--max-companies", type=int, default=150)
@@ -57,7 +57,16 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 
-    rows = build_rows(args.max_pages, args.max_companies)
+    try:
+        rows = build_rows(args.max_pages, args.max_companies)
+    except Exception as e:  # noqa: BLE001
+        print(f"[special] search failed: {type(e).__name__}: {e} - keeping last-good JSON")
+        return 1
+    if not rows:
+        # This used to write the empty list over the board, so one failed
+        # search blanked it until the next night -- or, run hourly, for an hour.
+        print("[special] no situations returned (login?) - keeping last-good JSON")
+        return 1
     price_note = "no prices"
     try:
         import refresh_scanx as rs
@@ -72,7 +81,8 @@ def main() -> None:
             "by_category": dict(cats), "source": "Screener full-text-search", "prices": price_note}
     _atomic(out / "special_meta.json", json.dumps(meta, indent=2))
     print(f"[special] {len(rows)} situations | {dict(cats)} | {price_note} | {now:%H:%M:%S IST}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
