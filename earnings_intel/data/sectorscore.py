@@ -32,17 +32,41 @@ def _signal(score):
     return "TAILWIND" if score >= 0.5 else ("HEADWIND" if score <= -0.5 else "NEUTRAL")
 
 
+def _range_position(r: dict):
+    """Where a stock sits in its range, 0..1, or None.
+
+    pos_52w first: it is the 52-week position computed from real price history
+    in the bundle, and "upper half of the 52-week range" is what the board says
+    breadth means. The cmp/low_52w/ath formula is kept for rows that carry
+    those columns -- but no page the scraper reads has ever supplied low_52w
+    or ath, so on its own it left breadth null for all 22 sectors and 35% of
+    every sector score was a constant zero.
+    """
+    p52 = r.get("pos_52w")
+    if p52 is not None:
+        try:
+            v = float(p52) / 100.0
+        except (TypeError, ValueError):
+            v = None
+        if v is not None and 0.0 <= v <= 1.0:
+            return v
+    c, l, a = r.get("cmp"), r.get("low_52w"), r.get("ath")
+    if c and l and a and a > l:
+        return (c - l) / (a - l)
+    return None
+
+
+def _breadth(rows: list):
+    pos = [p for p in (_range_position(r) for r in rows) if p is not None]
+    return (sum(1 for p in pos if p > 0.5) / len(pos)) if pos else None
+
+
 def sector_score(rows: list) -> dict:
     pv = _med([r.get("profit_var") for r in rows])
     sv = _med([r.get("sales_var") for r in rows])
     roce = _med([r.get("roce") for r in rows])
     fii = _med([r.get("fii_chg") for r in rows])
-    pos = []
-    for r in rows:
-        c, l, a = r.get("cmp"), r.get("low_52w"), r.get("ath")
-        if c and l and a and a > l:
-            pos.append((c - l) / (a - l))
-    breadth = (sum(1 for p in pos if p > 0.5) / len(pos)) if pos else None
+    breadth = _breadth(rows)
 
     mom = _clip(((pv or 0) + (sv or 0)) / 40.0)
     strength = _clip((breadth - 0.5) * 2) if breadth is not None else 0.0
