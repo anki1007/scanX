@@ -224,6 +224,7 @@ function renderMarket(d){
       <span class="big" style="color:${c}">${sgn(m.score)}</span></div>
     <span class="badge ${m.signal}">${m.signal}</span>
     <span class="na" style="font-size:12px">${m.companies} companies · ${m.sectors} sectors · ${staleChip(d.generated_at_ist)||'<span class="dot"></span>'}${esc(d.generated_at_ist||'')}</span>
+    ${(d.source&&d.source.screen_ok===false)?'<span class="na" style="font-size:11px;color:var(--amber)" title="Sector membership carried over from the last full classification; fundamentals from each company\'s latest filings">'+((d.source.filled_sectors||[]).length?esc(String(d.source.filled_sectors.length))+' sector(s) built from company filings - their live pages were unavailable this run':'built from company filings - live sector pages unavailable this run')+'</span>':''}
   </div><div class="chartbox"><canvas id="trend"></canvas></div>`;
 }
 let trendChart=null;

@@ -15,6 +15,7 @@ PURE: no network, no clock. Everything here is arithmetic over dicts.
 """
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from typing import Any, Iterable
 
@@ -24,7 +25,9 @@ from typing import Any, Iterable
 from .industries import _num, _yoy
 
 __all__ = ["row_from_bundle", "rows_from_bundles", "merge", "technical_of",
-           "fii_change", "enrichment_of", "enrich"]
+           "fii_change", "enrichment_of", "enrich", "dedupe_listings",
+           "sector_rows_from_bundles", "is_bank_format", "ebitda_of",
+           "ev_ebitda_of", "magic_row_from_bundle", "quarter_index"]
 
 
 def technical_of(bundle: Any) -> dict:
@@ -243,3 +246,204 @@ def merge(screen: Iterable[Mapping] | None,
         if isinstance(row, Mapping) and row.get("code"):
             merged.setdefault(str(row["code"]), dict(row))
     return list(merged.values())
+
+
+# ------------------------------------------------ one company, two listings
+# The same company can sit on disk under its BSE number and its NSE symbol
+# (500500 / HINDMOTORS, 524632 / SHUKRAPHAR ...). A board built from bundles
+# then counts it twice: ranked twice on IV, and its market cap weighted twice
+# into the sector score. Merge by code alone cannot see that.
+
+_NAME_NOISE = re.compile(r"\b(ltd|limited|the|co|company|corp|corporation)\b|[^a-z0-9]+")
+
+
+def _company_key(name: Any) -> str:
+    return _NAME_NOISE.sub("", str(name or "").lower())
+
+
+def dedupe_listings(rows: Iterable[Mapping] | None,
+                    name_of: Any = None) -> list[dict]:
+    """Drop the second code of a company that is listed twice.
+
+    Conservative on purpose: two rows are the same company only when their
+    names normalise to the same key AND one code is a BSE number while the
+    other is not -- the exact signature of a dual listing. Two different
+    companies that happen to share a name both keep their rows. The FIRST row
+    wins, so callers order by preference (screen rows, then membership).
+
+    `name_of(row)` supplies the name to compare when a row's own is not
+    comparable: the screen abbreviates ("Permanent Magnet", "Shukra Pharma.")
+    where the bundle for the other listing spells it out, so a screen row
+    must be keyed by the full name in its own bundle or ~40 dual listings
+    slip through.
+    """
+    out: list[dict] = []
+    seen: dict[str, str] = {}
+    for row in (rows or []):
+        if not isinstance(row, Mapping):
+            continue
+        code = str(row.get("code") or "")
+        key = _company_key((name_of(row) if name_of else None) or row.get("name"))
+        prior = seen.get(key) if key else None
+        if prior is not None and prior.isdigit() != code.isdigit():
+            continue
+        if key and key not in seen:
+            seen[key] = code
+        out.append(dict(row))
+    return out
+
+
+_MONTHS = {m: i for i, m in enumerate(
+    ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"), 1)}
+
+
+def quarter_index(header: Any) -> int | None:
+    """'Jun 2026' -> 2026*12+6, a month count that orders and subtracts."""
+    m = re.match(r"\s*([A-Za-z]{3})[a-z]*\.?\s+(\d{4})", str(header or ""))
+    if not m or m.group(1).lower() not in _MONTHS:
+        return None
+    return int(m.group(2)) * 12 + _MONTHS[m.group(1).lower()]
+
+
+def _last_quarter(bundle: Any) -> int | None:
+    heads = _table(bundle, "quarters").get("headers") or []
+    return quarter_index(heads[-1]) if heads else None
+
+
+def sector_rows_from_bundles(pairs: Iterable[tuple[str, Any]],
+                             membership: Mapping[str, str] | None = None,
+                             min_quarter: int | None = None
+                             ) -> tuple[list[dict], int]:
+    """Sector-board rows from bundles, when the live sector pages cannot say.
+
+    The sector comes from the last good sector_stocks.json snapshot first, so
+    membership stays continuous with the pages, then from the bundle's own
+    industry classification, which is how a new listing gets on. A row with no
+    sector is left out rather than grouped under "Unknown": that group would
+    be a 23rd sector the board does not have.
+
+    `min_quarter` (a quarter_index) blanks the growth of a bundle whose
+    quarter table ends before it. ~150 bundles hold a consolidated table that
+    stopped years ago -- one large cap's ends in March 2015 -- and a growth
+    rate from then would sit in today's sector median as if it were news. The
+    row stays: its market cap and 52-week position are current.
+
+    Returns (rows, how many scorable companies could not be placed).
+    """
+    from .sectors import CODE_OF, industry_name
+    member = membership if isinstance(membership, Mapping) else {}
+    rows: list[dict] = []
+    unplaced = 0
+    for code, bundle in (pairs or []):
+        row = row_from_bundle(code, bundle)
+        if row is None:
+            continue
+        fundamental = bundle.get("fundamental") if isinstance(bundle, Mapping) else None
+        cls = fundamental.get("classification") if isinstance(fundamental, Mapping) else None
+        sec = member.get(str(code).upper()) or industry_name(cls)
+        if sec not in CODE_OF:
+            unplaced += 1
+            continue
+        if min_quarter is not None:
+            last = _last_quarter(bundle)
+            if last is None or last < min_quarter:
+                row["sales_var"] = row["profit_var"] = None
+        row.update(enrichment_of(bundle))
+        row["sector"] = sec
+        row["sector_code"] = CODE_OF[sec]
+        row["src"] = "bundle"
+        rows.append(row)
+    # Membership codes first, so a dual listing keeps the code the pages used.
+    rows.sort(key=lambda r: 0 if str(r["code"]).upper() in member else 1)
+    return rows, unplaced
+
+
+# ------------------------------------------------------------- magic formula
+# Greenblatt ranks on ROCE and EV/EBITDA. When the screen that supplies both is
+# unavailable, the bundles can: ROCE is the same overview figure, and EV/EBITDA
+# comes from the ratio feed each bundle carries, measured at a median 3.2% from
+# the screen's own value across 3,792 non-financials. Derived from statements
+# instead it is 3.7-6.9% off (no bundle has a cash line, so EV is gross of
+# cash), and for banks it is useless: 75% off, always far too cheap.
+
+_FRESH_PL_YEAR = 2025
+
+
+def _last_value(series: Any) -> float | None:
+    if not isinstance(series, list) or not series:
+        return None
+    return _num(series[-1])
+
+
+def _table(bundle: Any, name: str) -> Mapping:
+    f = bundle.get("fundamental") if isinstance(bundle, Mapping) else None
+    t = f.get(name) if isinstance(f, Mapping) else None
+    return t if isinstance(t, Mapping) else {}
+
+
+def is_bank_format(bundle: Any) -> bool:
+    """A lender's P&L: "Financing Profit" instead of an operating profit."""
+    rows = _table(bundle, "profit_loss").get("rows")
+    return isinstance(rows, Mapping) and "Financing Profit" in rows
+
+
+def _pl_is_fresh(bundle: Any) -> bool:
+    """The annual table must reach a recent year, and so must the quarters.
+
+    A TTM column alone is not enough: 140 bundles carry one over a last quarter
+    from 2019-2025.
+    """
+    heads = _table(bundle, "profit_loss").get("headers") or []
+    qheads = _table(bundle, "quarters").get("headers") or []
+    if not heads or not qheads:
+        return False
+    years = [int(y) for y in re.findall(r"(20\d\d)", " ".join(map(str, heads[-2:])))]
+    qyear = re.findall(r"(20\d\d)", str(qheads[-1]))
+    return (bool(years) and max(years) >= _FRESH_PL_YEAR
+            and bool(qyear) and int(qyear[0]) >= _FRESH_PL_YEAR)
+
+
+def ebitda_of(bundle: Any) -> float | None:
+    """PBT + interest + depreciation from the latest annual column."""
+    if not _pl_is_fresh(bundle):
+        return None
+    rows = _table(bundle, "profit_loss").get("rows") or {}
+    pbt = _last_value(rows.get("Profit before tax"))
+    if pbt is None:
+        return None
+    return pbt + (_last_value(rows.get("Interest")) or 0.0) + (_last_value(rows.get("Depreciation")) or 0.0)
+
+
+def ev_ebitda_of(bundle: Any, mcap: float | None) -> tuple[float | None, str | None]:
+    """(EV/EBITDA, where it came from): the feed first, statements second.
+
+    Never derived for a lender: the feed has no value for the big banks, and a
+    statement-derived figure makes every bank look several times cheaper than
+    it is, which moves every other company's EV rank as well.
+    """
+    feed = bundle.get("upstox_ratios") if isinstance(bundle, Mapping) else None
+    row = feed.get("ev_ebitda") if isinstance(feed, Mapping) else None
+    value = _num(row.get("value")) if isinstance(row, Mapping) else None
+    if value is not None and value > 0:
+        return _round(value), "feed"
+    if is_bank_format(bundle) or not mcap:
+        return None, None
+    ebitda = ebitda_of(bundle)
+    if ebitda is None or ebitda <= 0:
+        return None, None
+    brow = _table(bundle, "balance_sheet").get("rows") or {}
+    debt = _last_value(brow.get("Borrowings") or brow.get("Borrowing")) or 0.0
+    return _round((mcap + debt) / ebitda), "derived"
+
+
+def magic_row_from_bundle(code: str, bundle: Any) -> dict | None:
+    """A Magic Formula row in the screen's shape, or None if it cannot rank."""
+    base = row_from_bundle(code, bundle)
+    if base is None:
+        return None
+    ev, src = ev_ebitda_of(bundle, base["mcap"])
+    return {
+        "code": base["code"], "name": base["name"], "cmp": base["cmp"],
+        "mcap": base["mcap"], "pe": base["pe"], "roce": base["roce"],
+        "ev_ebitda": ev, "ev_src": src, "bank_fmt": is_bank_format(bundle),
+    }

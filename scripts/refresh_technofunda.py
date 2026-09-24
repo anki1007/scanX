@@ -63,9 +63,17 @@ def universe(sid, query, pages):
         if cache.exists() and (time.time() - cache.stat().st_mtime) < 18 * 3600:
             raw = cache.read_bytes().rstrip(b"\x00").rstrip()
             rows = json.loads(raw)
+            # Only if the sector pages actually answered. A universe that
+            # refresh_sectors rebuilt from bundles is the same set held()
+            # returns below, and passing it off as "screened" would hide the
+            # outage in this step's log and skip the screen that might work.
+            screened = [r for r in rows if r.get("src") != "bundle"]
+            if screened:
+                # The bundle-filled rows come back through held() anyway.
+                print(f"[techno] using cached universe ({len(screened)} rows from refresh_sectors)")
+                return screened
             if rows:
-                print(f"[techno] using cached universe ({len(rows)} rows from refresh_sectors)")
-                return rows
+                print("[techno] cached universe is bundle-built - trying the screen")
     except Exception:  # noqa: BLE001
         pass
     from earnings_intel.data.screener import ScreenerClient

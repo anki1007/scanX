@@ -84,8 +84,11 @@ def compute(rows: list[dict], sector_of=None) -> list[dict]:
                 r["sec_sig"] = sec.get("label")
                 r["sec_score"] = sec.get("score")
 
+    # bank_fmt: the company files a lender's P&L. Caught by statement shape,
+    # not name, so "XYZ Holdings" that is really an NBFC is flagged too.
     for r in rs:
-        r["fin"] = 1 if is_financial(r.get("sector"), r.get("name")) else 0
+        r["fin"] = 1 if (r.get("bank_fmt")
+                         or is_financial(r.get("sector"), r.get("name"))) else 0
 
     rs.sort(key=lambda r: (r["r_total"], mcap_key(r), r["code"]))
     return rs
