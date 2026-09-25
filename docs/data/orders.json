@@ -63,7 +63,7 @@
     "market_cap": 222.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 406.35,
+    "ltp": 406.5,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -72,7 +72,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": -1.75
+    "pct_change": -1.72
   },
   {
     "code": "BEML",
@@ -163,7 +163,7 @@
     "market_cap": 49.6,
     "sales": 1.15,
     "opm": 13.04,
-    "ltp": 160.0,
+    "ltp": 157.8,
     "revenue_fy": 24.86,
     "np_prev_q": 0.41,
     "np_latest_q": 0.02,
@@ -172,7 +172,7 @@
     "np_growth_qoq": -95.12,
     "eps_growth_qoq": -95.45,
     "order_size_pct": 63.8,
-    "pct_change": 6.42
+    "pct_change": 4.96
   },
   {
     "code": "STEAMHOUSE",
@@ -338,7 +338,7 @@
     "market_cap": 8.01,
     "sales": 8.91,
     "opm": 17.17,
-    "ltp": 27.6,
+    "ltp": 29.9,
     "revenue_fy": 15.23,
     "np_prev_q": 0.65,
     "np_latest_q": 0.89,
@@ -347,7 +347,7 @@
     "np_growth_qoq": 36.92,
     "eps_growth_qoq": 37.05,
     "order_size_pct": 26.46,
-    "pct_change": 0.0
+    "pct_change": 8.33
   },
   {
     "code": "531411",
@@ -763,7 +763,7 @@
     "market_cap": 140.0,
     "sales": 77.0,
     "opm": 19.0,
-    "ltp": 182.95,
+    "ltp": 179.0,
     "revenue_fy": 119.0,
     "np_prev_q": 6.0,
     "np_latest_q": 10.0,
@@ -772,7 +772,7 @@
     "np_growth_qoq": 66.67,
     "eps_growth_qoq": 65.42,
     "order_size_pct": 1.97,
-    "pct_change": -1.77
+    "pct_change": -3.89
   },
   {
     "code": "AUTOPALIND",
@@ -863,7 +863,7 @@
     "market_cap": 611.0,
     "sales": 78.4,
     "opm": 15.31,
-    "ltp": 263.0,
+    "ltp": 263.55,
     "revenue_fy": 320.0,
     "np_prev_q": 10.77,
     "np_latest_q": 7.5,
@@ -872,7 +872,7 @@
     "np_growth_qoq": -30.36,
     "eps_growth_qoq": -30.39,
     "order_size_pct": 1.46,
-    "pct_change": -3.31
+    "pct_change": -3.11
   },
   {
     "code": "NBCC",
@@ -1238,7 +1238,7 @@
     "market_cap": 45.8,
     "sales": 0.0,
     "opm": null,
-    "ltp": 181.05,
+    "ltp": 181.0,
     "revenue_fy": 0.03,
     "np_prev_q": -0.02,
     "np_latest_q": 0.43,
@@ -1247,7 +1247,7 @@
     "np_growth_qoq": 2250.0,
     "eps_growth_qoq": 2225.0,
     "order_size_pct": null,
-    "pct_change": 0.95
+    "pct_change": -0.03
   },
   {
     "code": "543928",
@@ -1263,7 +1263,7 @@
     "market_cap": 1211.0,
     "sales": 173.0,
     "opm": 11.0,
-    "ltp": 1274.75,
+    "ltp": 1257.25,
     "revenue_fy": 334.0,
     "np_prev_q": 15.0,
     "np_latest_q": 11.0,
@@ -1272,7 +1272,7 @@
     "np_growth_qoq": -26.67,
     "eps_growth_qoq": -28.49,
     "order_size_pct": null,
-    "pct_change": 0.5
+    "pct_change": -0.88
   },
   {
     "code": "543963",
@@ -1563,7 +1563,7 @@
     "market_cap": 101.0,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.27,
+    "ltp": 4.25,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -1572,7 +1572,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 1.43
+    "pct_change": 0.95
   },
   {
     "code": "WELENT",
@@ -1813,7 +1813,7 @@
     "market_cap": 35.7,
     "sales": 17.19,
     "opm": 7.68,
-    "ltp": 35.39,
+    "ltp": 34.52,
     "revenue_fy": 70.65,
     "np_prev_q": 0.75,
     "np_latest_q": 0.42,
@@ -1822,7 +1822,7 @@
     "np_growth_qoq": -44.0,
     "eps_growth_qoq": -43.24,
     "order_size_pct": null,
-    "pct_change": -2.37
+    "pct_change": -4.77
   },
   {
     "code": "ZAGGLE",
@@ -1888,7 +1888,7 @@
     "market_cap": 1559.0,
     "sales": 2.35,
     "opm": -3.4,
-    "ltp": 94.95,
+    "ltp": 96.25,
     "revenue_fy": 4.38,
     "np_prev_q": -0.18,
     "np_latest_q": -0.07,
@@ -1897,7 +1897,7 @@
     "np_growth_qoq": 61.11,
     "eps_growth_qoq": 100.0,
     "order_size_pct": null,
-    "pct_change": -2.06
+    "pct_change": -0.72
   },
   {
     "code": "544047",
@@ -1913,7 +1913,7 @@
     "market_cap": 71.9,
     "sales": 150.0,
     "opm": 5.0,
-    "ltp": 33.0,
+    "ltp": 32.5,
     "revenue_fy": 362.0,
     "np_prev_q": 3.0,
     "np_latest_q": 1.0,
@@ -1922,7 +1922,7 @@
     "np_growth_qoq": -66.67,
     "eps_growth_qoq": -76.6,
     "order_size_pct": null,
-    "pct_change": -2.34
+    "pct_change": -3.82
   },
   {
     "code": "544440",
@@ -1988,7 +1988,7 @@
     "market_cap": 85.1,
     "sales": 11.39,
     "opm": 9.39,
-    "ltp": 67.85,
+    "ltp": 67.52,
     "revenue_fy": 39.18,
     "np_prev_q": 0.69,
     "np_latest_q": 1.01,
@@ -1997,7 +1997,7 @@
     "np_growth_qoq": 46.38,
     "eps_growth_qoq": 46.87,
     "order_size_pct": null,
-    "pct_change": 4.4
+    "pct_change": 3.89
   },
   {
     "code": "GPTINFRA",
@@ -2063,7 +2063,7 @@
     "market_cap": 389.0,
     "sales": 100.0,
     "opm": 30.0,
-    "ltp": 275.05,
+    "ltp": 272.0,
     "revenue_fy": 172.0,
     "np_prev_q": 14.0,
     "np_latest_q": 24.0,
@@ -2072,7 +2072,7 @@
     "np_growth_qoq": 71.43,
     "eps_growth_qoq": 69.6,
     "order_size_pct": null,
-    "pct_change": -1.04
+    "pct_change": -2.14
   },
   {
     "code": "OMPOWER",
@@ -2438,7 +2438,7 @@
     "market_cap": 146.0,
     "sales": 64.79,
     "opm": 11.34,
-    "ltp": 4.36,
+    "ltp": 4.34,
     "revenue_fy": 329.0,
     "np_prev_q": 1.35,
     "np_latest_q": 5.21,
@@ -2447,7 +2447,7 @@
     "np_growth_qoq": 285.93,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": 2.35
+    "pct_change": 1.88
   },
   {
     "code": "KEC",
