@@ -126,6 +126,15 @@
     "orders_pct_revenue": 26.46
   },
   {
+    "code": "531411",
+    "name": "Tuni Textile Mills Ltd",
+    "order_count": 1,
+    "total_value_cr": 30.17,
+    "revenue_fy": 115.0,
+    "market_cap": 113.0,
+    "orders_pct_revenue": 26.23
+  },
+  {
     "code": "OSWALPUMPS",
     "name": "Oswal Pumps Ltd",
     "order_count": 1,
@@ -171,15 +180,6 @@
     "orders_pct_revenue": 8.56
   },
   {
-    "code": "RITES",
-    "name": "Rites Ltd",
-    "order_count": 1,
-    "total_value_cr": 154.65,
-    "revenue_fy": 2318.0,
-    "market_cap": 9576.0,
-    "orders_pct_revenue": 6.67
-  },
-  {
     "code": "544856",
     "name": "Fusion Klassroom Edutech Limited",
     "order_count": 1,
@@ -196,6 +196,15 @@
     "revenue_fy": 2348.0,
     "market_cap": 21044.0,
     "orders_pct_revenue": 4.96
+  },
+  {
+    "code": "RCF",
+    "name": "Rashtriya Chemicals & Fertilizers Ltd",
+    "order_count": 1,
+    "total_value_cr": 797.0,
+    "revenue_fy": 18695.0,
+    "market_cap": 5990.0,
+    "orders_pct_revenue": 4.26
   },
   {
     "code": "543928",
@@ -268,15 +277,6 @@
     "revenue_fy": 119.0,
     "market_cap": 138.0,
     "orders_pct_revenue": 1.97
-  },
-  {
-    "code": "AUTOPALIND",
-    "name": "RNIT AI Solutions Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.0,
-    "revenue_fy": 53.0,
-    "market_cap": 903.0,
-    "orders_pct_revenue": 1.89
   },
   {
     "code": "544561",
@@ -459,21 +459,30 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "531411",
-    "name": "Tuni Textile Mills Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 115.0,
-    "market_cap": 113.0,
-    "orders_pct_revenue": null
-  },
-  {
     "code": "509040",
     "name": "Netlink Solutions (India) Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 0.03,
     "market_cap": 44.8,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "RITES",
+    "name": "Rites Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2318.0,
+    "market_cap": 9576.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "AUTOPALIND",
+    "name": "RNIT AI Solutions Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 53.0,
+    "market_cap": 903.0,
     "orders_pct_revenue": null
   },
   {

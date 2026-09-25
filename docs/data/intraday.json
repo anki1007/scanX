@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-25T19:45:50+05:30",
+ "generated_at": "2026-09-26T00:13:25+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -247,21 +247,6 @@
    "exchange": "BSE",
    "last": 25.23,
    "pct_change": 19.91,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "SILLYMONKS",
-   "exchange": "BSE",
-   "last": 24.13,
-   "pct_change": 19.81,
    "open": null,
    "high": null,
    "low": null,
@@ -1492,6 +1477,21 @@
    "exchange": "BSE",
    "last": 27.97,
    "pct_change": 9.69,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "BHAGERIA",
+   "exchange": "BSE",
+   "last": 393.55,
+   "pct_change": 9.67,
    "open": null,
    "high": null,
    "low": null,
