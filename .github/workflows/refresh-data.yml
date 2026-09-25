@@ -165,19 +165,26 @@ jobs:
           # MONTHLY bars, so a daily re-run reproduces the same answer, and it
           # is the only board needing torch. Installing that costs a couple of
           # minutes, which is worth paying once a week and not six times.
-          if [ "$(date -u +%u)" = "6" ]; then
+          # Friday's run (or Saturday UTC, when GitHub starts Friday's run
+          # late). It was Saturday only, but the schedule is Mon-Fri, so it
+          # trained only on the weeks a Friday run happened to slip past
+          # midnight UTC -- the board went 26 days without an update.
+          if [ "$(date -u +%u)" -ge 5 ]; then
             python -m pip install --quiet --disable-pip-version-check \
               --index-url https://download.pytorch.org/whl/cpu "torch" || true
             python -m pip install --quiet --disable-pip-version-check \
               "stable-baselines3>=2.0" "gymnasium>=0.29" || true
             run python scripts/refresh_stdrl.py --timesteps 20000 --cost-bps 25
           else
-            echo "[stdrl] skipped - trains on Saturdays only"
+            echo "[stdrl] skipped - trains on Fridays only"
           fi
           # daily close for EVERY baked company: the intraday quotes file only
           # covers ~500 board names, so without this ~90% of company pages fall
           # back to the price frozen into their bundle at bake time
           run python scripts/refresh_quotes.py --wide
+          # the movers board from those closes, so the home page does not show
+          # it stale on a day the market-hours loop never got a runner
+          run python scripts/refresh_intraday_movers.py
           run python scripts/refresh_iv.py --per-sector 30
           echo "failed=${FAILED}" >> "$GITHUB_OUTPUT"
           exit 0

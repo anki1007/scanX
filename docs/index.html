@@ -267,7 +267,7 @@
       </a>
       </div>
     </section>
-      <div class="foot">Rules-based screens for research and education, not investment advice. Freshness badges turn amber once a module's data is more than three days old.</div>
+      <div class="foot">Rules-based screens for research and education, not investment advice. Freshness badges turn amber once a module's data is more than three days old (five weeks for monthly vehicle data, eight days for the weekly model).</div>
     </div>
   </div>
 </div>
@@ -292,12 +292,12 @@ const MODS={
   "ivranking.html":{f:"data/iv_ranking.json",s:d=>n(d.candidates)+' candidates'},
   "returnmaps.html":{f:"data/iv_returnmap.json",s:d=>n((d.rows||[]).length)+' stocks mapped'},
   "fairvalue.html":{f:"data/iv_fairvalue.json",s:d=>n((d.rows||[]).length)+' valued'},
-  "stdrl.html":{f:"data/stdrl.json",s:d=>d.best_agent?'best agent: '+d.best_agent:''},
+  "stdrl.html":{f:"data/stdrl.json",s:d=>d.best_agent?'best agent: '+d.best_agent:'',m:8},
   "marketmood.html":{f:"data/marketmood_meta.json",s:d=>n(d.history_days)+' days of history'},
   "fii.html":{f:"data/fii.json",s:d=>n((d.sectors||[]).length)+' sectors'},
   "fpi.html":{f:"data/fpi.json",s:null},
   "banking.html":{f:"data/banking_meta.json",s:d=>n(d.banks)+' banks'},
-  "auto.html":{f:"data/auto_meta.json",s:d=>n(d.makers)+' makers'},
+  "auto.html":{f:"data/auto_meta.json",s:d=>n(d.makers)+' makers',m:35},
   "deals.html":{f:"data/deals.json",s:d=>n((d.rows||[]).length)+' deals'},
   "announcements.html":{f:"data/announcements.json",s:d=>n((d.rows||[]).length)+' announcements'},
   "actions.html":{f:"data/actions.json",s:d=>n((d.rows||[]).length)+' actions'}
@@ -329,7 +329,7 @@ async function paint(){
       dated++;
       // A stale module is flagged, never hidden: several boards went weeks
       // without updating and nothing on the site said so.
-      if(age>STALE_DAYS){ badge.className='mod-f stale';
+      if(age>(MODS[href].m||STALE_DAYS)){ badge.className='mod-f stale';
         badge.title='No new data for '+age+' days'; }
       else { badge.className='mod-f ok'; fresh++; }
       badge.textContent=agoTxt(age);

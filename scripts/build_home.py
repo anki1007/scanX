@@ -141,8 +141,17 @@ for title, hrefs in sections:
         f'      <h2 class="sec-h">{esc(title)}</h2>\n'
         f'      <div class="grid">\n' + "\n".join(cells) + "\n      </div>\n    </section>")
 
+# Days a module may go without new data before its badge turns amber, where
+# the default three days is wrong for it. Vahan publishes registrations once a
+# month and is refreshed from a desktop, and STDRL trains weekly on monthly
+# bars: holding either to three days showed them stale most of the time and
+# taught readers to ignore the badge.
+MAX_AGE = {"auto.html": 35, "stdrl.html": 8}
+
 loaders = ",\n".join(
-    f'  "{h}":{{f:"{f}",s:{s if s else "null"}}}' for h, (f, s) in LOAD.items())
+    f'  "{h}":{{f:"{f}",s:{s if s else "null"}'
+    + (f',m:{MAX_AGE[h]}' if h in MAX_AGE else '') + '}'
+    for h, (f, s) in LOAD.items())
 
 page = f"""<!DOCTYPE html>
 <html lang="en">
@@ -204,7 +213,7 @@ page = f"""<!DOCTYPE html>
 
     <div class="wrap">
 {chr(10).join(cards)}
-      <div class="foot">Rules-based screens for research and education, not investment advice. Freshness badges turn amber once a module's data is more than three days old.</div>
+      <div class="foot">Rules-based screens for research and education, not investment advice. Freshness badges turn amber once a module's data is more than three days old (five weeks for monthly vehicle data, eight days for the weekly model).</div>
     </div>
   </div>
 </div>
@@ -244,7 +253,7 @@ async function paint(){{
       dated++;
       // A stale module is flagged, never hidden: several boards went weeks
       // without updating and nothing on the site said so.
-      if(age>STALE_DAYS){{ badge.className='mod-f stale';
+      if(age>(MODS[href].m||STALE_DAYS)){{ badge.className='mod-f stale';
         badge.title='No new data for '+age+' days'; }}
       else {{ badge.className='mod-f ok'; fresh++; }}
       badge.textContent=agoTxt(age);

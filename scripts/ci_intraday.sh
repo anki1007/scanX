@@ -21,7 +21,7 @@ MAX_MINUTES="${MAX_MINUTES:-330}"  # stay well inside the 6-hour job cap
 QUOTES_EVERY="${QUOTES_EVERY:-15}" # minutes
 BOARDS_EVERY="${BOARDS_EVERY:-60}" # minutes
 
-QUOTE_FILES="docs/data/quotes.json docs/data/quotes_wide.json"
+QUOTE_FILES="docs/data/quotes.json docs/data/quotes_wide.json docs/data/intraday.json"
 BOARD_FILES="docs/data/pead.json docs/data/pead.csv docs/data/meta.json
   docs/data/deals.json docs/data/actions.json docs/data/announcements.json
   docs/data/demergers.json docs/data/demergers_meta.json
@@ -100,6 +100,8 @@ while :; do
   if [ -n "${UPSTOX_FUNDAMENTAL_ANALYTICS_TOKEN:-}" ]; then
     python scripts/refresh_quotes.py --wide || echo "wide quotes unavailable this cycle"
   fi
+  # the movers board, built from those quotes (never a synthetic feed)
+  python scripts/refresh_intraday_movers.py || true
 
   if [ $(( now - last_boards )) -ge $(( BOARDS_EVERY * 60 )) ]; then
     last_boards=$now; BOARD_RUNS=$((BOARD_RUNS + 1))

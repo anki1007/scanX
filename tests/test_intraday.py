@@ -114,6 +114,10 @@ def _board_files():
     return block.split()
 
 
+def _quote_files():
+    return re.search(r'QUOTE_FILES="([^"]+)"', LOOP.read_text(encoding="utf-8")).group(1).split()
+
+
 def _loop_scripts():
     return re.findall(r"python (scripts/\w+\.py)", LOOP.read_text(encoding="utf-8"))
 
@@ -122,6 +126,7 @@ def _loop_scripts():
 # name in that one script, so "meta.json" cannot pass on "buybacks_meta.json".
 WRITERS = {
     "quotes.json": "refresh_quotes.py", "quotes_wide.json": "refresh_quotes.py",
+    "intraday.json": "refresh_intraday_movers.py",
     "pead.json": "refresh_scanx.py", "pead.csv": "refresh_scanx.py",
     "meta.json": "refresh_scanx.py",
     "deals.json": "refresh_marketpulse.py", "actions.json": "refresh_marketpulse.py",
@@ -136,7 +141,7 @@ WRITERS = {
 
 def test_every_file_the_loop_publishes_is_written_by_a_script_it_runs():
     run = {Path(s).name for s in _loop_scripts()}
-    for f in _board_files() + ["docs/data/quotes.json", "docs/data/quotes_wide.json"]:
+    for f in _board_files() + _quote_files():
         name = Path(f).name
         script = WRITERS.get(name)
         assert script, f"{f} is published but has no known writer"
@@ -200,3 +205,41 @@ def test_a_failed_login_does_not_stop_the_quotes():
     wf = QUOTES_WF.read_text(encoding="utf-8")
     login = wf[wf.index("screener_login.py") - 200:wf.index("screener_login.py")]
     assert "continue-on-error: true" in login
+
+
+# ------------------------------------------------------ movers + home page
+
+def test_movers_come_from_real_quotes_stamped_with_their_own_time():
+    import refresh_intraday_movers as m
+    quotes = {"ts": 1789375807, "quotes": {
+        "AAA": {"ltp": 110.0, "pct": 10.0, "open": 100, "high": 112, "low": 99,
+                "prev_close": 100.0},
+        "DEAD": {"ltp": 0.0, "pct": -100.0}}}
+    wide = {"ts": 1789375800, "quotes": {"AAA": {"ltp": 1.0, "pct": 0.0},
+                                         "BBB": {"ltp": 50.0, "pct": -2.0}}}
+    out = m.build(quotes, wide, [{"code": "BBB", "pead_score": 90, "pead_category": "HIGH"}])
+    by = {r["symbol"]: r for r in out["rows"]}
+    assert set(by) == {"AAA", "BBB"}, "an untraded LTP-0 scrip is not a mover"
+    assert by["AAA"]["last"] == 110.0, "the exchange read wins over the wide feed"
+    assert by["BBB"]["pead_category"] == "HIGH"
+    assert out["generated_at"].endswith("+05:30"), "a UTC runner must not shift the stamp"
+    assert out["generated_at"].startswith("2026-09-14T14:"), "the quotes' time, not now"
+
+
+def test_no_quotes_means_no_movers_file():
+    import refresh_intraday_movers as m
+    assert m.build({}, {}, []) is None
+
+
+def test_monthly_and_weekly_modules_are_not_held_to_three_days():
+    html = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
+    assert re.search(r'"auto\.html":\{[^\n]*,m:35\}', html)
+    assert re.search(r'"stdrl\.html":\{[^\n]*,m:8\}', html)
+    assert "age>(MODS[href].m||STALE_DAYS)" in html
+
+
+def test_stdrl_trains_on_a_day_the_nightly_schedule_actually_runs():
+    """Gated to Saturday under a Mon-Fri cron, it trained only when a run
+    slipped past midnight UTC."""
+    wf = NIGHTLY_WF.read_text(encoding="utf-8")
+    assert '"$(date -u +%u)" -ge 5' in wf and '= "6" ]' not in wf
