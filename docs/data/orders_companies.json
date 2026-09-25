@@ -18,15 +18,6 @@
     "orders_pct_revenue": 257.31
   },
   {
-    "code": "517417",
-    "name": "Patels Airtemp (India) Ltd",
-    "order_count": 1,
-    "total_value_cr": 226.0,
-    "revenue_fy": 186.0,
-    "market_cap": 222.0,
-    "orders_pct_revenue": 121.51
-  },
-  {
     "code": "BEML",
     "name": "BEML Ltd",
     "order_count": 1,
@@ -88,6 +79,15 @@
     "revenue_fy": 35.61,
     "market_cap": 21.6,
     "orders_pct_revenue": 43.84
+  },
+  {
+    "code": "544538",
+    "name": "Praruh Technologies Ltd",
+    "order_count": 1,
+    "total_value_cr": 31.21,
+    "revenue_fy": 101.0,
+    "market_cap": 227.0,
+    "orders_pct_revenue": 30.9
   },
   {
     "code": "544259",
@@ -207,13 +207,13 @@
     "orders_pct_revenue": 4.96
   },
   {
-    "code": "GLOBAL",
-    "name": "Global Education Ltd",
+    "code": "543928",
+    "name": "Cosmic CRF Ltd",
     "order_count": 1,
-    "total_value_cr": 3.04,
-    "revenue_fy": 88.0,
-    "market_cap": 699.0,
-    "orders_pct_revenue": 3.45
+    "total_value_cr": 13.3,
+    "revenue_fy": 334.0,
+    "market_cap": 1211.0,
+    "orders_pct_revenue": 3.98
   },
   {
     "code": "544524",
@@ -459,12 +459,12 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "543928",
-    "name": "Cosmic CRF Ltd",
+    "code": "GLOBAL",
+    "name": "Global Education Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 334.0,
-    "market_cap": 1211.0,
+    "revenue_fy": 88.0,
+    "market_cap": 699.0,
     "orders_pct_revenue": null
   },
   {
@@ -897,15 +897,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 18915.0,
     "market_cap": 10464.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "KRYSTAL",
-    "name": "Krystal Integrated Services Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1129.0,
-    "market_cap": 894.0,
     "orders_pct_revenue": null
   }
 ]
