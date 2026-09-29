@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-29T21:42:31+05:30",
+ "generated_at": "2026-09-30T01:07:00+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -442,6 +442,21 @@
    "exchange": "BSE",
    "last": 17.75,
    "pct_change": 13.42,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "544943",
+   "exchange": "BSE",
+   "last": 120.0,
+   "pct_change": 13.21,
    "open": null,
    "high": null,
    "low": null,
@@ -1476,21 +1491,6 @@
    "symbol": "544372",
    "exchange": "BSE",
    "last": 20.99,
-   "pct_change": 8.76,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "MFML",
-   "exchange": "BSE",
-   "last": 19.98,
    "pct_change": 8.76,
    "open": null,
    "high": null,

@@ -117,15 +117,6 @@
     "orders_pct_revenue": 11.05
   },
   {
-    "code": "DBL",
-    "name": "Dilip Buildcon Ltd",
-    "order_count": 1,
-    "total_value_cr": 688.23,
-    "revenue_fy": 6925.0,
-    "market_cap": 6675.0,
-    "orders_pct_revenue": 9.94
-  },
-  {
     "code": "543806",
     "name": "ITCONS E-Solutions Ltd",
     "order_count": 1,
@@ -315,6 +306,15 @@
     "orders_pct_revenue": 0.42
   },
   {
+    "code": "KEC",
+    "name": "KEC International Ltd",
+    "order_count": 1,
+    "total_value_cr": 6.79,
+    "revenue_fy": 18915.0,
+    "market_cap": 10076.0,
+    "orders_pct_revenue": 0.04
+  },
+  {
     "code": "544786",
     "name": "Schneider Electric President Systems Ltd",
     "order_count": 1,
@@ -366,6 +366,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 5204.0,
     "market_cap": 5801.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "DBL",
+    "name": "Dilip Buildcon Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 6925.0,
+    "market_cap": 6675.0,
     "orders_pct_revenue": null
   },
   {
