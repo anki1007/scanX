@@ -97,3 +97,17 @@ def test_rounding_never_invents_a_zero():
     row = row_from_bundle("T", bundle)
     assert row["sales_var"] is None and row["profit_var"] is None
     assert row["pe"] is None and row["roce"] is None
+
+
+def test_every_page_that_formats_with_fx_defines_it():
+    """The two-decimal pass made fundamental.html's ratio chips call fx()
+    without defining it there. render() threw on every company carrying peer
+    ratios, and the page sat on "Loading ..." with nothing in view."""
+    import re
+    docs = Path(__file__).resolve().parent.parent / "docs"
+    missing = []
+    for page in sorted(docs.glob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        if re.search(r"(?<![\w.$])fx\(", text) and not re.search(r"\bconst fx=v=>", text):
+            missing.append(page.name)
+    assert not missing, f"calls fx() without defining it: {missing}"

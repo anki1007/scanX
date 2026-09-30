@@ -523,6 +523,10 @@ function insightSection(a){
 const PEER_ROW=[['pe','P/E'],['pb','P/B'],['ev_ebitda','EV/EBITDA'],
                 ['roa','ROA'],['roe','ROE'],['roce','ROCE']];
 const biasCls=b=>b==='positive'?'up':(b==='negative'?'dn':'mid');
+// Two decimals, trailing zeros dropped. ratioNum called this without it being
+// defined on this page, so render() threw for every company carrying peer
+// ratios and the page sat on "Loading ..." forever.
+const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
 const ratioNum=(v,u)=>v==null?'n/a':(u==='pct'?fx(v)+'%':fx(v)+'x');
 function healthChip(name,h){
   if(!h) return '';
