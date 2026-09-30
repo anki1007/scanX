@@ -67,6 +67,12 @@
   .curve{width:100%;height:320px;display:block}
   .lgd{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--muted);margin-top:8px}
   .lgd b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+  .hbtns{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+  .hbtns button{background:transparent;border:1px solid var(--line);color:var(--muted);
+    border-radius:6px;padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+  .hbtns button.on{border-color:var(--accent);color:var(--text)}
+  .hbar{display:inline-block;height:8px;border-radius:2px;background:var(--accent);
+    vertical-align:middle;margin-left:6px;opacity:.75}
   .empty{color:var(--muted);padding:24px;text-align:center}
   .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
         border-top-color:var(--teal);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
@@ -155,6 +161,15 @@
       <p class="psub">Net worth per agent over the evaluation window, from a common starting balance.</p>
       <svg class="curve" id="curve" role="img" aria-label="Agent equity curves"></svg>
       <div class="lgd" id="lgd"></div>
+    </div>
+
+    <div class="panel">
+      <h3>What each agent held</h3>
+      <p class="psub">Share of net worth in each stock, per agent, over the same evaluation window.
+        Cash is the remainder. Pick an agent to see its book.</p>
+      <div class="hbtns" id="hbtns"></div>
+      <div class="tscroll"><table class="ag" id="hbook"></table></div>
+      <div class="note" id="hnote"></div>
     </div>
 
     <p class="dis">Rules-based research tool for education only — not personalized investment advice,
@@ -316,9 +331,67 @@ var PALETTE = ["var(--teal)","var(--amber)","var(--purple)","var(--green)","var(
   el.setAttribute("viewBox", "0 0 " + W + " " + H);
   el.innerHTML = svg;
   $("lgd").innerHTML = names.map(function(n, i){
-    return '<span><b style="background:' + PALETTE[i % PALETTE.length] + '"></b>' + esc(n) + '</span>';
+    var twin = (d.twins || {})[n];
+    return '<span><b style="background:' + PALETTE[i % PALETTE.length] + '"></b>' + esc(n) +
+      (twin ? ' <i style="font-style:normal">(same line as ' + esc(twin) + ')</i>' : '') + '</span>';
   }).join("");
+  // Two algorithms with the same curve to the rupee took the same action every
+  // month; say so rather than letting the table read as an independent tie.
+  var tw = Object.keys(d.twins || {});
+  if (tw.length) {
+    $("method").innerHTML += " " + tw.map(function(n){
+      return "<b>" + esc(n) + "</b> took exactly the same trades as <b>" + esc(d.twins[n]) + "</b>";
+    }).join("; ") + " — one result, not two.";
+  }
+
+  renderHoldings(d, names);
 })();
+
+// ---------------------------------------------------------------- holdings
+function renderHoldings(d, names){
+  var h = d.holdings;
+  if (!h || !h.weights || !Object.keys(h.weights).length) {
+    $("hbtns").innerHTML = "";
+    $("hbook").innerHTML = "";
+    $("hnote").textContent = "This run did not record holdings; the next weekly training run publishes them.";
+    return;
+  }
+  var agents = names.filter(function(n){ return h.weights[n]; });
+  var pick = agents[0];
+  function paint(){
+    $("hbtns").innerHTML = agents.map(function(a){
+      return '<button type="button" data-a="' + esc(a) + '" class="' + (a === pick ? "on" : "") + '">' +
+        esc(a) + "</button>";
+    }).join("");
+    $("hbtns").querySelectorAll("button").forEach(function(b){
+      b.onclick = function(){ pick = b.getAttribute("data-a"); paint(); };
+    });
+    var W = h.weights[pick] || [], last = W[W.length - 1] || [], codes = h.codes || [];
+    var rows = codes.map(function(c, j){
+      var col = W.map(function(r){ return +(r[j] || 0); });
+      var avg = col.reduce(function(s, v){ return s + v; }, 0) / Math.max(1, col.length);
+      var held = col.filter(function(v){ return v >= 0.5; }).length;
+      return {c: c, now: +(last[j] || 0), avg: avg, held: held, of: col.length};
+    }).filter(function(r){ return r.avg >= 0.05 || r.now >= 0.05; })
+      .sort(function(a, b){ return b.now - a.now || b.avg - a.avg; });
+    var cashNow = Math.max(0, 100 - last.reduce(function(s, v){ return s + (+v || 0); }, 0));
+    var per = h.periods || [];
+    $("hbook").innerHTML =
+      "<thead><tr><th>Stock</th><th>Weight at end" + (per.length ? " (" + esc(per[per.length - 1]) + ")" : "") +
+      "</th><th>Average weight</th><th>Months held</th></tr></thead><tbody>" +
+      rows.map(function(r){
+        return "<tr><td>" + esc(r.c) + "</td><td>" + num(r.now) + "%" +
+          '<span class="hbar" style="width:' + Math.round(Math.min(100, r.now) * 1.2) + 'px"></span></td>' +
+          "<td>" + num(r.avg) + "%</td><td>" + r.held + " / " + r.of + "</td></tr>";
+      }).join("") +
+      "<tr><td><i>Cash</i></td><td>" + num(cashNow) + "%</td><td>—</td><td>—</td></tr></tbody>";
+    $("hnote").innerHTML = rows.length
+      ? "Window " + esc(per[0] || "") + " to " + esc(per[per.length - 1] || "") +
+        ". “Months held” counts months with at least 0.5% of net worth in the stock."
+      : esc(pick) + " held no stock at any point in the window — it stayed in cash.";
+  }
+  paint();
+}
 </script>
 <script src="vendor/sections.js"></script>
 </body>

@@ -141,19 +141,49 @@ def build_basket(codes) -> dict:
 
 
 # --------------------------------------------------------------- the published file
-def build_payload(results: dict, *, meta: dict) -> dict:
+def twins(results: dict) -> dict:
+    """{agent: the earlier agent whose curve it repeats exactly}. PURE.
+
+    Two different algorithms producing the same curve to the rupee took the same
+    action every month -- usually both pinned at the edge of the action range.
+    That is a finding about the training, not two independent confirmations, and
+    the page says so instead of ranking them as a tie.
+    """
+    seen: list = []
+    out: dict = {}
+    for name, curve in (results or {}).items():
+        key = [round(float(v), 2) for v in curve]
+        match = next((n for n, k in seen if k == key), None)
+        if match:
+            out[name] = match
+        else:
+            seen.append((name, key))
+    return out
+
+
+def build_payload(results: dict, *, meta: dict, record: dict | None = None) -> dict:
     """{generated_at, meta, agents:[ranked metrics ]} — the on-disk contract. PURE."""
     ranked = rank_agents(results, periods_per_year=meta.get("periods_per_year", PERIODS_PER_YEAR),
                          risk_free=meta.get("risk_free", 0.0))
     best = next((r["agent"] for r in ranked if r.get("sharpe") is not None), None)
-    return {
+    payload = {
         "generated_at": meta.get("generated_at") or time.strftime("%Y-%m-%d"),
         "meta": meta,
         "best_agent": best,
         "agents": ranked,
         "equity": {name: [round(float(v), 2) for v in curve]
                    for name, curve in (results or {}).items()},
+        "twins": twins(results),
     }
+    # What each agent held, month by month: percent of net worth per ticker,
+    # cash being the remainder. Same length and order as the equity curve.
+    if record and record.get("weights"):
+        payload["holdings"] = {
+            "codes": list(record.get("codes") or []),
+            "periods": list(record.get("periods") or []),
+            "weights": {a: w for a, w in record["weights"].items() if a in (results or {})},
+        }
+    return payload
 
 
 def main() -> int:
@@ -195,8 +225,10 @@ def main() -> int:
 
     from earnings_intel.data.rlenv import train_and_evaluate  # lazy: needs torch
     wanted = [a.strip().upper() for a in args.agents.split(",") if a.strip()]
+    record: dict = {}
     results, trained = train_and_evaluate(
-        basket, agents=wanted, timesteps=args.timesteps, cost_bps=args.cost_bps)
+        basket, agents=wanted, timesteps=args.timesteps, cost_bps=args.cost_bps,
+        record=record)
 
     meta = {
         "generated_at": time.strftime("%Y-%m-%d"),
@@ -211,7 +243,7 @@ def main() -> int:
         "note": ("Sharpe and Sortino are computed from period RETURNS, not from the "
                  "balance level. Transaction costs are charged on every trade."),
     }
-    payload = build_payload(results, meta=meta)
+    payload = build_payload(results, meta=meta, record=record)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     _atomic(out, json.dumps(payload, separators=(",", ":")))

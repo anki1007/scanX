@@ -260,3 +260,57 @@ def test_the_page_renders_the_book_and_the_rules():
     assert "data/portfolio.json" in page
     for el in ('id="hold"', 'id="exits"', 'id="watch"', 'id="rules"'):
         assert el in page, f"missing {el}"
+
+
+# ------------------------------------------------ holdings, fills, the benchmark
+
+def test_buying_everything_splits_the_cash_evenly_not_by_the_alphabet():
+    """Buys were filled in name order from the cash left, so "buy all" meant
+    "all in the first name" -- a saturated agent became a one-stock bet."""
+    basket = {c: [{"close": 100 * (1.01 ** i)} for i in range(30)] for c in ("AAA", "MMM", "ZZZ")}
+    env = PortfolioEnv(basket, cost_bps=25)
+    env.reset()
+    env.step(np.ones(3))
+    w = env.weights()
+    assert max(w) - min(w) < 0.01 and sum(w) > 99.5
+
+
+def test_a_notional_price_far_above_the_cash_still_fills():
+    """Whole-share rounding left the benchmark 26% invested on these levels."""
+    env = PortfolioEnv({"BIG": [{"close": 5_000_000.0 * (1.01 ** i)} for i in range(30)]},
+                       cost_bps=25)
+    env.reset()
+    env.step(np.array([1.0]))
+    assert sum(env.weights()) > 99.5
+
+
+def test_the_benchmark_is_fully_and_equally_invested():
+    from earnings_intel.data.rlenv import buy_and_hold
+    basket = {c: [{"close": p * (1.01 ** i)} for i in range(30)]
+              for c, p in (("A", 90.0), ("B", 40_000.0), ("C", 3.0))}
+    weights = []
+    buy_and_hold(basket, cost_bps=25, weights=weights)
+    first = weights[1]
+    assert sum(first) > 99.5 and max(first) - min(first) < 0.1
+
+
+def test_identical_curves_are_reported_as_twins():
+    curves = {"TD3": [100.0, 110.0, 121.0], "SAC": [100.0, 110.0, 121.0], "PPO": [100.0, 99.0, 98.0]}
+    assert rs.twins(curves) == {"SAC": "TD3"}
+
+
+def test_the_payload_publishes_what_each_agent_held():
+    curves = {"PPO": [100.0, 101.0, 102.0], "Buy & hold": [100.0, 100.5, 101.0]}
+    record = {"codes": ["A", "B"], "periods": ["2026-07", "2026-08", "2026-09"],
+              "weights": {"PPO": [[0, 0], [60.0, 40.0], [50.0, 50.0]],
+                          "Buy & hold": [[0, 0], [50.0, 50.0], [50.0, 50.0]],
+                          "DROPPED": [[1, 1]]}}
+    out = rs.build_payload(curves, meta={"periods_per_year": 12}, record=record)
+    h = out["holdings"]
+    assert h["codes"] == ["A", "B"] and len(h["periods"]) == len(out["equity"]["PPO"])
+    assert set(h["weights"]) == {"PPO", "Buy & hold"}, "only agents that were ranked"
+
+
+def test_the_page_shows_holdings_and_names_twins():
+    html = (ROOT / "docs" / "stdrl.html").read_text(encoding="utf-8")
+    assert 'id="hbook"' in html and "renderHoldings" in html and "d.twins" in html

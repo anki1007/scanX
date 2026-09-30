@@ -20,6 +20,13 @@ wealth it already had. A step that loses money still returns a large positive
 reward as long as the book is up overall, so the gradient barely reflects the
 decision just taken.
 
+POSITIONS ARE FRACTIONAL. The prices are notional levels compounded from
+100 over up to three decades, so one "share" of a strong compounder costs tens
+of thousands. Whole-share rounding left most of every order unfilled: the
+equal-weight benchmark ended only 26% invested and published +49% where the
+real equal-weight book made +154%, so agents that lost to buy-and-hold ranked
+above it. Fractions of a notional unit carry no such artefact.
+
 CASH CANNOT GO NEGATIVE. The original computed `int(balance * action / price)`
 per ticker in a loop, each using the balance BEFORE that loop's earlier buys had
 been deducted... which is fine, but nothing stopped a buy when balance was
@@ -35,7 +42,7 @@ import numpy as np
 log = logging.getLogger("technofunda.rlenv")
 
 __all__ = ["make_env", "train_and_evaluate", "buy_and_hold", "split_basket",
-           "AGENTS", "PortfolioEnv"]
+           "period_labels", "AGENTS", "PortfolioEnv"]
 
 #: Only the continuous-action algorithms are meaningful here: the action is a
 #: per-ticker weight in [-1, 1], not a discrete buy/sell/hold.
@@ -121,38 +128,67 @@ class PortfolioEnv:
         done = self.step_i >= self.max_steps
         price = self.closes[min(self.step_i, self.T - 1)]
 
+        # Sells first, then buys, and the buys share one cash budget in
+        # proportion to their signals. Buys used to be filled ticker by ticker
+        # in name order, each taking a fraction of the cash LEFT, so an agent
+        # saying "buy" on everything put it all in the alphabetically first
+        # stock -- a saturated policy became a one-stock bet chosen by the
+        # alphabet, and two such agents (TD3, SAC) published identical curves.
         for k in range(self.n):
-            p = price[k]
-            if p <= 0:
+            p, a = price[k], action[k]
+            if p <= 0 or a >= 0:
                 continue
-            a = action[k]
-            if a > 0:                                   # buy with a share of FREE cash
-                spend = min(self.cash, self.cash * a)
-                qty = int(spend / (p * (1 + self.cost)))
-                if qty > 0:
+            qty = self.shares[k] * abs(a)               # sell a share of the holding
+            if qty * p > 1e-6:
+                gross = qty * p
+                fee = gross * self.cost
+                self.cash += gross - fee
+                self.shares[k] -= qty
+                self.costs_paid += fee
+                self.trades += 1
+        buys = np.where((action > 0) & (price > 0), action, 0.0)
+        total = float(buys.sum())
+        if total > 0:
+            # all-in on one name spends everything; +1 on every name splits the
+            # cash evenly; +0.5 on one name alone spends half
+            budget = self.cash * min(1.0, total)
+            for k in np.nonzero(buys)[0]:
+                p = price[k]
+                spend = budget * buys[k] / total
+                qty = spend / (p * (1 + self.cost))     # fractional: see module doc
+                if qty * p > 1e-6:
                     gross = qty * p
                     fee = gross * self.cost
                     self.cash -= gross + fee
                     self.shares[k] += qty
                     self.costs_paid += fee
                     self.trades += 1
-            elif a < 0:                                 # sell a share of the holding
-                qty = int(self.shares[k] * abs(a))
-                if qty > 0:
-                    gross = qty * p
-                    fee = gross * self.cost
-                    self.cash += gross - fee
-                    self.shares[k] -= qty
-                    self.costs_paid += fee
-                    self.trades += 1
 
         self.prev_net_worth = self.net_worth
         self.net_worth = float(self.cash + np.sum(self.shares * price))
+        self.cash = max(self.cash, 0.0)                 # float dust from a full spend
         # the CHANGE, scaled — not the level. See the module docstring.
         reward = (self.net_worth - self.prev_net_worth) / self.initial_balance
         if self.net_worth <= 0:
             done = True
         return self._obs(), float(reward), bool(done), False, {"net_worth": self.net_worth}
+
+
+    def weights(self) -> list:
+        """Each ticker's share of net worth right now, in percent (cash is the rest)."""
+        price = self.closes[min(self.step_i, self.T - 1)]
+        if self.net_worth <= 0:
+            return [0.0] * self.n
+        return [round(float(v), 2) for v in self.shares * price / self.net_worth * 100]
+
+
+def period_labels(basket) -> list:
+    """'YYYY-MM' for each aligned bar, matching _matrix's alignment from the end."""
+    codes = sorted(k for k, v in (basket or {}).items() if v)
+    if not codes:
+        return []
+    n = min(len(basket[c]) for c in codes)
+    return [str(r.get("period") or "") for r in list(basket[codes[0]])[-n:]]
 
 
 def make_env(basket, cost_bps: float = 25.0):
@@ -188,7 +224,7 @@ def split_basket(basket, train_frac: float = 0.7):
     return train, test
 
 
-def buy_and_hold(basket, cost_bps: float = 25.0) -> list:
+def buy_and_hold(basket, cost_bps: float = 25.0, weights: list | None = None) -> list:
     """Equity curve for an equal-weight buy-and-hold book. PURE-ish.
 
     THE BENCHMARK EVERY AGENT MUST BEAT. Indian large caps compounded hard over
@@ -198,26 +234,37 @@ def buy_and_hold(basket, cost_bps: float = 25.0) -> list:
     """
     env = PortfolioEnv(basket, cost_bps=cost_bps)
     env.reset()
-    weight = 1.0 / max(env.n, 1)
+    # +1 on every name splits all the cash evenly (see PortfolioEnv.step).
+    # The old flat 1/n per name, filled from the cash left, sat mostly in cash.
+    first_buy = np.ones(env.n)
     curve = [env.net_worth]
+    if weights is not None:
+        weights.append(env.weights())
     first = True
     while True:
-        action = np.full(env.n, weight if first else 0.0)
+        _, _, done, _, info = env.step(first_buy if first else np.zeros(env.n))
         first = False
-        _, _, done, _, info = env.step(action)
         curve.append(info["net_worth"])
+        if weights is not None:
+            weights.append(env.weights())
         if done:
             break
     return curve
 
 
 def train_and_evaluate(basket, *, agents=AGENTS, timesteps: int = 20_000,
-                       cost_bps: float = 25.0, train_frac: float = 0.7) -> tuple[dict, list]:
+                       cost_bps: float = 25.0, train_frac: float = 0.7,
+                       record: dict | None = None) -> tuple[dict, list]:
     """{agent: OUT-OF-SAMPLE equity curve} plus the list trained. Needs torch.
 
     Trains on the first `train_frac` of the months and evaluates on the rest, so
     every published number is out of sample. A "Buy & hold" curve over the same
     test window is included as the benchmark.
+
+    `record`, when given, is filled with what each agent actually held:
+    {"codes": [...], "periods": [...], "weights": {agent: [[pct per code] per bar]}}.
+    Without it nobody could say which stocks a model picked -- only how its
+    net worth moved.
     """
     from stable_baselines3 import A2C, DDPG, PPO, SAC, TD3
     from stable_baselines3.common.vec_env import DummyVecEnv
@@ -231,6 +278,11 @@ def train_and_evaluate(basket, *, agents=AGENTS, timesteps: int = 20_000,
 
     ctors = {"PPO": PPO, "A2C": A2C, "DDPG": DDPG, "TD3": TD3, "SAC": SAC}
     results, trained = {}, []
+    held: dict = {}
+    if record is not None:
+        record["codes"] = sorted(k for k, v in test.items() if v)
+        record["periods"] = period_labels(test)
+        record["weights"] = held
     for name in agents:
         ctor = ctors.get(str(name).upper())
         if ctor is None:
@@ -248,12 +300,15 @@ def train_and_evaluate(basket, *, agents=AGENTS, timesteps: int = 20_000,
             env = make_env(test, cost_bps)      # OUT OF SAMPLE
             obs, _ = env.reset()
             curve = [env.net_worth]
+            weights = [env.weights()]
             while True:
                 act, _ = model.predict(obs, deterministic=True)
                 obs, _, done, _, info = env.step(act)
                 curve.append(info["net_worth"])
+                weights.append(env.weights())
                 if done:
                     break
+            held[str(name).upper()] = weights
             results[str(name).upper()] = curve
             trained.append(str(name).upper())
             print(f"[stdrl] {name}: {len(curve)} steps, end {curve[-1]:,.0f}, "
@@ -262,7 +317,9 @@ def train_and_evaluate(basket, *, agents=AGENTS, timesteps: int = 20_000,
             log.warning("agent %s failed: %s: %s", name, type(exc).__name__, exc)
     if results:
         try:
-            results["Buy & hold"] = buy_and_hold(test, cost_bps)
+            bh_weights: list = []
+            results["Buy & hold"] = buy_and_hold(test, cost_bps, weights=bh_weights)
+            held["Buy & hold"] = bh_weights
             print(f"[stdrl] Buy & hold benchmark: end {results['Buy & hold'][-1]:,.0f}")
         except Exception as exc:  # noqa: BLE001
             log.warning("benchmark failed: %s", type(exc).__name__)
