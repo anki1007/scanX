@@ -1,7 +1,22 @@
 {
- "generated_at": "2026-10-02T21:31:38+05:30",
+ "generated_at": "2026-10-03T01:04:34+05:30",
  "source": "quotes",
  "rows": [
+  {
+   "symbol": "522150",
+   "exchange": "BSE",
+   "last": 34.6,
+   "pct_change": 1012.54,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
   {
    "symbol": "ARIHANTACA",
    "exchange": "BSE",
@@ -1477,21 +1492,6 @@
    "exchange": "BSE",
    "last": 10.95,
    "pct_change": 8.96,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "520127",
-   "exchange": "BSE",
-   "last": 15.25,
-   "pct_change": -8.85,
    "open": null,
    "high": null,
    "low": null,

@@ -81,24 +81,6 @@
     "orders_pct_revenue": 18.52
   },
   {
-    "code": "OSWALPUMPS",
-    "name": "Oswal Pumps Ltd",
-    "order_count": 1,
-    "total_value_cr": 273.19,
-    "revenue_fy": 1697.0,
-    "market_cap": 3013.0,
-    "orders_pct_revenue": 16.1
-  },
-  {
-    "code": "SKIPPER",
-    "name": "Skipper Ltd",
-    "order_count": 1,
-    "total_value_cr": 797.0,
-    "revenue_fy": 5609.0,
-    "market_cap": 6112.0,
-    "orders_pct_revenue": 14.21
-  },
-  {
     "code": "544440",
     "name": "Cryogenic OGS Ltd",
     "order_count": 1,
@@ -133,15 +115,6 @@
     "revenue_fy": 288.0,
     "market_cap": 998.0,
     "orders_pct_revenue": 9.38
-  },
-  {
-    "code": "IDEAFORGE",
-    "name": "Ideaforge Technology Ltd",
-    "order_count": 1,
-    "total_value_cr": 23.62,
-    "revenue_fy": 282.0,
-    "market_cap": 3654.0,
-    "orders_pct_revenue": 8.38
   },
   {
     "code": "543595",
@@ -270,15 +243,6 @@
     "orders_pct_revenue": 2.29
   },
   {
-    "code": "544387",
-    "name": "Desco Infratech Ltd",
-    "order_count": 1,
-    "total_value_cr": 2.34,
-    "revenue_fy": 119.0,
-    "market_cap": 135.0,
-    "orders_pct_revenue": 1.97
-  },
-  {
     "code": "GPTINFRA",
     "name": "GPT Infraprojects Ltd",
     "order_count": 1,
@@ -295,6 +259,15 @@
     "revenue_fy": 633.0,
     "market_cap": 1370.0,
     "orders_pct_revenue": 1.62
+  },
+  {
+    "code": "EMCURE",
+    "name": "Emcure Pharmaceuticals Ltd",
+    "order_count": 1,
+    "total_value_cr": 57.74,
+    "revenue_fy": 5598.0,
+    "market_cap": 36891.0,
+    "orders_pct_revenue": 1.03
   },
   {
     "code": "BLUEDART",
@@ -324,13 +297,13 @@
     "orders_pct_revenue": 0.29
   },
   {
-    "code": "PRINCEPIPE",
-    "name": "Prince Pipes & Fittings Ltd",
+    "code": "544495",
+    "name": "NIS Management Ltd",
     "order_count": 1,
-    "total_value_cr": 2.74,
-    "revenue_fy": 2627.0,
-    "market_cap": 2730.0,
-    "orders_pct_revenue": 0.1
+    "total_value_cr": 0.53,
+    "revenue_fy": 425.0,
+    "market_cap": 79.2,
+    "orders_pct_revenue": 0.12
   },
   {
     "code": "ZFCVINDIA",
@@ -387,12 +360,30 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "PRINCEPIPE",
+    "name": "Prince Pipes & Fittings Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2627.0,
+    "market_cap": 2730.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "544786",
     "name": "Schneider Electric President Systems Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 400.0,
     "market_cap": 2482.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "IDEAFORGE",
+    "name": "Ideaforge Technology Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 282.0,
+    "market_cap": 3654.0,
     "orders_pct_revenue": null
   },
   {
