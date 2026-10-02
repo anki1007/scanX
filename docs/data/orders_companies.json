@@ -72,6 +72,15 @@
     "orders_pct_revenue": 24.82
   },
   {
+    "code": "KNACK",
+    "name": "Knack Packaging Ltd",
+    "order_count": 1,
+    "total_value_cr": 150.0,
+    "revenue_fy": 810.0,
+    "market_cap": 2211.0,
+    "orders_pct_revenue": 18.52
+  },
+  {
     "code": "OSWALPUMPS",
     "name": "Oswal Pumps Ltd",
     "order_count": 1,
@@ -79,15 +88,6 @@
     "revenue_fy": 1697.0,
     "market_cap": 3013.0,
     "orders_pct_revenue": 16.1
-  },
-  {
-    "code": "KANOHAR",
-    "name": "Kanohar Electricals Ltd",
-    "order_count": 1,
-    "total_value_cr": 100.0,
-    "revenue_fy": 654.0,
-    "market_cap": 7177.0,
-    "orders_pct_revenue": 15.29
   },
   {
     "code": "SKIPPER",
@@ -306,6 +306,15 @@
     "orders_pct_revenue": 0.34
   },
   {
+    "code": "SNOWMAN",
+    "name": "Snowman Logistics Ltd",
+    "order_count": 1,
+    "total_value_cr": 2.07,
+    "revenue_fy": 619.0,
+    "market_cap": 570.0,
+    "orders_pct_revenue": 0.33
+  },
+  {
     "code": "NBCC",
     "name": "NBCC (India) Ltd",
     "order_count": 1,
@@ -384,6 +393,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 400.0,
     "market_cap": 2482.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "KANOHAR",
+    "name": "Kanohar Electricals Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 654.0,
+    "market_cap": 7177.0,
     "orders_pct_revenue": null
   },
   {
@@ -879,24 +897,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 266.0,
     "market_cap": 1090.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "SASKEN",
-    "name": "Sasken Technologies Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 570.0,
-    "market_cap": 2614.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "PROSTARM",
-    "name": "Prostarm Info Systems Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 403.0,
-    "market_cap": 797.0,
     "orders_pct_revenue": null
   }
 ]
