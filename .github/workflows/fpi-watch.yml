@@ -1,0 +1,64 @@
+# FPI fortnight watch.
+#
+# NSDL publishes sector-wise FPI flows a few days after each fortnight closes
+# (1-15 and 16-month end), on no fixed day. Every night this checks whether the
+# latest closed fortnight is on the site; if not, it fetches from NSDL and
+# publishes. Once the fortnight lands it does nothing until the next one closes.
+# Separate from the nightly refresh, which commits only after a two-hour bake.
+
+name: scanX FPI watch
+
+on:
+  schedule:
+    - cron: "37 15 * * *"     # 21:07 IST nightly
+    - cron: "37 3 * * *"      # 09:07 IST, a second chance (GitHub cron drops firings)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scanx-fpi
+  cancel-in-progress: false
+
+jobs:
+  fpi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Is a fortnight due?
+        id: due
+        run: |
+          if python scripts/fpi_due.py; then echo "due=1" >> "$GITHUB_OUTPUT"; else echo "due=0" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Fetch from NSDL and publish
+        if: steps.due.outputs.due == '1'
+        run: |
+          python -m pip install --quiet --disable-pip-version-check requests beautifulsoup4 lxml openpyxl
+          python scripts/refresh_fpi.py
+          python scripts/redact_sources.py docs/data/fpi.json || true
+          if python scripts/fpi_due.py; then
+            echo "NSDL has not published it yet - will try again tonight"
+            exit 0
+          fi
+          git config user.name  "scanx-bot"
+          git config user.email "scanx@users.noreply.github.com"
+          files="FPI/FPI_Sectorial-Analysis.xlsx FPI/fpi_data.js FPI/fpi_data.json docs/data/fpi.json"
+          keep="$(mktemp -d)"; for f in $files; do mkdir -p "$keep/$(dirname $f)"; cp "$f" "$keep/$f"; done
+          for n in 1 2 3 4; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            for f in $files; do cp "$keep/$f" "$f"; done
+            git add -- $files
+            git diff --cached --quiet && { echo "already published"; exit 0; }
+            git commit -q -m "data: FPI fortnight from NSDL" && git push -q origin HEAD:main && { echo "published"; exit 0; }
+            sleep $((n * 7))
+          done
+          echo "::error::could not push the FPI update"; exit 1
