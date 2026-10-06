@@ -333,6 +333,15 @@
     "orders_pct_revenue": 0.0
   },
   {
+    "code": "RCOM",
+    "name": "Reliance Communications Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 216.0,
+    "market_cap": 235.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "JKCEMENT",
     "name": "J K Cements Ltd",
     "order_count": 1,
@@ -581,7 +590,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 654.0,
-    "market_cap": 7472.0,
+    "market_cap": 7463.0,
     "orders_pct_revenue": null
   },
   {
@@ -861,15 +870,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 18695.0,
     "market_cap": 6012.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "OPTIVALUE",
-    "name": "Optivalue Tek Consulting Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 91.0,
-    "market_cap": 551.0,
     "orders_pct_revenue": null
   }
 ]
