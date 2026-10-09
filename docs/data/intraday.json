@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-09T22:42:27+05:30",
+ "generated_at": "2026-10-10T01:41:17+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -708,6 +708,21 @@
    "pead_category": null
   },
   {
+   "symbol": "CANHLIFE",
+   "exchange": "BSE",
+   "last": 139.2,
+   "pct_change": -4.49,
+   "open": 144.0,
+   "high": 144.0,
+   "low": 138.4,
+   "prev_close": 145.75,
+   "vwap_pos": null,
+   "range_pos": 14.0,
+   "volume": 44000,
+   "pead_score": 67.6,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "AVTNPL",
    "exchange": "BSE",
    "last": 95.0,
@@ -766,6 +781,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "POONAWALLA",
+   "exchange": "BSE",
+   "last": 448.05,
+   "pct_change": 2.25,
+   "open": 439.3,
+   "high": 451.0,
+   "low": 437.1,
+   "prev_close": 438.2,
+   "vwap_pos": null,
+   "range_pos": 79.0,
+   "volume": null,
+   "pead_score": 87.6,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "542248",
@@ -1368,6 +1398,21 @@
    "pead_category": null
   },
   {
+   "symbol": "530249",
+   "exchange": "BSE",
+   "last": 7.28,
+   "pct_change": -6.31,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 32.6,
+   "pead_category": "MEDIUM"
+  },
+  {
    "symbol": "544186",
    "exchange": "BSE",
    "last": 149.5,
@@ -1447,51 +1492,6 @@
    "exchange": "BSE",
    "last": 19.8,
    "pct_change": 9.39,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "539900",
-   "exchange": "BSE",
-   "last": 8.35,
-   "pct_change": -9.24,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "544509",
-   "exchange": "BSE",
-   "last": 29.5,
-   "pct_change": -9.23,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "539121",
-   "exchange": "BSE",
-   "last": 209.9,
-   "pct_change": -9.21,
    "open": null,
    "high": null,
    "low": null,
