@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-09T15:58:58+05:30",
+ "generated_at": "2026-10-09T22:42:27+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -288,6 +288,21 @@
    "pead_category": null
   },
   {
+   "symbol": "LOTUSCHO",
+   "exchange": "BSE",
+   "last": 564.7,
+   "pct_change": -14.53,
+   "open": 615.05,
+   "high": 616.0,
+   "low": 555.5,
+   "prev_close": 660.7,
+   "vwap_pos": null,
+   "range_pos": 15.0,
+   "volume": 14000,
+   "pead_score": 12.7,
+   "pead_category": "LOW"
+  },
+  {
    "symbol": "QUESTLAB",
    "exchange": "BSE",
    "last": 103.0,
@@ -352,21 +367,6 @@
    "exchange": "BSE",
    "last": 32.98,
    "pct_change": 14.99,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "LOTUSCHO",
-   "exchange": "BSE",
-   "last": 564.7,
-   "pct_change": -14.53,
    "open": null,
    "high": null,
    "low": null,
@@ -841,6 +841,36 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "523465",
+   "exchange": "BSE",
+   "last": 49.91,
+   "pct_change": -5.38,
+   "open": 52.0,
+   "high": 52.0,
+   "low": 47.11,
+   "prev_close": 52.75,
+   "vwap_pos": null,
+   "range_pos": 57.0,
+   "volume": 183000000,
+   "pead_score": 50.4,
+   "pead_category": "HIGH"
+  },
+  {
+   "symbol": "523467",
+   "exchange": "BSE",
+   "last": 2.76,
+   "pct_change": -1.78,
+   "open": 2.76,
+   "high": 2.76,
+   "low": 2.76,
+   "prev_close": 2.81,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 85.9,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "530175",
@@ -1383,21 +1413,6 @@
    "pead_category": null
   },
   {
-   "symbol": "523465",
-   "exchange": "BSE",
-   "last": 50.4,
-   "pct_change": -4.45,
-   "open": 52.0,
-   "high": 52.0,
-   "low": 47.11,
-   "prev_close": 52.75,
-   "vwap_pos": null,
-   "range_pos": 67.0,
-   "volume": 183000000,
-   "pead_score": 50.4,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "543651",
    "exchange": "BSE",
    "last": 29.0,
@@ -1477,21 +1492,6 @@
    "exchange": "BSE",
    "last": 209.9,
    "pct_change": -9.21,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "539770",
-   "exchange": "BSE",
-   "last": 18.44,
-   "pct_change": -9.16,
    "open": null,
    "high": null,
    "low": null,
