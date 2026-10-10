@@ -399,3 +399,69 @@ def order_size_pct(value_cr: Optional[float], revenue_fy: Optional[float]) -> Op
     if value_cr is None or not revenue_fy:
         return None
     return round(value_cr / revenue_fy * 100.0, 2)
+
+
+# --------------------------------------------------------------- NSE filings
+#: NSE's own categories for an order announcement. Matched exactly, so a court
+#: or regulator "order passed" (a different category) never lands here.
+NSE_ORDER_CATEGORIES = ("Bagging/Receiving of orders/contracts",
+                        "Awarding of order(s)/contract(s)")
+_NSE_PAGE = "https://www.nseindia.com/companies-listing/corporate-filings-announcements"
+_NSE_API = "https://www.nseindia.com/api/corporate-announcements"
+
+
+def nse_rows_to_filings(rows) -> list:
+    """NSE announcement rows -> OrderFiling, order categories only. PURE."""
+    out, seen = [], set()
+    for r in rows or []:
+        if not isinstance(r, dict) or r.get("desc") not in NSE_ORDER_CATEGORIES:
+            continue
+        code = str(r.get("symbol") or "").strip().upper()
+        stamp = str(r.get("an_dt") or r.get("sort_date") or "")
+        try:
+            dt = datetime.strptime(stamp[:11], "%d-%b-%Y").strftime("%d %b %Y")
+        except ValueError:
+            dt = stamp[:11]
+        text = str(r.get("attchmntText") or "")
+        key = (code, stamp, text[:60])
+        if not code or key in seen:
+            continue
+        seen.add(key)
+        out.append(OrderFiling(
+            code=code, name=str(r.get("sm_name") or code).strip(), exchange="NSE",
+            date=dt, order_type=parse_order_type(text), headline=text,
+            value_cr=parse_value_cr(text), customer=parse_customer(text),
+            duration=parse_duration(text), url=str(r.get("attchmntFile") or "")))
+    return out
+
+
+class NSEOrders:
+    """Order announcements from NSE's corporate-filings feed.
+
+    BSE's announcements API now answers 403 / "No Record Found!" to scripts,
+    so the board had been living on a two-page keyword search: 93 orders where
+    NSE lists ~470 in the same three months. NSE refuses datacenter IPs, so in
+    the cloud this returns [] and the caller falls back; from a desktop or the
+    VPS it is the full feed.
+    """
+
+    def __init__(self, timeout: int = 60):
+        self.timeout = timeout
+
+    def fetch(self, months: int = 3) -> list:
+        try:
+            from curl_cffi import requests as cr
+            s = cr.Session(impersonate="chrome")
+            s.get(_NSE_PAGE, timeout=30)
+            to_d = date.today()
+            from_d = to_d - timedelta(days=int(months * 30.5))
+            r = s.get(_NSE_API, timeout=self.timeout, headers={"Referer": _NSE_PAGE},
+                      params={"index": "equities", "from_date": from_d.strftime("%d-%m-%Y"),
+                              "to_date": to_d.strftime("%d-%m-%Y")})
+            if r.status_code != 200:
+                log.warning("NSE announcements http %s", r.status_code)
+                return []
+            return nse_rows_to_filings(r.json())
+        except Exception as e:  # noqa: BLE001
+            log.warning("NSE announcements failed: %s: %s", type(e).__name__, e)
+            return []

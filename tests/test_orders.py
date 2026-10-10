@@ -89,3 +89,12 @@ def test_screener_fundamentals_parse():
     assert f.np_latest_q == 15 and f.np_prev_q == 10 and f.np_growth_qoq == 50.0
     assert f.eps_latest_q == 3 and f.eps_prev_q == 2 and f.eps_growth_qoq == 50.0
     assert f.revenue_fy == 500
+
+
+def test_nse_order_categories_only():
+    from earnings_intel.data.orders import nse_rows_to_filings
+    rows = [{"desc": "Bagging/Receiving of orders/contracts", "symbol": "tejasnet", "sm_name": "Tejas",
+             "an_dt": "27-Aug-2026 10:00:00", "attchmntText": "order of Rs 1,537 crore", "attchmntFile": "x.pdf"},
+            {"desc": "Action(s) taken or orders passed", "symbol": "ABC", "an_dt": "01-Sep-2026 10:00:00"}]
+    f = nse_rows_to_filings(rows)
+    assert [x.code for x in f] == ["TEJASNET"] and f[0].date == "27 Aug 2026"

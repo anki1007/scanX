@@ -31,18 +31,48 @@ def _sid():
     return sid
 
 
-def build_rows(max_pages: int, max_companies: int = 150, max_pdf: int = 20):
+def _key(f) -> tuple:
+    """One announcement, whichever source reported it."""
+    return (str(f.code).upper(), str(f.date)[:11])
+
+
+def build_rows(max_pages: int, max_companies: int = 400, max_pdf: int = 200, months: int = 3):
+    """Orders from every source that answers, merged.
+
+    NSE first: its feed has a proper order category and ~470 filings a quarter.
+    It refuses datacenter IPs, so in the cloud it returns nothing and the BSE
+    API (now also blocking scripts) and the keyword search carry the board.
+    The keyword search is ALWAYS merged in, not only as a fallback: it reaches
+    companies listed on BSE alone, which NSE cannot.
+    """
+    from earnings_intel.data.orders import NSEOrders
     sid = _sid()
-    bse = BSEOrders(cache_path=str(_CACHE / "bse_orders.json"))
-    filings = bse.fetch(months=3, max_pages=max_pages)        # BSE w/ values (via curl_cffi)
-    source = "BSE filings (webscrap)"
-    if not filings:                                           # fallback: Screener full-text-search
-        filings = [OrderFiling(code=r["code"], name=r["name"], exchange="", date=r["date"],
-                               order_type=parse_order_type(r["snippet"]), headline=r["snippet"],
-                               value_cr=parse_value_cr(r["snippet"]), customer=parse_customer(r["snippet"]),
-                               duration=parse_duration(r["snippet"]), url=(r.get("pdf_url") or r["url"]))
-                   for r in fetch_fulltext(sid, ORDERS_Q, max_pages=max_pages, announcements_only=True)]
-        source = "Screener full-text-search (fallback)"
+    sources, filings, seen = [], [], set()
+
+    def add(items, label):
+        # Dedupe ACROSS sources only: one company can file two orders on the
+        # same day, and a source's own rows are already distinct announcements.
+        n, mine = 0, set()
+        for f in items:
+            if _key(f) not in seen:
+                mine.add(_key(f)); filings.append(f); n += 1
+        seen.update(mine)
+        if n:
+            sources.append(f"{label} {n}")
+
+    add(NSEOrders().fetch(months=months), "NSE filings")
+    add(BSEOrders(cache_path=str(_CACHE / "bse_orders.json")).fetch(months=months, max_pages=max_pages),
+        "BSE filings")
+    try:
+        add([OrderFiling(code=r["code"], name=r["name"], exchange="", date=r["date"],
+                         order_type=parse_order_type(r["snippet"]), headline=r["snippet"],
+                         value_cr=parse_value_cr(r["snippet"]), customer=parse_customer(r["snippet"]),
+                         duration=parse_duration(r["snippet"]), url=(r.get("pdf_url") or r["url"]))
+             for r in fetch_fulltext(sid, ORDERS_Q, max_pages=max_pages, announcements_only=True)],
+            "full-text search")
+    except Exception as e:  # noqa: BLE001
+        print(f"[orders] full-text search failed: {type(e).__name__}")
+    source = " + ".join(sources) or "none"
     fund = ScreenerFundamentals(session_id=sid, cache_path=str(_CACHE / "orders_fundamentals.json"))
     allowed = set()
     for f in filings:
@@ -94,14 +124,16 @@ def consolidate(rows: list) -> list:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Refresh scanX Orders tab")
     ap.add_argument("--months", type=int, default=3)
-    ap.add_argument("--max-pages", type=int, default=5)
-    ap.add_argument("--max-companies", type=int, default=150)
+    ap.add_argument("--max-pages", type=int, default=20)
+    ap.add_argument("--max-companies", type=int, default=400)
+    ap.add_argument("--max-pdf", type=int, default=200,
+                    help="filing PDFs to open for the order value when the text lacks it")
     ap.add_argument("--out", default=str(ROOT / "docs" / "data"))
     args = ap.parse_args()
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 
     try:
-        rows, source = build_rows(args.max_pages, args.max_companies)
+        rows, source = build_rows(args.max_pages, args.max_companies, args.max_pdf, args.months)
     except Exception as e:  # noqa: BLE001
         print(f"[orders] fetch failed: {type(e).__name__}: {e} - keeping last-good JSON")
         return 1
