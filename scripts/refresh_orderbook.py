@@ -128,6 +128,11 @@ def summarise(code: str, series: list, facts: dict) -> dict | None:
     growth = (round((last["value_cr"] / year_ago["value_cr"] - 1) * 100, 2)
               if year_ago and year_ago["value_cr"] else None)
     rev = facts.get("revenue_cr")
+    # An "order book" under 5% of a year's revenue is a slice (one segment, an
+    # export book), not the company's backlog: Tata Power at 639 Cr, KSB at
+    # 15 Cr. Better absent than shown as the backlog.
+    if rev and last["value_cr"] < 0.05 * rev:
+        return None
     return {
         "code": code, "name": facts.get("name") or code,
         "order_book_cr": last["value_cr"], "as_of": last["as_of"],

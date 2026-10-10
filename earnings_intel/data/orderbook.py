@@ -25,8 +25,9 @@ _PHRASE = re.compile(
     r"order[\s\-]*(?:book(?!ing)|backlog)(?:\s+position)?", re.I)
 _AMOUNT = re.compile(
     r"(?:rs\.?|inr|₹|rupees)\s*([0-9][0-9,]*(?:\.[0-9]+)?)\s*"
-    r"(crores?|cr\.?|cr\b|billion|bn|million|mn|lakhs?|lacs?)?", re.I)
-_BARE = re.compile(r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*(crores?|cr\b|cr\.|billion|bn|million|mn)", re.I)
+    r"(lakh\s+crores?|lac\s+crores?|lakh\s+cr\b|trillion|crores?|cr\.?|cr\b|"
+    r"billion|bn|million|mn|lakhs?|lacs?)?", re.I)
+_BARE = re.compile(r"([0-9][0-9,]*(?:\.[0-9]+)?)\s*(lakh\s+crores?|trillion|crores?|cr\b|cr\.|billion|bn|million|mn)", re.I)
 _NOT_BACKLOG = re.compile(r"\b(inflow|intake|received|win|wins|won|bagged|addition|added|executed|"
                           r"execution|revenues?|turnover|bid|pipeline|tender|L1|receipt|booked|bookings|sales?|"
                           r"increased|exports?|EBITDA|PAT|profit)\b", re.I)
@@ -37,7 +38,8 @@ _FORWARD = re.compile(r"\b(would|could|should|will|expect\w*|estimat\w*|target\w
                       r"by (?:march|june|september|december|fy))\b", re.I)
 _ASON = re.compile(r"as\s+(?:on|of|at)\s+(\d{1,2})(?:st|nd|rd|th)?[\s\-]*([A-Za-z]{3,9})[\s,\-']+(\d{2,4})", re.I)
 
-_UNIT = {"crore": 1.0, "crores": 1.0, "cr": 1.0, "cr.": 1.0,
+_UNIT = {"lakh crore": 100000.0, "lakh crores": 100000.0, "lac crore": 100000.0,
+         "lac crores": 100000.0, "lakh cr": 100000.0, "trillion": 100000.0, "crore": 1.0, "crores": 1.0, "cr": 1.0, "cr.": 1.0,
          "billion": 100.0, "bn": 100.0, "million": 0.1, "mn": 0.1,
          "lakh": 0.01, "lakhs": 0.01, "lac": 0.01, "lacs": 0.01}
 _MON = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
@@ -51,7 +53,8 @@ def _to_cr(num: str, unit: Optional[str]) -> Optional[float]:
         v = float(num.replace(",", ""))
     except ValueError:
         return None
-    v *= _UNIT.get(unit.lower().rstrip("."), _UNIT.get(unit.lower(), 0) or 0)
+    u = " ".join(unit.lower().rstrip(".").split())
+    v *= _UNIT.get(u, 0)
     return round(v, 2) if v > 0 else None
 
 
@@ -164,4 +167,28 @@ def quarterly_series(figures: Iterable[dict]) -> list:
             return (votes[round(float(d["value_cr"]))], float(d["value_cr"]),
                     -rank.get(d.get("kind"), 3), datetime.fromisoformat(d["filed"]).toordinal())
         out.append(max(docs, key=key))
-    return out
+    return drop_spikes(out)
+
+
+def drop_spikes(series: list, factor: float = 3.0) -> list:
+    """Remove a quarter that jumps away from BOTH its neighbours and back.
+
+    A backlog moves with execution and wins; it does not go 10,000 -> 282 ->
+    10,000 Cr in two quarters. That shape is one document's stray number.
+    The latest quarter, having one neighbour, goes only when the two before
+    it agree with each other and it is `factor` away from them.
+    """
+    v = [float(s["value_cr"]) for s in series]
+    far = lambda a, b: a > b * factor or a * factor < b  # noqa: E731
+    agree = lambda a, b: a <= b * 1.5 and b <= a * 1.5  # noqa: E731
+    keep = []
+    last = len(v) - 1
+    for i, s in enumerate(series):
+        interior = 0 < i < last
+        if (interior and far(v[i], v[i - 1]) and far(v[i], v[i + 1])
+                and not far(v[i - 1], v[i + 1])):
+            continue
+        if i == last and i >= 2 and far(v[i], v[i - 1]) and agree(v[i - 1], v[i - 2]):
+            continue
+        keep.append(s)
+    return keep

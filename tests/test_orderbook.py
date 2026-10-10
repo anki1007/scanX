@@ -97,3 +97,24 @@ def test_an_old_comparison_date_does_not_date_the_figure():
     assert fig["as_of"] == "2026-03-31" and fig["value_cr"] == 254538.0
     fig = document_figure("Order book as on 1st January 2026 Rs 73,015 crore", date(2026, 1, 15))
     assert fig["as_of"] == "2025-12-31"
+
+
+def test_lakh_crore_and_trillion_are_units():
+    assert _vals("order book stood at Rs 6.67 lakh crore as on 30 June") == [667000.0]
+    assert _vals("Order book of ₹5,67,000 crore") == [567000.0]
+
+
+def test_a_one_quarter_spike_is_dropped():
+    from earnings_intel.data.orderbook import drop_spikes
+    s = [{"as_of": q, "value_cr": v} for q, v in
+         (("2025-12-31", 3126.0), ("2026-03-31", 500.0), ("2026-06-30", 2470.0))]
+    assert [x["value_cr"] for x in drop_spikes(s)] == [3126.0, 2470.0]
+    s = [{"as_of": q, "value_cr": v} for q, v in
+         (("2025-09-30", 15000.0), ("2025-12-31", 14500.0), ("2026-03-31", 4142.0))]
+    assert [x["value_cr"] for x in drop_spikes(s)] == [15000.0, 14500.0]
+
+
+def test_a_slice_smaller_than_five_percent_of_revenue_is_not_shown():
+    import refresh_orderbook as ro
+    s = [{"as_of": "2026-06-30", "value_cr": 639.0, "filed": "2026-08-01", "kind": "press"}]
+    assert ro.summarise("TATAPOWER", s, {"revenue_cr": 64000.0}) is None
