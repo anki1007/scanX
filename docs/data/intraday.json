@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-10T01:41:17+05:30",
+ "generated_at": "2026-10-10T13:30:39+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -1402,13 +1402,13 @@
    "exchange": "BSE",
    "last": 7.28,
    "pct_change": -6.31,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
+   "open": 7.98,
+   "high": 8.0,
+   "low": 7.0,
+   "prev_close": 7.77,
    "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
+   "range_pos": 28.0,
+   "volume": 647000,
    "pead_score": 32.6,
    "pead_category": "MEDIUM"
   },
@@ -1458,6 +1458,21 @@
    "pead_category": null
   },
   {
+   "symbol": "CORDELIA",
+   "exchange": "BSE",
+   "last": 100.85,
+   "pct_change": -2.13,
+   "open": 103.95,
+   "high": 105.7,
+   "low": 100.5,
+   "prev_close": 103.05,
+   "vwap_pos": null,
+   "range_pos": 7.0,
+   "volume": null,
+   "pead_score": 73.8,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "543651",
    "exchange": "BSE",
    "last": 29.0,
@@ -1476,21 +1491,6 @@
    "symbol": "MODINATUR",
    "exchange": "BSE",
    "last": 315.75,
-   "pct_change": 9.39,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "PRAENG",
-   "exchange": "BSE",
-   "last": 19.8,
    "pct_change": 9.39,
    "open": null,
    "high": null,
