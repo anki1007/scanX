@@ -99,6 +99,10 @@ jobs:
           . "$RUNNER_TEMP/runner.sh"
           run python scripts/refresh_scanx.py --pages 8
           run python scripts/refresh_orders.py --months 3
+          # order BOOK (backlog) per company, read from its own quarterly filings;
+          # remembers every filing it has read, so after the first runs it opens
+          # only new presentations and calls
+          run python scripts/refresh_orderbook.py --max-minutes 25
           run python scripts/refresh_buybacks.py --months 12
           run python scripts/refresh_special.py
           run python scripts/refresh_fii.py

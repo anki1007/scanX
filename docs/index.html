@@ -80,6 +80,7 @@
     <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
     <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
     <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+    <a class="nav-i" href="orderbook.html"><span class="ic">📚</span><span>Order Book</span></a>
     <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
     <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
     <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
@@ -153,6 +154,11 @@
       <a class="mod" href="orders.html" data-mod="orders.html">
         <div class="mod-top"><span class="mod-ic">📦</span><span class="mod-t">Orders</span><span class="mod-f"></span></div>
         <p class="mod-d">Order wins and contract awards picked out of company filings, so a large win is read against the size of the business.</p>
+        <div class="mod-s"></div>
+      </a>
+      <a class="mod" href="orderbook.html" data-mod="orderbook.html">
+        <div class="mod-top"><span class="mod-ic">📚</span><span class="mod-t">Order Book</span><span class="mod-f"></span></div>
+        <p class="mod-d">Each company's outstanding order book, quarter by quarter, read from its own presentations and earnings calls, set against revenue.</p>
         <div class="mod-s"></div>
       </a>
       <a class="mod" href="buybacks.html" data-mod="buybacks.html">
@@ -284,6 +290,7 @@ const MODS={
   "magicformula.html":{f:"data/magicformula_meta.json",s:d=>n(d.ranked)+' ranked'},
   "intraday.html":{f:"data/intraday.json",s:d=>d.rows&&d.rows.length?n(d.rows.length)+' movers':''},
   "orders.html":{f:"data/orders_meta.json",s:d=>n(d.orders)+' order wins'},
+  "orderbook.html":{f:"data/orderbook.json",s:d=>n((d.companies||[]).length)+' order books'},
   "buybacks.html":{f:"data/buybacks_meta.json",s:d=>n(d.buybacks)+' buybacks · '+n(d.candidates)+' candidates'},
   "special.html":{f:"data/special_meta.json",s:d=>n(d.count)+' situations'},
   "demergers.html":{f:"data/demergers_meta.json",s:d=>n(d.count)+' tracked'},

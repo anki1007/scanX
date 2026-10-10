@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>scanX · Orders Monitor</title>
+<title>scanX · Order Book</title>
 <!-- social preview -->
-<link rel="canonical" href="https://anki1007.github.io/scanX/orders.html">
+<link rel="canonical" href="https://anki1007.github.io/scanX/orderbook.html">
 <meta name="description" content="Fundamental screening, intrinsic value and market breadth for NSE &amp; BSE — 5,000+ companies scored on results, relative strength and quality, refreshed daily.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="scanX">
-<meta property="og:url" content="https://anki1007.github.io/scanX/orders.html">
-<meta property="og:title" content="scanX · Orders Monitor">
+<meta property="og:url" content="https://anki1007.github.io/scanX/orderbook.html">
+<meta property="og:title" content="scanX · Order Book">
 <meta property="og:description" content="Fundamental screening, intrinsic value and market breadth for NSE &amp; BSE — 5,000+ companies scored on results, relative strength and quality, refreshed daily.">
 <meta property="og:image" content="https://anki1007.github.io/scanX/og-scanX-v2.jpg">
 <meta property="og:image:secure_url" content="https://anki1007.github.io/scanX/og-scanX-v2.jpg">
@@ -19,7 +19,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="The scanX terminal: PEAD result monitor, 3D market breadth field, FII/DII flows and 52-week highs.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="scanX · Orders Monitor">
+<meta name="twitter:title" content="scanX · Order Book">
 <meta name="twitter:description" content="Fundamental screening, intrinsic value and market breadth for NSE &amp; BSE — 5,000+ companies scored on results, relative strength and quality, refreshed daily.">
 <meta name="twitter:image" content="https://anki1007.github.io/scanX/og-scanX-v2.jpg">
 <meta name="twitter:image:alt" content="The scanX terminal: PEAD result monitor, 3D market breadth field, FII/DII flows and 52-week highs.">
@@ -80,6 +80,11 @@
   .nav-i .ic{font-size:15px;width:18px;text-align:center}
   .content{flex:1;min-width:0;display:flex;flex-direction:column}
   .ptitle{font-size:18px;font-weight:800;color:var(--text)}
+  .sub{color:var(--muted);font-size:11.5px;margin-top:2px}
+  .pos{color:var(--green)} .neg{color:var(--red)} .teal{color:var(--teal)}
+  table.hist{width:100%;font-size:12.5px;margin:4px 0 10px}
+  table.hist td,table.hist th{padding:6px 8px;vertical-align:top}
+  table.hist .quote{color:var(--muted);max-width:620px}
 </style>
 </head>
 <body>
@@ -93,8 +98,8 @@
     <a class="nav-i" href="pead.html"><span class="ic">📊</span><span>PEAD Board</span></a>
     <a class="nav-i" href="magicformula.html"><span class="ic">🪄</span><span>Magic Formula</span></a>
     <a class="nav-i" href="intraday.html"><span class="ic">⚡</span><span>Intraday</span></a>
-    <a class="nav-i active" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
-    <a class="nav-i" href="orderbook.html"><span class="ic">📚</span><span>Order Book</span></a>
+    <a class="nav-i" href="orders.html"><span class="ic">📦</span><span>Orders</span></a>
+    <a class="nav-i active" href="orderbook.html"><span class="ic">📚</span><span>Order Book</span></a>
     <a class="nav-i" href="buybacks.html"><span class="ic">💰</span><span>Buybacks</span></a>
     <a class="nav-i" href="special.html"><span class="ic">✨</span><span>Special Sit</span></a>
     <a class="nav-i" href="demergers.html"><span class="ic">🔀</span><span>Demergers</span></a>
@@ -121,159 +126,99 @@
   <div class="content">
 
 <header>
-  <div class="ptitle">Orders &amp; Contract Wins</div>
+  <div class="ptitle">Order Book (Backlog)</div>
   <div class="kpis">
-    <div class="kpi"><div class="v" id="kOrders">–</div><div class="l">Orders</div></div>
-    <div class="kpi"><div class="v teal" id="kCos">–</div><div class="l">Companies</div></div>
+    <div class="kpi"><div class="v" id="kCos">–</div><div class="l">Companies</div></div>
+    <div class="kpi"><div class="v teal" id="kUp">–</div><div class="l">Backlog up 1Y</div></div>
     <div class="kpi"><div class="v" id="kShown">–</div><div class="l">Shown</div></div>
-    <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated (auto 60s)</div></div>
+    <div class="kpi"><div class="v" id="kTime" style="font-size:13px"><span class="dot"></span>–</div><div class="l">Updated</div></div>
   </div>
 </header>
 <div class="bar">
-  <div class="fld"><label>Search company</label><input id="q" placeholder="name…" style="width:220px"></div>
-  <div class="fld"><label>Timeframe</label>
-    <select id="tf"><option value="0">All</option><option value="1">1 month</option>
-      <option value="3">3 months</option><option value="6">6 months</option></select></div>
-  <div class="fld"><label>Min order-size %</label><input id="minpct" type="number" value="0" style="width:120px"></div>
-</div>
-
-<div class="tabs">
-  <div class="tab on" id="tabDetail">Order detail</div>
-  <div class="tab" id="tabCompany">By company (% of revenue)</div>
+  <div class="fld"><label>Search company</label><input id="q" placeholder="name or symbol…" style="width:220px"></div>
+  <div class="fld"><label>Min book / revenue (x)</label><input id="minbr" type="number" step="0.1" value="0" style="width:120px"></div>
+  <div class="fld"><label>Sort</label>
+    <select id="sort"><option value="last_updated">Last updated</option><option value="growth_1y_pct">Growth (1Y)</option>
+      <option value="order_book_cr">Order book</option><option value="book_to_revenue">Book / revenue</option></select></div>
 </div>
 <div class="tablebox">
-  <table id="tbl"><thead><tr id="head"></tr></thead><tbody id="body"></tbody></table>
+  <table id="tbl"><thead><tr>
+    <th>Company</th><th>Growth (1Y)</th><th>Order book</th><th>Revenue</th><th>Book / revenue</th>
+    <th>Market cap</th><th>As of</th><th>Last updated</th><th>History</th></tr></thead><tbody id="body"></tbody></table>
 </div>
-<div class="src" id="src">source: –</div>
+<div class="src" id="src">The outstanding order book each company states in its own investor presentations,
+  results press releases and earnings calls, one figure per quarter. Click a row for every quarter, the sentence it
+  came from and the filing. Not investment advice.</div>
 
 <script>
-/* At most two decimals, and no trailing .00 on a whole number: these
-   boards printed whatever precision the JSON happened to carry, which
-   on a growth rate is the full float tail (+930.5555555555555%). */
+const f=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cr=v=>v==null?'–':'₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:2})+' Cr';
 const fx=v=>v==null?'':(+(+v).toFixed(2)).toString();
-
-const DCOLS = [
-  {k:'name', t:'Company', kind:'co'},
-  {k:'customer', t:'Customer', kind:'txt'},
-  {k:'order_type', t:'Order Type', kind:'txt'},
-  {k:'date', t:'Date', kind:'txt'},
-  {k:'value_cr', t:'Contract Value', kind:'cr'},
-  {k:'duration', t:'Duration', kind:'txt'},
-  {k:'order_size_pct', t:'Order Size %', kind:'pill'},
-  {k:'market_cap', t:'Market Cap', kind:'cr'},
-  {k:'sales', t:'Sales (Qtr)', kind:'cr'},
-  {k:'opm', t:'OPM %', kind:'pctplain'},
-  {k:'np_prev_q', t:'NP Prev Qtr', kind:'num'},
-  {k:'eps_prev_q', t:'EPS Prev Qtr', kind:'num'},
-  {k:'np_latest_q', t:'NP Latest Qtr', kind:'num'},
-  {k:'eps_latest_q', t:'EPS Latest Qtr', kind:'num'},
-  {k:'np_growth_qoq', t:'NP Growth %', kind:'pct'},
-  {k:'eps_growth_qoq', t:'EPS Growth %', kind:'pct'},
-  {k:'ltp', t:'LTP', kind:'ltp'},
-  {k:'pct_change', t:'% Chg', kind:'pct'},
-];
-const CCOLS = [
-  {k:'name', t:'Company', kind:'cos'},
-  {k:'orders_pct_revenue', t:'Orders as % of Revenue', kind:'pill'},
-  {k:'order_count', t:'Order Count', kind:'cnt'},
-  {k:'total_value_cr', t:'Total Order Value', kind:'cr'},
-  {k:'revenue_fy', t:'Company Revenue', kind:'crfy'},
-  {k:'market_cap', t:'Market Cap', kind:'cr'},
-];
-
-let ORDERS=[], COMPANIES=[], META={}, view='detail';
-let sort={k:'order_size_pct', dir:-1};
-
-function f(id){return document.getElementById(id);}
-function crCell(v){return v===null||v===undefined?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr';}
-function crFy(v){return v===null||v===undefined?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN')+' Cr (FY)';}
-function ltpCell(v){return v===null||v===undefined?'<span class="na">—</span>':'₹'+Number(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function pctCell(v){if(v===null||v===undefined)return '<span class="na">—</span>';const c=v>0?'pos':(v<0?'neg':'');return `<span class="${c}">${v>0?'+':''}${fx(v)}%</span>`;}
-function pill(v){if(v===null||v===undefined)return '<span class="na">—</span>';const cls=v>=100?'pill':'pill amber';return `<span class="${cls}">${fx(v)}%</span>`;}
-function esc(s){return (s==null?'':String(s)).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function staleChip(ts){const m=String(ts||'').match(/(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)/);const t=m?Date.parse(m[1]+'T'+(m[2].length===5?m[2]+':00':m[2])+'+05:30'):NaN;if(isNaN(t)||Date.now()-t<=48*3600e3)return '';const dd=Math.floor((Date.now()-t)/864e5);return '<span style="display:inline-block;font-weight:800;font-size:10px;letter-spacing:.03em;color:var(--amber);background:rgba(251,191,36,.15);border-radius:6px;padding:2px 7px;margin-right:6px;vertical-align:middle">STALE — '+dd+'d old</span>';}
-function txt(v){return v?esc(v):'<span class="na">—</span>';}
-function plainNum(v){return v===null||v===undefined?'<span class="na">—</span>':esc(v);}
-function pctPlain(v){return v===null||v===undefined?'<span class="na">—</span>':fx(v)+'%';}
-
-function cell(c,row){
-  const v=row[c.k];
-  switch(c.kind){
-    case 'co':   return `<td><a href="fundamental.html?code=${encodeURIComponent(row.code)}">${esc(row.name||row.code)}</a></td>`;
-    case 'cos':  return `<td><a href="fundamental.html?code=${encodeURIComponent(row.code)}">${esc(row.name||row.code)}</a></td>`;
-    case 'txt':  return `<td>${txt(v)}</td>`;
-    case 'cr':   return `<td>${crCell(v)}</td>`;
-    case 'crfy': return `<td>${crFy(v)}</td>`;
-    case 'pill': return `<td>${pill(v)}</td>`;
-    case 'pct':  return `<td>${pctCell(v)}</td>`;
-    case 'pctplain': return `<td>${pctPlain(v)}</td>`;
-    case 'ltp':  return `<td>${ltpCell(v)}</td>`;
-    case 'cnt':  return `<td>${plainNum(v)} orders</td>`;
-    default:     return `<td>${plainNum(v)}</td>`;
-  }
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dt=s=>{if(!s)return '–';const p=s.split('-');return (+p[2])+' '+MON[+p[1]-1]+' '+p[0];};
+const KIND={press:'Press release',presentation:'Investor presentation',transcript:'Earnings call'};
+let DATA=[], OPEN=null;
+function spark(h){
+  const v=h.map(x=>x.value_cr); if(!v.length) return '';
+  const W=96,H=26,mx=Math.max(...v)||1,bw=Math.max(2,Math.floor(W/v.length)-2);
+  return '<svg width="'+W+'" height="'+H+'" aria-hidden="true">'+v.map((x,i)=>{
+    const bh=Math.max(1,Math.round(x/mx*(H-2)));
+    return '<rect x="'+(i*(bw+2))+'" y="'+(H-bh)+'" width="'+bw+'" height="'+bh+'" rx="1" fill="var(--teal)" opacity="'+(i===v.length-1?1:.55)+'"/>';
+  }).join('')+'</svg>';
 }
-
-function activeData(){
-  const q=f('q').value.trim().toLowerCase();
-  const minpct=parseFloat(f('minpct').value)||0;
-  const months=parseInt(f('tf').value)||0;
-  let rows = view==='detail' ? ORDERS.slice() : COMPANIES.slice();
-  if(q) rows=rows.filter(r=>(r.name||'').toLowerCase().includes(q));
-  const pctKey = view==='detail' ? 'order_size_pct' : 'orders_pct_revenue';
-  if(minpct) rows=rows.filter(r=>(r[pctKey]??-1)>=minpct);
-  if(view==='detail' && months){
-    const cut=new Date(); cut.setMonth(cut.getMonth()-months);
-    rows=rows.filter(r=>{const d=new Date(r.date); return isNaN(d)?true:d>=cut;});
-  }
-  rows.sort((a,b)=>{let x=a[sort.k],y=b[sort.k];
-    if(x===null||x===undefined)x=-1e15; if(y===null||y===undefined)y=-1e15;
-    if(typeof x==='string')return sort.dir*x.localeCompare(y); return sort.dir*(x-y);});
-  return rows;
+function histRows(r){
+  const h=(r.history||[]).slice().reverse();
+  return h.map((x,i)=>{
+    const p=h[i+1], ch=p&&p.value_cr?(x.value_cr/p.value_cr-1)*100:null;
+    return '<tr><td>'+dt(x.as_of)+'</td><td>'+cr(x.value_cr)+'</td>'+
+      '<td class="'+(ch==null?'':(ch>=0?'pos':'neg'))+'">'+(ch==null?'–':(ch>=0?'+':'')+fx(ch)+'%')+'</td>'+
+      '<td><a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(KIND[x.kind]||x.kind)+'</a>'+
+      '<div class="sub">filed '+dt(x.filed)+'</div></td>'+
+      '<td class="quote">“'+esc(x.quote)+'”</td></tr>';
+  }).join('');
 }
-
 function render(){
-  const cols = view==='detail'?DCOLS:CCOLS;
-  const rows = activeData();
-  f('head').innerHTML = cols.map(c=>{
-    const cls=c.k===sort.k?('sorted '+(sort.dir>0?'asc':'')):'';
-    return `<th class="${cls}" data-k="${c.k}">${c.t}</th>`;}).join('');
-  f('head').querySelectorAll('th').forEach(th=>th.onclick=()=>{
-    const k=th.dataset.k; if(sort.k===k)sort.dir*=-1; else{sort.k=k;sort.dir=-1;} render();});
-  f('body').innerHTML = rows.map(r=>'<tr>'+cols.map(c=>cell(c,r)).join('')+'</tr>').join('')
-     || `<tr><td colspan="${cols.length}" class="na" style="padding:18px">No orders yet — once scanX.bat scrapes BSE filings they appear here.</td></tr>`;
-  f('kShown').textContent = rows.length;
+  const q=f('q').value.trim().toLowerCase(), mb=+f('minbr').value||0, key=f('sort').value;
+  const rows=DATA.filter(r=>(!q||(r.name+' '+r.code).toLowerCase().includes(q))&&((r.book_to_revenue||0)>=mb));
+  rows.sort((a,b)=>{const x=a[key],y=b[key];if(x==null)return 1;if(y==null)return -1;
+    return typeof x==='string'?y.localeCompare(x):y-x;});
+  f('kShown').textContent=rows.length;
+  f('body').innerHTML=rows.map(r=>{
+    const g=r.growth_1y_pct;
+    let html='<tr class="obrow" data-c="'+esc(r.code)+'" style="cursor:pointer" title="Click for every quarter and its source">'+
+      '<td><b>'+esc(r.name)+'</b><div class="sub">NSE: '+esc(r.code)+'</div></td>'+
+      '<td class="'+(g==null?'':(g>=0?'pos':'neg'))+'">'+(g==null?'–':(g>=0?'+':'')+fx(g)+'%')+'</td>'+
+      '<td class="teal">'+cr(r.order_book_cr)+'</td>'+
+      '<td>'+cr(r.revenue_cr)+'<div class="sub">'+esc(r.revenue_fy||'')+(r.basis?', '+esc(r.basis):'')+'</div></td>'+
+      '<td>'+(r.book_to_revenue==null?'–':fx(r.book_to_revenue)+'x')+'</td>'+
+      '<td>'+cr(r.mcap_cr)+'</td><td>'+dt(r.as_of)+'</td><td>'+dt(r.last_updated)+'</td>'+
+      '<td>'+spark(r.history||[])+'</td></tr>';
+    if(OPEN===r.code){
+      html+='<tr><td colspan="9"><table class="hist"><thead><tr><th>Quarter end</th><th>Order book</th>'+
+        '<th>Change</th><th>Stated in</th><th>What the company said</th></tr></thead><tbody>'+histRows(r)+
+        '</tbody></table></td></tr>';
+    }
+    return html;
+  }).join('') || '<tr><td colspan="9" class="sub">No company matches.</td></tr>';
+  document.querySelectorAll('tr.obrow').forEach(tr=>tr.onclick=()=>{OPEN=OPEN===tr.dataset.c?null:tr.dataset.c;render();});
 }
-
-function setView(v){
-  view=v;
-  f('tabDetail').classList.toggle('on', v==='detail');
-  f('tabCompany').classList.toggle('on', v==='company');
-  sort = v==='detail' ? {k:'order_size_pct',dir:-1} : {k:'orders_pct_revenue',dir:-1};
-  render();
-}
-
 async function load(){
   try{
-    const t=Date.now();
-    const [o,c,m] = await Promise.all([
-      fetch('data/orders.json?t='+t).then(r=>r.json()).catch(()=>[]),
-      fetch('data/orders_companies.json?t='+t).then(r=>r.json()).catch(()=>[]),
-      fetch('data/orders_meta.json?t='+t).then(r=>r.json()).catch(()=>({})),
-    ]);
-    ORDERS=o||[]; COMPANIES=c||[]; META=m||{};
-    f('kOrders').textContent = ORDERS.length;
-    f('kCos').textContent = COMPANIES.length;
-    f('kTime').innerHTML = (staleChip(m.generated_at_ist)||'<span class="dot"></span>')+esc(m.generated_at_ist||'live');
-    f('src').textContent = (m.prices?String(m.prices):'');
-    render();
-  }catch(e){ f('src').textContent='data load error: '+e; }
+    const r=await fetch('data/orderbook.json?t='+Date.now()); if(!r.ok) throw 0;
+    const d=await r.json();
+    DATA=d.companies||[];
+    f('kCos').textContent=DATA.length;
+    f('kUp').textContent=DATA.filter(r=>(r.growth_1y_pct||0)>0).length;
+    f('kTime').innerHTML='<span class="dot"></span>'+esc(d.generated_at_ist||'');
+  }catch(e){
+    f('body').innerHTML='<tr><td colspan="9" class="sub">The order-book board is being built; check back after tonight’s refresh.</td></tr>';
+    return;
+  }
+  render();
 }
-
-f('tabDetail').onclick=()=>setView('detail');
-f('tabCompany').onclick=()=>setView('company');
-['q','minpct','tf'].forEach(id=>f(id).addEventListener('input',render));
+['q','minbr','sort'].forEach(id=>f(id).addEventListener('input',render));
 load();
-setInterval(load, 60000);
 </script>
   </div>
 </div>
