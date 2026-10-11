@@ -76,7 +76,6 @@ jobs:
       # it needs no key, so the list is never empty.
       - id: split
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -90,7 +89,9 @@ jobs:
           set -euo pipefail
           POOL=""
           add() { [ -n "${2:-}" ] && POOL="${POOL:+$POOL,}$1" || true; }
-          add gemini    "${GEMINI_API_KEY:-}"
+          # No gemini: that key is reserved for the concall / PPT analysis in the
+          # nightly job. Debating on it every 6 hours used up its free daily
+          # quota first, and that analysis produced nothing from 5 Oct 2026.
           add openai    "${OPENAI_API_KEY:-}"
           add anthropic "${ANTHROPIC_API_KEY:-}"
           add deepseek  "${DEEPSEEK_API_KEY:-}"
@@ -203,7 +204,7 @@ jobs:
           # Every key is exported to every shard, but --provider pins which one
           # this shard may use. Exporting them all keeps the step definition
           # identical across the matrix; the pin is what separates the quotas.
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # GEMINI_API_KEY is deliberately absent: see the provider pool above.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

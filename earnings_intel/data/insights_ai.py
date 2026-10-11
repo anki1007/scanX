@@ -247,7 +247,7 @@ def pdf_text(url: str, max_pages: int = 40, max_chars: int = 140000):
 # also retires model ids on its own schedule (2.0-flash is gone; 2.5-flash is
 # closed to new keys), so the chain is newest-first and _discover_flash_model
 # below self-heals when every hardcoded id has rotted away.
-_FALLBACK_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"]
+_FALLBACK_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]   # 2.5-flash retired (404)
 
 
 def _retryable(e: Exception) -> bool:
