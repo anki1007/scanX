@@ -63,7 +63,10 @@ def doc_kind(row: dict) -> str | None:
     url = str(row.get("attchmntFile") or "").lower()
     if not url.endswith(".pdf"):
         return None
-    if desc == "Investor Presentation":
+    # By category OR by file name: L&T files its analyst presentations under
+    # plain "Updates" (..._AnalystPresentationMarch2026.pdf), so a category
+    # check alone never opened them.
+    if desc == "Investor Presentation" or "presentation" in url.rsplit("/", 1)[-1]:
         return "presentation"
     if desc == "Press Release":
         return "press"

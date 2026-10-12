@@ -118,3 +118,19 @@ def test_a_slice_smaller_than_five_percent_of_revenue_is_not_shown():
     import refresh_orderbook as ro
     s = [{"as_of": "2026-06-30", "value_cr": 639.0, "filed": "2026-08-01", "kind": "press"}]
     assert ro.summarise("TATAPOWER", s, {"revenue_cr": 64000.0}) is None
+
+
+def test_lt_style_dated_caption_and_header_row():
+    """L&T: a header row lists inflow, revenue and book figures in column
+    order, and a chart caption gives the dated book with labels between."""
+    text = ("ORDER INFLOW REVENUE ORDER BOOK ₹ 4356 bn ₹ 2859 bn ₹ 7403 bn 22% YoY "
+            "Order Book as on 31-Mar-2026 Geography Segment Energy, 35% Middle East, 40% "
+            "Infrastructure, 57% ₹ 7403 Bn")
+    fig = document_figure(text, date(2026, 5, 5))
+    assert fig["value_cr"] == 740300.0 and fig["as_of"] == "2026-03-31"
+
+
+def test_a_presentation_is_recognised_by_its_file_name():
+    import refresh_orderbook as ro
+    assert ro.doc_kind({"desc": "Updates",
+                        "attchmntFile": "https://x/PAM_05052026_AnalystPresentationMarch2026.pdf"}) == "presentation"

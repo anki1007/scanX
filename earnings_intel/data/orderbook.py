@@ -39,7 +39,7 @@ _FORWARD = re.compile(r"\b(would|could|should|will|expect\w*|estimat\w*|target\w
 _ASON = re.compile(r"as\s+(?:on|of|at)\s+(\d{1,2})(?:st|nd|rd|th)?[\s\-]*([A-Za-z]{3,9})[\s,\-']+(\d{2,4})", re.I)
 
 _UNIT = {"lakh crore": 100000.0, "lakh crores": 100000.0, "lac crore": 100000.0,
-         "lac crores": 100000.0, "lakh cr": 100000.0, "trillion": 100000.0, "crore": 1.0, "crores": 1.0, "cr": 1.0, "cr.": 1.0,
+         "lac crores": 100000.0, "lakh cr": 100000.0, "trillion": 100000.0, "trn": 100000.0, "crore": 1.0, "crores": 1.0, "cr": 1.0, "cr.": 1.0,
          "billion": 100.0, "bn": 100.0, "million": 0.1, "mn": 0.1,
          "lakh": 0.01, "lakhs": 0.01, "lac": 0.01, "lacs": 0.01}
 _MON = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
@@ -67,8 +67,11 @@ def mentions(text: str, window: int = 140) -> list:
             continue
         tail = flat[m.end(): m.end() + window]
         head = flat[max(0, m.start() - 40): m.start()]
-        # a flow, or one slice of the book ("export order book of Rs 80 crore")
-        if re.search(r"\b(inflow|intake|export|international|overseas)\s*$", head, re.I):
+        # a flow, or one slice of the book ("export order book of Rs 80 crore"),
+        # or a header row whose figures are listed column by column after the
+        # labels ("ORDER INFLOW REVENUE ORDER BOOK Rs 4356 bn Rs 2859 bn Rs 7403
+        # bn" -- the first figure there is the inflow, not the book)
+        if re.search(r"\b(inflow|intake|export|international|overseas|revenue)\s*$", head, re.I):
             continue
         a = _AMOUNT.search(tail) or _BARE.search(tail)
         if not a:
@@ -104,6 +107,37 @@ def mentions(text: str, window: int = 140) -> list:
                     asof = None
         quote = flat[max(0, m.start() - 20): m.end() + a.end() + 30].strip()
         out.append((v, asof, quote[:240]))
+    out.extend(_dated_captions(flat))
+    return out
+
+
+# "Order Book as on 31-Mar-2026 ... Rs 7403 Bn": a chart caption naming the
+# date before the figure, with segment labels in between (L&T's presentations
+# state their book only this way). The explicit date makes it the strongest
+# statement a document can make, so it is counted three times when a
+# document's figures are tallied.
+_CAPTION = re.compile(
+    r"order\s*book\s+as\s+(?:on|of|at)\s+(\d{1,2})[\s\-]*([A-Za-z]{3,9})[\s,\-']*(\d{2,4})"
+    r"(.{0,260}?)(?:rs\.?|inr|₹)\s*([0-9][0-9,]*(?:\.[0-9]+)?)\s*"
+    r"(lakh\s+crores?|trillion|trn|crores?|cr\b|billion|bn)", re.I)
+
+
+def _dated_captions(flat: str) -> list:
+    out = []
+    for c in _CAPTION.finditer(flat):
+        if _FORWARD.search(c.group(4)) or re.search(r"\b(inflow|revenue)\b", c.group(4), re.I):
+            continue
+        mon = _MON.get(c.group(2)[:3].lower())
+        v = _to_cr(c.group(5), c.group(6))
+        if not mon or v is None or v < 1:
+            continue
+        yr = int(c.group(3)); yr = yr + 2000 if yr < 100 else yr
+        try:
+            asof = date(yr, mon, int(c.group(1)))
+        except ValueError:
+            continue
+        quote = re.sub(r"\s+", " ", c.group(0))[:240]
+        out.extend([(v, asof, quote)] * 3)
     return out
 
 
