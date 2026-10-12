@@ -11,10 +11,10 @@ name: upstox_lab sync
 
 on:
   schedule:
-    # Sunday 03:37 IST (Sat 22:07 UTC): markets closed and far from any
+    # Nightly 03:37 IST (22:07 UTC): markets closed and far from any
     # market-hours job on the VPS Quant Lab platform, which shares this
     # Upstox token — the two ingesters must never run at the same time.
-    - cron: "7 22 * * 6"
+    - cron: "7 22 * * *"
   workflow_dispatch:
     inputs:
       symbols:
@@ -81,7 +81,10 @@ jobs:
           if [ -n "${{ inputs.symbols }}" ]; then
             timeout --signal=INT 95m python -m upstox_lab sync --symbols "${{ inputs.symbols }}"
           else
-            timeout --signal=INT 95m python -m upstox_lab sync
+            # competitors is skipped: Upstox answers HTTP 400 "Invalid Instrument"
+            # for every ISIN on this token although the request matches its docs
+            # (633/633 failed on 2026-10-12), and those calls cost 1/8 of the run.
+            timeout --signal=INT 95m python -m upstox_lab sync --endpoints company_profile,balance_sheet,cash_flow,income_statement,share_holdings,key_ratios,corporate_actions
           fi
           rc=$?
           [ $rc -eq 124 ] && echo "Time budget reached - progress saved; the next run continues." | tee -a "$GITHUB_STEP_SUMMARY"
