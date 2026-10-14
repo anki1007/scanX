@@ -1,5 +1,25 @@
 [
   {
+    "code": "BROOKS",
+    "name": "Brooks Laboratories Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-10-14",
+    "headlines": [
+      {
+        "date": "14 Oct 2026",
+        "stage": "LISTED",
+        "text": "Board Meeting Outcome for Outcome Of Board Meeting Under Regulation 30 Of The SEBI \n(LODR) Regulations, 2015 (As Amended From Time To Time) 2026, Brooks Labs approved demerger of manufacturing business into Abridge Speciality via 1:1 share issue Announcement -\n    \n    14 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b6361a7b-1614-4ba4-a368-d510a8ea7c39.pdf"
+      },
+      {
+        "date": "14 Oct 2026",
+        "stage": "BOARD_APPROVED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Board approved demerger of manufacturing business into Abridge Speciality on October 14, 2026; 1:1 share issue Announcement -\n    \n    14 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8c89d654-b349-45e6-95a7-7ef6a96b5965.pdf"
+      }
+    ]
+  },
+  {
     "code": "GVPIL",
     "name": "GE Power India Ltd",
     "stage": "LISTED",
