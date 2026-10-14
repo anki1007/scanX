@@ -594,6 +594,15 @@
     "orders_pct_revenue": 16.46
   },
   {
+    "code": "DHABRIYA",
+    "name": "Dhabriya Polywood Ltd",
+    "order_count": 1,
+    "total_value_cr": 24.72,
+    "revenue_fy": 151.0,
+    "market_cap": 498.0,
+    "orders_pct_revenue": 16.37
+  },
+  {
     "code": "MANINDS",
     "name": "Man Industries (India) Limited",
     "order_count": 1,
@@ -2283,15 +2292,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 6357.0,
     "market_cap": 10703.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "DHABRIYA",
-    "name": "Dhabriya Polywood Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 151.0,
-    "market_cap": 498.0,
     "orders_pct_revenue": null
   },
   {

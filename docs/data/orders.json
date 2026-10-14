@@ -263,7 +263,7 @@
     "market_cap": 197.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 360.0,
+    "ltp": 375.0,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -272,7 +272,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": -0.08
+    "pct_change": 4.08
   },
   {
     "code": "TEJASNET",
@@ -838,7 +838,7 @@
     "market_cap": 2027.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1742.85,
+    "ltp": 1694.15,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -847,7 +847,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": 0.29
+    "pct_change": -2.51
   },
   {
     "code": "HFCL",
@@ -1847,6 +1847,31 @@
     "np_growth_qoq": -41.79,
     "eps_growth_qoq": -42.65,
     "order_size_pct": 16.63,
+    "pct_change": null
+  },
+  {
+    "code": "DHABRIYA",
+    "name": "Dhabriya Polywood Ltd",
+    "exchange": "",
+    "date": "14 Oct 2026",
+    "order_type": "Work Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of receiving of work order .\n\nDhabriya Polywood bagged 24.72 crore Announcement -\n    \n    14 Oct 2026",
+    "value_cr": 24.72,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f194dd87-a90a-45be-adb2-9dd22d96675c.pdf",
+    "market_cap": 498.0,
+    "sales": 37.57,
+    "opm": 19.22,
+    "ltp": 471.0,
+    "revenue_fy": 151.0,
+    "np_prev_q": 4.23,
+    "np_latest_q": 3.04,
+    "eps_prev_q": 3.91,
+    "eps_latest_q": 2.81,
+    "np_growth_qoq": -28.13,
+    "eps_growth_qoq": -28.13,
+    "order_size_pct": 16.37,
     "pct_change": null
   },
   {
@@ -12838,7 +12863,7 @@
     "market_cap": 80.4,
     "sales": 9.89,
     "opm": 6.98,
-    "ltp": 100.21,
+    "ltp": 98.0,
     "revenue_fy": 56.29,
     "np_prev_q": 1.18,
     "np_latest_q": 0.32,
@@ -12847,7 +12872,7 @@
     "np_growth_qoq": -72.88,
     "eps_growth_qoq": -77.78,
     "order_size_pct": null,
-    "pct_change": -7.35
+    "pct_change": -9.39
   },
   {
     "code": "544458",
@@ -13338,7 +13363,7 @@
     "market_cap": 140.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.53,
+    "ltp": 9.5,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -13347,7 +13372,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": null,
-    "pct_change": 4.96
+    "pct_change": 4.63
   },
   {
     "code": "544682",
@@ -13575,31 +13600,6 @@
     "pct_change": null
   },
   {
-    "code": "DHABRIYA",
-    "name": "Dhabriya Polywood Ltd",
-    "exchange": "",
-    "date": "01 Oct 2026",
-    "order_type": "Work Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of receiving of work order .\n\nDhabriya Polywood received a \u20b94.75 Announcement -\n    \n    01 Oct 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=904a963e-0637-48a4-b057-316301cbc976.pdf",
-    "market_cap": 498.0,
-    "sales": 37.57,
-    "opm": 19.22,
-    "ltp": 471.0,
-    "revenue_fy": 151.0,
-    "np_prev_q": 4.23,
-    "np_latest_q": 3.04,
-    "eps_prev_q": 3.91,
-    "eps_latest_q": 2.81,
-    "np_growth_qoq": -28.13,
-    "eps_growth_qoq": -28.13,
-    "order_size_pct": null,
-    "pct_change": null
-  },
-  {
     "code": "544440",
     "name": "Cryogenic OGS Ltd",
     "exchange": "",
@@ -13663,7 +13663,7 @@
     "market_cap": 149.0,
     "sales": 0.0,
     "opm": null,
-    "ltp": 14.25,
+    "ltp": 14.24,
     "revenue_fy": 0.0,
     "np_prev_q": 0.08,
     "np_latest_q": 0.41,
@@ -13672,7 +13672,7 @@
     "np_growth_qoq": 412.5,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": -4.87
+    "pct_change": -4.94
   },
   {
     "code": "PRINCEPIPE",
@@ -13888,7 +13888,7 @@
     "market_cap": 37.0,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 50.89,
+    "ltp": 50.0,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -13897,7 +13897,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": 2.19
+    "pct_change": 0.4
   },
   {
     "code": "SKYTECH",
@@ -14613,7 +14613,7 @@
     "market_cap": 95.2,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.04,
+    "ltp": 4.08,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -14622,7 +14622,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 0.0
+    "pct_change": 0.99
   },
   {
     "code": "523874",
@@ -14638,7 +14638,7 @@
     "market_cap": 140.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 96.5,
+    "ltp": 96.45,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -14647,7 +14647,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 0.52
+    "pct_change": 0.47
   },
   {
     "code": "524480",
@@ -14663,7 +14663,7 @@
     "market_cap": 510.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 715.0,
+    "ltp": 710.0,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -14672,7 +14672,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": -1.21
+    "pct_change": -1.9
   },
   {
     "code": "ASTRAZEN",
@@ -14738,7 +14738,7 @@
     "market_cap": 1353.0,
     "sales": 2.35,
     "opm": -3.4,
-    "ltp": 82.47,
+    "ltp": 82.55,
     "revenue_fy": 4.38,
     "np_prev_q": -0.18,
     "np_latest_q": -0.07,
@@ -14747,7 +14747,7 @@
     "np_growth_qoq": 61.11,
     "eps_growth_qoq": 100.0,
     "order_size_pct": null,
-    "pct_change": 4.87
+    "pct_change": 4.97
   },
   {
     "code": "539697",
@@ -15288,7 +15288,7 @@
     "market_cap": 155.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 67.5,
+    "ltp": 67.0,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15297,7 +15297,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": 1.31
+    "pct_change": 0.56
   },
   {
     "code": "ASIANENE",
@@ -15413,7 +15413,7 @@
     "market_cap": 377.0,
     "sales": 35.0,
     "opm": 64.0,
-    "ltp": 4.13,
+    "ltp": 4.1,
     "revenue_fy": 97.0,
     "np_prev_q": 11.0,
     "np_latest_q": 15.0,
@@ -15422,7 +15422,7 @@
     "np_growth_qoq": 36.36,
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
-    "pct_change": -2.82
+    "pct_change": -3.53
   },
   {
     "code": "542682",
@@ -15538,7 +15538,7 @@
     "market_cap": 199.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 179.0,
+    "ltp": 176.2,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -15547,7 +15547,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": 0.65
+    "pct_change": -0.93
   },
   {
     "code": "ASHIANA",
@@ -15763,7 +15763,7 @@
     "market_cap": 174.0,
     "sales": 29.46,
     "opm": 13.78,
-    "ltp": 106.0,
+    "ltp": 105.99,
     "revenue_fy": 93.65,
     "np_prev_q": -3.23,
     "np_latest_q": 1.97,
@@ -15772,7 +15772,7 @@
     "np_growth_qoq": 160.99,
     "eps_growth_qoq": 160.91,
     "order_size_pct": null,
-    "pct_change": 1.88
+    "pct_change": 1.87
   },
   {
     "code": "ZUARI",
