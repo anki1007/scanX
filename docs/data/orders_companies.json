@@ -1872,6 +1872,15 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "PNB",
+    "name": "Punjab National Bank",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 129157.0,
+    "market_cap": 136191.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "POSITRON",
     "name": "Positron Energy Ltd",
     "order_count": 1,

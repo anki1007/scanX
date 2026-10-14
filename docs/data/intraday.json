@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14T19:37:44+05:30",
+ "generated_at": "2026-10-15T01:12:28+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -30,21 +30,6 @@
    "range_pos": 100.0,
    "volume": 27000,
    "pead_score": 87.8,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "TARIL",
-   "exchange": "BSE",
-   "last": 349.15,
-   "pct_change": 14.93,
-   "open": 334.35,
-   "high": 360.95,
-   "low": 332.1,
-   "prev_close": 303.8,
-   "vwap_pos": null,
-   "range_pos": 59.0,
-   "volume": 5165000,
-   "pead_score": 93.4,
    "pead_category": "HIGH"
   },
   {
@@ -273,6 +258,21 @@
    "pead_category": null
   },
   {
+   "symbol": "ELECON",
+   "exchange": "BSE",
+   "last": 486.9,
+   "pct_change": 10.66,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 70.2,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "MVELECTRO",
    "exchange": "BSE",
    "last": 980.1,
@@ -333,19 +333,19 @@
    "pead_category": "HIGH"
   },
   {
-   "symbol": "EIMCOELECO",
+   "symbol": "TARIL",
    "exchange": "BSE",
-   "last": 2452.15,
-   "pct_change": 9.07,
-   "open": 2269.85,
-   "high": 2474.0,
-   "low": 2265.2,
-   "prev_close": 2248.15,
+   "last": 349.15,
+   "pct_change": 14.93,
+   "open": 334.35,
+   "high": 360.95,
+   "low": 332.1,
+   "prev_close": 303.8,
    "vwap_pos": null,
-   "range_pos": 90.0,
-   "volume": null,
-   "pead_score": 63.2,
-   "pead_category": "HIGH"
+   "range_pos": 59.0,
+   "volume": 5165000,
+   "pead_score": null,
+   "pead_category": null
   },
   {
    "symbol": "544308",
@@ -406,6 +406,36 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "508969",
+   "exchange": "BSE",
+   "last": 2.55,
+   "pct_change": 5.37,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 85.0,
+   "pead_category": "HIGH"
+  },
+  {
+   "symbol": "BHEL",
+   "exchange": "BSE",
+   "last": 463.5,
+   "pct_change": 4.86,
+   "open": 445.4,
+   "high": 463.6,
+   "low": 439.5,
+   "prev_close": 442.0,
+   "vwap_pos": null,
+   "range_pos": 100.0,
+   "volume": 1662000,
+   "pead_score": 89.1,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "NIBE",
@@ -558,21 +588,6 @@
    "pead_category": null
   },
   {
-   "symbol": "ARSSBL",
-   "exchange": "BSE",
-   "last": 515.1,
-   "pct_change": -5.27,
-   "open": 530.3,
-   "high": 544.0,
-   "low": 512.0,
-   "prev_close": 543.75,
-   "vwap_pos": null,
-   "range_pos": 10.0,
-   "volume": 87000,
-   "pead_score": 73.5,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "VEDPOWER",
    "exchange": "BSE",
    "last": 34.01,
@@ -708,21 +723,6 @@
    "pead_category": null
   },
   {
-   "symbol": "509762",
-   "exchange": "BSE",
-   "last": 79.25,
-   "pct_change": 1.99,
-   "open": 79.25,
-   "high": 79.25,
-   "low": 79.25,
-   "prev_close": 77.7,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": 97.5,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "KROSS",
    "exchange": "BSE",
    "last": 271.9,
@@ -768,21 +768,6 @@
    "pead_category": null
   },
   {
-   "symbol": "TATAELXSI",
-   "exchange": "BSE",
-   "last": 3615.1,
-   "pct_change": 5.51,
-   "open": 3494.95,
-   "high": 3706.0,
-   "low": 3472.4,
-   "prev_close": 3426.4,
-   "vwap_pos": null,
-   "range_pos": 61.0,
-   "volume": 289000,
-   "pead_score": 58.2,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "FOCUS",
    "exchange": "BSE",
    "last": 58.37,
@@ -810,21 +795,6 @@
    "range_pos": null,
    "volume": 100000,
    "pead_score": 62.5,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "531695",
-   "exchange": "BSE",
-   "last": 0.32,
-   "pct_change": -3.03,
-   "open": 0.32,
-   "high": 0.32,
-   "low": 0.32,
-   "prev_close": 0.33,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": 81.2,
    "pead_category": "HIGH"
   },
   {
@@ -948,51 +918,6 @@
    "pead_category": null
   },
   {
-   "symbol": "539449",
-   "exchange": "BSE",
-   "last": 1.72,
-   "pct_change": -4.44,
-   "open": 1.8,
-   "high": 1.8,
-   "low": 1.72,
-   "prev_close": 1.8,
-   "vwap_pos": null,
-   "range_pos": 0.0,
-   "volume": 34000,
-   "pead_score": 62.5,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "ELECON",
-   "exchange": "BSE",
-   "last": 486.9,
-   "pct_change": 10.66,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "535204",
-   "exchange": "BSE",
-   "last": 5.78,
-   "pct_change": 4.9,
-   "open": 5.78,
-   "high": 5.78,
-   "low": 5.78,
-   "prev_close": 5.51,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": 189500000,
-   "pead_score": 56.8,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "REMUS",
    "exchange": "BSE",
    "last": 1022.0,
@@ -1006,6 +931,36 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "ACCENTMIC",
+   "exchange": "BSE",
+   "last": 694.9,
+   "pct_change": 2.44,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 79.3,
+   "pead_category": "HIGH"
+  },
+  {
+   "symbol": "HDBFS",
+   "exchange": "BSE",
+   "last": 583.55,
+   "pct_change": -4.07,
+   "open": 611.05,
+   "high": 611.05,
+   "low": 581.15,
+   "prev_close": 608.3,
+   "vwap_pos": null,
+   "range_pos": 8.0,
+   "volume": null,
+   "pead_score": 61.0,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "544417",
@@ -1293,6 +1248,21 @@
    "pead_category": null
   },
   {
+   "symbol": "BIRLAMONEY",
+   "exchange": "BSE",
+   "last": 122.1,
+   "pct_change": 3.65,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 62.2,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "521226",
    "exchange": "BSE",
    "last": 23.95,
@@ -1413,19 +1383,34 @@
    "pead_category": null
   },
   {
-   "symbol": "514440",
+   "symbol": "BAJAJCON",
    "exchange": "BSE",
-   "last": 6.11,
-   "pct_change": 4.98,
-   "open": 5.95,
-   "high": 6.11,
-   "low": 5.95,
-   "prev_close": 5.82,
+   "last": 520.05,
+   "pct_change": 2.32,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
    "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 549000,
-   "pead_score": 44.5,
-   "pead_category": "MEDIUM"
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 73.6,
+   "pead_category": "HIGH"
+  },
+  {
+   "symbol": "THELEELA",
+   "exchange": "BSE",
+   "last": 590.75,
+   "pct_change": -1.71,
+   "open": 600.0,
+   "high": 616.0,
+   "low": 580.0,
+   "prev_close": 601.05,
+   "vwap_pos": null,
+   "range_pos": 30.0,
+   "volume": null,
+   "pead_score": 79.0,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "544813",
@@ -1492,6 +1477,21 @@
    "exchange": "BSE",
    "last": 24.04,
    "pct_change": 9.27,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "526211",
+   "exchange": "BSE",
+   "last": 57.88,
+   "pct_change": 9.21,
    "open": null,
    "high": null,
    "low": null,
