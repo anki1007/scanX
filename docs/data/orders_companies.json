@@ -225,6 +225,15 @@
     "orders_pct_revenue": 72.98
   },
   {
+    "code": "AGASTYAEN",
+    "name": "Agastya Energy and Infrastructure Limited",
+    "order_count": 2,
+    "total_value_cr": 106.04,
+    "revenue_fy": 156.0,
+    "market_cap": 406.0,
+    "orders_pct_revenue": 67.97
+  },
+  {
     "code": "NILAINFRA",
     "name": "Nila Infrastructures Limited",
     "order_count": 2,
@@ -684,6 +693,15 @@
     "orders_pct_revenue": 11.74
   },
   {
+    "code": "GLASSWALL",
+    "name": "Glass Wall Systems (India) Limited",
+    "order_count": 1,
+    "total_value_cr": 50.0,
+    "revenue_fy": 430.0,
+    "market_cap": 2078.0,
+    "orders_pct_revenue": 11.63
+  },
+  {
     "code": "IRCON",
     "name": "Ircon International Limited",
     "order_count": 2,
@@ -774,15 +792,6 @@
     "orders_pct_revenue": 9.58
   },
   {
-    "code": "SBC",
-    "name": "SBC Exports Limited",
-    "order_count": 3,
-    "total_value_cr": 30.02,
-    "revenue_fy": 346.0,
-    "market_cap": 3053.0,
-    "orders_pct_revenue": 8.68
-  },
-  {
     "code": "AZAD",
     "name": "Azad Engineering Limited",
     "order_count": 1,
@@ -790,15 +799,6 @@
     "revenue_fy": 626.0,
     "market_cap": 17759.0,
     "orders_pct_revenue": 8.42
-  },
-  {
-    "code": "REFEX",
-    "name": "Refex Industries Limited",
-    "order_count": 7,
-    "total_value_cr": 193.8,
-    "revenue_fy": 2307.0,
-    "market_cap": 3593.0,
-    "orders_pct_revenue": 8.4
   },
   {
     "code": "IDEAFORGE",
@@ -835,6 +835,24 @@
     "revenue_fy": 3384.0,
     "market_cap": 11930.0,
     "orders_pct_revenue": 7.39
+  },
+  {
+    "code": "SBC",
+    "name": "SBC Exports Limited",
+    "order_count": 3,
+    "total_value_cr": 30.02,
+    "revenue_fy": 420.0,
+    "market_cap": 3053.0,
+    "orders_pct_revenue": 7.15
+  },
+  {
+    "code": "REFEX",
+    "name": "Refex Industries Limited",
+    "order_count": 7,
+    "total_value_cr": 160.1,
+    "revenue_fy": 2307.0,
+    "market_cap": 3593.0,
+    "orders_pct_revenue": 6.94
   },
   {
     "code": "543595",
@@ -927,15 +945,6 @@
     "orders_pct_revenue": 5.95
   },
   {
-    "code": "KRYSTAL",
-    "name": "Krystal Integrated Services Limited",
-    "order_count": 8,
-    "total_value_cr": 65.17,
-    "revenue_fy": 1129.0,
-    "market_cap": 879.0,
-    "orders_pct_revenue": 5.77
-  },
-  {
     "code": "BEML",
     "name": "BEML Limited",
     "order_count": 5,
@@ -978,6 +987,15 @@
     "total_value_cr": 69.0,
     "revenue_fy": 1628.0,
     "market_cap": 1496.0,
+    "orders_pct_revenue": 4.24
+  },
+  {
+    "code": "KRYSTAL",
+    "name": "Krystal Integrated Services Limited",
+    "order_count": 8,
+    "total_value_cr": 47.92,
+    "revenue_fy": 1129.0,
+    "market_cap": 879.0,
     "orders_pct_revenue": 4.24
   },
   {
@@ -1500,15 +1518,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 317.0,
     "market_cap": 1403.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "AGASTYAEN",
-    "name": "Agastya Energy and Infrastructure Limited",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 156.0,
-    "market_cap": 406.0,
     "orders_pct_revenue": null
   },
   {
@@ -2578,7 +2587,7 @@
     "name": "Tuni Textile Mills Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 115.0,
+    "revenue_fy": 121.0,
     "market_cap": 125.0,
     "orders_pct_revenue": null
   },
