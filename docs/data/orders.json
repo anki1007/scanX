@@ -813,7 +813,7 @@
     "market_cap": 1945.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1669.8,
+    "ltp": 1673.2,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -822,7 +822,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -2.17
+    "pct_change": -1.97
   },
   {
     "code": "HFCL",
@@ -2113,7 +2113,7 @@
     "market_cap": 140.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.59,
+    "ltp": 9.65,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2122,7 +2122,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": 0.74
+    "pct_change": 1.37
   },
   {
     "code": "OMPOWER",
@@ -12425,6 +12425,31 @@
     "pct_change": null
   },
   {
+    "code": "543806",
+    "name": "ITCONS E-Solutions Ltd",
+    "exchange": "",
+    "date": "15 Oct 2026",
+    "order_type": "Contract",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order We are pleased to inform that our Company has bagged a new contract from I&B Announcement -\n    \n    15 Oct 2026",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b458fe1f-b375-4886-b384-7dae87351e13.pdf",
+    "market_cap": 215.0,
+    "sales": 47.55,
+    "opm": 5.43,
+    "ltp": 239.0,
+    "revenue_fy": 87.74,
+    "np_prev_q": 2.78,
+    "np_latest_q": 2.47,
+    "eps_prev_q": 4.61,
+    "eps_latest_q": 2.74,
+    "np_growth_qoq": -11.15,
+    "eps_growth_qoq": -40.56,
+    "order_size_pct": null,
+    "pct_change": null
+  },
+  {
     "code": "544669",
     "name": "Admach Systems Ltd",
     "exchange": "",
@@ -12638,7 +12663,7 @@
     "market_cap": 40.1,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 40.0,
+    "ltp": 38.8,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -12647,7 +12672,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": 1.42
+    "pct_change": -1.62
   },
   {
     "code": "544877",
@@ -12771,31 +12796,6 @@
     "eps_latest_q": 1.8,
     "np_growth_qoq": 38.46,
     "eps_growth_qoq": 38.46,
-    "order_size_pct": null,
-    "pct_change": null
-  },
-  {
-    "code": "543806",
-    "name": "ITCONS E-Solutions Ltd",
-    "exchange": "",
-    "date": "12 Oct 2026",
-    "order_type": "Contract",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order We are pleased to inform that our Company has bagged a new contract from Announcement -\n    \n    12 Oct 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=94c95cc2-1dc7-425f-ae9f-26ae2686759d.pdf",
-    "market_cap": 215.0,
-    "sales": 47.55,
-    "opm": 5.43,
-    "ltp": 239.0,
-    "revenue_fy": 87.74,
-    "np_prev_q": 2.78,
-    "np_latest_q": 2.47,
-    "eps_prev_q": 4.61,
-    "eps_latest_q": 2.74,
-    "np_growth_qoq": -11.15,
-    "eps_growth_qoq": -40.56,
     "order_size_pct": null,
     "pct_change": null
   },
@@ -13938,7 +13938,7 @@
     "market_cap": 35.5,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 48.86,
+    "ltp": 48.01,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -13947,7 +13947,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": -2.3
+    "pct_change": -4.0
   },
   {
     "code": "SKYTECH",
@@ -14638,7 +14638,7 @@
     "market_cap": 58.4,
     "sales": 20.13,
     "opm": 1.39,
-    "ltp": 1.01,
+    "ltp": 1.0,
     "revenue_fy": 104.0,
     "np_prev_q": -1.7,
     "np_latest_q": 1.03,
@@ -14647,7 +14647,7 @@
     "np_growth_qoq": 160.59,
     "eps_growth_qoq": 150.0,
     "order_size_pct": null,
-    "pct_change": -0.98
+    "pct_change": -1.96
   },
   {
     "code": "523373",
@@ -14663,7 +14663,7 @@
     "market_cap": 95.0,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.03,
+    "ltp": 4.01,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -14672,7 +14672,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": -0.74
+    "pct_change": -1.23
   },
   {
     "code": "523874",
@@ -14688,7 +14688,7 @@
     "market_cap": 144.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 97.25,
+    "ltp": 95.41,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -14697,7 +14697,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 0.82
+    "pct_change": -1.09
   },
   {
     "code": "524480",
@@ -14788,7 +14788,7 @@
     "market_cap": 1421.0,
     "sales": 2.35,
     "opm": -3.4,
-    "ltp": 86.59,
+    "ltp": 86.66,
     "revenue_fy": 4.38,
     "np_prev_q": -0.18,
     "np_latest_q": -0.07,
@@ -14797,7 +14797,7 @@
     "np_growth_qoq": 61.11,
     "eps_growth_qoq": 100.0,
     "order_size_pct": null,
-    "pct_change": 4.91
+    "pct_change": 4.99
   },
   {
     "code": "539697",
@@ -15338,7 +15338,7 @@
     "market_cap": 154.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 66.8,
+    "ltp": 66.15,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15347,7 +15347,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": -0.36
+    "pct_change": -1.33
   },
   {
     "code": "ASIANENE",
@@ -15463,7 +15463,7 @@
     "market_cap": 366.0,
     "sales": 35.0,
     "opm": 64.0,
-    "ltp": 4.04,
+    "ltp": 4.12,
     "revenue_fy": 97.0,
     "np_prev_q": 11.0,
     "np_latest_q": 15.0,
@@ -15472,7 +15472,7 @@
     "np_growth_qoq": 36.36,
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
-    "pct_change": -0.98
+    "pct_change": 0.98
   },
   {
     "code": "542682",
@@ -15588,7 +15588,7 @@
     "market_cap": 194.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 175.0,
+    "ltp": 173.65,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -15597,7 +15597,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": -1.96
+    "pct_change": -2.72
   },
   {
     "code": "ASHIANA",
@@ -15813,7 +15813,7 @@
     "market_cap": 173.0,
     "sales": 29.46,
     "opm": 13.78,
-    "ltp": 105.05,
+    "ltp": 103.01,
     "revenue_fy": 93.65,
     "np_prev_q": -3.23,
     "np_latest_q": 1.97,
@@ -15822,7 +15822,7 @@
     "np_growth_qoq": 160.99,
     "eps_growth_qoq": 160.91,
     "order_size_pct": null,
-    "pct_change": 1.01
+    "pct_change": -0.95
   },
   {
     "code": "ZUARI",

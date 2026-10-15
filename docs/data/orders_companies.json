@@ -1863,6 +1863,15 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "543806",
+    "name": "ITCONS E-Solutions Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 87.74,
+    "market_cap": 215.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "544669",
     "name": "Admach Systems Ltd",
     "order_count": 1,
@@ -1986,15 +1995,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 43.76,
     "market_cap": 317.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "543806",
-    "name": "ITCONS E-Solutions Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 87.74,
-    "market_cap": 215.0,
     "orders_pct_revenue": null
   },
   {
