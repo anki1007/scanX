@@ -1845,6 +1845,24 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "533285",
+    "name": "RDB Infrastructure and Power Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 89.0,
+    "market_cap": 365.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "PANCHMAHQ",
+    "name": "Panchmahal Steel Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 391.0,
+    "market_cap": 552.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "544047",
     "name": "Siyaram Recycling Industries Ltd",
     "order_count": 1,
@@ -3111,15 +3129,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 10.99,
     "market_cap": 19.7,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "MOIL",
-    "name": "MOIL Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1511.0,
-    "market_cap": 4770.0,
     "orders_pct_revenue": null
   }
 ]

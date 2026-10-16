@@ -813,7 +813,7 @@
     "market_cap": 1951.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1678.65,
+    "ltp": 1670.05,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -822,7 +822,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -0.01
+    "pct_change": -0.53
   },
   {
     "code": "HFCL",
@@ -2088,7 +2088,7 @@
     "market_cap": 142.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.7,
+    "ltp": 9.74,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2097,7 +2097,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": 1.15
+    "pct_change": 1.56
   },
   {
     "code": "OMPOWER",
@@ -12500,6 +12500,56 @@
     "pct_change": null
   },
   {
+    "code": "533285",
+    "name": "RDB Infrastructure and Power Ltd",
+    "exchange": "",
+    "date": "16 Oct 2026",
+    "order_type": "Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order We wish to inform you that the Company has received a Notice of Award dated Announcement -\n    \n    16 Oct 2026",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=29cf2954-5bcd-4b61-a472-ab8b84cf1c9e.pdf",
+    "market_cap": 365.0,
+    "sales": 28.41,
+    "opm": 2.15,
+    "ltp": 16.49,
+    "revenue_fy": 89.0,
+    "np_prev_q": 4.33,
+    "np_latest_q": 4.44,
+    "eps_prev_q": 0.21,
+    "eps_latest_q": 0.2,
+    "np_growth_qoq": 2.54,
+    "eps_growth_qoq": -4.76,
+    "order_size_pct": null,
+    "pct_change": -1.55
+  },
+  {
+    "code": "PANCHMAHQ",
+    "name": "Panchmahal Steel Ltd",
+    "exchange": "",
+    "date": "16 Oct 2026",
+    "order_type": "Purchase Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of receipt of Purchase Order from BHEL - BAP, Ranipet\n\nPanchmahal Announcement -\n    \n    16 Oct 2026",
+    "value_cr": null,
+    "customer": "BHEL - BAP",
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=faee6ce9-15cc-4d08-9e47-47ff020c114c.pdf",
+    "market_cap": 552.0,
+    "sales": 93.97,
+    "opm": 8.72,
+    "ltp": 289.0,
+    "revenue_fy": 391.0,
+    "np_prev_q": -2.12,
+    "np_latest_q": 4.34,
+    "eps_prev_q": -1.11,
+    "eps_latest_q": 2.27,
+    "np_growth_qoq": 304.72,
+    "eps_growth_qoq": 304.5,
+    "order_size_pct": null,
+    "pct_change": null
+  },
+  {
     "code": "544047",
     "name": "Siyaram Recycling Industries Ltd",
     "exchange": "",
@@ -12888,7 +12938,7 @@
     "market_cap": 39.9,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 39.01,
+    "ltp": 39.85,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -12897,7 +12947,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -2.35
+    "pct_change": -0.25
   },
   {
     "code": "544877",
@@ -13038,7 +13088,7 @@
     "market_cap": 2743.0,
     "sales": 1.27,
     "opm": -33.86,
-    "ltp": 32.3,
+    "ltp": 32.31,
     "revenue_fy": 5.51,
     "np_prev_q": -0.35,
     "np_latest_q": 1.34,
@@ -13047,7 +13097,7 @@
     "np_growth_qoq": 482.86,
     "eps_growth_qoq": null,
     "order_size_pct": null,
-    "pct_change": null
+    "pct_change": -2.65
   },
   {
     "code": "544741",
@@ -14113,7 +14163,7 @@
     "market_cap": 36.4,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 50.0,
+    "ltp": 49.95,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14122,7 +14172,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": 1.63
+    "pct_change": 1.52
   },
   {
     "code": "SKYTECH",
@@ -14163,7 +14213,7 @@
     "market_cap": 158.0,
     "sales": 13.52,
     "opm": 3.7,
-    "ltp": 143.4,
+    "ltp": 140.0,
     "revenue_fy": 57.09,
     "np_prev_q": 1.77,
     "np_latest_q": 0.12,
@@ -14172,7 +14222,7 @@
     "np_growth_qoq": -93.22,
     "eps_growth_qoq": -93.12,
     "order_size_pct": null,
-    "pct_change": 3.39
+    "pct_change": 0.94
   },
   {
     "code": "ELITECON",
@@ -14513,7 +14563,7 @@
     "market_cap": 50.9,
     "sales": 1.15,
     "opm": 13.04,
-    "ltp": 164.05,
+    "ltp": 160.0,
     "revenue_fy": 24.86,
     "np_prev_q": 0.41,
     "np_latest_q": 0.02,
@@ -14522,7 +14572,7 @@
     "np_growth_qoq": -95.12,
     "eps_growth_qoq": -95.45,
     "order_size_pct": null,
-    "pct_change": 0.03
+    "pct_change": -2.44
   },
   {
     "code": "531411",
@@ -14813,7 +14863,7 @@
     "market_cap": 58.4,
     "sales": 20.13,
     "opm": 1.39,
-    "ltp": 1.0,
+    "ltp": 1.01,
     "revenue_fy": 104.0,
     "np_prev_q": -1.7,
     "np_latest_q": 1.03,
@@ -14822,7 +14872,7 @@
     "np_growth_qoq": 160.59,
     "eps_growth_qoq": 150.0,
     "order_size_pct": null,
-    "pct_change": 0.0
+    "pct_change": null
   },
   {
     "code": "523373",
@@ -15513,7 +15563,7 @@
     "market_cap": 160.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 68.66,
+    "ltp": 70.8,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15522,7 +15572,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": 3.72
+    "pct_change": 6.95
   },
   {
     "code": "RSL",
@@ -15613,7 +15663,7 @@
     "market_cap": 367.0,
     "sales": 35.0,
     "opm": 64.0,
-    "ltp": 4.02,
+    "ltp": 3.99,
     "revenue_fy": 97.0,
     "np_prev_q": 11.0,
     "np_latest_q": 15.0,
@@ -15622,7 +15672,7 @@
     "np_growth_qoq": 36.36,
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
-    "pct_change": 0.5
+    "pct_change": -0.25
   },
   {
     "code": "542682",
@@ -15738,7 +15788,7 @@
     "market_cap": 199.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 181.0,
+    "ltp": 180.05,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -15747,7 +15797,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": 4.72
+    "pct_change": 4.17
   },
   {
     "code": "ASHIANA",
@@ -15963,7 +16013,7 @@
     "market_cap": 175.0,
     "sales": 29.46,
     "opm": 13.78,
-    "ltp": 107.99,
+    "ltp": 107.0,
     "revenue_fy": 93.65,
     "np_prev_q": -3.23,
     "np_latest_q": 1.97,
@@ -15972,7 +16022,7 @@
     "np_growth_qoq": 160.99,
     "eps_growth_qoq": 160.91,
     "order_size_pct": null,
-    "pct_change": 2.15
+    "pct_change": 1.21
   },
   {
     "code": "ZUARI",
@@ -16021,31 +16071,6 @@
     "eps_latest_q": 0.97,
     "np_growth_qoq": 330.77,
     "eps_growth_qoq": 330.95,
-    "order_size_pct": null,
-    "pct_change": null
-  },
-  {
-    "code": "MOIL",
-    "name": "MOIL Ltd",
-    "exchange": "",
-    "date": "29 Aug 2026",
-    "order_type": "Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Letter regarding short recovered chages with interest and service charges Announcement -\n    \n    29 Aug 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8c57b228-3422-4b9d-b909-d92983ab569d.pdf",
-    "market_cap": 4770.0,
-    "sales": 371.0,
-    "opm": 37.0,
-    "ltp": 234.0,
-    "revenue_fy": 1511.0,
-    "np_prev_q": 93.0,
-    "np_latest_q": 88.0,
-    "eps_prev_q": 4.55,
-    "eps_latest_q": 4.31,
-    "np_growth_qoq": -5.38,
-    "eps_growth_qoq": -5.27,
     "order_size_pct": null,
     "pct_change": null
   }
