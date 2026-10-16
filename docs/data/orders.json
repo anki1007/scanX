@@ -238,7 +238,7 @@
     "market_cap": 199.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 363.05,
+    "ltp": 363.0,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -247,7 +247,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": 0.44
+    "pct_change": 0.43
   },
   {
     "code": "TEJASNET",
@@ -813,7 +813,7 @@
     "market_cap": 1951.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1670.05,
+    "ltp": 1688.0,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -822,7 +822,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -0.53
+    "pct_change": 0.54
   },
   {
     "code": "HFCL",
@@ -1975,6 +1975,31 @@
     "pct_change": null
   },
   {
+    "code": "BLKASHYAP",
+    "name": "B. L. Kashyap and Sons Limited",
+    "exchange": "NSE",
+    "date": "16 Oct 2026",
+    "order_type": "Contract",
+    "headline": "B. L. Kashyap and Sons Limited has informed the Exchange about Bagging/Receiving of orders/contracts worth Rs. 200.02 Crores",
+    "value_cr": 200.02,
+    "customer": null,
+    "duration": null,
+    "url": "https://nsearchives.nseindia.com/corporate/BLKASHYAP_16102026150808_BLK_Award_Project.pdf",
+    "market_cap": 1322.0,
+    "sales": 342.0,
+    "opm": 8.0,
+    "ltp": 58.6,
+    "revenue_fy": 1357.0,
+    "np_prev_q": -7.0,
+    "np_latest_q": 11.0,
+    "eps_prev_q": -0.32,
+    "eps_latest_q": 0.48,
+    "np_growth_qoq": 257.14,
+    "eps_growth_qoq": 250.0,
+    "order_size_pct": 14.74,
+    "pct_change": null
+  },
+  {
     "code": "SKIPPER",
     "name": "Skipper Limited",
     "exchange": "NSE",
@@ -2088,7 +2113,7 @@
     "market_cap": 142.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.74,
+    "ltp": 9.88,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2097,7 +2122,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": 1.56
+    "pct_change": 3.02
   },
   {
     "code": "OMPOWER",
@@ -6163,7 +6188,7 @@
     "market_cap": 12.2,
     "sales": 8.77,
     "opm": 5.13,
-    "ltp": 27.5,
+    "ltp": 27.0,
     "revenue_fy": 28.38,
     "np_prev_q": -0.41,
     "np_latest_q": 0.32,
@@ -6172,7 +6197,7 @@
     "np_growth_qoq": 178.05,
     "eps_growth_qoq": 178.26,
     "order_size_pct": 0.56,
-    "pct_change": 1.89
+    "pct_change": -1.82
   },
   {
     "code": "3IINFOLTD",
@@ -12513,7 +12538,7 @@
     "market_cap": 365.0,
     "sales": 28.41,
     "opm": 2.15,
-    "ltp": 16.49,
+    "ltp": 15.81,
     "revenue_fy": 89.0,
     "np_prev_q": 4.33,
     "np_latest_q": 4.44,
@@ -12522,7 +12547,7 @@
     "np_growth_qoq": 2.54,
     "eps_growth_qoq": -4.76,
     "order_size_pct": null,
-    "pct_change": -1.55
+    "pct_change": -5.61
   },
   {
     "code": "PANCHMAHQ",
@@ -13213,7 +13238,7 @@
     "market_cap": 81.0,
     "sales": 9.89,
     "opm": 6.98,
-    "ltp": 101.0,
+    "ltp": 100.0,
     "revenue_fy": 56.29,
     "np_prev_q": 1.18,
     "np_latest_q": 0.32,
@@ -13222,7 +13247,7 @@
     "np_growth_qoq": -72.88,
     "eps_growth_qoq": -77.78,
     "order_size_pct": null,
-    "pct_change": 2.64
+    "pct_change": 1.63
   },
   {
     "code": "544458",
@@ -13988,7 +14013,7 @@
     "market_cap": 149.0,
     "sales": 0.0,
     "opm": null,
-    "ltp": 14.19,
+    "ltp": 13.99,
     "revenue_fy": 0.0,
     "np_prev_q": 0.08,
     "np_latest_q": 0.41,
@@ -13997,7 +14022,7 @@
     "np_growth_qoq": 412.5,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": 2.31
+    "pct_change": 0.87
   },
   {
     "code": "PRINCEPIPE",
@@ -14163,7 +14188,7 @@
     "market_cap": 36.4,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 49.95,
+    "ltp": 49.9,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14172,7 +14197,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": 1.52
+    "pct_change": 1.42
   },
   {
     "code": "SKYTECH",
@@ -14213,7 +14238,7 @@
     "market_cap": 158.0,
     "sales": 13.52,
     "opm": 3.7,
-    "ltp": 140.0,
+    "ltp": 143.4,
     "revenue_fy": 57.09,
     "np_prev_q": 1.77,
     "np_latest_q": 0.12,
@@ -14222,7 +14247,7 @@
     "np_growth_qoq": -93.22,
     "eps_growth_qoq": -93.12,
     "order_size_pct": null,
-    "pct_change": 0.94
+    "pct_change": 3.39
   },
   {
     "code": "ELITECON",
@@ -14913,7 +14938,7 @@
     "market_cap": 142.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 95.95,
+    "ltp": 99.3,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -14922,7 +14947,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 0.02
+    "pct_change": 3.51
   },
   {
     "code": "524480",
@@ -14938,7 +14963,7 @@
     "market_cap": 507.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 710.5,
+    "ltp": 711.0,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -14947,7 +14972,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": 0.07
+    "pct_change": 0.14
   },
   {
     "code": "ASTRAZEN",
@@ -15563,7 +15588,7 @@
     "market_cap": 160.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 70.8,
+    "ltp": 70.5,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15572,7 +15597,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": 6.95
+    "pct_change": 6.5
   },
   {
     "code": "RSL",
@@ -15663,7 +15688,7 @@
     "market_cap": 367.0,
     "sales": 35.0,
     "opm": 64.0,
-    "ltp": 3.99,
+    "ltp": 3.98,
     "revenue_fy": 97.0,
     "np_prev_q": 11.0,
     "np_latest_q": 15.0,
@@ -15672,7 +15697,7 @@
     "np_growth_qoq": 36.36,
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
-    "pct_change": -0.25
+    "pct_change": -0.5
   },
   {
     "code": "542682",
@@ -16013,7 +16038,7 @@
     "market_cap": 175.0,
     "sales": 29.46,
     "opm": 13.78,
-    "ltp": 107.0,
+    "ltp": 105.21,
     "revenue_fy": 93.65,
     "np_prev_q": -3.23,
     "np_latest_q": 1.97,
@@ -16022,7 +16047,7 @@
     "np_growth_qoq": 160.99,
     "eps_growth_qoq": 160.91,
     "order_size_pct": null,
-    "pct_change": 1.21
+    "pct_change": -0.48
   },
   {
     "code": "ZUARI",
@@ -16046,31 +16071,6 @@
     "eps_latest_q": -3.91,
     "np_growth_qoq": -6.67,
     "eps_growth_qoq": -12.68,
-    "order_size_pct": null,
-    "pct_change": null
-  },
-  {
-    "code": "543941",
-    "name": "Ahasolar Technologies Ltd",
-    "exchange": "",
-    "date": "31 Aug 2026",
-    "order_type": "Work Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Initiation of Receipt of Work Order Received . Received consultancy work Announcement -\n    \n    31 Aug 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=2e23520c-4917-49ce-967f-0255febc8e2d.pdf",
-    "market_cap": 19.7,
-    "sales": 6.99,
-    "opm": 6.87,
-    "ltp": 64.0,
-    "revenue_fy": 10.99,
-    "np_prev_q": -0.13,
-    "np_latest_q": 0.3,
-    "eps_prev_q": -0.42,
-    "eps_latest_q": 0.97,
-    "np_growth_qoq": 330.77,
-    "eps_growth_qoq": 330.95,
     "order_size_pct": null,
     "pct_change": null
   }

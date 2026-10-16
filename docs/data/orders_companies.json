@@ -585,6 +585,15 @@
     "orders_pct_revenue": 15.99
   },
   {
+    "code": "BLKASHYAP",
+    "name": "B. L. Kashyap and Sons Limited",
+    "order_count": 3,
+    "total_value_cr": 200.02,
+    "revenue_fy": 1357.0,
+    "market_cap": 1322.0,
+    "orders_pct_revenue": 14.74
+  },
+  {
     "code": "GRSE",
     "name": "Garden Reach Shipbuilders & Engineers Limited",
     "order_count": 2,
@@ -1527,15 +1536,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 60.0,
     "market_cap": 106.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "BLKASHYAP",
-    "name": "B. L. Kashyap and Sons Limited",
-    "order_count": 2,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1357.0,
-    "market_cap": 1322.0,
     "orders_pct_revenue": null
   },
   {
@@ -3120,15 +3120,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 0.0,
     "market_cap": 876.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "543941",
-    "name": "Ahasolar Technologies Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 10.99,
-    "market_cap": 19.7,
     "orders_pct_revenue": null
   }
 ]
