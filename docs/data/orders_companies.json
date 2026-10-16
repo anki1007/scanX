@@ -36,15 +36,6 @@
     "orders_pct_revenue": 288.63
   },
   {
-    "code": "E2E",
-    "name": "E2E Networks Limited",
-    "order_count": 1,
-    "total_value_cr": 1000.0,
-    "revenue_fy": 366.0,
-    "market_cap": 14286.0,
-    "orders_pct_revenue": 273.22
-  },
-  {
     "code": "544637",
     "name": "Methodhub Software Ltd",
     "order_count": 1,
@@ -61,6 +52,15 @@
     "revenue_fy": 834.0,
     "market_cap": 6004.0,
     "orders_pct_revenue": 209.49
+  },
+  {
+    "code": "E2E",
+    "name": "E2E Networks Limited",
+    "order_count": 1,
+    "total_value_cr": 1000.0,
+    "revenue_fy": 546.0,
+    "market_cap": 14286.0,
+    "orders_pct_revenue": 183.15
   },
   {
     "code": "ELLEN",
@@ -117,15 +117,6 @@
     "orders_pct_revenue": 119.04
   },
   {
-    "code": "TEJASNET",
-    "name": "Tejas Networks Limited",
-    "order_count": 1,
-    "total_value_cr": 1537.0,
-    "revenue_fy": 1301.0,
-    "market_cap": 8468.0,
-    "orders_pct_revenue": 118.14
-  },
-  {
     "code": "VIVIANA",
     "name": "Viviana Power Tech Limited",
     "order_count": 3,
@@ -142,6 +133,15 @@
     "revenue_fy": 142.0,
     "market_cap": 123.0,
     "orders_pct_revenue": 107.89
+  },
+  {
+    "code": "TEJASNET",
+    "name": "Tejas Networks Limited",
+    "order_count": 1,
+    "total_value_cr": 1537.0,
+    "revenue_fy": 1444.0,
+    "market_cap": 8468.0,
+    "orders_pct_revenue": 106.44
   },
   {
     "code": "ARIS",
@@ -981,6 +981,15 @@
     "orders_pct_revenue": 5.02
   },
   {
+    "code": "LCCPROJECT",
+    "name": "LCC Projects Limited",
+    "order_count": 1,
+    "total_value_cr": 151.57,
+    "revenue_fy": 3457.0,
+    "market_cap": 3963.0,
+    "orders_pct_revenue": 4.38
+  },
+  {
     "code": "RCF",
     "name": "Rashtriya Chemicals and Fertilizers Limited",
     "order_count": 1,
@@ -1323,6 +1332,24 @@
     "orders_pct_revenue": 0.01
   },
   {
+    "code": "KSB",
+    "name": "Ksb Limited",
+    "order_count": 2,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2726.0,
+    "market_cap": 13573.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "ACMESOLAR",
+    "name": "Acme Solar Holdings Limited",
+    "order_count": 3,
+    "total_value_cr": 0.0,
+    "revenue_fy": 5895.0,
+    "market_cap": 28964.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "PTCIL",
     "name": "PTC Industries Limited",
     "order_count": 4,
@@ -1338,15 +1365,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 156234.0,
     "market_cap": 495775.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "KSB",
-    "name": "Ksb Limited",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 2726.0,
-    "market_cap": 13573.0,
     "orders_pct_revenue": null
   },
   {
@@ -1473,15 +1491,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 442.0,
     "market_cap": 3715.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "ACMESOLAR",
-    "name": "Acme Solar Holdings Limited",
-    "order_count": 2,
-    "total_value_cr": 0.0,
-    "revenue_fy": 5895.0,
-    "market_cap": 28964.0,
     "orders_pct_revenue": null
   },
   {
@@ -2102,7 +2111,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3004.0,
-    "market_cap": 3057.0,
+    "market_cap": 3032.0,
     "orders_pct_revenue": null
   },
   {
