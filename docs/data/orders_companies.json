@@ -1152,6 +1152,15 @@
     "orders_pct_revenue": 1.02
   },
   {
+    "code": "544426",
+    "name": "Icon Facilitators Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.63,
+    "revenue_fy": 64.22,
+    "market_cap": 60.9,
+    "orders_pct_revenue": 0.98
+  },
+  {
     "code": "PROSTARM",
     "name": "Prostarm Info Systems Limited",
     "order_count": 1,
@@ -1860,6 +1869,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 242.0,
     "market_cap": 666.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "544091",
+    "name": "Qualitek Labs Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 67.62,
+    "market_cap": 632.0,
     "orders_pct_revenue": null
   },
   {

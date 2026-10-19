@@ -188,7 +188,7 @@
     "market_cap": 200.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 365.0,
+    "ltp": 378.8,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -197,7 +197,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": 1.16
+    "pct_change": 4.99
   },
   {
     "code": "RMC",
@@ -763,7 +763,7 @@
     "market_cap": 1929.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1635.05,
+    "ltp": 1600.0,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -772,7 +772,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -3.05
+    "pct_change": -5.13
   },
   {
     "code": "ARIS",
@@ -2038,7 +2038,7 @@
     "market_cap": 142.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.7,
+    "ltp": 9.6,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2047,7 +2047,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": -1.12
+    "pct_change": -2.14
   },
   {
     "code": "OMPOWER",
@@ -5771,6 +5771,31 @@
     "eps_latest_q": 3.65,
     "np_growth_qoq": 7.75,
     "eps_growth_qoq": 7.67,
+    "order_size_pct": 0.98,
+    "pct_change": null
+  },
+  {
+    "code": "544426",
+    "name": "Icon Facilitators Ltd",
+    "exchange": "",
+    "date": "19 Oct 2026",
+    "order_type": "Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of Receipt of Order for Manpower Services Received Rs. 63.30 lakh Announcement -\n    \n    19 Oct 2026",
+    "value_cr": 0.63,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=474b38d0-6e4d-4227-9586-bc60bb1997fb.pdf",
+    "market_cap": 60.9,
+    "sales": 34.45,
+    "opm": 12.02,
+    "ltp": 77.5,
+    "revenue_fy": 64.22,
+    "np_prev_q": 1.47,
+    "np_latest_q": 2.89,
+    "eps_prev_q": 1.87,
+    "eps_latest_q": 3.68,
+    "np_growth_qoq": 96.6,
+    "eps_growth_qoq": 96.79,
     "order_size_pct": 0.98,
     "pct_change": null
   },
@@ -12575,6 +12600,31 @@
     "pct_change": null
   },
   {
+    "code": "544091",
+    "name": "Qualitek Labs Ltd",
+    "exchange": "",
+    "date": "19 Oct 2026",
+    "order_type": "Work Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Receipt of Work Order by Interstellar Testing Centre Private Limited, a Announcement -\n    \n    19 Oct 2026",
+    "value_cr": null,
+    "customer": "Interstellar Testing Centre Private Limited",
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8cd7ef42-5701-4e94-850b-267f0dff4c90.pdf",
+    "market_cap": 632.0,
+    "sales": 38.62,
+    "opm": 25.95,
+    "ltp": 542.0,
+    "revenue_fy": 67.62,
+    "np_prev_q": 2.8,
+    "np_latest_q": 5.17,
+    "eps_prev_q": 2.4,
+    "eps_latest_q": 4.44,
+    "np_growth_qoq": 84.64,
+    "eps_growth_qoq": 85.0,
+    "order_size_pct": null,
+    "pct_change": null
+  },
+  {
     "code": "DODLA",
     "name": "Dodla Dairy Ltd",
     "exchange": "",
@@ -12738,7 +12788,7 @@
     "market_cap": 351.0,
     "sales": 28.41,
     "opm": 2.15,
-    "ltp": 15.6,
+    "ltp": 16.0,
     "revenue_fy": 89.0,
     "np_prev_q": 4.33,
     "np_latest_q": 4.44,
@@ -12747,7 +12797,7 @@
     "np_growth_qoq": 2.54,
     "eps_growth_qoq": -4.76,
     "order_size_pct": null,
-    "pct_change": -3.05
+    "pct_change": -0.56
   },
   {
     "code": "PANCHMAHQ",
@@ -13163,7 +13213,7 @@
     "market_cap": 37.1,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 38.8,
+    "ltp": 37.26,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -13172,7 +13222,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -2.63
+    "pct_change": -6.5
   },
   {
     "code": "544877",
@@ -13438,7 +13488,7 @@
     "market_cap": 80.6,
     "sales": 9.89,
     "opm": 6.98,
-    "ltp": 100.05,
+    "ltp": 100.0,
     "revenue_fy": 56.29,
     "np_prev_q": 1.18,
     "np_latest_q": 0.32,
@@ -13447,7 +13497,7 @@
     "np_growth_qoq": -72.88,
     "eps_growth_qoq": -77.78,
     "order_size_pct": null,
-    "pct_change": 0.03
+    "pct_change": -0.02
   },
   {
     "code": "544458",
@@ -14163,7 +14213,7 @@
     "market_cap": 140.0,
     "sales": 0.0,
     "opm": null,
-    "ltp": 13.3,
+    "ltp": 14.09,
     "revenue_fy": 0.0,
     "np_prev_q": 0.08,
     "np_latest_q": 0.41,
@@ -14172,7 +14222,7 @@
     "np_growth_qoq": 412.5,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": -4.93
+    "pct_change": 0.71
   },
   {
     "code": "PRINCEPIPE",
@@ -14388,7 +14438,7 @@
     "market_cap": 155.0,
     "sales": 13.52,
     "opm": 3.7,
-    "ltp": 140.1,
+    "ltp": 143.95,
     "revenue_fy": 57.09,
     "np_prev_q": 1.77,
     "np_latest_q": 0.12,
@@ -14397,7 +14447,7 @@
     "np_growth_qoq": -93.22,
     "eps_growth_qoq": -93.12,
     "order_size_pct": null,
-    "pct_change": -2.3
+    "pct_change": 0.38
   },
   {
     "code": "ELITECON",
@@ -14738,7 +14788,7 @@
     "market_cap": 49.6,
     "sales": 1.15,
     "opm": 13.04,
-    "ltp": 160.0,
+    "ltp": 159.0,
     "revenue_fy": 24.86,
     "np_prev_q": 0.41,
     "np_latest_q": 0.02,
@@ -14747,7 +14797,7 @@
     "np_growth_qoq": -95.12,
     "eps_growth_qoq": -95.45,
     "order_size_pct": null,
-    "pct_change": 0.0
+    "pct_change": -0.62
   },
   {
     "code": "531411",
@@ -14763,7 +14813,7 @@
     "market_cap": 125.0,
     "sales": 35.08,
     "opm": 6.56,
-    "ltp": 2.0,
+    "ltp": 2.01,
     "revenue_fy": 121.0,
     "np_prev_q": 0.27,
     "np_latest_q": 1.22,
@@ -14772,7 +14822,7 @@
     "np_growth_qoq": 351.85,
     "eps_growth_qoq": null,
     "order_size_pct": null,
-    "pct_change": 1.01
+    "pct_change": 1.52
   },
   {
     "code": "544856",
@@ -14838,7 +14888,7 @@
     "market_cap": 46.4,
     "sales": 0.0,
     "opm": null,
-    "ltp": 183.5,
+    "ltp": 184.0,
     "revenue_fy": 0.03,
     "np_prev_q": -0.02,
     "np_latest_q": 0.43,
@@ -14847,7 +14897,7 @@
     "np_growth_qoq": 2250.0,
     "eps_growth_qoq": 2225.0,
     "order_size_pct": null,
-    "pct_change": 0.0
+    "pct_change": 0.27
   },
   {
     "code": "MIEL",
@@ -15063,7 +15113,7 @@
     "market_cap": 95.2,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.06,
+    "ltp": 4.05,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -15072,7 +15122,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 1.25
+    "pct_change": 1.0
   },
   {
     "code": "523874",
@@ -15088,7 +15138,7 @@
     "market_cap": 146.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 98.5,
+    "ltp": 98.49,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -15097,7 +15147,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 0.52
+    "pct_change": 0.51
   },
   {
     "code": "524480",
@@ -15113,7 +15163,7 @@
     "market_cap": 506.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 710.0,
+    "ltp": 700.0,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -15122,7 +15172,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": -0.65
+    "pct_change": -2.05
   },
   {
     "code": "ASTRAZEN",
@@ -15188,7 +15238,7 @@
     "market_cap": 1468.0,
     "sales": 2.35,
     "opm": -3.4,
-    "ltp": 89.49,
+    "ltp": 88.45,
     "revenue_fy": 4.38,
     "np_prev_q": -0.18,
     "np_latest_q": -0.07,
@@ -15197,7 +15247,7 @@
     "np_growth_qoq": 61.11,
     "eps_growth_qoq": 100.0,
     "order_size_pct": null,
-    "pct_change": -1.17
+    "pct_change": -2.32
   },
   {
     "code": "539697",
@@ -15738,7 +15788,7 @@
     "market_cap": 163.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 70.5,
+    "ltp": 68.55,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15747,7 +15797,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": -0.41
+    "pct_change": -3.16
   },
   {
     "code": "RSL",
@@ -15838,7 +15888,7 @@
     "market_cap": 357.0,
     "sales": 35.0,
     "opm": 64.0,
-    "ltp": 3.9,
+    "ltp": 3.8,
     "revenue_fy": 97.0,
     "np_prev_q": 11.0,
     "np_latest_q": 15.0,
@@ -15847,7 +15897,7 @@
     "np_growth_qoq": 36.36,
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
-    "pct_change": -2.26
+    "pct_change": -4.76
   },
   {
     "code": "542682",
