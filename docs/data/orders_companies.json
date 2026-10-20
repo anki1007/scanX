@@ -432,15 +432,6 @@
     "orders_pct_revenue": 24.82
   },
   {
-    "code": "JNPR",
-    "name": "Juniper Green Energy Limited",
-    "order_count": 2,
-    "total_value_cr": 80.0,
-    "revenue_fy": 324.0,
-    "market_cap": 14965.0,
-    "orders_pct_revenue": 24.69
-  },
-  {
     "code": "S&SPOWER",
     "name": "S&S Power Switchgears Limited",
     "order_count": 4,
@@ -666,6 +657,15 @@
     "orders_pct_revenue": 11.63
   },
   {
+    "code": "RAILTEL",
+    "name": "Railtel Corporation Of India Limited",
+    "order_count": 19,
+    "total_value_cr": 496.82,
+    "revenue_fy": 4427.0,
+    "market_cap": 8040.0,
+    "orders_pct_revenue": 11.22
+  },
+  {
     "code": "IRCON",
     "name": "Ircon International Limited",
     "order_count": 2,
@@ -718,15 +718,6 @@
     "revenue_fy": 987.0,
     "market_cap": 3958.0,
     "orders_pct_revenue": 10.23
-  },
-  {
-    "code": "RAILTEL",
-    "name": "Railtel Corporation Of India Limited",
-    "order_count": 18,
-    "total_value_cr": 449.42,
-    "revenue_fy": 4427.0,
-    "market_cap": 8040.0,
-    "orders_pct_revenue": 10.15
   },
   {
     "code": "ONWARDTEC",
@@ -1491,6 +1482,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 442.0,
     "market_cap": 4084.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "JNPR",
+    "name": "Juniper Green Energy Limited",
+    "order_count": 2,
+    "total_value_cr": 0.0,
+    "revenue_fy": 324.0,
+    "market_cap": 14965.0,
     "orders_pct_revenue": null
   },
   {
