@@ -855,15 +855,6 @@
     "orders_pct_revenue": 6.74
   },
   {
-    "code": "BEL",
-    "name": "Bharat Electronics Limited",
-    "order_count": 5,
-    "total_value_cr": 1911.0,
-    "revenue_fy": 28596.0,
-    "market_cap": 275725.0,
-    "orders_pct_revenue": 6.68
-  },
-  {
     "code": "RITES",
     "name": "RITES Limited",
     "order_count": 1,
@@ -988,6 +979,24 @@
     "revenue_fy": 1129.0,
     "market_cap": 852.0,
     "orders_pct_revenue": 4.24
+  },
+  {
+    "code": "BEL",
+    "name": "Bharat Electronics Limited",
+    "order_count": 5,
+    "total_value_cr": 1181.0,
+    "revenue_fy": 28596.0,
+    "market_cap": 275725.0,
+    "orders_pct_revenue": 4.13
+  },
+  {
+    "code": "PVP",
+    "name": "PVP Ventures Limited",
+    "order_count": 1,
+    "total_value_cr": 1.5,
+    "revenue_fy": 37.0,
+    "market_cap": 1187.0,
+    "orders_pct_revenue": 4.05
   },
   {
     "code": "543928",
