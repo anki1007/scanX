@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-20T13:58:07+05:30",
+ "generated_at": "2026-10-20T14:13:22+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -273,21 +273,6 @@
    "pead_category": null
   },
   {
-   "symbol": "BEPL",
-   "exchange": "BSE",
-   "last": 117.55,
-   "pct_change": -8.52,
-   "open": 130.15,
-   "high": 131.95,
-   "low": 115.15,
-   "prev_close": 128.5,
-   "vwap_pos": null,
-   "range_pos": 14.0,
-   "volume": 328000,
-   "pead_score": 69.6,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "504380",
    "exchange": "BSE",
    "last": 46.9,
@@ -363,18 +348,18 @@
    "pead_category": null
   },
   {
-   "symbol": "HFCL",
+   "symbol": "538897",
    "exchange": "BSE",
-   "last": 268.7,
-   "pct_change": 4.98,
-   "open": 259.4,
-   "high": 268.7,
-   "low": 255.95,
-   "prev_close": 255.95,
+   "last": 17.26,
+   "pct_change": -4.96,
+   "open": 19.06,
+   "high": 19.06,
+   "low": 17.26,
+   "prev_close": 18.16,
    "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 638000,
-   "pead_score": 96.6,
+   "range_pos": 0.0,
+   "volume": 25100000,
+   "pead_score": 97.5,
    "pead_category": "HIGH"
   },
   {
@@ -436,6 +421,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "544139",
+   "exchange": "BSE",
+   "last": 55.65,
+   "pct_change": 5.0,
+   "open": 55.0,
+   "high": 55.65,
+   "low": 54.95,
+   "prev_close": 53.0,
+   "vwap_pos": null,
+   "range_pos": 100.0,
+   "volume": 800000000,
+   "pead_score": 88.6,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "544955",
@@ -678,6 +678,21 @@
    "pead_category": null
   },
   {
+   "symbol": "QUINT",
+   "exchange": "BSE",
+   "last": 57.95,
+   "pct_change": -4.98,
+   "open": 61.29,
+   "high": 61.29,
+   "low": 57.95,
+   "prev_close": 60.99,
+   "vwap_pos": null,
+   "range_pos": 0.0,
+   "volume": 222700000,
+   "pead_score": 61.4,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "ISHAN",
    "exchange": "BSE",
    "last": 0.5,
@@ -693,21 +708,6 @@
    "pead_category": null
   },
   {
-   "symbol": "UNIONBANK",
-   "exchange": "BSE",
-   "last": 180.5,
-   "pct_change": 4.94,
-   "open": 172.5,
-   "high": 182.9,
-   "low": 172.5,
-   "prev_close": 172.0,
-   "vwap_pos": null,
-   "range_pos": 77.0,
-   "volume": 2109000,
-   "pead_score": 61.3,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "ASIANTILES",
    "exchange": "BSE",
    "last": 47.47,
@@ -721,21 +721,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "YESBANK",
-   "exchange": "BSE",
-   "last": 16.89,
-   "pct_change": -3.87,
-   "open": 17.68,
-   "high": 17.74,
-   "low": 16.8,
-   "prev_close": 17.57,
-   "vwap_pos": null,
-   "range_pos": 10.0,
-   "volume": 19966000,
-   "pead_score": 70.8,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "544582",
@@ -781,21 +766,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "519287",
-   "exchange": "BSE",
-   "last": 46.27,
-   "pct_change": -4.81,
-   "open": 50.05,
-   "high": 50.05,
-   "low": 46.18,
-   "prev_close": 48.61,
-   "vwap_pos": null,
-   "range_pos": 2.0,
-   "volume": 13000,
-   "pead_score": 58.8,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "LTTS",
@@ -1492,6 +1462,36 @@
    "exchange": "BSE",
    "last": 137.95,
    "pct_change": 9.05,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "HINDZINC",
+   "exchange": "BSE",
+   "last": 537.85,
+   "pct_change": -0.4,
+   "open": 547.35,
+   "high": 547.35,
+   "low": 536.05,
+   "prev_close": 540.0,
+   "vwap_pos": null,
+   "range_pos": 16.0,
+   "volume": null,
+   "pead_score": 86.0,
+   "pead_category": "HIGH"
+  },
+  {
+   "symbol": "524522",
+   "exchange": "BSE",
+   "last": 28.49,
+   "pct_change": 8.95,
    "open": null,
    "high": null,
    "low": null,
