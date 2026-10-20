@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-20T02:21:57+05:30",
+ "generated_at": "2026-10-20T13:58:07+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -453,21 +453,6 @@
    "pead_category": null
   },
   {
-   "symbol": "CEREBRAINT",
-   "exchange": "BSE",
-   "last": 2.48,
-   "pct_change": -13.29,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
    "symbol": "CELEBRITY",
    "exchange": "BSE",
    "last": 6.23,
@@ -633,6 +618,21 @@
    "pead_category": null
   },
   {
+   "symbol": "TATVA",
+   "exchange": "BSE",
+   "last": 1900.05,
+   "pct_change": -2.08,
+   "open": 1954.95,
+   "high": 1992.0,
+   "low": 1850.0,
+   "prev_close": 1940.4,
+   "vwap_pos": null,
+   "range_pos": 35.0,
+   "volume": null,
+   "pead_score": 93.3,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "503641",
    "exchange": "BSE",
    "last": 1.41,
@@ -705,21 +705,6 @@
    "range_pos": 77.0,
    "volume": 2109000,
    "pead_score": 61.3,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "TATVA",
-   "exchange": "BSE",
-   "last": 1906.95,
-   "pct_change": -1.72,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": 93.3,
    "pead_category": "HIGH"
   },
   {
@@ -1158,6 +1143,21 @@
    "pead_category": null
   },
   {
+   "symbol": "511601",
+   "exchange": "BSE",
+   "last": 9.9,
+   "pct_change": -2.94,
+   "open": 10.2,
+   "high": 10.7,
+   "low": 9.52,
+   "prev_close": 10.2,
+   "vwap_pos": null,
+   "range_pos": 32.0,
+   "volume": null,
+   "pead_score": 70.1,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "544961",
    "exchange": "BSE",
    "last": 14.22,
@@ -1276,36 +1276,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "AKSHARCHEM",
-   "exchange": "BSE",
-   "last": 412.25,
-   "pct_change": -1.82,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": 78.5,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "NELCO",
-   "exchange": "BSE",
-   "last": 786.25,
-   "pct_change": -4.55,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": 50.9,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "538081",
@@ -1428,6 +1398,21 @@
    "pead_category": null
   },
   {
+   "symbol": "NELCO",
+   "exchange": "BSE",
+   "last": 789.0,
+   "pct_change": -4.21,
+   "open": 823.95,
+   "high": 823.95,
+   "low": 785.0,
+   "prev_close": 823.7,
+   "vwap_pos": null,
+   "range_pos": 10.0,
+   "volume": 797400000,
+   "pead_score": 50.9,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "544510",
    "exchange": "BSE",
    "last": 118.5,
@@ -1491,6 +1476,21 @@
    "symbol": "VTMLTD",
    "exchange": "BSE",
    "last": 49.4,
+   "pct_change": 9.05,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "MAITREYA",
+   "exchange": "BSE",
+   "last": 137.95,
    "pct_change": 9.05,
    "open": null,
    "high": null,
