@@ -763,7 +763,7 @@
     "market_cap": 1796.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1520.65,
+    "ltp": 1496.2,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -772,7 +772,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -6.4
+    "pct_change": -7.91
   },
   {
     "code": "ARIS",
@@ -2013,7 +2013,7 @@
     "market_cap": 135.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.2,
+    "ltp": 9.23,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2022,7 +2022,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": -4.17
+    "pct_change": -3.85
   },
   {
     "code": "OMPOWER",
@@ -5771,31 +5771,6 @@
     "eps_latest_q": 3.65,
     "np_growth_qoq": 7.75,
     "eps_growth_qoq": 7.67,
-    "order_size_pct": 0.98,
-    "pct_change": null
-  },
-  {
-    "code": "544426",
-    "name": "Icon Facilitators Ltd",
-    "exchange": "",
-    "date": "19 Oct 2026",
-    "order_type": "Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of Receipt of Order for Manpower Services Received Rs. 63.30 lakh Announcement -\n    \n    19 Oct 2026",
-    "value_cr": 0.63,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=474b38d0-6e4d-4227-9586-bc60bb1997fb.pdf",
-    "market_cap": 55.8,
-    "sales": 34.45,
-    "opm": 12.02,
-    "ltp": 71.0,
-    "revenue_fy": 64.22,
-    "np_prev_q": 1.47,
-    "np_latest_q": 2.89,
-    "eps_prev_q": 1.87,
-    "eps_latest_q": 3.68,
-    "np_growth_qoq": 96.6,
-    "eps_growth_qoq": 96.79,
     "order_size_pct": 0.98,
     "pct_change": null
   },
@@ -12575,6 +12550,81 @@
     "pct_change": null
   },
   {
+    "code": "544426",
+    "name": "Icon Facilitators Ltd",
+    "exchange": "",
+    "date": "21 Oct 2026",
+    "order_type": "Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Intimation of receipt of order of Electro Mechanical Services Received Noida Announcement -\n    \n    21 Oct 2026",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=74d6db8f-0d65-4846-bdf1-0ebac6549bb2.pdf",
+    "market_cap": 55.8,
+    "sales": 34.45,
+    "opm": 12.02,
+    "ltp": 71.0,
+    "revenue_fy": 64.22,
+    "np_prev_q": 1.47,
+    "np_latest_q": 2.89,
+    "eps_prev_q": 1.87,
+    "eps_latest_q": 3.68,
+    "np_growth_qoq": 96.6,
+    "eps_growth_qoq": 96.79,
+    "order_size_pct": null,
+    "pct_change": null
+  },
+  {
+    "code": "531550",
+    "name": "Jhaveri Credits & Capital Ltd",
+    "exchange": "",
+    "date": "21 Oct 2026",
+    "order_type": "Letter of Intent",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order The Company has received Letter of Intent from Gujrat Energy Development Announcement -\n    \n    21 Oct 2026",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=87feef4c-0482-46ad-8590-c437ae0ccee0.pdf",
+    "market_cap": 187.0,
+    "sales": 17.06,
+    "opm": -15.53,
+    "ltp": 172.6,
+    "revenue_fy": 99.16,
+    "np_prev_q": 2.88,
+    "np_latest_q": -1.48,
+    "eps_prev_q": 3.04,
+    "eps_latest_q": -1.33,
+    "np_growth_qoq": -151.39,
+    "eps_growth_qoq": -143.75,
+    "order_size_pct": null,
+    "pct_change": -4.64
+  },
+  {
+    "code": "513337",
+    "name": "Gujarat Toolroom Ltd",
+    "exchange": "",
+    "date": "21 Oct 2026",
+    "order_type": "Order",
+    "headline": "Corporate Insolvency Resolution Process (CIRP)-Admission of application by Tribunal 2026. ( A Copy of order received on 01.10.2026. passed an order in CP( IB) 158/NCLT/AHM/2026, admitting the petion filed under section 9 of the IBC Announcement -\n    \n    21 Oct 2026",
+    "value_cr": null,
+    "customer": "Tribunal 2026",
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=87f1e7bc-28ae-4e06-a589-c163a11a0e2d.pdf",
+    "market_cap": 51.5,
+    "sales": 0.0,
+    "opm": null,
+    "ltp": 0.38,
+    "revenue_fy": 22.59,
+    "np_prev_q": -0.45,
+    "np_latest_q": -8.45,
+    "eps_prev_q": -0.0,
+    "eps_latest_q": -0.06,
+    "np_growth_qoq": -1777.78,
+    "eps_growth_qoq": null,
+    "order_size_pct": null,
+    "pct_change": 0.0
+  },
+  {
     "code": "544710",
     "name": "Accord Transformer & Switchgear Ltd",
     "exchange": "",
@@ -12788,7 +12838,7 @@
     "market_cap": 341.0,
     "sales": 28.41,
     "opm": 2.15,
-    "ltp": 15.55,
+    "ltp": 15.54,
     "revenue_fy": 89.0,
     "np_prev_q": 4.33,
     "np_latest_q": 4.44,
@@ -12797,7 +12847,7 @@
     "np_growth_qoq": 2.54,
     "eps_growth_qoq": -4.76,
     "order_size_pct": null,
-    "pct_change": -2.14
+    "pct_change": -2.2
   },
   {
     "code": "PANCHMAHQ",
@@ -13213,7 +13263,7 @@
     "market_cap": 37.1,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 36.02,
+    "ltp": 37.99,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -13222,7 +13272,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -5.53
+    "pct_change": -0.37
   },
   {
     "code": "544877",
@@ -14363,7 +14413,7 @@
     "market_cap": 35.9,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 49.38,
+    "ltp": 47.51,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14372,7 +14422,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": 1.77
+    "pct_change": -2.08
   },
   {
     "code": "SKYTECH",
@@ -14763,7 +14813,7 @@
     "market_cap": 49.6,
     "sales": 1.15,
     "opm": 13.04,
-    "ltp": 160.0,
+    "ltp": 158.0,
     "revenue_fy": 24.86,
     "np_prev_q": 0.41,
     "np_latest_q": 0.02,
@@ -14772,7 +14822,7 @@
     "np_growth_qoq": -95.12,
     "eps_growth_qoq": -95.45,
     "order_size_pct": null,
-    "pct_change": 0.63
+    "pct_change": -0.63
   },
   {
     "code": "531411",
@@ -15063,7 +15113,7 @@
     "market_cap": 60.1,
     "sales": 20.13,
     "opm": 1.39,
-    "ltp": 1.03,
+    "ltp": 1.04,
     "revenue_fy": 104.0,
     "np_prev_q": -1.7,
     "np_latest_q": 1.03,
@@ -15072,7 +15122,7 @@
     "np_growth_qoq": 160.59,
     "eps_growth_qoq": 150.0,
     "order_size_pct": null,
-    "pct_change": 3.0
+    "pct_change": null
   },
   {
     "code": "523373",
@@ -15088,7 +15138,7 @@
     "market_cap": 98.5,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.13,
+    "ltp": 4.07,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -15097,7 +15147,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 1.98
+    "pct_change": 0.49
   },
   {
     "code": "523874",
@@ -15138,7 +15188,7 @@
     "market_cap": 498.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 698.7,
+    "ltp": 696.9,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -15147,7 +15197,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": -0.19
+    "pct_change": -0.44
   },
   {
     "code": "ASTRAZEN",
@@ -15763,7 +15813,7 @@
     "market_cap": 150.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 65.0,
+    "ltp": 64.59,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15772,7 +15822,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": -7.16
+    "pct_change": -7.74
   },
   {
     "code": "RSL",
@@ -15973,31 +16023,6 @@
     "eps_growth_qoq": 98.06,
     "order_size_pct": null,
     "pct_change": null
-  },
-  {
-    "code": "531550",
-    "name": "Jhaveri Credits & Capital Ltd",
-    "exchange": "",
-    "date": "04 Sep 2026",
-    "order_type": "Letter of Award",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order The Company has received Letter of Award from New & Renewable Energy Announcement -\n    \n    04 Sep 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=117298bd-1a03-47a0-960a-c7cf06c15777.pdf",
-    "market_cap": 187.0,
-    "sales": 17.06,
-    "opm": -15.53,
-    "ltp": 168.4,
-    "revenue_fy": 99.16,
-    "np_prev_q": 2.88,
-    "np_latest_q": -1.48,
-    "eps_prev_q": 3.04,
-    "eps_latest_q": -1.33,
-    "np_growth_qoq": -151.39,
-    "eps_growth_qoq": -143.75,
-    "order_size_pct": null,
-    "pct_change": -6.96
   },
   {
     "code": "ASHIANA",
