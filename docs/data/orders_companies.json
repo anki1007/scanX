@@ -1260,15 +1260,6 @@
     "orders_pct_revenue": 0.08
   },
   {
-    "code": "TATACHEM",
-    "name": "Tata Chemicals Limited",
-    "order_count": 1,
-    "total_value_cr": 2.12,
-    "revenue_fy": 4943.0,
-    "market_cap": 15184.0,
-    "orders_pct_revenue": 0.04
-  },
-  {
     "code": "KSOLVES",
     "name": "Ksolves India Limited",
     "order_count": 1,
@@ -1299,7 +1290,7 @@
     "code": "LT",
     "name": "Larsen & Toubro Limited",
     "order_count": 18,
-    "total_value_cr": 1.7,
+    "total_value_cr": 2.03,
     "revenue_fy": 156234.0,
     "market_cap": 503192.0,
     "orders_pct_revenue": 0.0
@@ -1482,6 +1473,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 442.0,
     "market_cap": 3986.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "TATACHEM",
+    "name": "Tata Chemicals Limited",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 4943.0,
+    "market_cap": 15184.0,
     "orders_pct_revenue": null
   },
   {
