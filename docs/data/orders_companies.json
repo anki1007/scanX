@@ -342,6 +342,15 @@
     "orders_pct_revenue": 35.38
   },
   {
+    "code": "EMSLIMITED",
+    "name": "EMS Limited",
+    "order_count": 5,
+    "total_value_cr": 178.1,
+    "revenue_fy": 523.0,
+    "market_cap": 1634.0,
+    "orders_pct_revenue": 34.05
+  },
+  {
     "code": "INDOTECH",
     "name": "Indo Tech Transformers Limited",
     "order_count": 3,
@@ -358,15 +367,6 @@
     "revenue_fy": 99.69,
     "market_cap": 192.0,
     "orders_pct_revenue": 31.03
-  },
-  {
-    "code": "EMSLIMITED",
-    "name": "EMS Limited",
-    "order_count": 5,
-    "total_value_cr": 158.19,
-    "revenue_fy": 523.0,
-    "market_cap": 1634.0,
-    "orders_pct_revenue": 30.25
   },
   {
     "code": "STLNETWORK",
@@ -1299,7 +1299,7 @@
     "code": "LT",
     "name": "Larsen & Toubro Limited",
     "order_count": 18,
-    "total_value_cr": 2.03,
+    "total_value_cr": 1.7,
     "revenue_fy": 156234.0,
     "market_cap": 501405.0,
     "orders_pct_revenue": 0.0
@@ -1860,6 +1860,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 353.0,
     "market_cap": 127.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "544746",
+    "name": "Safety Controls & Devices Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 117.0,
+    "market_cap": 149.0,
     "orders_pct_revenue": null
   },
   {
