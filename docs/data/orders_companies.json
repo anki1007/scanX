@@ -99,6 +99,15 @@
     "orders_pct_revenue": 119.04
   },
   {
+    "code": "HILINFRA",
+    "name": "Highway Infrastructure Limited",
+    "order_count": 9,
+    "total_value_cr": 854.78,
+    "revenue_fy": 789.0,
+    "market_cap": 391.0,
+    "orders_pct_revenue": 108.34
+  },
+  {
     "code": "TEJASNET",
     "name": "Tejas Networks Limited",
     "order_count": 1,
@@ -232,15 +241,6 @@
     "revenue_fy": 304.0,
     "market_cap": 236.0,
     "orders_pct_revenue": 67.14
-  },
-  {
-    "code": "HILINFRA",
-    "name": "Highway Infrastructure Limited",
-    "order_count": 8,
-    "total_value_cr": 514.7,
-    "revenue_fy": 789.0,
-    "market_cap": 391.0,
-    "orders_pct_revenue": 65.23
   },
   {
     "code": "SAATVIKGL",
@@ -414,15 +414,6 @@
     "orders_pct_revenue": 26.46
   },
   {
-    "code": "HECPROJECT",
-    "name": "HEC Infra Projects Limited",
-    "order_count": 4,
-    "total_value_cr": 46.48,
-    "revenue_fy": 180.0,
-    "market_cap": 114.0,
-    "orders_pct_revenue": 25.82
-  },
-  {
     "code": "CEWATER",
     "name": "Concord Enviro Systems Limited",
     "order_count": 1,
@@ -484,6 +475,15 @@
     "revenue_fy": 185.0,
     "market_cap": 336.0,
     "orders_pct_revenue": 20.0
+  },
+  {
+    "code": "HECPROJECT",
+    "name": "HEC Infra Projects Limited",
+    "order_count": 4,
+    "total_value_cr": 33.7,
+    "revenue_fy": 180.0,
+    "market_cap": 114.0,
+    "orders_pct_revenue": 18.72
   },
   {
     "code": "KNACK",
@@ -634,9 +634,9 @@
     "name": "Shakti Pumps (India) Limited",
     "order_count": 2,
     "total_value_cr": 348.1,
-    "revenue_fy": 2854.0,
+    "revenue_fy": 2888.0,
     "market_cap": 4771.0,
-    "orders_pct_revenue": 12.2
+    "orders_pct_revenue": 12.05
   },
   {
     "code": "SOLARWORLD",
@@ -1881,6 +1881,15 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "531676",
+    "name": "Emrock Corporation Limited",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 2.36,
+    "market_cap": 369.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "RILINFRA",
     "name": "Rachana Infrastructure Ltd",
     "order_count": 1,
@@ -2956,7 +2965,7 @@
     "name": "Bharat Petroleum Corporation Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 493790.0,
+    "revenue_fy": 537919.0,
     "market_cap": 122516.0,
     "orders_pct_revenue": null
   },
