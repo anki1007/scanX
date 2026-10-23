@@ -188,7 +188,7 @@
     "market_cap": 183.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 339.85,
+    "ltp": 334.55,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -197,7 +197,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": -3.49
+    "pct_change": -5.0
   },
   {
     "code": "RMC",
@@ -763,7 +763,7 @@
     "market_cap": 1578.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1356.6,
+    "ltp": 1384.65,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -772,7 +772,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": -8.35
+    "pct_change": -6.46
   },
   {
     "code": "ARIS",
@@ -2013,7 +2013,7 @@
     "market_cap": 143.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 9.9,
+    "ltp": 9.85,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2022,7 +2022,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": 1.12
+    "pct_change": 0.61
   },
   {
     "code": "OMPOWER",
@@ -6313,7 +6313,7 @@
     "market_cap": 11.1,
     "sales": 8.77,
     "opm": 5.13,
-    "ltp": 24.95,
+    "ltp": 24.8,
     "revenue_fy": 28.38,
     "np_prev_q": -0.41,
     "np_latest_q": 0.32,
@@ -6322,7 +6322,7 @@
     "np_growth_qoq": 178.05,
     "eps_growth_qoq": 178.26,
     "order_size_pct": 0.56,
-    "pct_change": -3.07
+    "pct_change": -3.65
   },
   {
     "code": "3IINFOLTD",
@@ -6947,6 +6947,31 @@
     "np_growth_qoq": -22.34,
     "eps_growth_qoq": -21.9,
     "order_size_pct": 0.0,
+    "pct_change": null
+  },
+  {
+    "code": "WEWIN",
+    "name": "WE WIN LIMITED",
+    "exchange": "NSE",
+    "date": "23 Oct 2026",
+    "order_type": "Contract",
+    "headline": "WE WIN LIMITED has informed the Exchange about Awarding of order(s)/contract(s) for Establishment and Operation of the Integrated 104 Health Helpline, Telemedical Consultation, and Grievance Redressal Services through Call Centre and Digital (Web Application) Interfaces in the State of Uttarakhand.",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://nsearchives.nseindia.com/corporate/SUREVIN_23102026145946_IntimationNHMUttarakhand23102026.pdf",
+    "market_cap": 45.7,
+    "sales": 23.55,
+    "opm": 4.93,
+    "ltp": 45.0,
+    "revenue_fy": 96.86,
+    "np_prev_q": 0.95,
+    "np_latest_q": 0.46,
+    "eps_prev_q": 0.93,
+    "eps_latest_q": 0.45,
+    "np_growth_qoq": -51.58,
+    "eps_growth_qoq": -51.61,
+    "order_size_pct": null,
     "pct_change": null
   },
   {
@@ -12738,7 +12763,7 @@
     "market_cap": 195.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 175.85,
+    "ltp": 173.9,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -12747,7 +12772,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": -1.46
+    "pct_change": -2.55
   },
   {
     "code": "513337",
@@ -12988,7 +13013,7 @@
     "market_cap": 331.0,
     "sales": 28.41,
     "opm": 2.15,
-    "ltp": 14.45,
+    "ltp": 14.55,
     "revenue_fy": 89.0,
     "np_prev_q": 4.33,
     "np_latest_q": 4.44,
@@ -12997,7 +13022,7 @@
     "np_growth_qoq": 2.54,
     "eps_growth_qoq": -4.76,
     "order_size_pct": null,
-    "pct_change": -3.67
+    "pct_change": -3.0
   },
   {
     "code": "PANCHMAHQ",
@@ -13388,7 +13413,7 @@
     "market_cap": 36.4,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 36.32,
+    "ltp": 37.4,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -13397,7 +13422,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -3.15
+    "pct_change": -0.27
   },
   {
     "code": "544877",
@@ -13638,7 +13663,7 @@
     "market_cap": 67.8,
     "sales": 9.89,
     "opm": 6.98,
-    "ltp": 84.5,
+    "ltp": 86.98,
     "revenue_fy": 56.29,
     "np_prev_q": 1.18,
     "np_latest_q": 0.32,
@@ -13647,7 +13672,7 @@
     "np_growth_qoq": -72.88,
     "eps_growth_qoq": -77.78,
     "order_size_pct": null,
-    "pct_change": -5.64
+    "pct_change": -2.87
   },
   {
     "code": "544458",
@@ -14338,7 +14363,7 @@
     "market_cap": 143.0,
     "sales": 0.0,
     "opm": null,
-    "ltp": 13.6,
+    "ltp": 13.53,
     "revenue_fy": 0.0,
     "np_prev_q": 0.08,
     "np_latest_q": 0.41,
@@ -14347,7 +14372,7 @@
     "np_growth_qoq": 412.5,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": 2.33
+    "pct_change": 1.81
   },
   {
     "code": "PRINCEPIPE",
@@ -14513,7 +14538,7 @@
     "market_cap": 33.5,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 45.5,
+    "ltp": 45.99,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14522,7 +14547,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": -3.66
+    "pct_change": -2.63
   },
   {
     "code": "SKYTECH",
@@ -15013,7 +15038,7 @@
     "market_cap": 43.5,
     "sales": 0.0,
     "opm": null,
-    "ltp": 172.1,
+    "ltp": 175.65,
     "revenue_fy": 0.03,
     "np_prev_q": -0.02,
     "np_latest_q": 0.43,
@@ -15022,7 +15047,7 @@
     "np_growth_qoq": 2250.0,
     "eps_growth_qoq": 2225.0,
     "order_size_pct": null,
-    "pct_change": -1.83
+    "pct_change": 0.2
   },
   {
     "code": "MIEL",
@@ -15238,7 +15263,7 @@
     "market_cap": 96.2,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.08,
+    "ltp": 4.06,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -15247,7 +15272,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 1.24
+    "pct_change": 0.74
   },
   {
     "code": "523874",
@@ -15263,7 +15288,7 @@
     "market_cap": 142.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 95.9,
+    "ltp": 95.8,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -15272,7 +15297,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 0.55
+    "pct_change": 0.44
   },
   {
     "code": "524480",
@@ -15888,7 +15913,7 @@
     "market_cap": 147.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 63.45,
+    "ltp": 62.38,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15897,7 +15922,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": -0.42
+    "pct_change": -2.1
   },
   {
     "code": "RSL",
@@ -16171,31 +16196,6 @@
     "eps_latest_q": 0.13,
     "np_growth_qoq": -96.74,
     "eps_growth_qoq": -96.81,
-    "order_size_pct": null,
-    "pct_change": null
-  },
-  {
-    "code": "HINDZINC",
-    "name": "Hindustan Zinc Ltd",
-    "exchange": "",
-    "date": "03 Sep 2026",
-    "order_type": "Letter of Intent",
-    "headline": "Issuance Of Letter Of Intent In Favor Of The Preferred Bidder Issuance Of Letter Of Intent In Favor Of The Preferred Bidder\n\nPlease refer the enclosed file\n\nKarnataka issued LoI to Hindustan Zinc for Gundlupet Announcement -\n    \n    03 Sep 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=9cca5be7-5345-4a73-9d4a-ac2b038fbf1a.pdf",
-    "market_cap": 210210.0,
-    "sales": 14961.0,
-    "opm": 61.0,
-    "ltp": 498.0,
-    "revenue_fy": 53058.0,
-    "np_prev_q": 5425.0,
-    "np_latest_q": 6317.0,
-    "eps_prev_q": 12.84,
-    "eps_latest_q": 14.95,
-    "np_growth_qoq": 16.44,
-    "eps_growth_qoq": 16.43,
     "order_size_pct": null,
     "pct_change": null
   }

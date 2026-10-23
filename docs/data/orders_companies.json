@@ -1314,6 +1314,15 @@
     "orders_pct_revenue": 0.0
   },
   {
+    "code": "WEWIN",
+    "name": "WE WIN LIMITED",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 96.86,
+    "market_cap": 45.7,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "POWERICA",
     "name": "Powerica Limited",
     "order_count": 3,
@@ -3165,15 +3174,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 1606.0,
     "market_cap": 524.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "HINDZINC",
-    "name": "Hindustan Zinc Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 53058.0,
-    "market_cap": 210210.0,
     "orders_pct_revenue": null
   }
 ]
