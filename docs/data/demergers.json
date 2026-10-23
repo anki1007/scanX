@@ -1,5 +1,19 @@
 [
   {
+    "code": "RUNWALENTR",
+    "name": "Runwal Enterprises Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-10-23",
+    "headlines": [
+      {
+        "date": "23 Oct 2026",
+        "stage": "LISTED",
+        "text": "Board Meeting Outcome for Outcome Of The Board Meeting Held On Friday, October 23, 2026, Pursuant To The Regulation 30 Of SEBI (LODR) Regulations, 2015 relations. \n\nKindly take the same on your record.\n\n\nBoard approved Q1 FY2026-27 results on October 23, 2026; IPO, CCD conversion and demerger noted",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ee8f5936-63cf-457e-81e4-91a1106ecea5.pdf"
+      }
+    ]
+  },
+  {
     "code": "BROOKS",
     "name": "Brooks Laboratories Ltd",
     "stage": "LISTED",
@@ -546,26 +560,6 @@
     ]
   },
   {
-    "code": "SAMMAANCAP",
-    "name": "Sammaan Capital Ltd",
-    "stage": "LISTED",
-    "stage_date": "2026-02-04",
-    "headlines": [
-      {
-        "date": "30 Sep 2026",
-        "stage": "NCLT",
-        "text": "Announcement under Regulation 30 (LODR)-Newspaper Publication and the Demerged Company and their respective shareholders and creditors.\n\nRefer attached PDF file for more details Announcement -\n    \n    30 Sep 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5efa049c-17ad-44c6-8a89-fff504cace0a.pdf"
-      },
-      {
-        "date": "04 Feb 2026",
-        "stage": "LISTED",
-        "text": "Board Meeting Outcome for Outcome Of Board Meeting Held Today I.E. February 02, 2026. Refer attached PDF for more details.\n\nBoard approved Q3/9M results; preferential issue ~\u20b98,850 crore, US$450m bonds, NCDs \u20b9815 crore, demerger Announcement -\n    \n    04 Feb 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7f8ec9ab-4db5-47e8-a012-b7bbd54d5df5.pdf"
-      }
-    ]
-  },
-  {
     "code": "KWIL",
     "name": "Kwality Walls India Ltd",
     "stage": "LISTED",
@@ -608,7 +602,7 @@
       {
         "date": "19 Sep 2026",
         "stage": "RECORD_DATE",
-        "text": "Fixation Of Record Date For The Purpose Of Scheme Of Arrangement For Demerger Of Amongst K M Sugar Mills Limited ('Demerged Company') And KM Spirits And Allied Industries Limited ('Resulting Company') And Their Respective Shareholders And Creditors Fixation Of Record Date For The Purpose Of Scheme O",
+        "text": "Fixation Of Record Date For The Purpose Of Scheme Of Arrangement For Demerger Of Amongst K M Sugar Mills Limited ('Demerged Company') And KM Spirits And Allied Industries Limited ('Resulting Company') And Their Respective Shareholders And Creditors for Demerger as per attachment. Demerger effective",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=266c6fbc-9a01-4a8e-8e52-b4b4cc406cbd.pdf"
       },
       {
@@ -892,6 +886,20 @@
         "stage": "NCLT",
         "text": "Update - Allotment Of Equity Shares By Tieramet Limited (The 'Resulting Company') To The Shareholders Of Bhagyanagar India Limited (The 'Company') Pursuant To The Composite Scheme Of Arrangement. shareholders after NCLT -approved copper business demerger Announcement -\n    \n    09 Oct 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b1555a6f-499e-430a-aef0-fa8846d8566b.pdf"
+      }
+    ]
+  },
+  {
+    "code": "SAMMAANCAP",
+    "name": "Sammaan Capital Ltd",
+    "stage": "NCLT",
+    "stage_date": "2026-09-30",
+    "headlines": [
+      {
+        "date": "30 Sep 2026",
+        "stage": "NCLT",
+        "text": "Announcement under Regulation 30 (LODR)-Newspaper Publication and the Demerged Company and their respective shareholders and creditors.\n\nRefer attached PDF file for more details Announcement -\n    \n    30 Sep 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=5efa049c-17ad-44c6-8a89-fff504cace0a.pdf"
       }
     ]
   },
