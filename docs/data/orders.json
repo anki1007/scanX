@@ -188,7 +188,7 @@
     "market_cap": 183.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 331.2,
+    "ltp": 347.6,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -197,7 +197,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": -2.77
+    "pct_change": 2.04
   },
   {
     "code": "RMC",
@@ -763,7 +763,7 @@
     "market_cap": 1674.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1410.0,
+    "ltp": 1395.0,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -772,7 +772,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 44.23,
-    "pct_change": 2.43
+    "pct_change": 1.34
   },
   {
     "code": "HILINFRA",
@@ -847,6 +847,31 @@
     "np_growth_qoq": -33.33,
     "eps_growth_qoq": -32.7,
     "order_size_pct": 40.34,
+    "pct_change": null
+  },
+  {
+    "code": "544856",
+    "name": "Fusion Klassroom Edutech Limited",
+    "exchange": "",
+    "date": "26 Oct 2026",
+    "order_type": "Work Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order educational, skill development and vocational courses.  The work order has an indicative value of approximately Rs. 9.10 Crores, excluding GST . The Announcement -\n    \n    26 Oct 2026",
+    "value_cr": 9.1,
+    "customer": null,
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=154dc519-e975-4701-9188-63c8d1040e94.pdf",
+    "market_cap": 156.0,
+    "sales": null,
+    "opm": null,
+    "ltp": 168.0,
+    "revenue_fy": 23.04,
+    "np_prev_q": null,
+    "np_latest_q": null,
+    "eps_prev_q": null,
+    "eps_latest_q": null,
+    "np_growth_qoq": null,
+    "eps_growth_qoq": null,
+    "order_size_pct": 39.5,
     "pct_change": null
   },
   {
@@ -6338,7 +6363,7 @@
     "market_cap": 10.7,
     "sales": 8.77,
     "opm": 5.13,
-    "ltp": 24.0,
+    "ltp": 25.45,
     "revenue_fy": 28.38,
     "np_prev_q": -0.41,
     "np_latest_q": 0.32,
@@ -6347,7 +6372,7 @@
     "np_growth_qoq": 178.05,
     "eps_growth_qoq": 178.26,
     "order_size_pct": 0.56,
-    "pct_change": -0.17
+    "pct_change": 5.87
   },
   {
     "code": "3IINFOLTD",
@@ -12738,7 +12763,7 @@
     "market_cap": 362.0,
     "sales": 0.45,
     "opm": 48.89,
-    "ltp": 228.45,
+    "ltp": 229.9,
     "revenue_fy": 2.36,
     "np_prev_q": 0.41,
     "np_latest_q": 0.19,
@@ -12747,7 +12772,7 @@
     "np_growth_qoq": -53.66,
     "eps_growth_qoq": -53.85,
     "order_size_pct": null,
-    "pct_change": -1.93
+    "pct_change": -1.31
   },
   {
     "code": "523874",
@@ -12763,7 +12788,7 @@
     "market_cap": 138.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 93.4,
+    "ltp": 99.0,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -12772,7 +12797,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": -1.75
+    "pct_change": 4.14
   },
   {
     "code": "544746",
@@ -12938,7 +12963,7 @@
     "market_cap": 187.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 168.4,
+    "ltp": 169.45,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -12947,7 +12972,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": -4.02
+    "pct_change": -3.42
   },
   {
     "code": "513337",
@@ -13563,7 +13588,7 @@
     "market_cap": 36.6,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 36.51,
+    "ltp": 36.55,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -13572,7 +13597,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -2.38
+    "pct_change": -2.27
   },
   {
     "code": "544877",
@@ -14238,7 +14263,7 @@
     "market_cap": 114.0,
     "sales": 121.06,
     "opm": 5.88,
-    "ltp": 1.18,
+    "ltp": 1.19,
     "revenue_fy": 453.0,
     "np_prev_q": 1.21,
     "np_latest_q": 3.78,
@@ -14247,7 +14272,7 @@
     "np_growth_qoq": 212.4,
     "eps_growth_qoq": 150.0,
     "order_size_pct": null,
-    "pct_change": -4.07
+    "pct_change": -3.25
   },
   {
     "code": "SUPREMEENG",
@@ -14513,7 +14538,7 @@
     "market_cap": 142.0,
     "sales": 0.0,
     "opm": null,
-    "ltp": 13.49,
+    "ltp": 13.5,
     "revenue_fy": 0.0,
     "np_prev_q": 0.08,
     "np_latest_q": 0.41,
@@ -14522,7 +14547,7 @@
     "np_growth_qoq": 412.5,
     "eps_growth_qoq": 300.0,
     "order_size_pct": null,
-    "pct_change": 0.37
+    "pct_change": 0.45
   },
   {
     "code": "PRINCEPIPE",
@@ -14663,7 +14688,7 @@
     "market_cap": 32.9,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 43.66,
+    "ltp": 45.4,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14672,7 +14697,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": -4.15
+    "pct_change": -0.33
   },
   {
     "code": "SKYTECH",
@@ -15088,7 +15113,7 @@
     "market_cap": 134.0,
     "sales": 35.08,
     "opm": 6.56,
-    "ltp": 2.16,
+    "ltp": 2.17,
     "revenue_fy": 121.0,
     "np_prev_q": 0.27,
     "np_latest_q": 1.22,
@@ -15097,32 +15122,7 @@
     "np_growth_qoq": 351.85,
     "eps_growth_qoq": null,
     "order_size_pct": null,
-    "pct_change": 1.41
-  },
-  {
-    "code": "544856",
-    "name": "Fusion Klassroom Edutech Limited",
-    "exchange": "",
-    "date": "23 Sep 2026",
-    "order_type": "Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Dear Sir / Madam,\n\nPursuant to Regulation 30 read with Part A of Schedule Announcement -\n    \n    23 Sep 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=764d617b-564e-4f19-ac14-a40480b61ead.pdf",
-    "market_cap": 156.0,
-    "sales": null,
-    "opm": null,
-    "ltp": 168.0,
-    "revenue_fy": 23.04,
-    "np_prev_q": null,
-    "np_latest_q": null,
-    "eps_prev_q": null,
-    "eps_latest_q": null,
-    "np_growth_qoq": null,
-    "eps_growth_qoq": null,
-    "order_size_pct": null,
-    "pct_change": null
+    "pct_change": 1.88
   },
   {
     "code": "SASKEN",
@@ -15363,7 +15363,7 @@
     "market_cap": 96.1,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.07,
+    "ltp": 4.08,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -15372,7 +15372,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": 0.0
+    "pct_change": 0.25
   },
   {
     "code": "524480",
@@ -15388,7 +15388,7 @@
     "market_cap": 478.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 670.0,
+    "ltp": 660.0,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -15397,7 +15397,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": 4.63
+    "pct_change": 3.07
   },
   {
     "code": "ASTRAZEN",
@@ -15988,7 +15988,7 @@
     "market_cap": 148.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 64.19,
+    "ltp": 63.56,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -15997,7 +15997,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": 1.26
+    "pct_change": 0.27
   },
   {
     "code": "RSL",
@@ -16098,30 +16098,5 @@
     "eps_growth_qoq": 33.33,
     "order_size_pct": null,
     "pct_change": -4.88
-  },
-  {
-    "code": "542682",
-    "name": "Harish Textile Engineers Ltd",
-    "exchange": "",
-    "date": "05 Sep 2026",
-    "order_type": "Order",
-    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Please find attached herewith Intimation under Regulation 30 of SEBI(LODR Announcement -\n    \n    05 Sep 2026",
-    "value_cr": null,
-    "customer": null,
-    "duration": null,
-    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7669ff94-ef23-430f-91bc-d29e0d32d079.pdf",
-    "market_cap": 18.7,
-    "sales": 39.44,
-    "opm": 7.43,
-    "ltp": 56.1,
-    "revenue_fy": 146.0,
-    "np_prev_q": 1.85,
-    "np_latest_q": 0.9,
-    "eps_prev_q": 5.55,
-    "eps_latest_q": 2.7,
-    "np_growth_qoq": -51.35,
-    "eps_growth_qoq": -51.35,
-    "order_size_pct": null,
-    "pct_change": null
   }
 ]
