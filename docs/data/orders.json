@@ -188,7 +188,7 @@
     "market_cap": 186.0,
     "sales": 15.52,
     "opm": 11.79,
-    "ltp": 340.0,
+    "ltp": 345.6,
     "revenue_fy": 186.0,
     "np_prev_q": 4.15,
     "np_latest_q": -0.62,
@@ -197,7 +197,7 @@
     "np_growth_qoq": -114.94,
     "eps_growth_qoq": -114.89,
     "order_size_pct": 121.51,
-    "pct_change": 0.86
+    "pct_change": 2.52
   },
   {
     "code": "RMC",
@@ -1888,7 +1888,7 @@
     "market_cap": 1859.0,
     "sales": 25.14,
     "opm": 43.24,
-    "ltp": 1589.45,
+    "ltp": 1600.0,
     "revenue_fy": 91.0,
     "np_prev_q": 6.67,
     "np_latest_q": 8.08,
@@ -1897,7 +1897,7 @@
     "np_growth_qoq": 21.14,
     "eps_growth_qoq": 18.52,
     "order_size_pct": 16.22,
-    "pct_change": 14.3
+    "pct_change": 15.06
   },
   {
     "code": "MANINDS",
@@ -2188,7 +2188,7 @@
     "market_cap": 156.0,
     "sales": 12.45,
     "opm": 13.57,
-    "ltp": 10.67,
+    "ltp": 10.65,
     "revenue_fy": 46.36,
     "np_prev_q": 1.64,
     "np_latest_q": 1.25,
@@ -2197,7 +2197,7 @@
     "np_growth_qoq": -23.78,
     "eps_growth_qoq": -18.18,
     "order_size_pct": 13.48,
-    "pct_change": 4.92
+    "pct_change": 4.72
   },
   {
     "code": "OMPOWER",
@@ -6973,6 +6973,31 @@
     "eps_growth_qoq": 0.0,
     "order_size_pct": -282428.57,
     "pct_change": 4.96
+  },
+  {
+    "code": "WAAREERTL",
+    "name": "Waaree Renewable Technologies Limited",
+    "exchange": "NSE",
+    "date": "27 Oct 2026",
+    "order_type": "Contract",
+    "headline": "Waaree Renewable Technologies Limited has informed the Exchange about Bagging/Receiving of orders/contracts",
+    "value_cr": null,
+    "customer": null,
+    "duration": null,
+    "url": "https://nsearchives.nseindia.com/corporate/WAAREERTL_27102026150033_Intimation-s.pdf",
+    "market_cap": 7022.0,
+    "sales": 452.0,
+    "opm": 24.0,
+    "ltp": 673.0,
+    "revenue_fy": 3216.0,
+    "np_prev_q": 114.0,
+    "np_latest_q": 68.0,
+    "eps_prev_q": 10.97,
+    "eps_latest_q": 6.53,
+    "np_growth_qoq": -40.35,
+    "eps_growth_qoq": -40.47,
+    "order_size_pct": null,
+    "pct_change": null
   },
   {
     "code": "LT",
@@ -12863,7 +12888,7 @@
     "market_cap": 369.0,
     "sales": 0.45,
     "opm": 48.89,
-    "ltp": 232.95,
+    "ltp": 231.6,
     "revenue_fy": 2.36,
     "np_prev_q": 0.41,
     "np_latest_q": 0.19,
@@ -12872,7 +12897,7 @@
     "np_growth_qoq": -53.66,
     "eps_growth_qoq": -53.85,
     "order_size_pct": null,
-    "pct_change": 1.35
+    "pct_change": 0.76
   },
   {
     "code": "523874",
@@ -12888,7 +12913,7 @@
     "market_cap": 146.0,
     "sales": 63.45,
     "opm": 7.03,
-    "ltp": 98.7,
+    "ltp": 97.99,
     "revenue_fy": 246.0,
     "np_prev_q": 0.74,
     "np_latest_q": 1.35,
@@ -12897,7 +12922,7 @@
     "np_growth_qoq": 82.43,
     "eps_growth_qoq": 82.0,
     "order_size_pct": null,
-    "pct_change": 1.57
+    "pct_change": 0.84
   },
   {
     "code": "544746",
@@ -13063,7 +13088,7 @@
     "market_cap": 195.0,
     "sales": 17.06,
     "opm": -15.53,
-    "ltp": 175.95,
+    "ltp": 171.95,
     "revenue_fy": 99.16,
     "np_prev_q": 2.88,
     "np_latest_q": -1.48,
@@ -13072,7 +13097,7 @@
     "np_growth_qoq": -151.39,
     "eps_growth_qoq": -143.75,
     "order_size_pct": null,
-    "pct_change": 4.48
+    "pct_change": 2.11
   },
   {
     "code": "513337",
@@ -13313,7 +13338,7 @@
     "market_cap": 313.0,
     "sales": 28.41,
     "opm": 2.15,
-    "ltp": 14.0,
+    "ltp": 14.85,
     "revenue_fy": 89.0,
     "np_prev_q": 4.33,
     "np_latest_q": 4.44,
@@ -13322,7 +13347,7 @@
     "np_growth_qoq": 2.54,
     "eps_growth_qoq": -4.76,
     "order_size_pct": null,
-    "pct_change": -1.06
+    "pct_change": 4.95
   },
   {
     "code": "PANCHMAHQ",
@@ -13663,7 +13688,7 @@
     "market_cap": 36.2,
     "sales": 0.15,
     "opm": -500.0,
-    "ltp": 36.15,
+    "ltp": 37.5,
     "revenue_fy": 0.15,
     "np_prev_q": -0.1,
     "np_latest_q": -0.58,
@@ -13672,7 +13697,7 @@
     "np_growth_qoq": -480.0,
     "eps_growth_qoq": -480.0,
     "order_size_pct": null,
-    "pct_change": -1.09
+    "pct_change": 2.6
   },
   {
     "code": "544877",
@@ -13913,7 +13938,7 @@
     "market_cap": 71.4,
     "sales": 9.89,
     "opm": 6.98,
-    "ltp": 88.99,
+    "ltp": 88.0,
     "revenue_fy": 56.29,
     "np_prev_q": 1.18,
     "np_latest_q": 0.32,
@@ -13922,7 +13947,7 @@
     "np_growth_qoq": -72.88,
     "eps_growth_qoq": -77.78,
     "order_size_pct": null,
-    "pct_change": 6.57
+    "pct_change": 5.39
   },
   {
     "code": "544458",
@@ -14763,7 +14788,7 @@
     "market_cap": 33.1,
     "sales": 3.17,
     "opm": 35.65,
-    "ltp": 45.5,
+    "ltp": 47.2,
     "revenue_fy": 33.21,
     "np_prev_q": 0.86,
     "np_latest_q": 0.94,
@@ -14772,7 +14797,7 @@
     "np_growth_qoq": 9.3,
     "eps_growth_qoq": 9.32,
     "order_size_pct": null,
-    "pct_change": 3.32
+    "pct_change": 7.18
   },
   {
     "code": "SKYTECH",
@@ -14813,7 +14838,7 @@
     "market_cap": 156.0,
     "sales": 13.52,
     "opm": 3.7,
-    "ltp": 141.0,
+    "ltp": 140.9,
     "revenue_fy": 57.09,
     "np_prev_q": 1.77,
     "np_latest_q": 0.12,
@@ -14822,7 +14847,7 @@
     "np_growth_qoq": -93.22,
     "eps_growth_qoq": -93.12,
     "order_size_pct": null,
-    "pct_change": 2.03
+    "pct_change": 1.95
   },
   {
     "code": "ELITECON",
@@ -15163,7 +15188,7 @@
     "market_cap": 48.5,
     "sales": 1.15,
     "opm": 13.04,
-    "ltp": 156.9,
+    "ltp": 157.0,
     "revenue_fy": 24.86,
     "np_prev_q": 0.41,
     "np_latest_q": 0.02,
@@ -15172,7 +15197,7 @@
     "np_growth_qoq": -95.12,
     "eps_growth_qoq": -95.45,
     "order_size_pct": null,
-    "pct_change": 2.55
+    "pct_change": 2.61
   },
   {
     "code": "531411",
@@ -15238,7 +15263,7 @@
     "market_cap": 43.8,
     "sales": 0.0,
     "opm": null,
-    "ltp": 171.0,
+    "ltp": 177.9,
     "revenue_fy": 0.03,
     "np_prev_q": -0.02,
     "np_latest_q": 0.43,
@@ -15247,7 +15272,7 @@
     "np_growth_qoq": 2250.0,
     "eps_growth_qoq": 2225.0,
     "order_size_pct": null,
-    "pct_change": -3.93
+    "pct_change": -0.06
   },
   {
     "code": "MIEL",
@@ -15438,7 +15463,7 @@
     "market_cap": 94.7,
     "sales": 196.4,
     "opm": 1.92,
-    "ltp": 4.01,
+    "ltp": 4.07,
     "revenue_fy": 664.0,
     "np_prev_q": -5.15,
     "np_latest_q": 2.74,
@@ -15447,7 +15472,7 @@
     "np_growth_qoq": 153.2,
     "eps_growth_qoq": 154.55,
     "order_size_pct": null,
-    "pct_change": -1.23
+    "pct_change": 0.25
   },
   {
     "code": "524480",
@@ -15463,7 +15488,7 @@
     "market_cap": 475.0,
     "sales": 80.0,
     "opm": -2.4,
-    "ltp": 672.45,
+    "ltp": 695.0,
     "revenue_fy": 138.0,
     "np_prev_q": 5.0,
     "np_latest_q": 14.0,
@@ -15472,7 +15497,7 @@
     "np_growth_qoq": 180.0,
     "eps_growth_qoq": 160.39,
     "order_size_pct": null,
-    "pct_change": 1.3
+    "pct_change": 4.7
   },
   {
     "code": "ASTRAZEN",
@@ -15538,7 +15563,7 @@
     "market_cap": 1166.0,
     "sales": 2.35,
     "opm": -3.4,
-    "ltp": 77.14,
+    "ltp": 77.0,
     "revenue_fy": 4.38,
     "np_prev_q": -0.18,
     "np_latest_q": -0.07,
@@ -15547,7 +15572,7 @@
     "np_growth_qoq": 61.11,
     "eps_growth_qoq": 100.0,
     "order_size_pct": null,
-    "pct_change": 4.98
+    "pct_change": 4.79
   },
   {
     "code": "539697",
@@ -16063,7 +16088,7 @@
     "market_cap": 148.0,
     "sales": 74.9,
     "opm": 8.85,
-    "ltp": 64.5,
+    "ltp": 63.05,
     "revenue_fy": 282.0,
     "np_prev_q": 2.87,
     "np_latest_q": 5.11,
@@ -16072,7 +16097,7 @@
     "np_growth_qoq": 78.05,
     "eps_growth_qoq": 78.23,
     "order_size_pct": null,
-    "pct_change": 1.1
+    "pct_change": -1.18
   },
   {
     "code": "RSL",
