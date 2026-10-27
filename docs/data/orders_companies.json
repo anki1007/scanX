@@ -1881,6 +1881,15 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "SCHAEFFLER",
+    "name": "Schaeffler India Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 10192.0,
+    "market_cap": 57340.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "KOTIC",
     "name": "Kothari Industrial Corporation Ltd",
     "order_count": 1,
@@ -3129,15 +3138,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 282.0,
     "market_cap": 147.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "RSL",
-    "name": "Rajputana Stainless Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 1082.0,
-    "market_cap": 1367.0,
     "orders_pct_revenue": null
   }
 ]

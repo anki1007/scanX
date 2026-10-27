@@ -196,12 +196,6 @@
     "stage_date": "2026-08-21",
     "headlines": [
       {
-        "date": "4 Sep 2026",
-        "stage": "ANNOUNCED",
-        "text": "General Updates Infravision Private Limited pursuant to the Scheme of Demerger RIPL allotted 24 lakh shares to Global Education on 4 Sep 2026; holding remains about Announcement -\n    \n    04 Sep 2026",
-        "url": "https://nsearchives.nseindia.com/corporate/GLOBAL_04092026143159_GeneralUpdate04092026.pdf"
-      },
-      {
         "date": "21 Aug 2026",
         "stage": "LISTED",
         "text": "Updates Requirements) Regulations, 2015   Order of Hon ble NCLT sanctioning the Scheme of Demerger between Yola Stays Limited and Rishiraj Infravision Private Announcement -\n    \n    21 Aug 2026",
@@ -1038,6 +1032,20 @@
     ]
   },
   {
+    "code": "503663",
+    "name": "Tilak Ventures Ltd",
+    "stage": "BOARD_APPROVED",
+    "stage_date": "2026-10-27",
+    "headlines": [
+      {
+        "date": "27 Oct 2026",
+        "stage": "BOARD_APPROVED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Arrangement in Board meeting held on 27th October, 2026\n\nBoard approved demerger of commodities trading into Tilak Jewels; share exchange ratio 7:3 on Announcement -\n    \n    27 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=dd3a8ca1-9845-4f7e-a808-4405d0549b56.pdf"
+      }
+    ]
+  },
+  {
     "code": "PEERABASAN",
     "name": "Shristi Infrastructure Development Corporation Ltd",
     "stage": "BOARD_APPROVED",
@@ -1172,20 +1180,6 @@
         "stage": "ANNOUNCED",
         "text": "Updates Demeger)  '.\n\nKCK Industries postponed demerger scheme implementation and filing on 24 July 2026 for internal review Announcement -\n    \n    24 Jul 2026",
         "url": "https://nsearchives.nseindia.com/corporate/KCK_24072026184718_Demerger_Outcome_Postponement__1_.pdf"
-      }
-    ]
-  },
-  {
-    "code": "CREST",
-    "name": "Crest Ventures Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-07-22",
-    "headlines": [
-      {
-        "date": "22 Jul 2026",
-        "stage": "ANNOUNCED",
-        "text": "Update On Scheme Of Arrangement Update On Scheme Of Arrangement Please refer the attached intimation.\n\nBSE and NSE issued no-objection observations for Crest Ventures\u2019 demerger Announcement -\n    \n    22 Jul 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=86adea38-4780-431f-b35b-48aec0a298cc.pdf"
       }
     ]
   }
