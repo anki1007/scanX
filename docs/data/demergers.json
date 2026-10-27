@@ -304,12 +304,6 @@
         "stage": "LISTED",
         "text": "Board Meeting Outcome for Composite Scheme Of Arrangement demerger into ACPL for listing Announcement -\n    \n    21 Jul 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7efc5e7a-670e-45ae-9fb0-eea196cd996e.pdf"
-      },
-      {
-        "date": "21 Jul 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement ARL, then data centre business demerges into ACPL Announcement -\n    \n    21 Jul 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b847783e-06df-4c89-8ef1-9e240e88c488.pdf"
       }
     ]
   },
@@ -862,6 +856,20 @@
     ]
   },
   {
+    "code": "EFCIL",
+    "name": "EFC (I) Ltd",
+    "stage": "NCLT",
+    "stage_date": "2026-10-27",
+    "headlines": [
+      {
+        "date": "27 Oct 2026",
+        "stage": "NCLT",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement of Scheme of Arrangement ( Demerger ) between EFC Limited and EFC (I) Limited NCLT admitted EFC demerger petition and fixed final hearing for 27 Announcement -\n    \n    27 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=457d3ea0-78aa-480f-9bd1-ee27d1781d36.pdf"
+      }
+    ]
+  },
+  {
     "code": "MOTHERSON",
     "name": "Samvardhana Motherson International Ltd",
     "stage": "NCLT",
@@ -928,26 +936,6 @@
         "stage": "NCLT",
         "text": "Order By The Hon'Ble Ncltin Relation To The Scheme Of Arrangement 2026 for Magnum Ventures' paper business demerger Announcement -\n    \n    25 Sep 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=48763ae3-3532-4775-82b6-c698cb8fe2e7.pdf"
-      }
-    ]
-  },
-  {
-    "code": "EFCIL",
-    "name": "EFC (I) Ltd",
-    "stage": "NCLT",
-    "stage_date": "2026-09-24",
-    "headlines": [
-      {
-        "date": "24 Sep 2026",
-        "stage": "NCLT",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Creditors. NCLT dispensed meetings for EFC demerger ; shareholder and creditor notices issued on September 24, 2026 Announcement -\n    \n    24 Sep 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1f1cb2e3-4501-4d0e-9acb-5dc828f9529d.pdf"
-      },
-      {
-        "date": "24 Sep 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)- Scheme of Arrangement Scheme of Arrangement ( Demerger ) - Notice to Equity Shareholders and Unsecured Announcement -\n    \n    24 Sep 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=1f1cb2e3-4501-4d0e-9acb-5dc828f9529d.pdf"
       }
     ]
   },
