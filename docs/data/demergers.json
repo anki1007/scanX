@@ -1032,6 +1032,20 @@
     ]
   },
   {
+    "code": "TVSMOTOR",
+    "name": "TVS Motor Company Ltd",
+    "stage": "BOARD_APPROVED",
+    "stage_date": "2026-10-28",
+    "headlines": [
+      {
+        "date": "28 Oct 2026",
+        "stage": "BOARD_APPROVED",
+        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release Announcement under Regulation 30 (LODR)-Press Release / Media Release\n\nPress release on the Composite Scheme of Arrangement Board approved demerger Announcement -\n    \n    28 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=cdea39ee-cc42-4ddd-a607-2ebffd8c731c.pdf"
+      }
+    ]
+  },
+  {
     "code": "503663",
     "name": "Tilak Ventures Ltd",
     "stage": "BOARD_APPROVED",
@@ -1076,20 +1090,6 @@
         "stage": "BOARD_APPROVED",
         "text": "Acquisition Acquisition\n\nQMS Medical Allied Services Limited has informed the Exchange about Acquisition\n\n25 Sept 2026 board approved composite scheme demerging Announcement -\n    \n    25 Sep 2026",
         "url": "https://nsearchives.nseindia.com/corporate/QMS_25092026185825_Outcome250926.pdf"
-      }
-    ]
-  },
-  {
-    "code": "TVSMOTOR",
-    "name": "TVS Motor Company Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-10-28",
-    "headlines": [
-      {
-        "date": "28 Oct 2026",
-        "stage": "ANNOUNCED",
-        "text": "Unaudited Standalone & Consolidated Financial Results For The Quarter Ended 30Th September 2026 demerger Announcement -\n    \n    28 Oct 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0a5fc8a9-68b0-4482-b257-20feb4b17b69.pdf"
       }
     ]
   },
@@ -1180,20 +1180,6 @@
         "stage": "ANNOUNCED",
         "text": "Announcement under Regulation 30 (LODR)-Restructuring chemical business demerger deferred until it achieves scale Announcement -\n    \n    29 Jul 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e4c26815-e97d-481b-9819-d6fda42753a5.pdf"
-      }
-    ]
-  },
-  {
-    "code": "KCK",
-    "name": "KCK Industries Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-07-24",
-    "headlines": [
-      {
-        "date": "24 July 2026",
-        "stage": "ANNOUNCED",
-        "text": "Updates Demeger)  '.\n\nKCK Industries postponed demerger scheme implementation and filing on 24 July 2026 for internal review Announcement -\n    \n    24 Jul 2026",
-        "url": "https://nsearchives.nseindia.com/corporate/KCK_24072026184718_Demerger_Outcome_Postponement__1_.pdf"
       }
     ]
   }
