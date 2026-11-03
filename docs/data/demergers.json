@@ -1,5 +1,31 @@
 [
   {
+    "code": "DALMIASUG",
+    "name": "Dalmia Bharat Sugar & Industries Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-11-03",
+    "headlines": [
+      {
+        "date": "03 Nov 2026",
+        "stage": "LISTED",
+        "text": "Outcome Of The Board Meeting Pursuant To Regulation 30 Of The SEBI (LODR) Regulations, 2015 ('SEBI Listing Regulations'). Standalone and Consolidated basis.\n\nBoard approved Q2FY27 results, HTPL demerger scheme effective January 1, 2027, and up to USD 22.7 million Announcement -\n    \n    03 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f8913eef-73c6-428e-8344-1fd9f953a7a1.pdf"
+      },
+      {
+        "date": "03 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement unaudited Q2/H1 FY27 results, HTPL tech-business demerger from Jan 1, 2027, and USD 22.70 million investment Announcement -\n    \n    03 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=47808f04-0105-4b1b-b71e-b83db411941b.pdf"
+      },
+      {
+        "date": "18 Dec 2025",
+        "stage": "RECORD_DATE",
+        "text": "Apportionment Of Cost Of Acquisition Of Equity Shares Of Dalmia Bharat Sugar And Industries Limited And Dalmia Bharat Refractories Limited. demerger cost apportionment 94.55%/5.45% after NCLT-sanctioned demerger ; Record Date Oct 31, 2025 Announcement -\n    \n    18 Dec 2025",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=800a97d6-98e1-42b2-bbce-2a1cd06fb506.pdf"
+      }
+    ]
+  },
+  {
     "code": "RUNWALENTR",
     "name": "Runwal Enterprises Ltd",
     "stage": "LISTED",
@@ -534,20 +560,6 @@
     ]
   },
   {
-    "code": "GLOBE",
-    "name": "Globe Enterprises (India) Ltd",
-    "stage": "LISTED",
-    "stage_date": "2026-02-07",
-    "headlines": [
-      {
-        "date": "07 Feb 2026",
-        "stage": "LISTED",
-        "text": "Demerger Demerger GLOBE ENTERPRISES (INDIA) LIMITED has informed the Exchange about Demerger Demerger of INDIGENX and ORIJEAN to Morabia Creation; appointed Announcement -\n    \n    07 Feb 2026",
-        "url": "https://nsearchives.nseindia.com/corporate/GLOBE_07022026131052_070226intimationreg30demergerSIGNED.pdf"
-      }
-    ]
-  },
-  {
     "code": "KWIL",
     "name": "Kwality Walls India Ltd",
     "stage": "LISTED",
@@ -762,20 +774,6 @@
         "stage": "RECORD_DATE",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement 25, 2026 to approve demerger with Embassy Prism; record date Jan 19, 2026 Announcement -\n    \n    19 Jan 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6ead2aeb-4cc3-474c-a534-267cabf07a88.pdf"
-      }
-    ]
-  },
-  {
-    "code": "DALMIASUG",
-    "name": "Dalmia Bharat Sugar & Industries Ltd",
-    "stage": "RECORD_DATE",
-    "stage_date": "2025-12-18",
-    "headlines": [
-      {
-        "date": "18 Dec 2025",
-        "stage": "RECORD_DATE",
-        "text": "Apportionment Of Cost Of Acquisition Of Equity Shares Of Dalmia Bharat Sugar And Industries Limited And Dalmia Bharat Refractories Limited. demerger cost apportionment 94.55%/5.45% after NCLT-sanctioned demerger ; Record Date Oct 31, 2025 Announcement -\n    \n    18 Dec 2025",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=800a97d6-98e1-42b2-bbce-2a1cd06fb506.pdf"
       }
     ]
   },
@@ -1166,20 +1164,6 @@
         "stage": "ANNOUNCED",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement held on July 30, 2026 have approved the proposed Scheme of Arrangement and Amalgamation between Thermax Bioenergy Solutions Private Limited ( Demerged Announcement -\n    \n    30 Jul 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77fac0a0-b0c7-4f0d-94b2-7404a902b3f0.pdf"
-      }
-    ]
-  },
-  {
-    "code": "ASTRAL",
-    "name": "Astral Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-07-29",
-    "headlines": [
-      {
-        "date": "29 Jul 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Restructuring chemical business demerger deferred until it achieves scale Announcement -\n    \n    29 Jul 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e4c26815-e97d-481b-9819-d6fda42753a5.pdf"
       }
     ]
   }
