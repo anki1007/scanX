@@ -1,7 +1,37 @@
 {
- "generated_at": "2026-11-03T23:38:18+05:30",
+ "generated_at": "2026-11-04T02:53:09+05:30",
  "source": "quotes",
  "rows": [
+  {
+   "symbol": "BLSPOLY",
+   "exchange": "BSE",
+   "last": 268.8,
+   "pct_change": 79.2,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "SFCTECH",
+   "exchange": "BSE",
+   "last": 426.1,
+   "pct_change": 29.12,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
   {
    "symbol": "538273",
    "exchange": "BSE",
@@ -183,21 +213,6 @@
    "pead_category": null
   },
   {
-   "symbol": "RAJPALAYAM",
-   "exchange": "BSE",
-   "last": 762.5,
-   "pct_change": 8.16,
-   "open": 705.0,
-   "high": 796.9,
-   "low": 703.0,
-   "prev_close": 705.0,
-   "vwap_pos": null,
-   "range_pos": 63.0,
-   "volume": 501300000,
-   "pead_score": 76.1,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "SHKSIL",
    "exchange": "BSE",
    "last": 30.0,
@@ -273,33 +288,18 @@
    "pead_category": null
   },
   {
-   "symbol": "DIACABS",
+   "symbol": "TIMEX",
    "exchange": "BSE",
-   "last": 366.6,
-   "pct_change": 5.0,
-   "open": 353.95,
-   "high": 366.6,
-   "low": 353.95,
-   "prev_close": 349.15,
+   "last": 673.25,
+   "pct_change": 5.17,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
    "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 120000,
-   "pead_score": 97.5,
-   "pead_category": "HIGH"
-  },
-  {
-   "symbol": "EPACKPEB",
-   "exchange": "BSE",
-   "last": 201.45,
-   "pct_change": -7.61,
-   "open": 208.0,
-   "high": 213.15,
-   "low": 200.05,
-   "prev_close": 218.05,
-   "vwap_pos": null,
-   "range_pos": 11.0,
-   "volume": 69000,
-   "pead_score": 69.9,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 93.4,
    "pead_category": "HIGH"
   },
   {
@@ -331,21 +331,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "ARFIN",
-   "exchange": "BSE",
-   "last": 95.66,
-   "pct_change": 4.7,
-   "open": 90.6,
-   "high": 97.99,
-   "low": 90.6,
-   "prev_close": 91.37,
-   "vwap_pos": null,
-   "range_pos": 68.0,
-   "volume": 233000,
-   "pead_score": 95.0,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "NELCAST",
@@ -391,21 +376,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "540703",
-   "exchange": "BSE",
-   "last": 46.88,
-   "pct_change": 4.99,
-   "open": 44.43,
-   "high": 46.88,
-   "low": 44.43,
-   "prev_close": 44.65,
-   "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 171800000,
-   "pead_score": 87.5,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "TEMPSENS",
@@ -468,21 +438,6 @@
    "pead_category": null
   },
   {
-   "symbol": "ZFSTEERING",
-   "exchange": "BSE",
-   "last": 786.45,
-   "pct_change": 4.12,
-   "open": 750.0,
-   "high": 836.0,
-   "low": 740.2,
-   "prev_close": 755.3,
-   "vwap_pos": null,
-   "range_pos": 48.0,
-   "volume": 926800000,
-   "pead_score": 87.8,
-   "pead_category": "HIGH"
-  },
-  {
    "symbol": "AIROLAM",
    "exchange": "BSE",
    "last": 93.0,
@@ -496,6 +451,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "524458",
+   "exchange": "BSE",
+   "last": 8.06,
+   "pct_change": -4.05,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 85.6,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "544855",
@@ -601,21 +571,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "523248",
-   "exchange": "BSE",
-   "last": 264.8,
-   "pct_change": 3.18,
-   "open": 261.0,
-   "high": 276.9,
-   "low": 259.0,
-   "prev_close": 256.65,
-   "vwap_pos": null,
-   "range_pos": 32.0,
-   "volume": null,
-   "pead_score": 85.5,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "539014",
@@ -781,21 +736,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "WALCHANNAG",
-   "exchange": "BSE",
-   "last": 180.25,
-   "pct_change": -3.3,
-   "open": 189.6,
-   "high": 193.15,
-   "low": 177.5,
-   "prev_close": 186.4,
-   "vwap_pos": null,
-   "range_pos": 18.0,
-   "volume": 69000,
-   "pead_score": 75.4,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "526508",
@@ -991,6 +931,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "542682",
+   "exchange": "BSE",
+   "last": 65.95,
+   "pct_change": -1.42,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 87.2,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "AARTECH",
@@ -1488,19 +1443,64 @@
    "pead_category": null
   },
   {
-   "symbol": "ELCIDIN",
+   "symbol": "KOTHARIPRO",
    "exchange": "BSE",
-   "last": 98400.0,
-   "pct_change": 0.0,
-   "open": 96775.0,
-   "high": 98400.0,
-   "low": 96775.0,
-   "prev_close": 98400.0,
+   "last": 60.35,
+   "pct_change": 9.75,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
    "vwap_pos": null,
-   "range_pos": 100.0,
+   "range_pos": null,
    "volume": null,
-   "pead_score": 97.5,
-   "pead_category": "HIGH"
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "TECHD",
+   "exchange": "BSE",
+   "last": 532.0,
+   "pct_change": 9.69,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "530249",
+   "exchange": "BSE",
+   "last": 7.48,
+   "pct_change": 9.68,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "544257",
+   "exchange": "BSE",
+   "last": 170.0,
+   "pct_change": 9.68,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": null,
+   "pead_category": null
   }
  ]
 }
