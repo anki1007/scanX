@@ -1,10 +1,10 @@
 {
- "generated_at_ist": "2026-11-04 01:28:20 IST",
+ "generated_at_ist": "2026-11-05 01:46:11 IST",
  "source": "stock screen",
  "screen_ok": true,
  "query": "Return on capital employed > 0 AND EVEBITDA > 0",
- "universe": 4472,
- "ranked": 4472,
- "financials_flagged": 498,
+ "universe": 4475,
+ "ranked": 4475,
+ "financials_flagged": 499,
  "mcap_floor": 0.0
 }
