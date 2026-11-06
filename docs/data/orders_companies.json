@@ -828,15 +828,6 @@
     "orders_pct_revenue": 10.33
   },
   {
-    "code": "BEL",
-    "name": "Bharat Electronics Limited",
-    "order_count": 6,
-    "total_value_cr": 3101.0,
-    "revenue_fy": 30123.0,
-    "market_cap": 289651.0,
-    "orders_pct_revenue": 10.29
-  },
-  {
     "code": "DEEDEV",
     "name": "DEE Development Engineers Limited",
     "order_count": 3,
@@ -925,6 +916,15 @@
     "revenue_fy": 420.0,
     "market_cap": 3269.0,
     "orders_pct_revenue": 7.02
+  },
+  {
+    "code": "BEL",
+    "name": "Bharat Electronics Limited",
+    "order_count": 5,
+    "total_value_cr": 2090.0,
+    "revenue_fy": 30123.0,
+    "market_cap": 289651.0,
+    "orders_pct_revenue": 6.94
   },
   {
     "code": "544710",
