@@ -1,5 +1,25 @@
 [
   {
+    "code": "BHAGYANGR",
+    "name": "Bhagyanagar India Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-11-12",
+    "headlines": [
+      {
+        "date": "12 Nov 2026",
+        "stage": "LISTED",
+        "text": "Announcement under Regulation 30 (LODR)-Credit Rating 2015, we would like to inform that ICRA Limited has assigned credit rating to the fund based bank facilities to our demerged entity-Tieramet Limited Announcement -\n    \n    12 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=64fc4d20-8d7a-4e93-85fb-c5fc2a5fcf71.pdf"
+      },
+      {
+        "date": "09 Oct 2026",
+        "stage": "NCLT",
+        "text": "Update - Allotment Of Equity Shares By Tieramet Limited (The 'Resulting Company') To The Shareholders Of Bhagyanagar India Limited (The 'Company') Pursuant To The Composite Scheme Of Arrangement. shareholders after NCLT -approved copper business demerger Announcement -\n    \n    09 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b1555a6f-499e-430a-aef0-fa8846d8566b.pdf"
+      }
+    ]
+  },
+  {
     "code": "IGLSPIRITS",
     "name": "IGL Spirits Ltd",
     "stage": "LISTED",
@@ -636,7 +656,7 @@
       {
         "date": "19 Sep 2026",
         "stage": "RECORD_DATE",
-        "text": "Fixation Of Record Date For The Purpose Of Scheme Of Arrangement For Demerger Of Amongst K M Sugar Mills Limited ('Demerged Company') And KM Spirits And Allied Industries Limited ('Resulting Company') And Their Respective Shareholders And Creditors Fixation Of Record Date For The Purpose Of Scheme O",
+        "text": "Fixation Of Record Date For The Purpose Of Scheme Of Arrangement For Demerger Of Amongst K M Sugar Mills Limited ('Demerged Company') And KM Spirits And Allied Industries Limited ('Resulting Company') And Their Respective Shareholders And Creditors for Demerger as per attachment. Demerger effective",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=266c6fbc-9a01-4a8e-8e52-b4b4cc406cbd.pdf"
       }
     ]
@@ -906,20 +926,6 @@
         "stage": "NCLT",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Mumbai with respect to approval of Composite Scheme. NCLT approved composite demerger and amalgamation scheme on October 26, 2026 Announcement -\n    \n    26 Oct 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=41b00076-3c7d-467f-bd5e-3a8f784b7353.pdf"
-      }
-    ]
-  },
-  {
-    "code": "BHAGYANGR",
-    "name": "Bhagyanagar India Ltd",
-    "stage": "NCLT",
-    "stage_date": "2026-10-09",
-    "headlines": [
-      {
-        "date": "09 Oct 2026",
-        "stage": "NCLT",
-        "text": "Update - Allotment Of Equity Shares By Tieramet Limited (The 'Resulting Company') To The Shareholders Of Bhagyanagar India Limited (The 'Company') Pursuant To The Composite Scheme Of Arrangement. shareholders after NCLT -approved copper business demerger Announcement -\n    \n    09 Oct 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b1555a6f-499e-430a-aef0-fa8846d8566b.pdf"
       }
     ]
   },
