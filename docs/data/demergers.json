@@ -1,5 +1,37 @@
 [
   {
+    "code": "VERANDA",
+    "name": "Veranda Learning Solutions Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-11-13",
+    "headlines": [
+      {
+        "date": "13 Nov 2026",
+        "stage": "LISTED",
+        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release Commerce demerger received listing approvals Announcement -\n    \n    13 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b21027d9-7a50-427a-83ca-dde8792db613.pdf"
+      },
+      {
+        "date": "13 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Results - Financial Results For The Quarter And Half Year Ended September 30, 2026 13, 2026; demerger /merger created Rs1,04,768.69 lakh exceptional gain Announcement -\n    \n    13 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=fb92ac8c-cb7a-450a-a5f4-18fbb01a8133.pdf"
+      },
+      {
+        "date": "05 Oct 2026",
+        "stage": "RECORD_DATE",
+        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release 2026 demerger record date Announcement -\n    \n    05 Oct 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a9ba7deb-7ff0-4f50-9e88-84b4588d36c8.pdf"
+      },
+      {
+        "date": "31 Aug 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement Under Regulation 30 Of SEBI LODR Regulations, 2015 31, 2026; VXLS amalgamates into VLS, commerce business demerges to JSCEL Sept 1 Announcement -\n    \n    31 Aug 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=cebda71e-e0ed-4689-bcaa-da68f9f02c29.pdf"
+      }
+    ]
+  },
+  {
     "code": "BHAGYANGR",
     "name": "Bhagyanagar India Ltd",
     "stage": "LISTED",
@@ -234,32 +266,6 @@
         "stage": "LISTED",
         "text": "Intimation Under Regulation 30 Of The SEBI (LODR) Regulations, 2015 stamp authority levies Rs.59.5 crore duty and penalty on demerger scheme order Announcement -\n    \n    02 Sep 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a2eeac16-c517-4725-acb9-317d28392631.pdf"
-      }
-    ]
-  },
-  {
-    "code": "VERANDA",
-    "name": "Veranda Learning Solutions Ltd",
-    "stage": "LISTED",
-    "stage_date": "2026-08-24",
-    "headlines": [
-      {
-        "date": "05 Oct 2026",
-        "stage": "RECORD_DATE",
-        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release 2026 demerger record date Announcement -\n    \n    05 Oct 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a9ba7deb-7ff0-4f50-9e88-84b4588d36c8.pdf"
-      },
-      {
-        "date": "31 Aug 2026",
-        "stage": "NCLT",
-        "text": "Announcement Under Regulation 30 Of SEBI LODR Regulations, 2015 31, 2026; VXLS amalgamates into VLS, commerce business demerges to JSCEL Sept 1 Announcement -\n    \n    31 Aug 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=cebda71e-e0ed-4689-bcaa-da68f9f02c29.pdf"
-      },
-      {
-        "date": "24 Aug 2026",
-        "stage": "LISTED",
-        "text": "Announcement under Regulation 30 (LODR)-Press Release / Media Release receives NCLT approval for commerce Vertical Demerger \"\n\nNCLT sanctioned Veranda\u2019s commerce vertical demerger ; J.K. Shah Commerce Education Limited Announcement -\n    \n    24 Aug 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=437bf505-01e5-4b12-a7b1-52937c293038.pdf"
       }
     ]
   },
@@ -1044,6 +1050,20 @@
         "stage": "NCLT",
         "text": "Presentation Made During The NCLT Convened Meeting Of The Equity Shareholders Of BASF India Limited ('Company') Held On Wednesday, June 24, 2026 India held June 24, 2026 shareholder meeting for 1:1 demerger of Agricultural Solutions business into BASIL Announcement -\n    \n    24 Jun 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=aa622333-1a97-4d43-aa1e-8a85e4d95782.pdf"
+      }
+    ]
+  },
+  {
+    "code": "PRECOT",
+    "name": "Precot Ltd",
+    "stage": "BOARD_APPROVED",
+    "stage_date": "2026-11-13",
+    "headlines": [
+      {
+        "date": "13 Nov 2026",
+        "stage": "BOARD_APPROVED",
+        "text": "Demerger Demerger Precot Limited has informed the Exchange about Demerger Board approved in-principle demerger of non-core assets into a separate company Announcement -\n    \n    13 Nov 2026",
+        "url": "https://nsearchives.nseindia.com/corporate/PRECOT_13112026133206_Demerger.pdf"
       }
     ]
   },
