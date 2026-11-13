@@ -880,20 +880,6 @@
     ]
   },
   {
-    "code": "TMPV",
-    "name": "Tata Motors Passenger Vehicles Ltd",
-    "stage": "RECORD_DATE",
-    "stage_date": "2025-11-12",
-    "headlines": [
-      {
-        "date": "12 Nov 2025",
-        "stage": "RECORD_DATE",
-        "text": "Apportionment Of Cost Of Acquisition Of Equity Shares Of Tata Motors Passenger Vehicles Limited (Formerly Tata Motors Limited) And Tata Motors Limited (Formerly TML Commercial Vehicles Limited) Commercial Vehicles Limited).\n\nProvides cost allocation (31.15%/68.85%) for shares after demerger effectiv",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=bece4d69-3276-4305-88a5-440ed2a2660e.pdf"
-      }
-    ]
-  },
-  {
     "code": "JUBLCPL",
     "name": "Jubilant Agri & Consumer Products Ltd",
     "stage": "NCLT",
@@ -1126,6 +1112,20 @@
         "stage": "BOARD_APPROVED",
         "text": "Acquisition Acquisition\n\nQMS Medical Allied Services Limited has informed the Exchange about Acquisition\n\n25 Sept 2026 board approved composite scheme demerging Announcement -\n    \n    25 Sep 2026",
         "url": "https://nsearchives.nseindia.com/corporate/QMS_25092026185825_Outcome250926.pdf"
+      }
+    ]
+  },
+  {
+    "code": "PRICOLLTD",
+    "name": "Pricol Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-11-13",
+    "headlines": [
+      {
+        "date": "13 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Board Meeting Outcome for Outcome Of Board Meeting buying 38.51% Pricol Autotech stake post- demerger for up to \u20b91,663.07 crore Announcement -\n    \n    13 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c1761bb9-4691-4723-bae9-c272f0b9b0e0.pdf"
       }
     ]
   },
