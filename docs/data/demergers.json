@@ -1,5 +1,19 @@
 [
   {
+    "code": "PRICOLLTD",
+    "name": "Pricol Ltd",
+    "stage": "LISTED",
+    "stage_date": "2026-11-14",
+    "headlines": [
+      {
+        "date": "14 Nov 2026",
+        "stage": "LISTED",
+        "text": "Outcome Of Board Meeting Pincus after demerger and listing Announcement -\n    \n    14 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=8a6f3342-b60a-460a-ba2c-8e178a8d2fe5.pdf"
+      }
+    ]
+  },
+  {
     "code": "VERANDA",
     "name": "Veranda Learning Solutions Ltd",
     "stage": "LISTED",
@@ -1049,7 +1063,7 @@
         "date": "13 Nov 2026",
         "stage": "BOARD_APPROVED",
         "text": "Demerger Demerger Precot Limited has informed the Exchange about Demerger Board approved in-principle demerger of non-core assets into a separate company Announcement -\n    \n    13 Nov 2026",
-        "url": "https://nsearchives.nseindia.com/corporate/PRECOT_13112026133206_Demerger.pdf"
+        "url": "https://nsearchives.nseindia.in/corporate/PRECOT_13112026133206_Demerger.pdf"
       }
     ]
   },
@@ -1116,20 +1130,6 @@
     ]
   },
   {
-    "code": "PRICOLLTD",
-    "name": "Pricol Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-11-13",
-    "headlines": [
-      {
-        "date": "13 Nov 2026",
-        "stage": "ANNOUNCED",
-        "text": "Board Meeting Outcome for Outcome Of Board Meeting buying 38.51% Pricol Autotech stake post- demerger for up to \u20b91,663.07 crore Announcement -\n    \n    13 Nov 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c1761bb9-4691-4723-bae9-c272f0b9b0e0.pdf"
-      }
-    ]
-  },
-  {
     "code": "SUNTV",
     "name": "Sun TV Network Ltd",
     "stage": "ANNOUNCED",
@@ -1158,26 +1158,6 @@
     ]
   },
   {
-    "code": "LUXIND",
-    "name": "Lux Industries Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-09-25",
-    "headlines": [
-      {
-        "date": "25 Sep 2026",
-        "stage": "ANNOUNCED",
-        "text": "Shareholder Meeting / Postal Ballot-Scrutinizer''s Report 2026; dividend, director reappointments approved; demerger plans discussed Announcement -\n    \n    25 Sep 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=4d843be6-4fd1-4558-967b-29d192a4b395.pdf"
-      },
-      {
-        "date": "31 Aug 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement have considered and approved the Scheme of Arrangement amongst Lux Industries Limited ( Demerged Company), Lux and Cozi Limited (Resulting Company 1 Announcement -\n    \n    31 Aug 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=acc29ab8-7d54-4079-a0a3-57310e1a1ecd.pdf"
-      }
-    ]
-  },
-  {
     "code": "RACE",
     "name": "Race Eco Chain Ltd",
     "stage": "ANNOUNCED",
@@ -1188,6 +1168,20 @@
         "stage": "ANNOUNCED",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement arrangement between Race Eco chain Limited ( Demerged Company) and Geoeco Green energy limited (Resultant Company No.1) and Race Gateway Limited Announcement -\n    \n    21 Sep 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c9eb7cb7-48d6-4510-beaf-4b28c79a25b9.pdf"
+      }
+    ]
+  },
+  {
+    "code": "LUXIND",
+    "name": "Lux Industries Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-08-31",
+    "headlines": [
+      {
+        "date": "31 Aug 2026",
+        "stage": "ANNOUNCED",
+        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement have considered and approved the Scheme of Arrangement amongst Lux Industries Limited ( Demerged Company), Lux and Cozi Limited (Resulting Company 1 Announcement -\n    \n    31 Aug 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=acc29ab8-7d54-4079-a0a3-57310e1a1ecd.pdf"
       }
     ]
   },
