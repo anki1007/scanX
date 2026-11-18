@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-18T17:04:09+05:30",
+ "generated_at": "2026-11-19T04:01:17+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -226,6 +226,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "545007",
+   "exchange": "BSE",
+   "last": 74.25,
+   "pct_change": -10.47,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 68.7,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "544312",
@@ -648,6 +663,21 @@
    "pead_category": "HIGH"
   },
   {
+   "symbol": "530025",
+   "exchange": "BSE",
+   "last": 22.75,
+   "pct_change": -1.9,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 94.6,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "OSELDEVICE",
    "exchange": "BSE",
    "last": 307.0,
@@ -798,21 +828,6 @@
    "pead_category": null
   },
   {
-   "symbol": "545007",
-   "exchange": "BSE",
-   "last": 74.25,
-   "pct_change": -10.47,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
    "symbol": "541601",
    "exchange": "BSE",
    "last": 0.43,
@@ -843,21 +858,6 @@
    "pead_category": null
   },
   {
-   "symbol": "544977",
-   "exchange": "BSE",
-   "last": 60.0,
-   "pct_change": -5.36,
-   "open": 60.3,
-   "high": 60.3,
-   "low": 60.0,
-   "prev_close": 63.4,
-   "vwap_pos": null,
-   "range_pos": 0.0,
-   "volume": 12000,
-   "pead_score": 50.0,
-   "pead_category": "LOW"
-  },
-  {
    "symbol": "538081",
    "exchange": "BSE",
    "last": 5.35,
@@ -871,21 +871,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "544422",
-   "exchange": "BSE",
-   "last": 36.1,
-   "pct_change": -5.0,
-   "open": 36.1,
-   "high": 36.1,
-   "low": 36.1,
-   "prev_close": 38.0,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": 120000000,
-   "pead_score": 53.1,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "539410",
@@ -1156,6 +1141,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "BLSPOLY",
+   "exchange": "BSE",
+   "last": 279.98,
+   "pct_change": 1.63,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 78.3,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "531402",
