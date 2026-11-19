@@ -1,1 +1,7 @@
-{"generated_at_ist":"2026-11-19 17:38:03 IST","orders":469,"companies":179,"source":"NSE filings 469","prices":"daily closes delayed 0/469 — Dhan: NSE snapshot: RuntimeError: NSE HTTP 404"}
+{
+  "generated_at_ist": "2026-11-20 02:12:34 IST",
+  "orders": 649,
+  "companies": 351,
+  "source": "NSE filings 476 + full-text search 173",
+  "prices": "NseBseProvider LTP 24/649"
+}
