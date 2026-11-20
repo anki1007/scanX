@@ -12,10 +12,10 @@
     "code": "POWERMECH",
     "name": "Power Mech Projects Limited",
     "order_count": 5,
-    "total_value_cr": 39563.72,
+    "total_value_cr": 39014.35,
     "revenue_fy": 5317.0,
     "market_cap": 7660.0,
-    "orders_pct_revenue": 744.1
+    "orders_pct_revenue": 733.77
   },
   {
     "code": "MVELECTRO",
@@ -81,6 +81,15 @@
     "orders_pct_revenue": 136.77
   },
   {
+    "code": "ASHOKA",
+    "name": "Ashoka Buildcon Limited",
+    "order_count": 8,
+    "total_value_cr": 7710.34,
+    "revenue_fy": 5838.0,
+    "market_cap": 3117.0,
+    "orders_pct_revenue": 132.07
+  },
+  {
     "code": "SWASTIKAIN",
     "name": "Swastika Infra Limited",
     "order_count": 1,
@@ -115,15 +124,6 @@
     "revenue_fy": 621.0,
     "market_cap": 664.0,
     "orders_pct_revenue": 96.7
-  },
-  {
-    "code": "544910",
-    "name": "Apana Logistics Ltd",
-    "order_count": 1,
-    "total_value_cr": 29.36,
-    "revenue_fy": 30.85,
-    "market_cap": 44.7,
-    "orders_pct_revenue": 95.17
   },
   {
     "code": "VASCONEQ",
@@ -189,6 +189,15 @@
     "orders_pct_revenue": 81.62
   },
   {
+    "code": "HECPROJECT",
+    "name": "HEC Infra Projects Limited",
+    "order_count": 5,
+    "total_value_cr": 143.04,
+    "revenue_fy": 183.0,
+    "market_cap": 107.0,
+    "orders_pct_revenue": 78.16
+  },
+  {
     "code": "KNRCON",
     "name": "KNR Constructions Limited",
     "order_count": 2,
@@ -216,6 +225,15 @@
     "orders_pct_revenue": 67.54
   },
   {
+    "code": "NILAINFRA",
+    "name": "Nila Infrastructures Limited",
+    "order_count": 3,
+    "total_value_cr": 222.58,
+    "revenue_fy": 337.0,
+    "market_cap": 267.0,
+    "orders_pct_revenue": 66.05
+  },
+  {
     "code": "STLNETWORK",
     "name": "STL Networks Limited",
     "order_count": 2,
@@ -234,15 +252,6 @@
     "orders_pct_revenue": 61.57
   },
   {
-    "code": "NILAINFRA",
-    "name": "Nila Infrastructures Limited",
-    "order_count": 2,
-    "total_value_cr": 204.1,
-    "revenue_fy": 337.0,
-    "market_cap": 267.0,
-    "orders_pct_revenue": 60.56
-  },
-  {
     "code": "BAJEL",
     "name": "Bajel Projects Limited",
     "order_count": 3,
@@ -250,15 +259,6 @@
     "revenue_fy": 2651.0,
     "market_cap": 1819.0,
     "orders_pct_revenue": 60.35
-  },
-  {
-    "code": "ASHOKA",
-    "name": "Ashoka Buildcon Limited",
-    "order_count": 6,
-    "total_value_cr": 3487.03,
-    "revenue_fy": 5838.0,
-    "market_cap": 3117.0,
-    "orders_pct_revenue": 59.73
   },
   {
     "code": "DBL",
@@ -295,6 +295,15 @@
     "revenue_fy": 68.81,
     "market_cap": 326.0,
     "orders_pct_revenue": 48.18
+  },
+  {
+    "code": "544910",
+    "name": "Apana Logistics Ltd",
+    "order_count": 1,
+    "total_value_cr": 14.8,
+    "revenue_fy": 30.85,
+    "market_cap": 44.7,
+    "orders_pct_revenue": 47.97
   },
   {
     "code": "BCPL",
@@ -500,7 +509,7 @@
     "order_count": 1,
     "total_value_cr": 14.25,
     "revenue_fy": 62.42,
-    "market_cap": 441.0,
+    "market_cap": 440.0,
     "orders_pct_revenue": 22.83
   },
   {
@@ -693,12 +702,21 @@
     "orders_pct_revenue": 12.05
   },
   {
+    "code": "DEVIT",
+    "name": "Dev Information Technology Limited",
+    "order_count": 4,
+    "total_value_cr": 19.39,
+    "revenue_fy": 162.0,
+    "market_cap": 109.0,
+    "orders_pct_revenue": 11.97
+  },
+  {
     "code": "WSI",
     "name": "W S Industries (I) Limited",
     "order_count": 1,
     "total_value_cr": 5.0,
     "revenue_fy": 41.86,
-    "market_cap": 570.0,
+    "market_cap": 573.0,
     "orders_pct_revenue": 11.94
   },
   {
@@ -736,15 +754,6 @@
     "revenue_fy": 8854.0,
     "market_cap": 10253.0,
     "orders_pct_revenue": 10.83
-  },
-  {
-    "code": "DEVIT",
-    "name": "Dev Information Technology Limited",
-    "order_count": 3,
-    "total_value_cr": 17.08,
-    "revenue_fy": 162.0,
-    "market_cap": 109.0,
-    "orders_pct_revenue": 10.54
   },
   {
     "code": "INTERARCH",
@@ -968,7 +977,7 @@
     "order_count": 1,
     "total_value_cr": 7.82,
     "revenue_fy": 149.0,
-    "market_cap": 92.6,
+    "market_cap": 92.5,
     "orders_pct_revenue": 5.25
   },
   {
@@ -988,24 +997,6 @@
     "revenue_fy": 95.03,
     "market_cap": 189.0,
     "orders_pct_revenue": 5.1
-  },
-  {
-    "code": "LASERPOWER",
-    "name": "Laser Power & Infra Limited",
-    "order_count": 2,
-    "total_value_cr": 116.77,
-    "revenue_fy": 2326.0,
-    "market_cap": 2667.0,
-    "orders_pct_revenue": 5.02
-  },
-  {
-    "code": "REFEX",
-    "name": "Refex Industries Limited",
-    "order_count": 7,
-    "total_value_cr": 123.13,
-    "revenue_fy": 2456.0,
-    "market_cap": 2921.0,
-    "orders_pct_revenue": 5.01
   },
   {
     "code": "BEL",
@@ -1071,12 +1062,12 @@
     "orders_pct_revenue": 3.84
   },
   {
-    "code": "HECPROJECT",
-    "name": "HEC Infra Projects Limited",
-    "order_count": 4,
-    "total_value_cr": 6.75,
-    "revenue_fy": 183.0,
-    "market_cap": 107.0,
+    "code": "REFEX",
+    "name": "Refex Industries Limited",
+    "order_count": 7,
+    "total_value_cr": 90.68,
+    "revenue_fy": 2456.0,
+    "market_cap": 2921.0,
     "orders_pct_revenue": 3.69
   },
   {
@@ -1087,6 +1078,15 @@
     "revenue_fy": 43.0,
     "market_cap": 1161.0,
     "orders_pct_revenue": 3.49
+  },
+  {
+    "code": "LASERPOWER",
+    "name": "Laser Power & Infra Limited",
+    "order_count": 2,
+    "total_value_cr": 72.77,
+    "revenue_fy": 2326.0,
+    "market_cap": 2667.0,
+    "orders_pct_revenue": 3.13
   },
   {
     "code": "CHEVIOT",
@@ -1107,15 +1107,6 @@
     "orders_pct_revenue": 2.77
   },
   {
-    "code": "KRYSTAL",
-    "name": "Krystal Integrated Services Limited",
-    "order_count": 5,
-    "total_value_cr": 34.74,
-    "revenue_fy": 1257.0,
-    "market_cap": 810.0,
-    "orders_pct_revenue": 2.76
-  },
-  {
     "code": "WELENT",
     "name": "Welspun Enterprises Limited",
     "order_count": 2,
@@ -1132,6 +1123,15 @@
     "revenue_fy": 1280.0,
     "market_cap": 3927.0,
     "orders_pct_revenue": 2.27
+  },
+  {
+    "code": "KRYSTAL",
+    "name": "Krystal Integrated Services Limited",
+    "order_count": 5,
+    "total_value_cr": 25.99,
+    "revenue_fy": 1257.0,
+    "market_cap": 810.0,
+    "orders_pct_revenue": 2.07
   },
   {
     "code": "AARON",
@@ -1168,15 +1168,6 @@
     "revenue_fy": 4889.0,
     "market_cap": 17098.0,
     "orders_pct_revenue": 1.55
-  },
-  {
-    "code": "544387",
-    "name": "Desco Infratech Ltd",
-    "order_count": 1,
-    "total_value_cr": 2.34,
-    "revenue_fy": 152.0,
-    "market_cap": 124.0,
-    "orders_pct_revenue": 1.54
   },
   {
     "code": "544495",
@@ -1224,6 +1215,15 @@
     "orders_pct_revenue": 1.04
   },
   {
+    "code": "BEDMUTHA",
+    "name": "Bedmutha Industries Limited",
+    "order_count": 1,
+    "total_value_cr": 19.8,
+    "revenue_fy": 1929.0,
+    "market_cap": 337.0,
+    "orders_pct_revenue": 1.03
+  },
+  {
     "code": "544501",
     "name": "Sugs Lloyd Ltd",
     "order_count": 1,
@@ -1248,15 +1248,6 @@
     "total_value_cr": 4.8,
     "revenue_fy": 682.0,
     "market_cap": 2849.0,
-    "orders_pct_revenue": 0.7
-  },
-  {
-    "code": "CEIGALL",
-    "name": "Ceigall India Limited",
-    "order_count": 6,
-    "total_value_cr": 28.82,
-    "revenue_fy": 4140.0,
-    "market_cap": 6631.0,
     "orders_pct_revenue": 0.7
   },
   {
@@ -1294,6 +1285,15 @@
     "revenue_fy": 2632.0,
     "market_cap": 557.0,
     "orders_pct_revenue": 0.34
+  },
+  {
+    "code": "UTLSOLAR",
+    "name": "Fujiyama Power Systems Ltd",
+    "order_count": 1,
+    "total_value_cr": 10.36,
+    "revenue_fy": 4142.0,
+    "market_cap": 9179.0,
+    "orders_pct_revenue": 0.25
   },
   {
     "code": "LENSKART",
@@ -1518,6 +1518,15 @@
     "total_value_cr": 0.0,
     "revenue_fy": 3672.0,
     "market_cap": 31942.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "CEIGALL",
+    "name": "Ceigall India Limited",
+    "order_count": 6,
+    "total_value_cr": 0.0,
+    "revenue_fy": 4140.0,
+    "market_cap": 6631.0,
     "orders_pct_revenue": null
   },
   {
@@ -1899,6 +1908,15 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "544924",
+    "name": "Raksan Transformers Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 363.0,
+    "market_cap": 395.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "511549",
     "name": "Morarka Finance Ltd",
     "order_count": 1,
@@ -1909,7 +1927,7 @@
   },
   {
     "code": "530701",
-    "name": "AVENIQUE LIMITED",
+    "name": "Avenique Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2.06,
@@ -2084,7 +2102,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 36.15,
-    "market_cap": 28.2,
+    "market_cap": 28.1,
     "orders_pct_revenue": null
   },
   {
@@ -2210,7 +2228,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 18.1,
-    "market_cap": 37.3,
+    "market_cap": 37.4,
     "orders_pct_revenue": null
   },
   {
@@ -2750,7 +2768,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 3403.0,
-    "market_cap": 3694.0,
+    "market_cap": 3689.0,
     "orders_pct_revenue": null
   },
   {
@@ -2858,7 +2876,7 @@
     "order_count": 1,
     "total_value_cr": 0.0,
     "revenue_fy": 2013.0,
-    "market_cap": 4016.0,
+    "market_cap": 4055.0,
     "orders_pct_revenue": null
   },
   {
@@ -3156,15 +3174,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 121.0,
     "market_cap": 93.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "SASKEN",
-    "name": "Sasken Technologies Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 624.0,
-    "market_cap": 2805.0,
     "orders_pct_revenue": null
   }
 ]
