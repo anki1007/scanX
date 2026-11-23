@@ -504,12 +504,6 @@
     "stage_date": "2026-04-29",
     "headlines": [
       {
-        "date": "30 Jul 2026",
-        "stage": "ANNOUNCED",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement Announcement under Regulation 30 (LODR)- Scheme of Arrangement Please refer the enclosed file.\n\nVedanta approved demerger of real estate business into Announcement -\n    \n    30 Jul 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=60f46404-ff50-41d5-8c65-4324c4bf1fa4.pdf"
-      },
-      {
         "date": "29 Apr 2026",
         "stage": "LISTED",
         "text": "Disclosure Under Regulation 30 Of SEBI (LODR) Regulations, 2015 - Post-Demerger Update Demerger Update\n\nPlease refer the enclosed file.\n\nVedanta shared a post- demerger investor presentation on its website Announcement -\n    \n    29 Apr 2026",
@@ -886,20 +880,6 @@
     ]
   },
   {
-    "code": "SKFINDIA",
-    "name": "SKF India Ltd",
-    "stage": "RECORD_DATE",
-    "stage_date": "2025-11-21",
-    "headlines": [
-      {
-        "date": "21 Nov 2025",
-        "stage": "RECORD_DATE",
-        "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement demerger ; cost allocated 46.88% to SKF India, 53.12% to SKF Industrial; record date Oct 15, 2025 Announcement -\n    \n    21 Nov 2025",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=ca24baaa-7060-467b-bc6e-de272e5005b7.pdf"
-      }
-    ]
-  },
-  {
     "code": "JUBLCPL",
     "name": "Jubilant Agri & Consumer Products Ltd",
     "stage": "NCLT",
@@ -916,6 +896,20 @@
         "stage": "NCLT",
         "text": "Announcement under Regulation 30 (LODR)-Scheme of Arrangement respect of Second Motion Petition filed for Scheme of Arrangement for Demerger .\n\nNCLT ordered notices on Jubilant Agri demerger scheme ; next hearing Announcement -\n    \n    09 Oct 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=e84b007c-6b68-4248-91d3-b07543533de9.pdf"
+      }
+    ]
+  },
+  {
+    "code": "GLOBE",
+    "name": "Globe Enterprises (India) Ltd",
+    "stage": "NCLT",
+    "stage_date": "2026-11-21",
+    "headlines": [
+      {
+        "date": "21 Nov 2026",
+        "stage": "NCLT",
+        "text": "Demerger Demerger GLOBE ENTERPRISES (INDIA) LIMITED has informed the Exchange about Order of the Hon ble National Company Law Tribunal, NCLT directs Globe Announcement -\n    \n    21 Nov 2026",
+        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_21112026150201_IntimationunderReg30NCLTorderofdemergerSigned.pdf"
       }
     ]
   },
@@ -1126,12 +1120,20 @@
         "stage": "BOARD_APPROVED",
         "text": "Scheme of Arrangement Scheme of Arrangement QMS Medical Allied Services Limited has informed the Exchange about Scheme of Arrangement Board approved healthcare demerger Announcement -\n    \n    25 Sep 2026",
         "url": "https://nsearchives.nseindia.com/corporate/QMS_25092026184559_Outcome250926.pdf"
-      },
+      }
+    ]
+  },
+  {
+    "code": "SHRIDINESH",
+    "name": "Shri Dinesh Mills Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-11-21",
+    "headlines": [
       {
-        "date": "25 Sept 2026",
-        "stage": "BOARD_APPROVED",
-        "text": "Acquisition Acquisition\n\nQMS Medical Allied Services Limited has informed the Exchange about Acquisition\n\n25 Sept 2026 board approved composite scheme demerging Announcement -\n    \n    25 Sep 2026",
-        "url": "https://nsearchives.nseindia.com/corporate/QMS_25092026185825_Outcome250926.pdf"
+        "date": "21 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Closure of Trading Window alia, to approve the draft Scheme of Arrangement amongst Shri Dinesh Mills Ltd ( Demerged company) and Dinesh Felts Ltd (Resulting company) and their Announcement -\n    \n    21 Nov 2026",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91c6b1d2-cf7f-4d4f-a42b-8df2e86139b6.pdf"
       }
     ]
   },
