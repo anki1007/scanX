@@ -29,11 +29,11 @@
   {
     "code": "GRSE",
     "name": "Garden Reach Shipbuilders & Engineers Limited",
-    "order_count": 2,
-    "total_value_cr": 32045.02,
+    "order_count": 1,
+    "total_value_cr": 32000.0,
     "revenue_fy": 7656.0,
     "market_cap": 23068.0,
-    "orders_pct_revenue": 418.56
+    "orders_pct_revenue": 417.97
   },
   {
     "code": "ARSSINFRA",
@@ -108,6 +108,15 @@
     "orders_pct_revenue": 122.42
   },
   {
+    "code": "VASCONEQ",
+    "name": "Vascon Engineers Limited",
+    "order_count": 4,
+    "total_value_cr": 1053.79,
+    "revenue_fy": 905.0,
+    "market_cap": 690.0,
+    "orders_pct_revenue": 116.44
+  },
+  {
     "code": "ARMEE",
     "name": "Armee Infotech Ltd",
     "order_count": 2,
@@ -135,13 +144,13 @@
     "orders_pct_revenue": 96.7
   },
   {
-    "code": "VASCONEQ",
-    "name": "Vascon Engineers Limited",
-    "order_count": 3,
-    "total_value_cr": 858.79,
-    "revenue_fy": 905.0,
-    "market_cap": 690.0,
-    "orders_pct_revenue": 94.89
+    "code": "AFFORDABLE",
+    "name": "Affordable Robotic & Automation Limited",
+    "order_count": 6,
+    "total_value_cr": 110.66,
+    "revenue_fy": 115.0,
+    "market_cap": 260.0,
+    "orders_pct_revenue": 96.23
   },
   {
     "code": "GENESYS",
@@ -171,15 +180,6 @@
     "orders_pct_revenue": 93.28
   },
   {
-    "code": "GPTINFRA",
-    "name": "GPT Infraprojects Limited",
-    "order_count": 8,
-    "total_value_cr": 1113.28,
-    "revenue_fy": 1204.0,
-    "market_cap": 1423.0,
-    "orders_pct_revenue": 92.47
-  },
-  {
     "code": "AGASTYAEN",
     "name": "Agastya Energy and Infrastructure Limited",
     "order_count": 1,
@@ -187,6 +187,15 @@
     "revenue_fy": 115.0,
     "market_cap": 283.0,
     "orders_pct_revenue": 92.21
+  },
+  {
+    "code": "GPTINFRA",
+    "name": "GPT Infraprojects Limited",
+    "order_count": 7,
+    "total_value_cr": 1015.97,
+    "revenue_fy": 1204.0,
+    "market_cap": 1423.0,
+    "orders_pct_revenue": 84.38
   },
   {
     "code": "MARKOLINES",
@@ -252,15 +261,6 @@
     "orders_pct_revenue": 67.54
   },
   {
-    "code": "NILAINFRA",
-    "name": "Nila Infrastructures Limited",
-    "order_count": 3,
-    "total_value_cr": 222.58,
-    "revenue_fy": 337.0,
-    "market_cap": 264.0,
-    "orders_pct_revenue": 66.05
-  },
-  {
     "code": "STLNETWORK",
     "name": "STL Networks Limited",
     "order_count": 2,
@@ -268,15 +268,6 @@
     "revenue_fy": 886.0,
     "market_cap": 1901.0,
     "orders_pct_revenue": 62.64
-  },
-  {
-    "code": "AFFORDABLE",
-    "name": "Affordable Robotic & Automation Limited",
-    "order_count": 5,
-    "total_value_cr": 70.8,
-    "revenue_fy": 115.0,
-    "market_cap": 260.0,
-    "orders_pct_revenue": 61.57
   },
   {
     "code": "BAJEL",
@@ -423,6 +414,15 @@
     "orders_pct_revenue": 35.44
   },
   {
+    "code": "NILAINFRA",
+    "name": "Nila Infrastructures Limited",
+    "order_count": 3,
+    "total_value_cr": 117.56,
+    "revenue_fy": 337.0,
+    "market_cap": 264.0,
+    "orders_pct_revenue": 34.88
+  },
+  {
     "code": "AFCONS",
     "name": "Afcons Infrastructure Limited",
     "order_count": 1,
@@ -439,15 +439,6 @@
     "revenue_fy": 1870.0,
     "market_cap": 2634.0,
     "orders_pct_revenue": 31.47
-  },
-  {
-    "code": "544334",
-    "name": "Indobell Insulations Ltd",
-    "order_count": 1,
-    "total_value_cr": 6.98,
-    "revenue_fy": 22.86,
-    "market_cap": 49.8,
-    "orders_pct_revenue": 30.53
   },
   {
     "code": "KPIL",
@@ -488,7 +479,7 @@
   {
     "code": "S&SPOWER",
     "name": "S&S Power Switchgears Limited",
-    "order_count": 2,
+    "order_count": 1,
     "total_value_cr": 1.0,
     "revenue_fy": 4.19,
     "market_cap": 359.0,
@@ -641,7 +632,7 @@
   {
     "code": "KRYSTAL",
     "name": "Krystal Integrated Services Limited",
-    "order_count": 7,
+    "order_count": 6,
     "total_value_cr": 185.69,
     "revenue_fy": 1257.0,
     "market_cap": 820.0,
@@ -682,6 +673,15 @@
     "revenue_fy": 2325.0,
     "market_cap": 1384.0,
     "orders_pct_revenue": 13.16
+  },
+  {
+    "code": "SILVERTUC",
+    "name": "Silver Touch Technologies Limited",
+    "order_count": 4,
+    "total_value_cr": 44.23,
+    "revenue_fy": 348.0,
+    "market_cap": 1582.0,
+    "orders_pct_revenue": 12.71
   },
   {
     "code": "524238",
@@ -756,15 +756,6 @@
     "orders_pct_revenue": 10.49
   },
   {
-    "code": "SILVERTUC",
-    "name": "Silver Touch Technologies Limited",
-    "order_count": 3,
-    "total_value_cr": 35.63,
-    "revenue_fy": 348.0,
-    "market_cap": 1582.0,
-    "orders_pct_revenue": 10.24
-  },
-  {
     "code": "TONBO",
     "name": "Tonbo Imaging India Limited",
     "order_count": 2,
@@ -781,15 +772,6 @@
     "revenue_fy": 226.0,
     "market_cap": 789.0,
     "orders_pct_revenue": 10.19
-  },
-  {
-    "code": "HEGAM",
-    "name": "HEG Advanced Materials Limited",
-    "order_count": 3,
-    "total_value_cr": 127.35,
-    "revenue_fy": 1270.0,
-    "market_cap": 8531.0,
-    "orders_pct_revenue": 10.03
   },
   {
     "code": "DEEDEV",
@@ -862,6 +844,15 @@
     "revenue_fy": 2725.0,
     "market_cap": 8688.0,
     "orders_pct_revenue": 7.34
+  },
+  {
+    "code": "544686",
+    "name": "Shayona Engineering Ltd",
+    "order_count": 1,
+    "total_value_cr": 2.86,
+    "revenue_fy": 40.27,
+    "market_cap": 73.6,
+    "orders_pct_revenue": 7.1
   },
   {
     "code": "SBC",
@@ -956,7 +947,7 @@
   {
     "code": "REFEX",
     "name": "Refex Industries Limited",
-    "order_count": 7,
+    "order_count": 6,
     "total_value_cr": 123.13,
     "revenue_fy": 2456.0,
     "market_cap": 2880.0,
@@ -988,15 +979,6 @@
     "revenue_fy": 258.0,
     "market_cap": 3946.0,
     "orders_pct_revenue": 4.67
-  },
-  {
-    "code": "544686",
-    "name": "Shayona Engineering Ltd",
-    "order_count": 1,
-    "total_value_cr": 1.87,
-    "revenue_fy": 40.27,
-    "market_cap": 73.6,
-    "orders_pct_revenue": 4.64
   },
   {
     "code": "544538",
@@ -1032,6 +1014,15 @@
     "total_value_cr": 15.39,
     "revenue_fy": 401.0,
     "market_cap": 550.0,
+    "orders_pct_revenue": 3.84
+  },
+  {
+    "code": "DHARARAIL",
+    "name": "Dhara Rail Projects Ltd",
+    "order_count": 1,
+    "total_value_cr": 2.46,
+    "revenue_fy": 64.0,
+    "market_cap": 194.0,
     "orders_pct_revenue": 3.84
   },
   {
@@ -1096,15 +1087,6 @@
     "revenue_fy": 102.0,
     "market_cap": 264.0,
     "orders_pct_revenue": 1.96
-  },
-  {
-    "code": "CEINSYS",
-    "name": "Ceinsys Tech Limited",
-    "order_count": 3,
-    "total_value_cr": 10.27,
-    "revenue_fy": 623.0,
-    "market_cap": 1313.0,
-    "orders_pct_revenue": 1.65
   },
   {
     "code": "544516",
@@ -1352,7 +1334,7 @@
   {
     "code": "LT",
     "name": "Larsen & Toubro Limited",
-    "order_count": 12,
+    "order_count": 11,
     "total_value_cr": 2.03,
     "revenue_fy": 164701.0,
     "market_cap": 564112.0,
@@ -1485,6 +1467,24 @@
     "orders_pct_revenue": null
   },
   {
+    "code": "CEINSYS",
+    "name": "Ceinsys Tech Limited",
+    "order_count": 3,
+    "total_value_cr": 0.0,
+    "revenue_fy": 623.0,
+    "market_cap": 1313.0,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "HEGAM",
+    "name": "HEG Advanced Materials Limited",
+    "order_count": 3,
+    "total_value_cr": 0.0,
+    "revenue_fy": 1270.0,
+    "market_cap": 8531.0,
+    "orders_pct_revenue": null
+  },
+  {
     "code": "TDPOWERSYS",
     "name": "TD Power Systems Limited",
     "order_count": 1,
@@ -1532,7 +1532,7 @@
   {
     "code": "CEIGALL",
     "name": "Ceigall India Limited",
-    "order_count": 5,
+    "order_count": 4,
     "total_value_cr": 0.0,
     "revenue_fy": 4140.0,
     "market_cap": 6555.0,
@@ -1872,30 +1872,39 @@
     "orders_pct_revenue": null
   },
   {
-    "code": "TCS",
-    "name": "Tata Consultancy Services Limited",
+    "code": "544859",
+    "name": "G V Electricals Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 233613.0,
-    "market_cap": 890050.0,
+    "revenue_fy": 156.0,
+    "market_cap": 108.0,
     "orders_pct_revenue": null
   },
   {
-    "code": "RATNAMANI",
-    "name": "Ratnamani Metals & Tubes Limited",
+    "code": "ACSTECH",
+    "name": "ACS Technologies Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 3533.0,
-    "market_cap": 16322.0,
+    "revenue_fy": 265.0,
+    "market_cap": 511.0,
     "orders_pct_revenue": null
   },
   {
-    "code": "INA",
-    "name": "Insolation Energy Limited",
+    "code": "544334",
+    "name": "Indobell Insulations Ltd",
     "order_count": 1,
     "total_value_cr": 0.0,
-    "revenue_fy": 50.92,
-    "market_cap": 1477.0,
+    "revenue_fy": 22.86,
+    "market_cap": 49.8,
+    "orders_pct_revenue": null
+  },
+  {
+    "code": "VALECHAENG",
+    "name": "Valecha Engineering Ltd",
+    "order_count": 1,
+    "total_value_cr": 0.0,
+    "revenue_fy": 16.3,
+    "market_cap": 43.3,
     "orders_pct_revenue": null
   },
   {
@@ -1995,15 +2004,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 73.68,
     "market_cap": 57.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "DHARARAIL",
-    "name": "Dhara Rail Projects Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 64.0,
-    "market_cap": 194.0,
     "orders_pct_revenue": null
   },
   {
@@ -3120,24 +3120,6 @@
     "total_value_cr": 0.0,
     "revenue_fy": 8130.0,
     "market_cap": 3712.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "OPTIVALUE",
-    "name": "Optivalue Tek Consulting Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 128.0,
-    "market_cap": 478.0,
-    "orders_pct_revenue": null
-  },
-  {
-    "code": "OMAXE",
-    "name": "Omaxe Ltd",
-    "order_count": 1,
-    "total_value_cr": 0.0,
-    "revenue_fy": 572.0,
-    "market_cap": 1758.0,
     "orders_pct_revenue": null
   }
 ]
