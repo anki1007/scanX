@@ -889,19 +889,19 @@
     "code": "GLOBE",
     "name": "Globe Enterprises (India) Ltd",
     "stage": "NCLT",
-    "stage_date": "2026-11-21",
+    "stage_date": "2026-11-25",
     "headlines": [
       {
         "date": "25 Nov 2026",
-        "stage": "ANNOUNCED",
-        "text": "Shareholders meeting Meeting to be held on January 01, 2027\n\nUnsecured creditors meeting on Jan 1, 2027 for demerger of INDIGENX and ORIJEAN brands into Morabia Creations Announcement -\n    \n    25 Nov 2026",
-        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_25112026180853_Notice_and_Annexures_-_Unsecured_Creditors_-_signed.pdf"
+        "stage": "NCLT",
+        "text": "Shareholders meeting Meeting to be held on January 01, 2027 NCLT -ordered secured creditors meeting Jan 1, 2027 on demerger of Indigenx/Orijean brands into Morabia Announcement -\n    \n    25 Nov 2026",
+        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_25112026181121_Notice_and_Annexures_-_Secured_Creditors_-_signed.pdf"
       },
       {
-        "date": "21 Nov 2026",
+        "date": "25 Nov 2026",
         "stage": "NCLT",
-        "text": "Demerger Demerger GLOBE ENTERPRISES (INDIA) LIMITED has informed the Exchange about Order of the Hon ble National Company Law Tribunal, NCLT directs Globe Announcement -\n    \n    21 Nov 2026",
-        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_21112026150201_IntimationunderReg30NCLTorderofdemergerSigned.pdf"
+        "text": "Shareholders meeting Meeting to be held on January 01, 2027\n\nNCLT-ordered secured creditors meeting Jan 1, 2027 on demerger of Indigenx/Orijean brands into Morabia Announcement -\n    \n    25 Nov 2026",
+        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_25112026181121_Notice_and_Annexures_-_Secured_Creditors_-_signed.pdf"
       }
     ]
   },
