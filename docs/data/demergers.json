@@ -892,6 +892,12 @@
     "stage_date": "2026-11-21",
     "headlines": [
       {
+        "date": "25 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Shareholders meeting Meeting to be held on January 01, 2027\n\nUnsecured creditors meeting on Jan 1, 2027 for demerger of INDIGENX and ORIJEAN brands into Morabia Creations Announcement -\n    \n    25 Nov 2026",
+        "url": "https://nsearchives.nseindia.in/corporate/GLOBE_25112026180853_Notice_and_Annexures_-_Unsecured_Creditors_-_signed.pdf"
+      },
+      {
         "date": "21 Nov 2026",
         "stage": "NCLT",
         "text": "Demerger Demerger GLOBE ENTERPRISES (INDIA) LIMITED has informed the Exchange about Order of the Hon ble National Company Law Tribunal, NCLT directs Globe Announcement -\n    \n    21 Nov 2026",
@@ -1110,6 +1116,20 @@
     ]
   },
   {
+    "code": "SUPTANERY",
+    "name": "Super Tannery Ltd",
+    "stage": "ANNOUNCED",
+    "stage_date": "2026-11-25",
+    "headlines": [
+      {
+        "date": "25 Nov 2026",
+        "stage": "ANNOUNCED",
+        "text": "Board Meeting Outcome for Outcome Of Board Meeting In Accordance Of Scheme Of Arrangement Between Super Tannery Limited (\"The Demerged Company\") And Super Works Limited (\"The Resulting Company\") Board Meeting Outcome for Outcome Of Board Meeting In Accordance Of Scheme Of Arrangement Between Super T",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7a4bb6c4-bb8b-4b7a-aedd-2a1d04348e15.pdf"
+      }
+    ]
+  },
+  {
     "code": "SHRIDINESH",
     "name": "Shri Dinesh Mills Ltd",
     "stage": "ANNOUNCED",
@@ -1120,20 +1140,6 @@
         "stage": "ANNOUNCED",
         "text": "Closure of Trading Window alia, to approve the draft Scheme of Arrangement amongst Shri Dinesh Mills Ltd ( Demerged company) and Dinesh Felts Ltd (Resulting company) and their Announcement -\n    \n    21 Nov 2026",
         "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=91c6b1d2-cf7f-4d4f-a42b-8df2e86139b6.pdf"
-      }
-    ]
-  },
-  {
-    "code": "SUNTV",
-    "name": "Sun TV Network Ltd",
-    "stage": "ANNOUNCED",
-    "stage_date": "2026-09-30",
-    "headlines": [
-      {
-        "date": "30 Sep 2026",
-        "stage": "ANNOUNCED",
-        "text": "Rumour verification - Regulation 30(11) Possible Demerger of Sun TV''s Sports division Announcement -\n    \n    30 Sep 2026",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=3ba24309-c89e-4952-8d1d-9370bfcfa599.pdf"
       }
     ]
   },
