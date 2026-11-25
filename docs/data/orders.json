@@ -7013,7 +7013,7 @@
     "market_cap": 10.5,
     "sales": 0.0,
     "opm": null,
-    "ltp": 19.05,
+    "ltp": 19.0,
     "revenue_fy": -0.07,
     "np_prev_q": -0.02,
     "np_latest_q": -0.02,
@@ -7022,7 +7022,7 @@
     "np_growth_qoq": 0.0,
     "eps_growth_qoq": 0.0,
     "order_size_pct": -282428.57,
-    "pct_change": 1.93
+    "pct_change": null
   },
   {
     "code": "RVNL",
@@ -12523,6 +12523,31 @@
     "eps_growth_qoq": 22.73,
     "order_size_pct": null,
     "pct_change": null
+  },
+  {
+    "code": "531319",
+    "name": "Maruti Global Industries Ltd",
+    "exchange": "",
+    "date": "24 Nov 2026",
+    "order_type": "Order",
+    "headline": "Announcement under Regulation 30 (LODR)-Award_of_Order_Receipt_of_Order Announcement under Regulation 30 (LODR)- Award _ of _ Order _Receipt_ of _ Order Company received order from Naandi Infratech Private Limited approx of Rs.12 Announcement -\n    \n    24 Nov 2026",
+    "value_cr": null,
+    "customer": "Naandi Infratech Private Limited approx",
+    "duration": null,
+    "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f440da87-f85e-4536-83b4-45da08d7cfc0.pdf",
+    "market_cap": 19.4,
+    "sales": 7.07,
+    "opm": null,
+    "ltp": 38.8,
+    "revenue_fy": 41.07,
+    "np_prev_q": 0.4,
+    "np_latest_q": 1.53,
+    "eps_prev_q": 0.8,
+    "eps_latest_q": 3.06,
+    "np_growth_qoq": 282.5,
+    "eps_growth_qoq": 282.5,
+    "order_size_pct": null,
+    "pct_change": -1.65
   },
   {
     "code": "544859",

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T19:06:26+05:30",
+ "generated_at": "2026-11-25T05:42:27+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -183,21 +183,6 @@
    "pead_category": null
   },
   {
-   "symbol": "544771",
-   "exchange": "BSE",
-   "last": 23.95,
-   "pct_change": 12.28,
-   "open": 20.35,
-   "high": 23.95,
-   "low": 20.35,
-   "prev_close": 21.33,
-   "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 26000,
-   "pead_score": 50.0,
-   "pead_category": "LOW"
-  },
-  {
    "symbol": "541945",
    "exchange": "BSE",
    "last": 5.56,
@@ -331,21 +316,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "543546",
-   "exchange": "BSE",
-   "last": 5.25,
-   "pct_change": 5.0,
-   "open": 5.19,
-   "high": 5.25,
-   "low": 4.77,
-   "prev_close": 5.0,
-   "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": 405999,
-   "pead_score": 88.9,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "HITECH",
@@ -524,6 +494,21 @@
    "vwap_pos": null,
    "range_pos": null,
    "volume": null,
+   "pead_score": null,
+   "pead_category": null
+  },
+  {
+   "symbol": "544771",
+   "exchange": "BSE",
+   "last": 23.95,
+   "pct_change": 12.28,
+   "open": 20.35,
+   "high": 23.95,
+   "low": 20.35,
+   "prev_close": 21.33,
+   "vwap_pos": null,
+   "range_pos": 100.0,
+   "volume": 26000,
    "pead_score": null,
    "pead_category": null
   },
@@ -708,6 +693,21 @@
    "pead_category": null
   },
   {
+   "symbol": "543373",
+   "exchange": "BSE",
+   "last": 739.95,
+   "pct_change": 2.12,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 87.1,
+   "pead_category": "HIGH"
+  },
+  {
    "symbol": "WINDMACHIN",
    "exchange": "BSE",
    "last": 355.0,
@@ -811,6 +811,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "SFCTECH",
+   "exchange": "BSE",
+   "last": 437.35,
+   "pct_change": -1.11,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 90.5,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "539014",
@@ -1111,21 +1126,6 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
-  },
-  {
-   "symbol": "530581",
-   "exchange": "BSE",
-   "last": 11.09,
-   "pct_change": 1.93,
-   "open": 11.09,
-   "high": 11.09,
-   "low": 10.67,
-   "prev_close": 10.88,
-   "vwap_pos": null,
-   "range_pos": 100.0,
-   "volume": null,
-   "pead_score": 78.7,
-   "pead_category": "HIGH"
   },
   {
    "symbol": "COMSYN",
