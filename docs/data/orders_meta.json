@@ -1,1 +1,7 @@
-{"generated_at_ist":"2026-11-26 18:04:51 IST","orders":642,"companies":347,"source":"NSE filings 471 + full-text search 171","prices":"daily closes delayed 0/642 — Dhan: BSE 504273: Timeout: Failed to perform, curl: (28) Operation timed out after 600"}
+{
+  "generated_at_ist": "2026-11-27 03:09:43 IST",
+  "orders": 646,
+  "companies": 348,
+  "source": "NSE filings 476 + full-text search 170",
+  "prices": "NseBseProvider LTP 24/646"
+}
