@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T17:37:12+05:30",
+ "generated_at": "2026-11-28T04:58:12+05:30",
  "source": "quotes",
  "rows": [
   {
@@ -511,6 +511,21 @@
    "volume": null,
    "pead_score": null,
    "pead_category": null
+  },
+  {
+   "symbol": "543207",
+   "exchange": "BSE",
+   "last": 2.26,
+   "pct_change": -4.64,
+   "open": null,
+   "high": null,
+   "low": null,
+   "prev_close": null,
+   "vwap_pos": null,
+   "range_pos": null,
+   "volume": null,
+   "pead_score": 70.0,
+   "pead_category": "HIGH"
   },
   {
    "symbol": "543765",
@@ -1477,21 +1492,6 @@
    "exchange": "BSE",
    "last": 89.5,
    "pct_change": -8.67,
-   "open": null,
-   "high": null,
-   "low": null,
-   "prev_close": null,
-   "vwap_pos": null,
-   "range_pos": null,
-   "volume": null,
-   "pead_score": null,
-   "pead_category": null
-  },
-  {
-   "symbol": "HEG",
-   "exchange": "BSE",
-   "last": 280.99,
-   "pct_change": 8.63,
    "open": null,
    "high": null,
    "low": null,
